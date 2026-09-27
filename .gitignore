@@ -184,3 +184,7 @@ vscode-extension/*.vsix
 
 # IDE Cursor rules
 .cursor/
+
+# Runtime ledgers
+.*_ledger.json
+*.db
