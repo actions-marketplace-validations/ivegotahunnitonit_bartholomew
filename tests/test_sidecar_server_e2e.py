@@ -29,9 +29,9 @@ class TestSidecarServerE2E(unittest.TestCase):
             self.assertEqual(resp.status, 200)
             data = json.loads(resp.read().decode("utf-8"))
             self.assertEqual(data["status"], "HEALTHY")
-            self.assertEqual(data["version"], "5.4.21")
+            self.assertEqual(data["version"], "5.4.22")
             self.assertEqual(data["gpu_vram_mb"], 0)
-            self.assertEqual(resp.getheader("X-Protected-By"), "Bartholomew-ARP-v5.4.21")
+            self.assertEqual(resp.getheader("X-Protected-By"), "Bartholomew-ARP-v5.4.22")
 
     def test_adversarial_command_blocked_403(self):
         url = f"http://127.0.0.1:{self.port}/execute"
