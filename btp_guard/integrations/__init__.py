@@ -25,7 +25,13 @@ from . import pydanticai
 from . import smolagents
 from . import swarm
 
+from .stripe_agent import BtpStripeAgentGuard, StripeSecurityVetoException, BtpStripeLicenseRequiredException
+from . import stripe_agent
+
 __all__ = [
+    "BtpStripeAgentGuard",
+    "StripeSecurityVetoException",
+    "stripe_agent",
     "BtpCrewAIGuard",
     "BtpCallbackHandler",
     "BtpToolGuard",

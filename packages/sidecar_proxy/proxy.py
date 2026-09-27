@@ -47,7 +47,7 @@ class SidecarProxyHandler(BaseHTTPRequestHandler):
         self.send_response(status_code)
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
-        self.send_header("X-Protected-By", "Bartholomew-ARP-v5.4.21")
+        self.send_header("X-Protected-By", "Bartholomew-ARP-v5.4.22")
         self.end_headers()
         self.wfile.write(body)
 
@@ -55,7 +55,7 @@ class SidecarProxyHandler(BaseHTTPRequestHandler):
         if self.path in ("/health", "/healthz", "/ping"):
             self._send_json_response(200, {
                 "status": "HEALTHY",
-                "version": "5.4.21",
+                "version": "5.4.22",
                 "engine": "Bartholomew-Compiler-AST",
                 "latency_median_us": 15.70,
                 "gpu_vram_mb": 0
@@ -139,7 +139,7 @@ class SidecarProxyHandler(BaseHTTPRequestHandler):
                 self.send_response(resp.status)
                 for header, val in resp.getheaders():
                     self.send_header(header, val)
-                self.send_header("X-Protected-By", "Bartholomew-ARP-v5.4.21")
+                self.send_header("X-Protected-By", "Bartholomew-ARP-v5.4.22")
                 self.end_headers()
                 self.wfile.write(resp_body)
         except urllib.error.HTTPError as e:

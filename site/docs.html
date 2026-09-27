@@ -340,7 +340,8 @@
     <ul class="nav-links">
       <li><a href="/index.html">Overview</a></li>
       <li><a href="/docs.html" class="active">Docs</a></li>
-      <li><a href="/sim-lab.html">Simulator Lab</a></li>
+      <li><a href="/sim-lab.html">
+      <a href="/leaderboard.html" class="nav-link" style="color:var(--emerald-bright); font-weight:700;">Leaderboard</a>>Simulator Lab</a></li>
       <li><a href="/control-plane.html">Control Plane</a></li>
       <li><a href="/investors.html">Investors</a></li>
       <li>
@@ -892,6 +893,68 @@ res = guard.check(<span style="color:#38bdf8;">"rm -rf / --no-preserve-root"</sp
 • Receipt:     `ed25519:5ed00027...` | Frame: `BTP/2.2`</code></pre>
         </div>
       </section>
+
+      <!-- Section: Bonded Warranty Fund -->
+      <section id="bonded-warranty" class="docs-section">
+        <div class="section-badge">COMMERCIAL GUARANTEE • SOC 2 &amp; AGENT INDEMNITY</div>
+        <h2 class="section-title">Bonded Agent Warranty Fund ($100,000 Pool)</h2>
+        <p class="section-desc">
+          Bartholomew operates an algorithmic $100,000 USD reserve pool that underwrites autonomous AI agent execution. 
+          Enterprise teams can issue bonded policies guaranteeing sub-35µs gating SLAs and zero uncontained data exfiltration.
+        </p>
+
+        <div class="code-block-header">
+          <span class="code-lang">CLI &amp; Python SDK</span>
+          <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="code-block"><code># 1. Check live reserve pool status:
+$ btp-guard bond pool
+
+# 2. Underwrite a $50,000 execution bond for an agent:
+$ btp-guard bond issue --agent "autonomous-trading-bot-01" --coverage 50000
+
+# 3. In Python runtime:
+from btp_guard import WarrantyFundManager
+
+fund = WarrantyFundManager()
+policy = fund.issue_policy(agent_id="agent-01", coverage_usd=50000.0)
+print(f"Policy Active: {policy['policy_id']} | Merkle Bond: {policy['bond_hash']}")</code></pre>
+
+        <div class="callout callout-info" style="margin-top:16px;">
+          <div class="callout-title">
+            <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            <span>Cryptographic Proof of Coverage</span>
+          </div>
+          <p>Every policy issues an Ed25519-signed Merkle voucher tied to the agent's Keystone passkey. Claims undergo automated consensus arbitration before payout.</p>
+        </div>
+      </section>
+
+      <!-- Section: MCP Clearinghouse -->
+      <section id="mcp-clearinghouse" class="docs-section">
+        <div class="section-badge">PROTOCOL SETTLEMENT • 2.5% TAKE-RATE</div>
+        <h2 class="section-title">Model Context Protocol (MCP) Clearinghouse</h2>
+        <p class="section-desc">
+          Autonomous agents pay each other for MCP tool executions in real-time. The Bartholomew Clearinghouse acts as an in-line micro-escrow and safety validator, ensuring tool payloads pass AST inspection before micropayments settle.
+        </p>
+
+        <div class="code-block-header">
+          <span class="code-lang">CLI Execution</span>
+          <button class="btn-copy" onclick="copyCode(this)">Copy</button>
+        </div>
+        <pre class="code-block"><code># Settle a paid MCP tool invocation ($0.10 price with 2.5% take-rate):
+$ btp-guard mcp-settle \
+    --agent "claude-code-worker" \
+    --tool "postgres_query" \
+    --payload '{"query": "SELECT COUNT(*) FROM telemetry"}' \
+    --price 0.10
+
+# Output:
+# [+] [MCP CLEARINGHOUSE] Tool Execution Approved (14.2µs)
+#   - Protocol Fee (2.5%): $0.0025 USD
+#   - Tool Provider Payout: $0.0975 USD
+#   - Merkle Settlement Seal: f4a890...710c</code></pre>
+      </section>
+
 
     </main>
   </div>

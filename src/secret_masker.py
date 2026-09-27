@@ -34,7 +34,9 @@ class SecretVaultMasker:
         ("GOOGLE_API_KEY", re.compile(r"AIza[a-zA-Z0-9_\-]{20,45}")),
         ("PRIVATE_KEY_BLOCK", re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----.*?-----END (?:RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----", re.DOTALL)),
         ("BEARER_TOKEN", re.compile(r"(?i)bearer\s+[a-zA-Z0-9_\-\.]{25,}")),
-        ("GENERIC_SECRET_ASSIGN", re.compile(r"""(?i)(?:api_key|apikey|secret_key|private_key|token|password|auth_token)\s*[:=]\s*['"]([a-zA-Z0-9_\-\.]{12,})['"]"""))
+        ("GENERIC_SECRET_ASSIGN", re.compile(r"""(?i)(?:api_key|apikey|secret_key|private_key|token|password|auth_token)\s*[:=]\s*['"]([a-zA-Z0-9_\-\.]{12,})['"]""")),
+        ("STRIPE_KEY", re.compile(r"(?:sk|rk|pk)_(?:live|test)_[a-zA-Z0-9_\-]{20,}", re.IGNORECASE)),
+        ("STRIPE_WEBHOOK", re.compile(r"whsec_[a-zA-Z0-9_\-]{20,}", re.IGNORECASE))
     ]
 
     # Pre-warm regular expressions
