@@ -161,13 +161,13 @@ def run_simulation():
             is_safe, reason, meta = PolyglotASTValidator.validate_code(sc["payload"], language=sc["lang"])
             latency_us = (time.perf_counter() - t0) * 1_000_000
             print(f"  {C_CRIMSON}▶ [BARTHOLOMEW VETO]{C_RESET} {reason}")
-            print(f"  {C_GREEN}⚡ Decision Latency:{C_RESET} {latency_us:.2f} µs | {C_GREEN}Cloud Token Spend:{C_RESET} $0.0000 (Local In-Process AST)")
+            print(f"  {C_GREEN}[BTP-FAST] Decision Latency:{C_RESET} {latency_us:.2f} µs | {C_GREEN}Cloud Token Spend:{C_RESET} $0.0000 (Local In-Process AST)")
 
         elif sc["expected"] == "REDACT":
             clean_str, secrets_found, mask_lat = SecretVaultMasker.mask_text(sc["payload"])
             print(f"  {C_AMBER}▶ [IN-FLIGHT REDACTION]{C_RESET} Found {len(secrets_found)} credential(s) -> Sanitized in-memory")
             print(f"  {C_DIM}Sanitized Payload  :{C_RESET} {clean_str[:70]}...")
-            print(f"  {C_GREEN}⚡ Redaction Latency:{C_RESET} {mask_lat:.2f} µs | {C_GREEN}Credentials Leaked:{C_RESET} 0 bytes")
+            print(f"  {C_GREEN}[BTP-FAST] Redaction Latency:{C_RESET} {mask_lat:.2f} µs | {C_GREEN}Credentials Leaked:{C_RESET} 0 bytes")
 
         elif sc["expected"] == "SLASH_AND_REVOKE":
             # 1. Generate zk-Fault Proof (Gemini Planner Prover)
@@ -211,7 +211,7 @@ def run_simulation():
             print(f"  {C_CRIMSON}▶ [ESCROW SLASHED]{C_RESET} ${receipt['indemnity_amount_usd']:,.2f} USD liquidated via {receipt['settlement_rail']}")
             print(f"    L402 Preimage Revealed: {receipt.get('l402_preimage_revealed', 'N/A')}")
             print(f"  {C_CRIMSON}▶ [PASSPORT CIRCUIT BREAKER TRIPPED]{C_RESET} {passport_astra.agent_id} trust score: {passport_astra.trust_score:.2f} (Revoked)")
-            print(f"  {C_GREEN}⚡ Arbitration & Slashing SLA:{C_RESET} {latency_us / 1000:.2f} ms | {C_GREEN}Human Intervention:{C_RESET} 0%")
+            print(f"  {C_GREEN}[BTP-FAST] Arbitration & Slashing SLA:{C_RESET} {latency_us / 1000:.2f} ms | {C_GREEN}Human Intervention:{C_RESET} 0%")
 
     print(f"\n{C_BOLD}{C_GREEN}══════════════════════════════════════════════════════════════════════════════════════════════════{C_RESET}")
     print(f"{C_BOLD}{C_GREEN}✔ BENCHMARK COMPLETE: 100% of attack vectors dropped in sub-35µs with zero remote token spend.{C_RESET}")
