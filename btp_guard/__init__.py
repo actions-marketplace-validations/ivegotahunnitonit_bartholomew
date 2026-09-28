@@ -53,6 +53,11 @@ from .agent_passport import AgentPassport, AgentPassportAuthority
 from .hitl_gate import HITLApprovalGate, HITLEscalationRequiredException
 from .integrations.m2m_toll import BtpM2MMicroToll
 from . import integrations
+from .project_immunizer import (
+    immunize_project,
+    evaluate_workspace_security,
+    get_model_context_prompt,
+)
 
 # Aliases for convenience
 BondedAgentWarrantyFund = WarrantyFundManager
@@ -109,5 +114,8 @@ __all__ = [
     "HITLApprovalGate",
     "HITLEscalationRequiredException",
     "BtpM2MMicroToll",
+    "immunize_project",
+    "evaluate_workspace_security",
+    "get_model_context_prompt",
     "__version__",
 ]

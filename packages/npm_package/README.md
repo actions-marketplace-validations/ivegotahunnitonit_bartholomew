@@ -1,138 +1,115 @@
-# btp-guard
+# btp-guard (Node.js & TypeScript)
 
-Deterministic In-Process Invariant Gate & Cryptographic Attestation Protocol for Autonomous AI Agents
+> **Sub-35µs In-Process Execution Firewall & Deterministic AST Safety Gate for AI Agents**  
+> *Bartholomew Trust Protocol (BTP v5.4.24) — Zero External Dependencies*
 
 [![npm version](https://img.shields.io/npm/v/btp-guard?style=flat-square&color=38bdf8)](https://www.npmjs.com/package/btp-guard)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://github.com/bartholomew-ai/bartholomew/blob/main/LICENSE)
-[![Security Policy](https://img.shields.io/badge/Security-Policy-green.svg?style=flat-square)](https://github.com/bartholomew-ai/bartholomew/blob/main/SECURITY.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg?style=flat-square)](https://www.npmjs.com/package/btp-guard)
+[![Smithery MCP](https://img.shields.io/badge/Smithery%20MCP-100%2F100%20Verified-blue)](https://smithery.ai/servers/itsubsolomon/calls_10k)
 
 ---
 
-## Overview
+## What is Bartholomew Guard?
 
-`btp-guard` is a sub-35 microsecond in-process deterministic invariant gate and cryptographic attestation engine implementing the Bartholomew Trust Protocol (BTP v5.4.12).
+Bartholomew Guard is an ultra-fast in-process security gateway for autonomous AI agents (Gemini, Claude, Cursor, Copilot, LangChain.js, Vercel AI SDK).
 
-- **Smithery MCP Registry:** [https://smithery.ai/servers/itsubsolomon/calls_10k](https://smithery.ai/servers/itsubsolomon/calls_10k) (100/100 Verified)
-- **Hosted MCP Endpoint:** `http://35.222.210.105:8080` (L402 Lightning Enabled)
-
-It evaluates proposed AI agent tool actions (Bash executions, SQL queries, HTTP calls, MCP tool calls) in caller memory before execution, blocking catastrophic operations (`rm -rf`, `DROP TABLE`, destructive disk overwrites) and redacting high-entropy secrets (OpenAI, Anthropic, AWS, GitHub) while generating FIPS 186-5 Ed25519 verifiable receipts.
+It sits in memory between your AI agent and the operating system. Before any bash command, SQL query, file edit, or MCP tool call executes, Bartholomew evaluates the action against deterministic Abstract Syntax Tree (AST) safety invariants in **under 35 microseconds**—blocking destructive operations (`rm -rf`, `DROP TABLE`), redacting in-flight credentials (`sk-*`, AWS tokens), and signing cryptographic RFC 8785 Ed25519 receipts.
 
 ---
 
-## Installation
+## 30-Second Quickstart
 
+### 1. One-Command Project Immunization
+Immunize your active project in 1 second. This automatically sets up `.cursorrules`, `CLAUDE.md`, `GEMINI.md`, and security policies:
 ```bash
-npm install btp-guard
+npx btp-guard protect
 ```
 
-Zero external dependencies. Operates natively using Node.js built-in cryptography and standard primitives.
+### 2. Export Context for Your AI Model (Gemini, Claude, Cursor)
+Copy tailored invariant instructions directly to your clipboard so your AI companion codes safely without tripping blocks:
+```bash
+npx btp-guard model-context --model gemini
+npx btp-guard model-context --model claude
+npx btp-guard model-context --model cursor
+```
+
+### 3. Wrap Any Agent in 1 Line of Code
+```javascript
+import { protectAgent } from 'btp-guard';
+
+// Automatically protects any agent object (Vercel AI SDK, LangChain, Claude, Custom)
+const agent = protectAgent(rawAgent, { spendCap: 50.0 });
+```
 
 ---
 
-## Quickstart
+## Core API Reference
 
-### In-Process Intent Gate
-
+### 1. In-Process Intent Gate (`evaluateIntent`)
+Evaluate arbitrary tool calls or shell commands in caller memory in `<35µs`:
 ```javascript
 import { evaluateIntent, verifyReceipt } from 'btp-guard';
 
-// 1. Evaluate tool call in caller memory (<35 us)
 const result = evaluateIntent({
   agentId: 'worker-node-01',
   actionType: 'EXECUTE_QUERY',
   payload: { sql: 'SELECT * FROM users WHERE active = true;' }
 });
 
-console.log('Allowed:', result.allowed);
-console.log('Latency:', result.latencyUs.toFixed(2), 'us');
-console.log('Attestation Verdict:', result.verdict);
-console.log('Signature:', result.signature);
+console.log('Allowed:', result.allowed);          // true
+console.log('Latency:', result.latencyUs, 'µs');   // 24.8 µs
+console.log('Verdict:', result.verdict);          // "ALLOW"
+console.log('Receipt:', result.signature);        // Ed25519 signature
 
-// 2. Cryptographic receipt validation
+// Offline cryptographic receipt verification
 const isValid = verifyReceipt(result);
-console.log('Cryptographically Valid:', isValid);
+console.log('Signature Valid:', isValid);          // true
 ```
 
-### In-Flight Secret Redaction
-
+### 2. In-Flight Credential Scrubber (`scrubSensitiveCredentials`)
+Automatically strips high-entropy tokens and API keys from payloads before network egress:
 ```javascript
 import { scrubSensitiveCredentials } from 'btp-guard';
 
 const payload = {
-  task: 'sync_data',
-  auth: 'Bearer sk-proj-00000000000000000000000000000000',
-  aws_key: 'AKIAIOSFODNN7EXAMPLE'
+  command: "curl -H 'Authorization: Bearer sk-proj-1234567890abcdef' https://api.openai.com",
+  aws_key: "AKIAIOSFODNN7EXAMPLE"
 };
 
 const { data, redactionCount } = scrubSensitiveCredentials(payload);
-console.log('Redacted count:', redactionCount);
-console.log('Sanitized payload:', data);
+console.log('Redacted Secrets:', redactionCount); // 2
+console.log('Sanitized Data:', data);
 ```
 
-### RFC 8785 Canonicalization & Offline Verification
-
+### 3. Workspace Security Audit (`evaluateWorkspaceSecurity`)
+Programmatically inspect workspace invariant health and retrieve actionable remediation tasks:
 ```javascript
-import { verifyBtpReceipt, rfc8785Canonicalize } from 'btp-guard';
+import { evaluateWorkspaceSecurity } from 'btp-guard';
 
-const canonBytes = rfc8785Canonicalize({ action: 'query', id: 42 });
-console.log('Canonical UTF-8 Hex:', canonBytes.toString('hex'));
+const audit = evaluateWorkspaceSecurity('.');
+console.log('Score:', audit.score); // 100
+console.log('Grade:', audit.grade); // "A+"
 ```
 
 ---
 
-## CLI Usage
+## CLI Commands
 
-The package exposes `btp-guard` and `btp-mcp-proxy` binaries for terminal and pipeline inspection:
-
-```bash
-# Run local self-test and latency benchmark
-npx btp-guard demo
-
-# Initialize Model Context Protocol (MCP) desktop proxy
-npx btp-guard init
-
-# Scrub sensitive credentials from JSON input
-npx btp-guard scrub payload.json
-```
+| Command | Description |
+|---|---|
+| `npx btp-guard protect` | Immunize repository with `.cursorrules`, `CLAUDE.md`, `GEMINI.md`, and pre-commit hooks |
+| `npx btp-guard protect --audit-only` | Audit workspace security score (0–100) without modifying files |
+| `npx btp-guard model-context --model <name>` | Generate formatted security briefing for Gemini, Claude, or Cursor |
+| `npx btp-guard scrub <file.json>` | Redact in-flight secrets from JSON file |
+| `npx btp-guard demo` | Run interactive terminal self-test and latency benchmark |
+| `npx btp-guard keystone issue <agent>` | Issue cryptographically signed capability passkey |
 
 ---
 
-## Sovereign Architecture & Capabilities
+## Specifications & Guarantees
 
-`btp-guard` is 100% open, sovereign, and unrestricted for developers and agent swarms:
-
-| Capability | Status | Description |
-|---|---|---|
-| **In-Process AST Gate** | **ACTIVE** | Sub-35µs execution gate blocking prompt injection and destructive calls |
-| **Keystone Passkeys** | **ACTIVE** | Ephemeral Ed25519 capability passkeys with fine-grained path & spend scopes |
-| **SOC 2 Type II Dossiers** | **ACTIVE** | Continuous tamper-evident Merkle receipts stamped with Ed25519 signatures |
-| **Cloud Telemetry** | **ACTIVE** | Live swarm inspection and threat monitoring at https://bartholomew.info/cloud |
-
-- **Runtime Activation:** Run `npx btp-guard activate`
-- **Documentation:** [https://bartholomew.info](https://bartholomew.info)
-
----
-
-## Enterprise Quality & Compliance
-
-- **Zero External Dependencies**: Pure Node.js standard library. No supply chain exposure.
-- **RFC 8785 Compliance**: Canonical JSON formatting ensures deterministic cryptographic hashing across polyglot implementations (TypeScript, Python, Go, Rust).
-- **FIPS 186-5 Ed25519 Signatures**: Receipts are signed and verifiable offline without network round-trips.
-- **Sub-35 Microsecond Latency**: In-memory inspection executes orders of magnitude faster than cloud-hosted proxy services.
-- **Fail-Closed Architecture**: Any syntax corruption or policy mismatch rejects the candidate execution by default.
-
----
-
-## Security & Verification
-
-- **Security Policy**: [SECURITY.md](https://github.com/bartholomew-ai/bartholomew/blob/main/SECURITY.md)
-- **Vulnerability Reporting**: security@bartholomew.info
-- **Official Portal**: [https://bartholomew.info](https://bartholomew.info)
-- **GitHub Repository**: [https://github.com/bartholomew-ai/bartholomew](https://github.com/bartholomew-ai/bartholomew)
-
----
-
-## License
-
-MIT License. Copyright (c) 2026 Bartholomew AI Contributors.
+- **Zero External Dependencies**: Implemented natively using Node.js built-in `crypto` and standard ES modules.
+- **Latency**: Sub-35 microseconds deterministic in-process evaluation.
+- **Compliance**: RFC 8785 JSON Canonicalization Scheme (JCS) + FIPS 186-5 Ed25519 cryptographic signatures.
+- **Portal & Telemetry**: [https://bartholomew.info](https://bartholomew.info)
