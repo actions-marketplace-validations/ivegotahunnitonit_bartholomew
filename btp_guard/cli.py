@@ -40,6 +40,46 @@ def cmd_hook(args):
     print(f"    {res['message']}")
 
 
+def cmd_inject(args):
+    try:
+        from src.ai_bridge_injector import run_bridge_injection
+    except ImportError:
+        from btp_guard.ai_bridge_injector import run_bridge_injection
+    target = getattr(args, "target", "all")
+    ws = getattr(args, "dir", ".") or "."
+    res = run_bridge_injection(workspace_root=ws, target=target)
+    print("\n" + "=" * 74)
+    print("      BARTHOLOMEW AI BRIDGE CONTEXT INJECTOR (BTP v5.4.26)")
+    print("=" * 74)
+    for r in res.get("results", []):
+        print(f"  - [{r['target'].upper()}] {r['file']}: {r['message']}")
+    print("=" * 74 + "\n")
+
+
+def cmd_exec(args):
+    try:
+        from src.process_shim import execute_in_sandbox
+    except ImportError:
+        from btp_guard.process_shim import execute_in_sandbox
+    cmd_args = getattr(args, "cmd", [])
+    exit_code = execute_in_sandbox(cmd_args)
+    sys.exit(exit_code)
+
+
+def cmd_chaos(args):
+    try:
+        from src.chaos_harness import ChaosRedTeamHarness, print_chaos_scorecard
+    except ImportError:
+        from btp_guard.chaos_harness import ChaosRedTeamHarness, print_chaos_scorecard
+    vectors = getattr(args, "vectors", 100)
+    harness = ChaosRedTeamHarness()
+    report = harness.run_chaos_battery(iterations=vectors)
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print_chaos_scorecard(report)
+
+
 def cmd_optimize(args):
     try:
         from src.ecosystem_advisor import EcosystemAdvisor, print_optimization_matrix
@@ -3631,6 +3671,20 @@ def main():
     parser = argparse.ArgumentParser(description="Bartholomew AI Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # inject
+    inj_p = subparsers.add_parser("inject", help="Inject AST invariants and token compression into .cursorrules, CLAUDE.md, and AGENTS.md")
+    inj_p.add_argument("--target", "-t", choices=["all", "cursor", "claude", "windsurf", "agents", "gemini"], default="all", help="Target agent configuration (default: all)")
+    inj_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+
+    # exec
+    exec_p = subparsers.add_parser("exec", help="Execute any agent process under transparent subshell PATH shims")
+    exec_p.add_argument("cmd", nargs=argparse.REMAINDER, help="Command and arguments to execute inside shimmed sandbox")
+
+    # chaos
+    chaos_p = subparsers.add_parser("chaos", help="Execute automated red-team chaos stress test across synthetic attack vectors")
+    chaos_p.add_argument("--vectors", "-n", type=int, default=100, help="Number of attack vectors to evaluate (default: 100)")
+    chaos_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
     # optimize
     opt_p = subparsers.add_parser("optimize", help="Inspect extensions & packages for fact-backed bottlenecks, alternative executions, and shortcuts")
     opt_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
@@ -4443,6 +4497,12 @@ def main():
         cmd_protect(args)
     elif args.command == "model-context":
         cmd_model_context(args)
+    elif args.command == "inject":
+        cmd_inject(args)
+    elif args.command == "exec":
+        cmd_exec(args)
+    elif args.command == "chaos":
+        cmd_chaos(args)
     elif args.command == "optimize":
         cmd_optimize(args)
     elif args.command == "profile":
