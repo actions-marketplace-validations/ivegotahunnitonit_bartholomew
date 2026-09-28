@@ -5,8 +5,9 @@ Validates:
   1. Automated 2.5% protocol fee & micro-toll compensation on Stripe tool calls.
   2. Live Stripe secret key scrubbing (`sk_test_...`, `rk_test_...`).
   3. Max transaction and cumulative daily refund ceiling enforcement.
-  4. Underwritten $50k Warranty Bond issuance per financial trajectory.
-  5. Commercial license gating and upgrade checkout link generation.
+  4. Zero-Liability Cryptographic Attestation Stamp issuance (Warranty decoupled).
+  5. 1-Line `wrap_stripe` drop-in wrapper for AI agent tooling.
+  6. Commercial license gating and upgrade checkout link generation.
 """
 
 import os
@@ -15,12 +16,13 @@ import pytest
 from btp_guard.integrations.stripe_agent import (
     BtpStripeAgentGuard,
     StripeSecurityVetoException,
-    BtpStripeLicenseRequiredException
+    BtpStripeLicenseRequiredException,
+    wrap_stripe
 )
 
 
 class TestStripeAgentGuard:
-    """Verifies commercial protection and compensation on Stripe agent operations."""
+    """Verifies commercial protection, zero-liability attestation, and compensation."""
 
     def test_benign_charge_with_protocol_compensation(self, tmp_path):
         ledger = str(tmp_path / "stripe_test_ledger.json")
@@ -42,10 +44,27 @@ class TestStripeAgentGuard:
         assert clearance["status"] == "CLEARANCE_GRANTED_AND_BILLED"
         # 2.5% of $100.00 is $2.50 + $0.02 micro-toll = $2.52
         assert clearance["protocol_fee_usd"] == 2.52
-        assert clearance["warranty_bond_id"] is not None
-        assert clearance["warranty_bond_id"].startswith("bond-")
+        assert clearance["transaction_volume_usd"] == 100.0
+        assert clearance["attestation_voucher"] is not None
+        assert clearance["attestation_voucher"].startswith("attest_")
+        assert clearance["warranty_bond_id"] is None  # Zero balance sheet liability by default
+        assert "Zero underwritten balance-sheet liability" in clearance["liability_disclaimer"]
         assert "synthetic_restricted" not in json.dumps(clearance["sanitized_arguments"])
         assert clearance["latency_us"] < 10000.0  # Sub-10ms cold start
+
+    def test_explicit_warranty_bond_simulation(self, tmp_path):
+        ledger = str(tmp_path / "stripe_test_ledger.json")
+        guard = BtpStripeAgentGuard(
+            max_transaction_usd=500.0, 
+            ledger_path=ledger, 
+            enable_warranty_bonding=True
+        )
+
+        args = {"amount": 5000, "currency": "usd"}
+        clearance = guard.secure_stripe_call("create_charge", args)
+        assert clearance["warranty_bond_id"] is not None
+        assert clearance["warranty_bond_id"].startswith("bond-")
+        assert clearance["warranty_status"] == "BONDED"
 
     def test_transaction_ceiling_veto(self, tmp_path):
         ledger = str(tmp_path / "stripe_test_ledger.json")
@@ -90,3 +109,15 @@ class TestStripeAgentGuard:
         result = wrapped_tool(customer_id="cus_test", amount=5000)
         assert result["id"] == "plink_123"
         assert execution_recorded["amount"] == 5000
+
+    def test_one_line_wrap_stripe_helper(self, tmp_path):
+        ledger = str(tmp_path / "stripe_test_ledger.json")
+        
+        def mock_charge(customer_id: str, amount: int, **kwargs):
+            return {"status": "succeeded", "charge_id": "ch_999"}
+
+        # 1-Line Drop-In SDK Wrapper
+        guarded_charge = wrap_stripe(mock_charge, max_transaction_usd=500.0, ledger_path=ledger)
+        res = guarded_charge(customer_id="cus_abc", amount=2500)
+        assert res["status"] == "succeeded"
+        assert res["charge_id"] == "ch_999"

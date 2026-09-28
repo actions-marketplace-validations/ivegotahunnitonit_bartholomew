@@ -335,7 +335,7 @@
     <a href="/index.html" class="nav-brand">
       <img src="/logo.png" alt="Bartholomew Sentinel Logo" />
       <span>Bartholomew</span>
-      <span class="nav-tag">BTP v5.4.21</span>
+      <span class="nav-tag">BTP v5.4.23</span>
     </a>
     <ul class="nav-links">
       <li><a href="/index.html">Overview</a></li>
@@ -680,7 +680,7 @@ steps:
             <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
             <pre class="code-block"># .github/workflows/verify.yml
 steps:
-- uses: ivegotahunnitonit/bartholomew@v5.4.21
+- uses: ivegotahunnitonit/bartholomew@v5.4.23
   with:
     path: '.'
     strict: 'true'</pre>
@@ -798,7 +798,7 @@ btp-guard export-compliance --out soc2_dossier.json</pre>
           <pre><code><span style="color:#64748b;"># docker-compose.sidecar.yml</span>
 <span style="color:var(--gold);">services</span>:
   <span style="color:var(--emerald);">bartholomew-sidecar</span>:
-    <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.21
+    <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.23
     <span style="color:#94a3b8;">ports</span>:
       - <span style="color:#38bdf8;">"9090:9090"</span>
     <span style="color:#94a3b8;">environment</span>:
@@ -826,7 +826,7 @@ btp-guard export-compliance --out soc2_dossier.json</pre>
     <span style="color:#94a3b8;">spec</span>:
       <span style="color:#94a3b8;">containers</span>:
         - <span style="color:var(--emerald);">name</span>: bartholomew-proxy
-          <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.21
+          <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.23
           <span style="color:#94a3b8;">ports</span>:
             - <span style="color:#94a3b8;">containerPort</span>: 9090
           <span style="color:#94a3b8;">resources</span>:
@@ -841,7 +841,7 @@ curl -s http://127.0.0.1:9090/health | jq .
 <span style="color:#64748b;"># Response</span>
 {
   <span style="color:var(--emerald);">"status"</span>: <span style="color:#38bdf8;">"HEALTHY"</span>,
-  <span style="color:var(--emerald);">"version"</span>: <span style="color:#38bdf8;">"5.4.21"</span>,
+  <span style="color:var(--emerald);">"version"</span>: <span style="color:#38bdf8;">"5.4.23"</span>,
   <span style="color:var(--emerald);">"engine"</span>: <span style="color:#38bdf8;">"Bartholomew-Compiler-AST"</span>,
   <span style="color:var(--emerald);">"latency_median_us"</span>: <span style="color:#38bdf8;">15.70</span>,
   <span style="color:var(--emerald);">"gpu_vram_mb"</span>: <span style="color:#38bdf8;">0</span>

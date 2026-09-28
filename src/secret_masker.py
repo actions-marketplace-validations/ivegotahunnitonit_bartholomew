@@ -36,7 +36,9 @@ class SecretVaultMasker:
         ("BEARER_TOKEN", re.compile(r"(?i)bearer\s+[a-zA-Z0-9_\-\.]{25,}")),
         ("GENERIC_SECRET_ASSIGN", re.compile(r"""(?i)(?:api_key|apikey|secret_key|private_key|token|password|auth_token)\s*[:=]\s*['"]([a-zA-Z0-9_\-\.]{12,})['"]""")),
         ("STRIPE_KEY", re.compile(r"(?:sk|rk|pk)_(?:live|test)_[a-zA-Z0-9_\-]{20,}", re.IGNORECASE)),
-        ("STRIPE_WEBHOOK", re.compile(r"whsec_[a-zA-Z0-9_\-]{20,}", re.IGNORECASE))
+        ("STRIPE_WEBHOOK", re.compile(r"whsec_[a-zA-Z0-9_\-]{20,}", re.IGNORECASE)),
+        ("XAI_GROK_KEY", re.compile(r"xai-[a-zA-Z0-9_\-]{20,}", re.IGNORECASE)),
+        ("PCI_CARD_PAN", re.compile(r"\b(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|3[47][0-9]{13}|6(?:011|5[0-9]{2})[0-9]{12})\b"))
     ]
 
     # Pre-warm regular expressions

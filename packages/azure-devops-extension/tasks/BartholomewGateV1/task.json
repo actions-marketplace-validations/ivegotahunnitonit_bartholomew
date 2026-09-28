@@ -6,12 +6,15 @@
   "description": "Deterministic AST invariant firewall, secret scrubbing, and Verified Bartholomew Seal attestation for Azure Pipelines.",
   "helpMarkDown": "[Bartholomew Protocol Documentation](https://bartholomew.info)",
   "category": "Utility",
-  "visibility": ["Build", "Release"],
+  "visibility": [
+    "Build",
+    "Release"
+  ],
   "author": "Bartholomew AI Inc.",
   "version": {
     "Major": 1,
     "Minor": 0,
-    "Patch": 0
+    "Patch": 1
   },
   "instanceNameFormat": "Bartholomew Security Gate $(scanPath)",
   "inputs": [

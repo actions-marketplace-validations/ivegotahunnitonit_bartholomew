@@ -3,7 +3,7 @@
   "name": "bartholomew-sentinel",
   "displayName": "Bartholomew Protocol Execution Sentinel",
   "description": "Sub-35us AST execution firewall, zero-trust gating, and cryptographic proof verification for AI agents and swarms.",
-  "version": "5.4.11",
+  "version": "5.4.23",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -21,7 +21,10 @@
     },
     "stdio": {
       "command": "python",
-      "args": ["-m", "mcp_server.server"]
+      "args": [
+        "-m",
+        "mcp_server.server"
+      ]
     }
   },
   "capabilities": {
@@ -32,14 +35,27 @@
         "parameters": {
           "type": "object",
           "properties": {
-            "tool_name": { "type": "string" },
-            "command": { "type": "string" },
-            "arguments": { "type": "object" }
+            "tool_name": {
+              "type": "string"
+            },
+            "command": {
+              "type": "string"
+            },
+            "arguments": {
+              "type": "object"
+            }
           },
-          "required": ["tool_name"]
+          "required": [
+            "tool_name"
+          ]
         }
       }
     ]
   },
-  "categories": ["security", "governance", "verification", "developer-tools"]
+  "categories": [
+    "security",
+    "governance",
+    "verification",
+    "developer-tools"
+  ]
 }

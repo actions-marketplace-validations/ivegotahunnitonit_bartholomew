@@ -331,3 +331,72 @@ class AgentPeerDiscoveryRegistry:
             return False, "Passport not found"
         passport.trip_circuit_breaker(reason)
         return True, f"Circuit breaker tripped for {passport_id}: {reason}"
+
+
+# -------------------------------------------------------------
+# Corporate KYC & Spending Authority Extension (BTP v5.4.22)
+# -------------------------------------------------------------
+
+AgentPassport = SovereignAgentPassport
+
+class AgentPassportAuthority:
+    """
+    Issues and verifies corporate agent passports in sub-10 microseconds.
+    """
+
+    def __init__(self, secret_key: Optional[str] = None):
+        self.secret_key = secret_key or "btp_corp_treasury_root_key_2026"
+        self.registry = AgentPeerDiscoveryRegistry()
+
+    def issue_passport(
+        self,
+        agent_id: str,
+        organization_id: str = "org_enterprise_corp",
+        treasury_account: str = "acct_treasury_primary",
+        spend_cap_usd: float = 1000.0,
+        authorized_rails: Optional[List[str]] = None,
+        validity_seconds: float = 86400.0
+    ) -> SovereignAgentPassport:
+        rails = authorized_rails or ["STRIPE", "APPLE_PAY", "GOOGLE_PAY", "VISA_DIRECT"]
+        passport = SovereignAgentPassport.issue(
+            agent_id=agent_id,
+            org_id=organization_id,
+            authorized_capabilities=rails,
+            bonded_warranty_usd=spend_cap_usd,
+            ttl_seconds=int(validity_seconds)
+        )
+        self.registry.register_passport(passport)
+        return passport
+
+    def verify_passport(
+        self,
+        passport: SovereignAgentPassport,
+        requested_rail: Optional[str] = None,
+        requested_amount_usd: float = 0.0
+    ) -> Tuple[bool, str]:
+        """
+        Validates cryptographic integrity, expiration, and spending boundaries in sub-10us.
+        """
+        # 1. Check circuit breaker / revocation
+        if passport.circuit_breaker_tripped:
+            return False, f"Passport {passport.passport_id} circuit breaker tripped: {passport.trip_reason}"
+
+        # 2. Check expiration
+        now = time.time()
+        if now > passport.expires_at:
+            return False, f"Passport {passport.passport_id} expired at {passport.expires_at} (current: {now})."
+
+        # 3. Check signature
+        is_valid, msg = passport.verify_signature()
+        if not is_valid:
+            return False, f"Cryptographic signature invalid: {msg}"
+
+        # 4. Check rail authorization
+        if requested_rail and not passport.has_capability(requested_rail):
+            return False, f"Rail {requested_rail} is not in authorized capabilities: {passport.granted_capabilities}"
+
+        # 5. Check spending ceiling against authorized cap
+        if requested_amount_usd > passport.bonded_warranty_balance_usd:
+            return False, f"Requested amount ${requested_amount_usd:.2f} exceeds passport authorized ceiling ${passport.bonded_warranty_balance_usd:.2f}."
+
+        return True, "PASSPORT_VERIFIED_VALID"

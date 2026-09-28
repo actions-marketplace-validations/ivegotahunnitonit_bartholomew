@@ -18,7 +18,7 @@ code --install-extension itsubsolomon.bartholomew-guard-vscode
 # Or search "Bartholomew Guard" in Extensions (Ctrl+Shift+X)
 ```
 
-👉 **Recommended Companion:** Pair with [Bartholomew Keystone](https://open-vsx.org/extension/itsubsolomon/bartholomew-keystone) (`code --install-extension itsubsolomon.bartholomew-keystone`) for cryptographically signed agent capability passkeys.
+ **Recommended Companion:** Pair with [Bartholomew Keystone](https://open-vsx.org/extension/itsubsolomon/bartholomew-keystone) (`code --install-extension itsubsolomon.bartholomew-keystone`) for cryptographically signed agent capability passkeys.
 
 ---
 

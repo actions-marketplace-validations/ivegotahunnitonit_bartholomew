@@ -5,9 +5,15 @@ import json
 from typing import Dict, Any
 
 if hasattr(sys.stdout, 'reconfigure'):
-    sys.stdout.reconfigure(encoding='utf-8')
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 if hasattr(sys.stderr, 'reconfigure'):
-    sys.stderr.reconfigure(encoding='utf-8')
+    try:
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
 
 # Cross-platform ANSI color support
 if sys.platform == "win32":
@@ -44,7 +50,7 @@ BANNER = f"""{C_AMBER}{C_BOLD}
   ██╔══██╗██╔══██║██╔══██╗   ██║   ██╔══██║██║   ██║██║    ██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║
   ██████╔╝██║  ██║██║  ██║   ██║   ██║  ██║╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝
   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ 
-{C_RESET}{C_CYAN}  [ BARTHOLOMEW TRUST PROTOCOL v5.4.6 // DETERMINISTIC IN-PROCESS AGENT GATE ]{C_RESET}
+{C_RESET}{C_CYAN}  [ BARTHOLOMEW TRUST PROTOCOL v5.4.23 // DETERMINISTIC IN-PROCESS AGENT GATE ]{C_RESET}
   {C_DIM}Sub-Microsecond AST Pre-Flight Gating · Hermetic Sandboxing · RFC 8785 Ed25519 Notary{C_RESET}
   {C_DIM}Frontier Partners: Google Gemini 3.8 · Claude 3.7 · GPT-Astra · Cloudflare · AutoGen · Copilot{C_RESET}
 """
@@ -58,7 +64,7 @@ def run_interactive_demo(speed: float = 0.5):
     """Runs the live 6-scenario interactive invariant showcase."""
     print(BANNER)
     print_divider()
-    print(f"{C_BOLD}[*] Initializing Bartholomew In-Process Invariant Engine (BTP v5.4.6)...{C_RESET}")
+    print(f"{C_BOLD}[*] Initializing Bartholomew In-Process Invariant Engine (BTP v5.4.23)...{C_RESET}")
     
     t0 = time.perf_counter_ns()
     authority = BartholomewTrustAuthority(ttl_seconds=300)
@@ -245,7 +251,7 @@ def run_interactive_demo(speed: float = 0.5):
 
     # Summary Card
     print(f"\n{C_BOLD}{C_AMBER}========================================================================================{C_RESET}")
-    print(f"{C_BOLD}{C_AMBER}                  BARTHOLOMEW (BTP v5.4.6) INTERACTION SUMMARY & AUDIT PROOF             {C_RESET}")
+    print(f"{C_BOLD}{C_AMBER}                  BARTHOLOMEW (BTP v5.4.23) INTERACTION SUMMARY & AUDIT PROOF             {C_RESET}")
     print(f"{C_BOLD}{C_AMBER}========================================================================================{C_RESET}")
     print(f"  {C_BOLD}Total Scenarios Evaluated:{C_RESET}     6")
     print(f"  {C_CRIMSON}{C_BOLD}Malicious Threats Intercepted:{C_RESET} 5/5 (0 Escapes · 100% Deterministic Gating)")
@@ -254,6 +260,7 @@ def run_interactive_demo(speed: float = 0.5):
     print(f"  {C_BOLD}Allied Frontier Swarms:{C_RESET}        Gemini 3.8 · Claude 3.7 · GPT-Astra · Cloudflare · AutoGen · Copilot")
     print(f"  {C_BOLD}Compliance Criteria Satisfied:{C_RESET}  AICPA SOC 2 (CC6.1, CC7.1, CC7.2, CC9.1) & ISO 27001 (A.8.8, A.8.30)")
     print(f"  {C_BOLD}Permanent Academic DOI:{C_RESET}         https://doi.org/10.5281/zenodo.22076536")
+    print(f"  {C_BOLD}{C_EMERALD}Access Quotas:{C_RESET}                  Freemium (50 Free Calls) | Pro Unmetered: https://bartholomew.info/pro.html")
     print(f"{C_BOLD}{C_AMBER}========================================================================================{C_RESET}\n")
 
 

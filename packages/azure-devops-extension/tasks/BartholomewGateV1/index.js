@@ -12,7 +12,7 @@ const failOnViolation = getVariable("INPUT_FAILONVIOLATION", "true").toLowerCase
 const mintSeal = getVariable("INPUT_MINTSEAL", "true").toLowerCase() === "true";
 
 console.log("==============================================================================");
-console.log("  BARTHOLOMEW DEVOPS GATE — AGENTIC RUNTIME PROTECTION (ARP v5.4.21)");
+console.log("  BARTHOLOMEW DEVOPS GATE  -  AGENTIC RUNTIME PROTECTION (ARP v5.4.21)");
 console.log("==============================================================================");
 console.log(`[*] Scan Target: ${scanPath}`);
 console.log(`[*] Fail on Violation: ${failOnViolation}`);
@@ -143,4 +143,4 @@ function fallbackSeal() {
     console.log(`[+] Verify Record: https://bartholomew.info/verify?id=${sealId}`);
     console.log(`##vso[task.setvariable variable=BartholomewSealId;isOutput=true]${sealId}`);
     console.log(`##vso[task.complete result=Succeeded;]Bartholomew Gate Passed.`);
-}
+}

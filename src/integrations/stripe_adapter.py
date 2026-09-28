@@ -9,7 +9,7 @@ Guarantees:
   2. License-gated execution: 100 free protected calls, then requires Pro/Enterprise key.
   3. Automatic credential scrubbing for `sk_live_...` and `rk_live_...` Stripe keys.
   4. Keystone hard transaction ceilings (max USD per charge, daily refund limits).
-  5. $50,000 Underwritten Warranty Bond attestation per financial trajectory.
+  5. Zero-Liability Cryptographic Audit Attestation & optional indemnity voucher.
 """
 
 import os
@@ -49,7 +49,7 @@ class BtpStripeAgentGuard:
         self,
         max_transaction_usd: float = 500.0,
         daily_refund_limit_usd: float = 1000.0,
-        enable_warranty_bonding: bool = True,
+        enable_warranty_bonding: bool = False,  # Deactivated pending zero-liability alternative
         ledger_path: Optional[str] = None
     ):
         self.max_transaction_usd = max_transaction_usd
@@ -122,7 +122,8 @@ class BtpStripeAgentGuard:
         # 3. Protocol Settlement & Compensation Calculation
         protocol_fee_usd = round(amount_usd * self.PROTOCOL_TAKE_RATE + self.MICRO_TOLL_USD, 4) if amount_usd > 0 else self.MICRO_TOLL_USD
 
-        # 4. Optional $50,000 Bonded Warranty Policy Underwriting
+        # 4. Zero-Liability Cryptographic Attestation Stamp
+        attestation_voucher = f"attest_{uuid.uuid4().hex[:12]}"
         bond_id = None
         if self.enable_warranty_bonding:
             bond = self.warranty_manager.issue_bond(
@@ -140,7 +141,11 @@ class BtpStripeAgentGuard:
             "tenant_id": "stripe-agent-tenant",
             "agent_id": agent_id,
             "action_type": f"STRIPE_{action_name.upper()}",
-            "payload": {"amount_usd": protocol_fee_usd, "action_name": action_name}
+            "payload": {
+                "amount_usd": protocol_fee_usd, 
+                "transaction_volume_usd": amount_usd,
+                "action_name": action_name
+            }
         }
         result_dict = {
             "verdict": "ALLOW",
@@ -152,9 +157,13 @@ class BtpStripeAgentGuard:
         return {
             "status": "CLEARANCE_GRANTED_AND_BILLED",
             "tx_id": tx_id,
+            "attestation_voucher": attestation_voucher,
             "protocol_fee_usd": protocol_fee_usd,
+            "transaction_volume_usd": amount_usd,
             "sanitized_arguments": sanitized_args,
             "warranty_bond_id": bond_id,
+            "warranty_status": "BONDED" if bond_id else "ZERO_LIABILITY_AUDIT_STAMP",
+            "liability_disclaimer": "Zero underwritten balance-sheet liability; algorithmic execution clearance.",
             "latency_us": round(latency_us, 2),
             "checkout_recovery_url": STRIPE_PRO_URL
         }
@@ -178,3 +187,23 @@ class BtpStripeAgentGuard:
             return tool_callable(**clearance["sanitized_arguments"])
 
         return _guarded_execution
+
+
+def wrap_stripe(
+    tool_or_func: Callable,
+    max_transaction_usd: float = 500.0,
+    daily_refund_limit_usd: float = 1000.0,
+    enable_warranty_bonding: bool = False,
+    **kwargs
+) -> Callable:
+    """
+    1-Line drop-in wrapper for any Stripe Agent Toolkit tool or callable.
+    Applies BTP rate-limiting, secret masking, ceiling enforcement, and protocol tolls.
+    """
+    guard = BtpStripeAgentGuard(
+        max_transaction_usd=max_transaction_usd,
+        daily_refund_limit_usd=daily_refund_limit_usd,
+        enable_warranty_bonding=enable_warranty_bonding,
+        **kwargs
+    )
+    return guard.wrap_tool(tool_or_func)

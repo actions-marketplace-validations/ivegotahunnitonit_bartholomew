@@ -18,7 +18,7 @@ import uvicorn
 app = FastAPI(
     title="Bartholomew Metered MCP Gateway",
     description="L402 Metered Execution Gate for AI Agents via Model Context Protocol",
-    version="1.0.0"
+    version="5.4.23"
 )
 
 app.add_middleware(
@@ -33,6 +33,44 @@ app.add_middleware(
 STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "sk_live_dummy")
 PER_CALL_PRICE_USD = 0.005  # $0.005 per execution check
 SERVER_ID = "bartholomew-mcp-gateway-01"
+FREEMIUM_CALL_CAP = 50
+
+# In-memory freemium invocation tracking (client_id -> count)
+_freemium_usage = {}
+
+def get_client_id(request: Request, params: dict) -> str:
+    meta = params.get("_meta", {})
+    if "agent_id" in meta:
+        return str(meta["agent_id"]).strip()
+    forwarded = request.headers.get("x-forwarded-for", "")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    if request.client and request.client.host:
+        return request.client.host
+    return "anonymous_client"
+
+def check_freemium_or_paid(client_id: str, auth_header: str) -> tuple[bool, str, int]:
+    # 1. Pro / Enterprise API Key Bypass
+    if any(auth_header.startswith(p) for p in ("Bearer sk_live_", "Bearer btp_pro_", "Bearer sk_btp_", "Bearer btp_enterprise_")):
+        return True, "PRO_KEY_ACTIVE", -1
+
+    # 2. L402 Micropayment Voucher Bypass
+    if auth_header.startswith("L402 "):
+        try:
+            parts = auth_header.replace("L402 ", "").split(":")
+            if len(parts) == 2 and verify_payment_receipt(parts[1], parts[0]):
+                return True, "L402_CLEARED", -1
+        except Exception:
+            pass
+
+    # 3. Freemium 50-call meter
+    current = _freemium_usage.get(client_id, 0)
+    if current < FREEMIUM_CALL_CAP:
+        _freemium_usage[client_id] = current + 1
+        return True, "FREEMIUM_CALL", current + 1
+
+    return False, "FREEMIUM_CAP_EXCEEDED", current
+
 
 def verify_payment_receipt(preimage: str, payment_hash: str) -> bool:
     """
@@ -99,7 +137,7 @@ SERVER_METADATA = {
     "displayName": "Bartholomew AI Security Gate",
     "display_name": "Bartholomew AI Security Gate",
     "title": "Bartholomew AI Security Gate",
-    "version": "5.4.3",
+    "version": "5.4.23",
     "description": "Sub-35µs in-process AI agent security gate. Evaluates every tool call before execution — blocks rm -rf, DROP TABLE, and secret exfiltration before the syscall is made. Autonomous execution firewall with Keystone passkey clearance and zero paywall lockouts.",
     "homepage": "https://bartholomew.info",
     "homepageUrl": "https://bartholomew.info",
@@ -127,7 +165,7 @@ SERVER_METADATA = {
         "displayName": "Bartholomew AI Security Gate",
         "display_name": "Bartholomew AI Security Gate",
         "title": "Bartholomew AI Security Gate",
-        "version": "5.4.3",
+        "version": "5.4.23",
         "description": "Sub-35µs in-process AI agent security gate. Evaluates every tool call before execution — blocks rm -rf, DROP TABLE, and secret exfiltration before the syscall is made. Autonomous execution firewall with Keystone passkey clearance and zero paywall lockouts.",
         "homepage": "https://bartholomew.info",
         "homepageUrl": "https://bartholomew.info",
@@ -199,7 +237,7 @@ async def handle_mcp_request(request: Request):
                     "displayName": "Bartholomew AI Security Gate",
                     "display_name": "Bartholomew AI Security Gate",
                     "title": "Bartholomew AI Security Gate",
-                    "version": "5.4.3",
+                    "version": "5.4.23",
                     "description": "Sub-35µs in-process AI agent security gate. Evaluates every tool call before execution — blocks rm -rf, DROP TABLE, and secret exfiltration before the syscall is made. Autonomous execution firewall with Keystone passkey clearance and zero paywall lockouts.",
                     "homepage": "https://bartholomew.info",
                     "homepageUrl": "https://bartholomew.info",
@@ -354,22 +392,26 @@ async def handle_mcp_request(request: Request):
             preimage = "btp_preimage_enterprise_subscriber_bypass"
             payment_hash = "btp_ent_hash_cleared"
 
-        # If payment is missing or fails verification, return JSON-RPC 402 Payment Required
-        if not verify_payment_receipt(preimage, payment_hash):
+        client_id = get_client_id(request, params)
+        allowed, status_code, current_call = check_freemium_or_paid(client_id, auth_header)
+
+        if not allowed:
             challenge = generate_payment_invoice()
-            
             error_response = {
                 "jsonrpc": "2.0",
                 "id": request_id,
                 "error": {
                     "code": 402,
-                    "message": "Payment Required: This premium Bartholomew MCP tool requires collateral authentication.",
+                    "message": "Payment Required: You have reached the free tier limit (50/50 tool calls). Upgrade to Bartholomew Pro ($49/mo) at https://bartholomew.info/pro.html or provide an L402 payment voucher to continue unmetered.",
                     "data": {
                         "payment_required": True,
+                        "tier": "freemium_exceeded",
+                        "free_calls_used": FREEMIUM_CALL_CAP,
                         "amount_usd": PER_CALL_PRICE_USD,
                         "invoice": challenge["invoice"],
                         "payment_hash": challenge["payment_hash"],
-                        "instructions": "Pass payment preimage voucher inside params._meta.Authorization as 'L402 payment_hash:preimage' or 'Bearer sk_btp_...'"
+                        "upgrade_url": "https://bartholomew.info/pro.html",
+                        "instructions": "Pass payment voucher in params._meta.Authorization as 'L402 payment_hash:preimage' or 'Bearer sk_live_...' / 'Bearer btp_pro_...'"
                     }
                 }
             }
@@ -395,7 +437,7 @@ async def handle_mcp_request(request: Request):
                     "content": [
                         {
                             "type": "text",
-                            "text": f"🛑 [Bartholomew Security Gate Veto] {eval_result['reason']}. Action blocked in {latency_us:.2f}µs. Merkle Receipt: mrk_{receipt_hash[:16]}"
+                            "text": f"[Bartholomew Security Gate Veto] {eval_result['reason']}. Action blocked in {latency_us:.2f}µs. Merkle Receipt: mrk_{receipt_hash[:16]}"
                         }
                     ]
                 }
@@ -408,7 +450,7 @@ async def handle_mcp_request(request: Request):
                     "content": [
                         {
                             "type": "text",
-                            "text": f"✅ Bartholomew Security Gate Clearance: Tool '{tool_name}' verified safe in {latency_us:.2f}µs. Merkle Receipt: mrk_{receipt_hash[:16]}."
+                            "text": f"[Bartholomew Security Gate Clearance] Tool '{tool_name}' verified safe in {latency_us:.2f}µs. Merkle Receipt: mrk_{receipt_hash[:16]}."
                         }
                     ]
                 }

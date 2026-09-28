@@ -1,8 +1,8 @@
 {
   "manifestVersion": 1,
   "id": "bartholomew-devops-gate",
-  "name": "Bartholomew DevOps Gate — Agent Security & Attestation",
-  "version": "1.0.0",
+  "name": "Bartholomew DevOps Gate: Agent Security and Attestation",
+  "version": "1.0.1",
   "publisher": "itsubsolomon",
   "targets": [
     {
