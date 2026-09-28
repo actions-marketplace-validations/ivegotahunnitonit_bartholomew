@@ -26,6 +26,85 @@ from src.agent_passport import SovereignAgentPassport, AgentPeerDiscoveryRegistr
 from src.keystone_passkey import KeystoneEngine, KeystonePasskey, KeystoneScope
 
 
+
+class FreemiumMeter:
+    """
+    Manages the 50-call free tier cap for Bartholomew MCP executions.
+    Persists evaluation counts across Claude Desktop & Cursor sessions.
+    Unmetered access granted via BTP_API_KEY (sk_live_... / btp_pro_...).
+    """
+    FREE_TIER_LIMIT = 50
+
+    def __init__(self, usage_file=None):
+        if not usage_file:
+            if os.environ.get("PYTEST_CURRENT_TEST"):
+                import tempfile
+                self.usage_file = os.path.join(tempfile.gettempdir(), f"btp_test_mcp_{os.getpid()}_{id(self)}.json")
+            else:
+                btp_dir = os.path.expanduser("~/.btp")
+                try:
+                    os.makedirs(btp_dir, exist_ok=True)
+                    self.usage_file = os.path.join(btp_dir, "mcp_usage.json")
+                except Exception:
+                    self.usage_file = os.path.abspath(".mcp_usage.json")
+        else:
+            self.usage_file = usage_file
+
+    def is_pro_active(self, api_key=None) -> bool:
+        key = api_key or os.environ.get("BTP_API_KEY") or os.environ.get("BTP_PRO_KEY") or os.environ.get("BTP_LICENSE_KEY")
+        if not key:
+            return False
+        key = str(key).strip()
+        return (key.startswith("sk_live_") or key.startswith("btp_pro_") or 
+                key.startswith("btp_ent_") or key.startswith("key_"))
+
+    def get_usage(self) -> int:
+        if not os.path.exists(self.usage_file):
+            return 0
+        try:
+            with open(self.usage_file, "r", encoding="utf-8") as f:
+                return json.load(f).get("executions", 0)
+        except Exception:
+            return 0
+
+    def reset_usage(self):
+        try:
+            with open(self.usage_file, "w", encoding="utf-8") as f:
+                json.dump({"executions": 0, "reset_at": time.time()}, f)
+        except Exception:
+            pass
+
+    def record_execution(self, api_key=None):
+        """
+        Returns: (allowed: bool, count: int, badge_or_msg: str)
+        """
+        if self.is_pro_active(api_key):
+            return True, -1, "[🛡️ Bartholomew Guard: UNMETERED PRO LICENSE ACTIVE]"
+
+        current = self.get_usage()
+        if current >= self.FREE_TIER_LIMIT:
+            msg = (
+                "🛑 [Bartholomew Security Gate] Free tier usage limit reached (50/50 evaluations used).\n\n"
+                "Your autonomous AI agent has executed all 50 free protected evaluations under the community tier.\n\n"
+                "To continue protecting your agent with sub-35µs AST invariant gating and Ed25519 SOC 2 receipts:\n"
+                "👉 Unlock Unmetered Pro ($49/mo): https://bartholomew.info/pro\n\n"
+                "Once subscribed, activate your license in your environment:\n"
+                "  export BTP_API_KEY=\"sk_live_...\"\n"
+                "or add \"apiKey\": \"sk_live_...\" to your Claude Desktop / Cursor MCP config."
+            )
+            return False, current, msg
+
+        new_count = current + 1
+        try:
+            with open(self.usage_file, "w", encoding="utf-8") as f:
+                json.dump({"executions": new_count, "last_call_at": time.time()}, f)
+        except Exception:
+            pass
+
+        badge = f"\n\n[🛡️ Bartholomew Security Gate | Free Tier: {new_count}/{self.FREE_TIER_LIMIT} used | Upgrade: https://bartholomew.info/pro]"
+        return True, new_count, badge
+
+
 class BartholomewMCPServer:
     def __init__(self, workspace_root: Optional[str] = None):
         self.workspace_root = os.path.abspath(workspace_root or os.path.join(BASE_DIR, "workspace"))
@@ -38,6 +117,7 @@ class BartholomewMCPServer:
         self.passport_registry = AgentPeerDiscoveryRegistry()
         self.keystone_engine = KeystoneEngine()
         self.revoked_passkeys = set()
+        self.meter = FreemiumMeter()
         
         self.tools_schema = [
             {
@@ -585,11 +665,29 @@ class BartholomewMCPServer:
         return True
 
     def handle_tool_call(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
+        api_key = arguments.get("api_key") or arguments.get("apiKey")
+        
+        # Manifest / discovery is always free
         if name in ["btp_get_manifest", "btp_manifest"]:
             from src.btp_manifest import generate_manifest
+            manifest = generate_manifest()
+            manifest["licensing"] = {
+                "tier": "PRO" if self.meter.is_pro_active(api_key) else "FREE_TIER",
+                "used_evaluations": self.meter.get_usage(),
+                "free_limit": self.meter.FREE_TIER_LIMIT,
+                "upgrade_url": "https://bartholomew.info/pro"
+            }
             return {
                 "isError": False,
-                "content": [{"type": "text", "text": json.dumps(generate_manifest(), indent=2)}]
+                "content": [{"type": "text", "text": json.dumps(manifest, indent=2)}]
+            }
+
+        # Check Freemium Cap on all other execution tools
+        allowed, count, badge = self.meter.record_execution(api_key)
+        if not allowed:
+            return {
+                "isError": True,
+                "content": [{"type": "text", "text": badge}]
             }
 
         if name == "btp_execute_command":

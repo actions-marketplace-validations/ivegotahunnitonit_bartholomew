@@ -8,15 +8,15 @@ on:
 
 jobs:
   bartholomew-security-audit:
-    name: "BTP v5.4 AST Invariant & Compliance Gate"
+    name: "BTP v5.4.23 AST Invariant & Compliance Gate"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Run Bartholomew Security Gate
-        uses: ivegotahunnitonit/bartholomew@v5.4.21
+        uses: ./
         with:
-          audit-path: "."
-          policy-file: "policies/default_security_policy.yaml"
+          scan-path: "."
           fail-on-violation: "true"
+          spend-cap: "50.0"

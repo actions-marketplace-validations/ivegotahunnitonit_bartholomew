@@ -1,0 +1,47 @@
+# Bartholomew Public Hosted Gateway Cluster
+# High-throughput sidecar proxy behind Nginx with SSL, rate limiting, and Stripe Connect webhook ingestion
+version: '3.8'
+
+services:
+  gateway-proxy:
+    image: nginx:alpine
+    container_name: btp-edge-nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/ssl/certs:ro
+    depends_on:
+      - btp-sidecar
+    networks:
+      - btp-net
+
+  btp-sidecar:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    container_name: btp-sidecar-gateway
+    restart: always
+    environment:
+      - BTP_PORT=19188
+      - BTP_HOST=0.0.0.0
+      - BTP_ENV=production
+      - BTP_KEYSTONE_SECRET=${BTP_KEYSTONE_SECRET:-btp_production_secret_root_2026}
+      - BTP_STRIPE_TREASURY_ACCOUNT=${BTP_STRIPE_TREASURY_ACCOUNT:-acct_1BTP_TREASURY_MAIN}
+      - BTP_ALLOW_ANONYMOUS=false
+    ports:
+      - "19188:19188"
+    volumes:
+      - btp-data:/app/data
+    networks:
+      - btp-net
+
+volumes:
+  btp-data:
+    driver: local
+
+networks:
+  btp-net:
+    driver: bridge

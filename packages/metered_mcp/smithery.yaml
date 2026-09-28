@@ -1,12 +1,12 @@
-# Bartholomew BTP Guard — Smithery MCP Registry Specification
+# Bartholomew BTP Guard  -  Smithery MCP Registry Specification
 # MCP Protocol: 2024-11-05
 # Optimized for Smithery quality scoring (tool annotations, output schemas, error modeling)
 
 name: "@bartholomew-ai/bartholomew"
 displayName: "Bartholomew AI Security Gate"
 display_name: "Bartholomew AI Security Gate"
-description: "Sub-35µs in-process AI agent security gate. Evaluates every tool call before execution — blocks rm -rf, DROP TABLE, secret exfiltration, and path traversal. Generates Ed25519 Merkle receipts for SOC 2 compliance. Works with Claude Desktop, Cursor, Windsurf, and any MCP client."
-version: "5.4.11"
+description: "Sub-35us in-process AI agent security gate. Evaluates every tool call before execution  -  blocks rm -rf, DROP TABLE, secret exfiltration, and path traversal. Generates Ed25519 Merkle receipts for SOC 2 compliance. Works with Claude Desktop, Cursor, Windsurf, and any MCP client."
+version: "5.4.23"
 license: "MIT"
 homepage: "https://bartholomew.info"
 repository: "https://github.com/bartholomew-ai/bartholomew"
@@ -72,7 +72,7 @@ tools:
       openWorldHint: false
 
   - name: btp_evaluate_intent
-    description: "Pre-flight safety evaluation for any proposed agent action — SQL queries, HTTP calls, wire transfers, or arbitrary tool payloads. Returns ALLOW or DENY with a cryptographic Ed25519 Merkle receipt as auditable proof. Safe to call on any input; never executes the action itself."
+    description: "Pre-flight safety evaluation for any proposed agent action  -  SQL queries, HTTP calls, wire transfers, or arbitrary tool payloads. Returns ALLOW or DENY with a cryptographic Ed25519 Merkle receipt as auditable proof. Safe to call on any input; never executes the action itself."
     annotations:
       destructiveHint: false
       readOnlyHint: true
@@ -96,7 +96,7 @@ tools:
       openWorldHint: false
 
   - name: btp_rollback_workspace
-    description: "Restores the workspace to a previously captured snapshot. Atomic operation — all changes since snapshot are discarded. Use after detecting agent-induced corruption or a vetoed execution."
+    description: "Restores the workspace to a previously captured snapshot. Atomic operation  -  all changes since snapshot are discarded. Use after detecting agent-induced corruption or a vetoed execution."
     annotations:
       destructiveHint: true
       readOnlyHint: false

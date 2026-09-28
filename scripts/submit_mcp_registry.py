@@ -1,5 +1,5 @@
 """
-BTP v5.4.6 Official MCP Registry PR Submission Automation
+BTP v5.4.23 Official MCP Registry PR Submission Automation
 =========================================================
 Automates forking, branch creation, payload packaging, and pull request
 creation for the official Model Context Protocol (MCP) server registry
@@ -51,7 +51,7 @@ def get_auth_user(headers):
 
 def run_submission():
     print("=" * 76)
-    print("BTP v5.4.6 MODEL CONTEXT PROTOCOL (MCP) UPSTREAM SUBMISSION PIPELINE")
+    print("BTP v5.4.23 MODEL CONTEXT PROTOCOL (MCP) UPSTREAM SUBMISSION PIPELINE")
     print("=" * 76)
 
     reg_entry_path = os.path.join(TARGET_DIR, "mcp_registry_entry.json")
@@ -67,7 +67,7 @@ def run_submission():
     with open(smithery_path, "r", encoding="utf-8") as f:
         smithery_content = f.read()
 
-    print("[*] MCP Registry Specification : VERIFIED (5.4.6)")
+    print("[*] MCP Registry Specification : VERIFIED (5.4.23)")
     print(f"[*] Server Name                : {registry_data.get('name')}")
     print(f"[*] Display Name               : {registry_data.get('displayName')}")
     print(f"[*] Live HTTP Transport        : {registry_data.get('transports', {}).get('http', {}).get('url')}")
@@ -84,7 +84,7 @@ def run_submission():
     headers = {
         "Authorization": f"Bearer {token}",
         "Accept": "application/vnd.github+json",
-        "User-Agent": "Bartholomew-MCP-Submitter/5.4.6"
+        "User-Agent": "Bartholomew-MCP-Submitter/5.4.23"
     }
 
     user = get_auth_user(headers)
@@ -127,7 +127,7 @@ def print_manual_instructions(registry_data):
 * **Category**: Security / Governance & Verification / Developer Tools
 * **Protocol Version**: {registry_data.get('version')}
 * **Repository**: https://github.com/bartholomew-ai/bartholomew
-* **PyPI**: https://pypi.org/project/btp-guard/5.4.6/
+* **PyPI**: https://pypi.org/project/btp-guard/5.4.23/
 * **Live Discovery**: https://acn-26670.web.app/.well-known/mcp.json
 
 ### Description

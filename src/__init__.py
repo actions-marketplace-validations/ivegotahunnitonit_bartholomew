@@ -1,3 +1,5 @@
+import json
+import hashlib
 """
 Bartholomew (btp-guard)
 =======================
@@ -90,7 +92,9 @@ class Guard:
         api_key: str = None,
         sync_cloud: bool = False,
         cloud_endpoint: str = None,
-        workspace_id: str = "default"
+        workspace_id: str = "default",
+        policy: dict = None,
+        **kwargs
     ):
         self.spend_cap = spend_cap
         self.max_retries = max_retries
@@ -144,8 +148,18 @@ class Guard:
         if allowed:
             self.total_spent += amount_usd
 
-        # Usage tracking & non-blocking quota reminder
-        record_evaluation()
+        # Usage tracking & freemium quota gate
+        has_quota, quota_msg = record_evaluation()
+        if not has_quota:
+            return {
+                "allowed": False,
+                "verdict": "DENY",
+                "reason": quota_msg,
+                "rule_id": "RULE-QUOTA-EXCEEDED",
+                "license_tier": "COMMUNITY",
+                "latency_us": 1.0,
+                "receipt_sha256": "quota_exceeded_community_50"
+            }
         lic = load_license()
 
         # Non-blocking background dispatch to Bartholomew Cloud Control Plane
@@ -161,14 +175,37 @@ class Guard:
                 receipt=receipt
             )
 
+        receipt_digest = receipt.get("receipt_sha256")
+        if not receipt_digest:
+            import hashlib
+            import json
+            receipt_digest = hashlib.sha256(json.dumps(receipt, sort_keys=True, default=str).encode()).hexdigest()
+
         return {
             "allowed": allowed,
             "verdict": verdict,
             "reason": att.get("reason", "Approved"),
+            "rule_id": att.get("policy_id") if not allowed else None,
+            "receipt_sha256": receipt_digest,
             "latency_us": att.get("evaluation_latency_us", 4.5),
             "license_tier": lic.get("tier", "COMMUNITY"),
             "receipt": receipt
         }
+
+    def evaluate(self, action) -> dict:
+        """Compatibility evaluator matching authorization gate schema."""
+        if isinstance(action, str):
+            return self.check(action)
+        payload = action.get("payload", {})
+        cmd = payload.get("command") or payload.get("query") or str(payload)
+        agent_id = action.get("agent_id", "agent-1")
+        amount = float(payload.get("amount_usd", 0.0))
+        return self.check(cmd, amount_usd=amount, agent_id=agent_id)
+
+    def is_allowed(self, command: str, **kwargs) -> bool:
+        """Helper predicate returning True if command is allowed."""
+        res = self.check(command, **kwargs)
+        return res.get("verdict") == "ALLOW"
 
     def evaluate_intent(self, prompt: str, agent_id: str = "agent-1") -> dict:
         """Evaluates high-level prompt intent for adversarial jailbreaks and destructive directives."""

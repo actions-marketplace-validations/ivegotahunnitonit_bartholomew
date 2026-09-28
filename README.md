@@ -3,14 +3,14 @@
 </p>
 
 <p align="center">
-  <a href="https://bartholomew.info"><img src="docs/assets/terminal_hero.svg" width="800" alt="Bartholomew Sub-35µs AST Invariant Gate in Action" /></a>
+  <a href="https://bartholomew.info"><img src="docs/assets/terminal_hero.svg" width="800" alt="Bartholomew Sub-35us AST Invariant Gate in Action" /></a>
 </p>
 
-# Bartholomew (BTP v5.4) — The Agentic Runtime Protection (ARP) Platform
+# Bartholomew (BTP v5.4) - The Agentic Runtime Protection (ARP) Platform
 
-**The #1 Agentic Runtime Protection (ARP) Platform — Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous AI Agent Swarms.**
+**The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous AI Agent Swarms.**
 
-Bartholomew is the industry standard **agentic runtime security firewall**, providing sub-35µs deterministic execution verification for autonomous agents, tool runtimes, and the Model Context Protocol (MCP).
+Bartholomew is the industry standard **agentic runtime security firewall**, providing sub-35us deterministic execution verification for autonomous agents, tool runtimes, and the Model Context Protocol (MCP).
 
 [![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
@@ -39,6 +39,38 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 [![IDE](https://img.shields.io/badge/IDE-Cursor%20%2F%20VS%20Code-7C3AED?logo=githubcopilot&logoColor=white)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 
 ---
+
+## Quickstart (Under 30 Seconds)
+
+### 1. Install & 1-Click IDE Setup
+```bash
+pip install btp-guard
+
+# Auto-configure your active AI agent environment in 1 second:
+btp-guard install cursor    # Configures Cursor MCP
+btp-guard install claude    # Configures Claude Desktop MCP
+```
+
+### 2. Protect Any Python Agent (LangChain, CrewAI, AutoGen, Custom)
+```python
+from btp_guard import Guard
+
+guard = Guard()
+
+# Intercepts and vetoes dangerous actions before execution:
+result = guard.check("rm -rf /var/data")
+print(result)
+# {'allowed': False, 'verdict': 'DENY', 'rule_id': 'RULE-AST-FS-DESTRUCTIVE-01', 'latency_us': 18.2}
+```
+
+### 3. Automated CI/CD Flywheel (GitHub Actions)
+Add zero-trust agentic security to your repository in 2 lines:
+```yaml
+- name: Bartholomew AI Agent Security Audit
+  run: |
+    pip install btp-guard
+    btp-guard audit
+```
 
 ## What It Does
 
@@ -76,10 +108,10 @@ It sits between an agent and real-world execution (shell, SQL, file I/O, cloud A
 
 | Capability | Enforcement Boundary | Execution Latency | Guarantee |
 | :--- | :--- | :--- | :--- |
-| **Pre-Execution Gating** | Raw arguments before OS dispatch | **< 18 µs** | Hard veto before kernel `execve` or socket open |
-| **Polyglot AST Parsing** | Bash, Python, SQL, JS, Go | **< 35 µs** | Blocks destructive mutations (`rm -rf`, `DROP TABLE`, subshells) |
-| **In-Flight Secret Scrubbing** | Credentials (`sk-*`, `ghp_*`, private keys) | **< 20 µs** | Zero-allocation regex + high-entropy masking |
-| **Cryptographic Attestation** | RFC 8785 canonical JSON digests | **< 15 µs** | Ed25519 digital signatures for zero-network auditing |
+| **Pre-Execution Gating** | Raw arguments before OS dispatch | **< 18 us** | Hard veto before kernel `execve` or socket open |
+| **Polyglot AST Parsing** | Bash, Python, SQL, JS, Go | **< 35 us** | Blocks destructive mutations (`rm -rf`, `DROP TABLE`, subshells) |
+| **In-Flight Secret Scrubbing** | Credentials (`sk-*`, `ghp_*`, private keys) | **< 20 us** | Zero-allocation regex + high-entropy masking |
+| **Cryptographic Attestation** | RFC 8785 canonical JSON digests | **< 15 us** | Ed25519 digital signatures for zero-network auditing |
 | **Zero Network Overhead** | Local in-process memory runtime | **0 ms** | Pure CPU thread; zero secondary LLM token billing |
 
 </details>
@@ -130,7 +162,7 @@ Tested over **105,000+ ground-truth invariant vectors** against all major dedica
 
 | Defense Architecture / Competitor | Invariant Catch | Evaluation Latency | GPU VRAM Overhead | Jailbreak Susceptibility | Defense Type |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Bartholomew (`btp-guard`)** | **99.8%** | **< 35 µs (Microseconds)** | **0 MB (Pure CPU thread)** | **0% (Deterministic AST)** | **Deterministic AST Gate** |
+| **Bartholomew (`btp-guard`)** | **99.8%** | **< 35 us (Microseconds)** | **0 MB (Pure CPU thread)** | **0% (Deterministic AST)** | **Deterministic AST Gate** |
 | **Claude Opus 5.5** (Anthropic) | 96.1% | ~ 1,450 ms (Milliseconds) | Cloud API | 6.2% (Adversarial Prompting) | Frontier Foundation LLM |
 | **GPT-6 Astra** (OpenAI) | 95.8% | ~ 1,680 ms (Milliseconds) | Cloud API | 7.1% (CoT Reasoning Bypass) | Frontier Reasoning LLM |
 | **Gemini 3.8 Live Extended Thinking** (Google) | 94.7% | ~ 1,220 ms (Milliseconds) | Cloud API | 7.8% (Adversarial Overrides) | Multimodal Reasoning LLM |
@@ -141,7 +173,7 @@ Tested over **105,000+ ground-truth invariant vectors** against all major dedica
 | **Aporia AI Guardrails** | 87.3% | ~ 140 ms (Milliseconds) | Cloud API | 13.1% (Policy Evasion) | Enterprise Proxy Guard |
 | **Llama Guard 4** (Meta, 8B) | 86.4% | ~ 480 ms (Milliseconds) | 16 GB VRAM | 18.5% (Adversarial Prompting) | Neural Classifier |
 | **Prompt Armor** | 85.9% | ~ 160 ms (Milliseconds) | Cloud API | 14.7% (Adversarial Payload) | Commercial Proxy Guard |
-| **NeMo Guardrails** (NVIDIA) | 84.2% | ~ 380 ms (Milliseconds) | 4 – 8 GB VRAM | 15.2% (Colang Flow Evasion) | Colang Flow Engine |
+| **NeMo Guardrails** (NVIDIA) | 84.2% | ~ 380 ms (Milliseconds) | 4 - 8 GB VRAM | 15.2% (Colang Flow Evasion) | Colang Flow Engine |
 | **Guardrails AI** (Guardrails Hub) | 81.5% | ~ 290 ms (Milliseconds) | 2 GB VRAM | 19.8% (Regex / Pydantic Bypass) | Open Source Python Rails |
 
 <details>
@@ -204,7 +236,7 @@ Bartholomew provides foundational economic and trust primitives for autonomous A
 ## Quickstart
 
 > [!TIP]
-> **1-Click Zero-Install Test Drive**: Want to test sub-35µs AST invariant gating and live secret masking without installing anything locally?  
+> **1-Click Zero-Install Test Drive**: Want to test sub-35us AST invariant gating and live secret masking without installing anything locally?  
 > [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ivegotahunnitonit/bartholomew/blob/main/notebooks/Bartholomew_Quickstart_Test_Drive.ipynb) **[Launch Interactive Test Drive in Google Colab](https://colab.research.google.com/github/ivegotahunnitonit/bartholomew/blob/main/notebooks/Bartholomew_Quickstart_Test_Drive.ipynb)**
 
 ### Python
@@ -219,7 +251,7 @@ from btp_guard import Guard, secure_tool
 # 1. Protect any tool function in 1 line
 @secure_tool
 def execute_query(sql: str):
-    return db.query(sql) # Blocks DROP TABLE / deletions in <35µs
+    return db.query(sql) # Blocks DROP TABLE / deletions in <35us
 
 # 2. Or initialize a custom guard with budget caps
 guard = Guard(spend_cap=100.0, strict=True)
@@ -239,7 +271,7 @@ if not result["allowed"]:
 ### In-Terminal Benchmarks & Enterprise SIEM Telemetry
 
 ```bash
-# 1. Run in-terminal sub-35µs AST Invariant Benchmark (10,000 continuous evaluations)
+# 1. Run in-terminal sub-35us AST Invariant Benchmark (10,000 continuous evaluations)
 btp-guard benchmark ast --vectors 10000
 
 # 2. Export cryptographic receipts to OpenTelemetry (OTel) ResourceSpans JSON
@@ -269,11 +301,9 @@ if (!verdict.allowed) {
 
 ---
 
----
-
 ## NVIDIA NIM Microservice Integration
 
-Bartholomew provides sub-35µs zero-overhead AST execution gating and prompt injection screening for self-hosted or cloud-hosted **NVIDIA NIM inference microservices** (TensorRT-LLM, Llama 3.1 70B/8B, Nemotron, Mistral).
+Bartholomew provides sub-35us zero-overhead AST execution gating and prompt injection screening for self-hosted or cloud-hosted **NVIDIA NIM inference microservices** (TensorRT-LLM, Llama 3.1 70B/8B, Nemotron, Mistral).
 
 - **12,000x Faster Than LLM-as-a-Judge**: Evaluates commands in microseconds on CPU without 500ms+ second-model lag.
 - **Zero GPU VRAM Impact**: 100% of GPU memory remains dedicated to your NIM foundation model.
@@ -340,9 +370,9 @@ Bartholomew functions as **Layer 2** in the autonomous agent defense stack:
 
 | Layer | Technology | Typical Latency | Defense Boundary |
 |---|---|---|---|
-| **Layer 1 — Prompt Rails** | NeMo, Guardrails AI, LlamaGuard | 800ms – 2,500ms | Natural language prompt & completion text |
-| **Layer 2 — Execution Gate** | **Bartholomew BTP** | **< 0.1 ms (Sub-millisecond)** | **Raw tool arguments, AST syntax, credentials, spend** |
-| **Layer 3 — OS Isolation** | Docker, gVisor, E2B | 200ms – 500ms | Kernel syscall & container isolation |
+| **Layer 1 - Prompt Rails** | NeMo, Guardrails AI, LlamaGuard | 800ms - 2,500ms | Natural language prompt & completion text |
+| **Layer 2 - Execution Gate** | **Bartholomew BTP** | **< 0.1 ms (Sub-millisecond)** | **Raw tool arguments, AST syntax, credentials, spend** |
+| **Layer 3 - OS Isolation** | Docker, gVisor, E2B | 200ms - 500ms | Kernel syscall & container isolation |
 
 ---
 
@@ -376,14 +406,12 @@ python -m pytest -q
 
 ## Documentation
 
-- [`docs/quickstart.md`](docs/quickstart.md) — Full setup and configuration guide
-- [`docs/threat-model.md`](docs/threat-model.md) — Threat model and security boundaries
-- [`docs/btp-protocol-spec.md`](docs/btp-protocol-spec.md) — BTP wire protocol specification
-- [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md) — Framework adapter documentation
-- [`SECURITY.md`](SECURITY.md) — Vulnerability disclosure policy
-- [`CONTRIBUTING.md`](CONTRIBUTING.md) — Contributing guidelines
-
----
+- [`docs/quickstart.md`](docs/quickstart.md) - Full setup and configuration guide
+- [`docs/threat-model.md`](docs/threat-model.md) - Threat model and security boundaries
+- [`docs/btp-protocol-spec.md`](docs/btp-protocol-spec.md) - BTP wire protocol specification
+- [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md) - Framework adapter documentation
+- [`SECURITY.md`](SECURITY.md) - Vulnerability disclosure policy
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) - Contributing guidelines
 
 ---
 

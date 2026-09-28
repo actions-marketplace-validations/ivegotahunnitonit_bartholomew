@@ -25,7 +25,7 @@ from . import pydanticai
 from . import smolagents
 from . import swarm
 
-from .stripe_agent import BtpStripeAgentGuard, StripeSecurityVetoException, BtpStripeLicenseRequiredException
+from .stripe_agent import BtpStripeAgentGuard, StripeSecurityVetoException, BtpStripeLicenseRequiredException, wrap_stripe
 from . import stripe_agent
 
 __all__ = [
@@ -55,3 +55,12 @@ __all__ = [
     "smolagents",
     "swarm",
 ]
+
+from .universal_pay import BtpUniversalPayGuard, PaymentProvider, UniversalSecurityVetoException, wrap_payment
+from . import universal_pay
+
+from .grok import BtpGrokGuard, GrokSecurityVetoException, wrap_grok
+from . import grok
+
+from .m2m_toll import BtpM2MMicroToll
+from . import m2m_toll

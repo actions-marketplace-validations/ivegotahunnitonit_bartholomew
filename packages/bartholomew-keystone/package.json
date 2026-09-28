@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-keystone",
-  "displayName": "Bartholomew Keystone \u2014 Agent Capability Passkey",
-  "description": "Give your AI agent a signed permission slip. Define exactly which files, commands, and domains it can access. Works alongside Bartholomew Guard.",
-  "version": "5.4.22",
+  "displayName": "Bartholomew Keystone \u2014 AI Agent Capabilities & Passkeys (Cursor, Claude)",
+  "description": "Cryptographically signed clearance tokens granting autonomous AI agents fine-grained access across files, commands, and domains in Cursor, Claude Desktop, and VS Code.",
+  "version": "5.4.24",
   "publisher": "itsubsolomon",
   "icon": "icon.png",
   "license": "MIT",
@@ -51,6 +51,10 @@
       {
         "command": "keystone.validateAction",
         "title": "Keystone: Validate Agent Action against Passkey"
+      },
+      {
+        "command": "keystone.auditReceipts",
+        "title": "Keystone: View Clearance Audit Receipts"
       }
     ]
   },

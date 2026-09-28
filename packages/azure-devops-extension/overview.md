@@ -1,4 +1,4 @@
-# Bartholomew DevOps Gate — Autonomous AI Security & Attestation
+# Bartholomew DevOps Gate: Autonomous AI Security and Attestation
 
 [![Verified Bartholomew Seal](https://img.shields.io/badge/Verified_Bartholomew_Seal-Active-10b981.svg)](https://bartholomew.info)
 [![Security Standard](https://img.shields.io/badge/Standard-BTP_v5.4.21-purple.svg)](https://bartholomew.info)
@@ -10,7 +10,7 @@ Autonomous AI agents (Cursor, Copilot, Claude, Devin, Cline) generate and modify
 ## Key Features
 
 1. **Deterministic AST Invariant Firewall:** Blocks catastrophic execution patterns (destructive shell scripts, drop database without limits, raw fork bombs) before merging.
-2. **Zero-Leak Secret Redaction:** Scrubs OpenAI, GitHub, AWS, and private keys in `<100µs`.
+2. **Zero-Leak Secret Redaction:** Scrubs OpenAI, GitHub, AWS, and private keys in `<100us`.
 3. **Verified Bartholomew Seal Attestation:** Connects to the Bartholomew Authority Fleet to mint an immutable cryptographic record (`BTP-SEAL-v54-...`), publicly verifiable at `https://bartholomew.info/verify`.
 4. **Zero External Runtime Dependencies:** Runs immediately on any Linux, Windows, or macOS Azure DevOps hosted agent.
 

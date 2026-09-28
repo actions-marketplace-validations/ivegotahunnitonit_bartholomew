@@ -21,7 +21,7 @@ export function activate(context: ExtensionContext) {
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 105);
   statusBarItem.command = 'keystone.inspectClearance';
   statusBarItem.text = `$(key) KEYSTONE: ARMED`;
-  statusBarItem.tooltip = `Bartholomew Keystone — Agent Capability Passkey Active | Click to inspect clearance`;
+  statusBarItem.tooltip = `Bartholomew Keystone -- Agent Capability Passkey Active | Click to inspect clearance`;
   context.subscriptions.push(statusBarItem);
   statusBarItem.show();
 
@@ -42,44 +42,129 @@ export function activate(context: ExtensionContext) {
 
   // 2. Command: Issue Agent Capability Passkey
   const issueCmd = vscode.commands.registerCommand('keystone.issuePasskey', async () => {
-    const agentId = await vscode.window.showInputBox({
-      prompt: 'Enter Autonomous Agent ID or Name',
-      value: 'agent-worker-01'
-    });
-    if (!agentId) return;
-
-    const allowedWrite = await vscode.window.showInputBox({
-      prompt: 'Allowed File Write Scopes (comma-separated globs)',
-      value: 'src/components, site/'
-    });
-
-    const maxSpendStr = await vscode.window.showInputBox({
-      prompt: 'Max Spend Limit USD ($)',
-      value: '50.00'
-    });
-
-    const spendUsd = parseFloat(maxSpendStr || '50.00');
-    const writeGlobs = (allowedWrite || 'src/').split(',').map((s: string) => s.trim()).filter(Boolean);
-
-    const passkey = engine.issuePasskey(agentId, {
-      files: {
-        allow_read: ['**/*'],
-        allow_write: writeGlobs,
-        deny: ['.env', 'secrets', 'credentials.json', 'id_rsa']
+    const presetChoice = await vscode.window.showQuickPick([
+      {
+        label: 'Developer Sandbox (Recommended)',
+        description: 'Read workspace, write src/ & tests/, safe test commands, $25 ceiling, 2h TTL'
       },
-      commands: {
-        allow_exec: ['npm test', 'npm run build', 'python -m unittest', 'pytest'],
-        deny_exec: ['rm', 'curl', 'wget', 'sudo', 'mkfs']
+      {
+        label: 'Read-Only Auditor',
+        description: 'Read-only clearance, no write permissions, no bash execution, $0 ceiling'
       },
-      network: {
-        allow_domains: ['github.com', 'npmjs.com', 'pypi.org', 'docs.python.org'],
-        allow_search: true
-      },
-      budget: {
-        max_spend_usd: spendUsd
+      {
+        label: 'Custom Autonomous Clearance',
+        description: 'Manually configure globs, allowed commands, network domains, and spend limit'
       }
-    }, 120);
+    ], { placeHolder: 'Select a Keystone Capability Clearance Preset' });
 
+    if (!presetChoice) return;
+
+    let agentId = 'agent-worker-01';
+    let scopes: any = {};
+    let ttl = 120;
+
+    if (presetChoice.label.startsWith('Developer Sandbox')) {
+      const inputAgent = await vscode.window.showInputBox({
+        prompt: 'Enter Autonomous Agent ID or Name',
+        value: 'agent-dev-01'
+      });
+      if (!inputAgent) return;
+      agentId = inputAgent;
+
+      scopes = {
+        files: {
+          allow_read: ['**/*'],
+          allow_write: ['src/**', 'tests/**', 'site/**', 'docs/**'],
+          deny: ['.env*', 'secrets*', 'credentials*', 'id_rsa*', 'id_ed25519*', '.git/hooks/**']
+        },
+        commands: {
+          allow_exec: ['npm test', 'npm run build', 'python -m unittest', 'pytest', 'git status', 'git diff', 'cargo check'],
+          deny_exec: ['rm', 'curl', 'wget', 'sudo', 'mkfs', 'dd', 'chmod', 'chown'],
+          deny_shell_operators: true
+        },
+        network: {
+          allow_domains: ['github.com', 'npmjs.com', 'pypi.org', 'docs.python.org', 'localhost'],
+          allow_search: true
+        },
+        budget: {
+          max_spend_usd: 25.00,
+          max_per_txn_usd: 10.00
+        },
+        env: {
+          deny_keys: ['KEY', 'SECRET', 'TOKEN', 'AUTH', 'PASSWORD']
+        }
+      };
+    } else if (presetChoice.label.startsWith('Read-Only Auditor')) {
+      const inputAgent = await vscode.window.showInputBox({
+        prompt: 'Enter Autonomous Agent ID or Name',
+        value: 'agent-auditor-01'
+      });
+      if (!inputAgent) return;
+      agentId = inputAgent;
+
+      scopes = {
+        files: {
+          allow_read: ['**/*'],
+          allow_write: [],
+          deny: ['.env*', 'secrets*', 'id_rsa*']
+        },
+        commands: {
+          allow_exec: [],
+          deny_exec: ['*'],
+          deny_shell_operators: true
+        },
+        network: {
+          allow_domains: ['docs.python.org', 'nodejs.org'],
+          allow_search: false
+        },
+        budget: {
+          max_spend_usd: 0.00,
+          max_per_txn_usd: 0.00
+        }
+      };
+    } else {
+      const inputAgent = await vscode.window.showInputBox({
+        prompt: 'Enter Autonomous Agent ID or Name',
+        value: 'agent-custom-01'
+      });
+      if (!inputAgent) return;
+      agentId = inputAgent;
+
+      const allowedWrite = await vscode.window.showInputBox({
+        prompt: 'Allowed File Write Scopes (comma-separated globs)',
+        value: 'src/, tests/, site/'
+      });
+
+      const maxSpendStr = await vscode.window.showInputBox({
+        prompt: 'Max Spend Limit USD ($)',
+        value: '50.00'
+      });
+
+      const spendUsd = parseFloat(maxSpendStr || '50.00');
+      const writeGlobs = (allowedWrite || 'src/').split(',').map((s: string) => s.trim()).filter(Boolean);
+
+      scopes = {
+        files: {
+          allow_read: ['**/*'],
+          allow_write: writeGlobs,
+          deny: ['.env', 'secrets', 'credentials.json', 'id_rsa']
+        },
+        commands: {
+          allow_exec: ['npm test', 'npm run build', 'python -m unittest', 'pytest'],
+          deny_exec: ['rm', 'curl', 'wget', 'sudo', 'mkfs', 'dd']
+        },
+        network: {
+          allow_domains: ['github.com', 'npmjs.com', 'pypi.org'],
+          allow_search: true
+        },
+        budget: {
+          max_spend_usd: spendUsd,
+          max_per_txn_usd: 20.00
+        }
+      };
+    }
+
+    const passkey = engine.issuePasskey(agentId, scopes, ttl);
     const savePath = getPasskeyPath();
     fs.writeFileSync(savePath, JSON.stringify(passkey, null, 2), 'utf-8');
 
@@ -115,16 +200,20 @@ export function activate(context: ExtensionContext) {
 
     const isValid = engine.verifyPasskey(passkey);
     const status = isValid ? 'VALID & ACTIVE' : 'EXPIRED / INVALID';
-    const writeScopes = passkey.scopes.files?.allow_write?.join(', ') || 'None';
+    const writeScopes = passkey.scopes.files?.allow_write?.join(', ') || 'None (Read-Only)';
     const spend = passkey.scopes.budget?.max_spend_usd ?? 0;
+    const maxTxn = passkey.scopes.budget?.max_per_txn_usd ?? 0;
 
     vscode.window.showInformationMessage(
-      `Keystone Clearance [${status}]\n\n• Agent: ${passkey.agent_id}\n• Token: ${passkey.passkey_id}\n• Expires: ${new Date(passkey.expires_at).toLocaleTimeString()}\n• Write Scopes: ${writeScopes}\n• Spend Ceiling: $${spend.toFixed(2)}`,
+      `Keystone Clearance [${status}]\n\nAgent: ${passkey.agent_id}\nToken: ${passkey.passkey_id}\nExpires: ${new Date(passkey.expires_at).toLocaleTimeString()}\nWrite Scopes: ${writeScopes}\nSpend Ceiling: $${spend.toFixed(2)} (Max/Txn: $${maxTxn.toFixed(2)})`,
       'Revoke Key',
+      'Audit Receipts',
       'Renew Key'
     ).then((choice: string) => {
       if (choice === 'Revoke Key') {
         vscode.commands.executeCommand('keystone.revokePasskey');
+      } else if (choice === 'Audit Receipts') {
+        vscode.commands.executeCommand('keystone.auditReceipts');
       } else if (choice === 'Renew Key') {
         vscode.commands.executeCommand('keystone.issuePasskey');
       }
@@ -157,13 +246,24 @@ export function activate(context: ExtensionContext) {
 
     const res = engine.evaluateAction(passkey, 'COMMAND_EXEC', testCmd);
     if (res.verdict === 'ALLOW') {
-      vscode.window.showInformationMessage(`[CLEARANCE GRANTED] Action permitted (${res.latency_us}µs).`);
+      vscode.window.showInformationMessage(`[CLEARANCE GRANTED] Action permitted (${res.latency_us}us). Receipt: ${res.receipt_hash}`);
     } else {
-      vscode.window.showErrorMessage(`[OUT OF SCOPE] Blocked: ${res.reason} (${res.latency_us}µs).`);
+      vscode.window.showErrorMessage(`[OUT OF SCOPE] Blocked: ${res.reason} (${res.latency_us}us). Receipt: ${res.receipt_hash}`);
     }
   });
 
-  context.subscriptions.push(issueCmd, inspectCmd, revokeCmd, validateCmd);
+  // 6. Command: Audit Receipts
+  const auditCmd = vscode.commands.registerCommand('keystone.auditReceipts', () => {
+    const receipts = engine.getReceiptHistory();
+    if (receipts.length === 0) {
+      vscode.window.showInformationMessage('No actions evaluated yet. Audit receipt log is empty.');
+      return;
+    }
+    const summary = receipts.slice(0, 5).map(r => `[${r.verdict}] ${r.action_type}: ${r.target} (${r.receipt_hash})`).join('\n');
+    vscode.window.showInformationMessage(`Recent Keystone Clearance Receipts:\n\n${summary}`);
+  });
+
+  context.subscriptions.push(issueCmd, inspectCmd, revokeCmd, validateCmd, auditCmd);
 }
 
 export function deactivate() {}

@@ -155,6 +155,12 @@ class KeystoneEngine:
         """
         Cryptographically verifies the authenticity and tamper-resistance of a passkey.
         """
+        # Fast path: in-memory immutable scope cache check
+        scopes_repr = str(passkey.scopes)
+        cached = getattr(passkey, "_sig_cache", None)
+        if cached and cached[0] == scopes_repr:
+            return cached[1]
+
         canonical_data = json.dumps(
             {
                 "passkey_id": passkey.passkey_id,
@@ -178,6 +184,7 @@ class KeystoneEngine:
         valid = hmac.compare_digest(expected_sig, passkey.signature)
         if valid:
             self._verified_hashes.add(computed_hash)
+        setattr(passkey, "_sig_cache", (scopes_repr, valid))
         return valid
 
     def check_clearance(

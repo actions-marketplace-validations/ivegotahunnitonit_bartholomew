@@ -19,23 +19,37 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-EXTENSIONS = [
-    {
-        "id": "bartholomew-guard-vscode",
-        "dir": BASE_DIR / "packages" / "vscode-extension",
-        "vsix": BASE_DIR / "packages" / "vscode-extension" / "bartholomew-guard-vscode-5.4.22.vsix"
-    },
-    {
-        "id": "bartholomew-keystone",
-        "dir": BASE_DIR / "packages" / "bartholomew-keystone",
-        "vsix": BASE_DIR / "packages" / "bartholomew-keystone" / "bartholomew-keystone-5.4.22.vsix"
-    }
-]
+import json
+
+def get_pkg_version(pkg_dir: Path) -> str:
+    pkg_json = pkg_dir / "package.json"
+    if pkg_json.exists():
+        with open(pkg_json, "r", encoding="utf-8") as f:
+            return json.load(f).get("version", "5.4.23")
+    return "5.4.23"
+
+def get_extensions():
+    guard_dir = BASE_DIR / "packages" / "vscode-extension"
+    keystone_dir = BASE_DIR / "packages" / "bartholomew-keystone"
+    guard_ver = get_pkg_version(guard_dir)
+    keystone_ver = get_pkg_version(keystone_dir)
+    return [
+        {
+            "id": "bartholomew-guard-vscode",
+            "dir": guard_dir,
+            "vsix": guard_dir / f"bartholomew-guard-vscode-{guard_ver}.vsix"
+        },
+        {
+            "id": "bartholomew-keystone",
+            "dir": keystone_dir,
+            "vsix": keystone_dir / f"bartholomew-keystone-{keystone_ver}.vsix"
+        }
+    ]
 
 def ensure_packaged():
     print("[*] Ensuring latest VSIX packages are built...")
     pkg_script = BASE_DIR / "scripts" / "package_all_vsix.py"
-    res = subprocess.run([sys.executable, str(pkg_script)], capture_output=True, text=True)
+    res = subprocess.run([sys.executable, str(pkg_script)], capture_output=True, text=True, encoding="utf-8", errors="replace")
     if res.returncode != 0:
         print(f"[!] Packaging failed:\n{res.stderr}")
         sys.exit(1)
@@ -46,7 +60,7 @@ def publish_vsce(pat: str):
     print("  PUBLISHING TO MICROSOFT VS CODE MARKETPLACE")
     print("=" * 60)
     
-    for ext in EXTENSIONS:
+    for ext in get_extensions():
         vsix_path = ext["vsix"]
         if not vsix_path.exists():
             print(f"[!] Error: {vsix_path} not found.")
@@ -55,7 +69,7 @@ def publish_vsce(pat: str):
         print(f"[*] Uploading {ext['id']} ({vsix_path.name}) to VS Code Marketplace...")
         cmd = ["npx", "-y", "@vscode/vsce", "publish", "--packagePath", str(vsix_path), "--pat", pat]
         try:
-            res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            res = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding="utf-8", errors="replace")
             if res.returncode == 0:
                 print(f"[OK] Successfully published {ext['id']} to VS Code Marketplace!")
             else:
@@ -68,7 +82,7 @@ def publish_ovsx(pat: str):
     print("  PUBLISHING TO OPEN-VSX REGISTRY (CURSOR / WINDSURF)")
     print("=" * 60)
 
-    for ext in EXTENSIONS:
+    for ext in get_extensions():
         vsix_path = ext["vsix"]
         if not vsix_path.exists():
             print(f"[!] Error: {vsix_path} not found.")
@@ -77,7 +91,7 @@ def publish_ovsx(pat: str):
         print(f"[*] Uploading {ext['id']} ({vsix_path.name}) to Open-VSX...")
         cmd = ["npx", "-y", "ovsx", "publish", str(vsix_path), "--pat", pat]
         try:
-            res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+            res = subprocess.run(cmd, shell=True, capture_output=True, text=True, encoding="utf-8", errors="replace")
             if res.returncode == 0:
                 print(f"[OK] Successfully published {ext['id']} to Open-VSX!")
             else:

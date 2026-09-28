@@ -1,3 +1,22 @@
+
+function getMcpUsageCount(): number {
+  try {
+    const homeDir = process.env.USERPROFILE || process.env.HOME || '.';
+    const usagePath = path.join(homeDir, '.btp', 'mcp_usage.json');
+    if (fs.existsSync(usagePath)) {
+      const data = JSON.parse(fs.readFileSync(usagePath, 'utf-8'));
+      return data.executions || 0;
+    }
+  } catch {}
+  return 0;
+}
+
+function isProLicensed(): boolean {
+  const k = process.env.BTP_API_KEY || process.env.BTP_PRO_KEY || process.env.BTP_LICENSE_KEY;
+  if (!k) return false;
+  return k.startsWith('sk_live_') || k.startsWith('btp_pro_') || k.startsWith('btp_ent_') || k.startsWith('key_');
+}
+
 declare const require: any;
 const fs = require('fs');
 const path = require('path');
@@ -102,7 +121,10 @@ export function activate(context: ExtensionContext) {
   // 1. Dual Status Bar Indicator (BTP AST Gate + Keystone Passkey)
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'bartholomew.viewStatus';
-  statusBarItem.text = `$(shield) BTP: ARMED | $(key) KEYSTONE: ACTIVE`;
+  const usedCalls = getMcpUsageCount();
+  const isPro = isProLicensed();
+  statusBarItem.text = isPro ? `$(shield) BTP: PRO (UNMETERED)` : `$(shield) BTP: ARMED (${usedCalls}/50 Free)`;
+  statusBarItem.tooltip = isPro ? `Bartholomew Pro (Unmetered Developer Seat Active)` : `Bartholomew Free Tier: ${usedCalls}/50 evaluations used. Click to upgrade to Pro ($49/mo)`;
   statusBarItem.tooltip = `Bartholomew Autonomous AI Guard (BTP v5.4 Sovereign Enterprise) - Sub-25µs AST & Keystone Active`;
   
   // 15. Command: Run in Bartholomew Kernel Sandbox
@@ -141,6 +163,11 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(
     runInSandboxCmd,statusBarItem);
   statusBarItem.show();
+
+  const upgradeProCmd = vscode.commands.registerCommand('bartholomew.upgradePro', () => {
+    vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/pro'));
+  });
+  context.subscriptions.push(upgradeProCmd);
 
   // 2. Poll local daemon or files for real-time telemetry
   const pollDaemon = () => {

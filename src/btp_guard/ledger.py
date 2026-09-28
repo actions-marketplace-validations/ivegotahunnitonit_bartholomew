@@ -13,7 +13,7 @@ class BillableLedger:
     def __init__(self, ledger_path: Optional[str] = None):
         self.ledger_path = Path(ledger_path) if ledger_path else Path("btp_guard_ledger.db")
         self.ledger_path.parent.mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect(str(self.ledger_path))
+        self.conn = sqlite3.connect(str(self.ledger_path), check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
         self._initialize_schema()
 

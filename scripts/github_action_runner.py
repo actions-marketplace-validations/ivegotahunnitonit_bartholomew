@@ -1,5 +1,5 @@
 """
-Bartholomew GitHub Action Runner (BTP v5.4.20)
+Bartholomew GitHub Action Runner (BTP v5.4.23)
 ==============================================
 Fast in-process AST gating, secret leak detection, and cryptographic
 receipt generation across Pull Requests, changed files, and AI agent commits.
@@ -19,12 +19,12 @@ except ImportError:
     from src.btp_guard import Guard
 
 FAIL_ON_VIOLATION = os.getenv("INPUT_FAIL_ON_VIOLATION", "true").lower() == "true"
-SCAN_PATH = os.getenv("INPUT_SCAN_PATH", ".")
+SCAN_PATH = os.getenv("INPUT_SCAN_PATH") or os.getenv("INPUT_AUDIT_PATH", ".")
 MAX_SPEND_USD = float(os.getenv("INPUT_SPEND_CAP", "50.0"))
 
 print("=" * 75)
 print("  BARTHOLOMEW AGENTIC RUNTIME PROTECTION (ARP) -- GITHUB ACTION RUNNER")
-print("  Protocol: BTP v5.4.20 | Sub-35us Polyglot AST Safety Gating")
+print("  Protocol: BTP v5.4.23 | Sub-35us Polyglot AST Safety Gating")
 print("=" * 75)
 
 guard = Guard(spend_cap=MAX_SPEND_USD, strict=True)
