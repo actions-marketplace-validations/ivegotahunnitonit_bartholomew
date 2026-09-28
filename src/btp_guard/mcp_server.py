@@ -79,15 +79,15 @@ class FreemiumMeter:
         Returns: (allowed: bool, count: int, badge_or_msg: str)
         """
         if self.is_pro_active(api_key):
-            return True, -1, "[🛡️ Bartholomew Guard: UNMETERED PRO LICENSE ACTIVE]"
+            return True, -1, "[Bartholomew Guard: UNMETERED PRO LICENSE ACTIVE]"
 
         current = self.get_usage()
         if current >= self.FREE_TIER_LIMIT:
             msg = (
-                "🛑 [Bartholomew Security Gate] Free tier usage limit reached (50/50 evaluations used).\n\n"
+                "[Bartholomew Security Gate] Free tier usage limit reached (50/50 evaluations used).\n\n"
                 "Your autonomous AI agent has executed all 50 free protected evaluations under the community tier.\n\n"
                 "To continue protecting your agent with sub-35µs AST invariant gating and Ed25519 SOC 2 receipts:\n"
-                "👉 Unlock Unmetered Pro ($49/mo): https://bartholomew.info/pro\n\n"
+                "Unlock Unmetered Pro ($49/mo): https://bartholomew.info/pro\n\n"
                 "Once subscribed, activate your license in your environment:\n"
                 "  export BTP_API_KEY=\"sk_live_...\"\n"
                 "or add \"apiKey\": \"sk_live_...\" to your Claude Desktop / Cursor MCP config."
@@ -101,7 +101,7 @@ class FreemiumMeter:
         except Exception:
             pass
 
-        badge = f"\n\n[🛡️ Bartholomew Security Gate | Free Tier: {new_count}/{self.FREE_TIER_LIMIT} used | Upgrade: https://bartholomew.info/pro]"
+        badge = f"\n\n[Bartholomew Security Gate | Free Tier: {new_count}/{self.FREE_TIER_LIMIT} used | Upgrade: https://bartholomew.info/pro]"
         return True, new_count, badge
 
 
@@ -120,6 +120,95 @@ class BartholomewMCPServer:
         self.meter = FreemiumMeter()
         
         self.tools_schema = [
+            {
+                "name": "btp_compress_context",
+                "description": "Extracts high-fidelity structural AST skeletons (classes, methods, types, docstrings) while eliding implementation bodies, conserving 65-85% of agent prompt tokens.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": True,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string",
+                            "description": "Workspace root directory or specific file path to compress (defaults to current workspace)."
+                        }
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "files_indexed": {"type": "integer"},
+                        "original_tokens_estimate": {"type": "integer"},
+                        "compressed_tokens_estimate": {"type": "integer"},
+                        "tokens_conserved": {"type": "integer"},
+                        "compression_ratio_pct": {"type": "string"}
+                    }
+                }
+            },
+            {
+                "name": "btp_auto_heal",
+                "description": "Analyzes and auto-repairs dangerous shell commands or raw SQL mutations into safe, sandboxed, and bounded equivalents.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": False,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "payload": {
+                            "type": "string",
+                            "description": "Shell command or SQL query string to inspect and auto-repair."
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": ["SHELL", "SQL"],
+                            "description": "Type of payload (SHELL or SQL)."
+                        }
+                    },
+                    "required": ["payload"]
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "repaired_payload": {"type": "string"},
+                        "status": {"type": "string"},
+                        "repair_explanation": {"type": "string"}
+                    }
+                }
+            },
+            {
+                "name": "btp_profile_session",
+                "description": "Gathers complete token economics, USD financial savings, and AST security posture for autonomous agent workspace sessions.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": True,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "workspace": {
+                            "type": "string",
+                            "description": "Target workspace root directory."
+                        }
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "session_id": {"type": "string"},
+                        "token_economics": {"type": "object"},
+                        "security_forensics": {"type": "object"}
+                    }
+                }
+            },
             {
                 "name": "btp_get_manifest",
                 "description": "Returns machine-readable BTP v1.0.0 service discovery manifest detailing identity, capabilities, accepted protocols, pricing meters, and security rules.",
@@ -1096,6 +1185,44 @@ class BartholomewMCPServer:
                     "isError": True,
                     "content": [{"type": "text", "text": f"[KEYSTONE ERROR]: {str(e)}"}]
                 }
+
+        elif name == "btp_compress_context":
+            try:
+                from src.context_compressor import compress_workspace_context
+            except ImportError:
+                from btp_guard.context_compressor import compress_workspace_context
+            target_path = arguments.get("path") or self.workspace_root
+            summary = compress_workspace_context(target_path)
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps(summary, indent=2)}]
+            }
+
+        elif name == "btp_auto_heal":
+            try:
+                from src.auto_heal import ASTAutoHealer
+            except ImportError:
+                from btp_guard.auto_heal import ASTAutoHealer
+            payload = arguments.get("payload", "")
+            action_type = arguments.get("type", "SHELL")
+            res = ASTAutoHealer.heal_action(action_type, payload)
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps(res, indent=2)}]
+            }
+
+        elif name == "btp_profile_session":
+            try:
+                from src.agent_profiler import AgentSessionProfiler
+            except ImportError:
+                from btp_guard.agent_profiler import AgentSessionProfiler
+            ws = arguments.get("workspace") or self.workspace_root
+            profiler = AgentSessionProfiler(workspace_root=ws)
+            prof = profiler.profile_workspace_session()
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps(prof, indent=2)}]
+            }
 
         elif name == "btp_revoke_keystone_passkey":
             pk_id = arguments.get("passkey_id", "")

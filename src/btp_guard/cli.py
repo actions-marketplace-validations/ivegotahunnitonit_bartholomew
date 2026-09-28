@@ -25,6 +25,35 @@ from src.declarative_policy_engine import DeclarativePolicyEngine
 from src.policy_synthesizer import PolicySynthesizer
 
 
+def cmd_hook(args):
+    try:
+        from src.hook_installer import install_git_hooks, uninstall_git_hooks
+    except ImportError:
+        from btp_guard.hook_installer import install_git_hooks, uninstall_git_hooks
+    action = getattr(args, "action", "install")
+    target_dir = getattr(args, "dir", ".") or "."
+    if action == "uninstall":
+        res = uninstall_git_hooks(target_dir)
+    else:
+        res = install_git_hooks(target_dir)
+    print(f"[*] [BTP] Git Hook Status: {res['status']}")
+    print(f"    {res['message']}")
+
+
+def cmd_profile(args):
+    try:
+        from src.agent_profiler import AgentSessionProfiler, print_profile_report
+    except ImportError:
+        from btp_guard.agent_profiler import AgentSessionProfiler, print_profile_report
+    target_dir = getattr(args, "dir", ".") or "."
+    profiler = AgentSessionProfiler(workspace_root=target_dir)
+    prof = profiler.profile_workspace_session()
+    if getattr(args, "json", False):
+        print(json.dumps(prof, indent=2))
+    else:
+        print_profile_report(prof)
+
+
 def cmd_version(args):
     print("Bartholomew Protocol (BTP v5.4.25) -- The #1 Agentic Runtime Protection (ARP) Platform")
     print("Engine: In-Process AST Gating, In-Flight Secret Scrubber & SOC 2 Merkle Receipts")
@@ -514,90 +543,53 @@ def cmd_upgrade(args):
 
 
 def cmd_hook_install(args):
-    """Installs Bartholomew pre-commit AST security gate in .git/hooks/pre-commit."""
-    git_dir = os.path.join(os.getcwd(), ".git")
-    if not os.path.exists(git_dir):
-        print("[-] Error: Not a git repository (.git folder not found). Run inside a git repo root.")
-        sys.exit(1)
-    hooks_dir = os.path.join(git_dir, "hooks")
-    os.makedirs(hooks_dir, exist_ok=True)
-    pre_commit_path = os.path.join(hooks_dir, "pre-commit")
-
-    script_content = (
-        "#!/bin/sh\n"
-        "# Bartholomew Trust Protocol (BTP v5.4.12) Pre-Commit Security Gate\n"
-        "# Sub-second AST invariant enforcement and OWASP LLM credential scrubbing.\n"
-        "\n"
-        "echo '[*] [BTP] Running pre-commit AST security & secret audit...'\n"
-        "python -c \"import sys; from src.cli_linter import audit_directory; res = audit_directory('.'); score = res.get('score', 100); status = 'PASSED' if score >= 80 else 'FAILED'; print(f'[+] [BTP] Security Score: {score}/100 -> {status}'); sys.exit(0 if score >= 80 else 1)\"\n"
-        "RESULT=$?\n"
-        "if [ $RESULT -ne 0 ]; then\n"
-        "    echo \"[-] [BTP] Commit blocked. Run 'python cli.py audit' to inspect violations.\"\n"
-        "    exit 1\n"
-        "fi\n"
-        "exit 0\n"
-    )
-
-    if os.path.exists(pre_commit_path):
-        try:
-            with open(pre_commit_path, "r", encoding="utf-8", errors="ignore") as f:
-                existing = f.read()
-            if "Bartholomew" not in existing:
-                backup_path = pre_commit_path + ".backup"
-                with open(backup_path, "w", encoding="utf-8") as f:
-                    f.write(existing)
-                print(f"[+] Backed up existing pre-commit hook to: {backup_path}")
-        except Exception:
-            pass
-
-    with open(pre_commit_path, "w", encoding="utf-8", newline="\n") as f:
-        f.write(script_content)
-
     try:
-        os.chmod(pre_commit_path, 0o755)
-    except Exception:
-        pass
-
-    print(f"[+] [SUCCESS] Bartholomew pre-commit security hook installed at: {pre_commit_path}")
-    print("[+] All local commits will now automatically verify sub-35us AST safety before git commit.")
+        from src.hook_installer import install_git_hooks
+    except ImportError:
+        from btp_guard.hook_installer import install_git_hooks
+    target_dir = getattr(args, "dir", ".") or "."
+    res = install_git_hooks(repo_root=target_dir)
+    print(f"[+] [SUCCESS] {res['message']}")
+    for h in res.get("hooks_installed", []):
+        print(f"    Active Hook: {h}")
 
 
 def cmd_hook_uninstall(args):
-    """Removes Bartholomew pre-commit hook or restores backup."""
-    git_dir = os.path.join(os.getcwd(), ".git")
-    pre_commit_path = os.path.join(git_dir, "hooks", "pre-commit")
-    backup_path = pre_commit_path + ".backup"
-
-    if not os.path.exists(pre_commit_path):
-        print("[!] No pre-commit hook currently installed.")
-        return
-
-    os.remove(pre_commit_path)
-    print(f"[+] Removed Bartholomew pre-commit hook from: {pre_commit_path}")
-
-    if os.path.exists(backup_path):
-        os.rename(backup_path, pre_commit_path)
-        print(f"[+] Restored original pre-commit hook from backup: {pre_commit_path}")
+    try:
+        from src.hook_installer import uninstall_git_hooks
+    except ImportError:
+        from btp_guard.hook_installer import uninstall_git_hooks
+    target_dir = getattr(args, "dir", ".") or "."
+    res = uninstall_git_hooks(repo_root=target_dir)
+    print(f"[+] [BTP] {res['message']}")
 
 
 def cmd_hook_status(args):
-    """Checks the status of the pre-commit hook."""
-    git_dir = os.path.join(os.getcwd(), ".git")
+    target_dir = getattr(args, "dir", ".") or "."
+    git_dir = os.path.join(os.path.abspath(target_dir), ".git")
     pre_commit_path = os.path.join(git_dir, "hooks", "pre-commit")
+    pre_push_path = os.path.join(git_dir, "hooks", "pre-push")
 
-    if not os.path.exists(pre_commit_path):
-        print("[-] Bartholomew pre-commit hook: NOT INSTALLED")
-        print("    Run 'python cli.py hook install' to protect your repository from unsafe commits.")
-        return
+    print("\n" + "=" * 74)
+    print("      BARTHOLOMEW GIT SECURITY HOOKS STATUS (BTP v5.4.25)")
+    print("=" * 74)
+    pc_active = False
+    if os.path.exists(pre_commit_path):
+        with open(pre_commit_path, "r", encoding="utf-8", errors="ignore") as f:
+            pc_active = "Bartholomew" in f.read()
 
-    with open(pre_commit_path, "r", encoding="utf-8", errors="ignore") as f:
-        content = f.read()
+    pp_active = False
+    if os.path.exists(pre_push_path):
+        with open(pre_push_path, "r", encoding="utf-8", errors="ignore") as f:
+            pp_active = "Bartholomew" in f.read()
 
-    if "Bartholomew" in content:
-        print("[+] Bartholomew pre-commit hook: ACTIVE & ENFORCING (BTP v5.4.12)")
-        print(f"    Hook location: {pre_commit_path}")
-    else:
-        print(f"[!] Non-Bartholomew pre-commit hook found at: {pre_commit_path}")
+    print(f"  Pre-Commit Hook : {'ACTIVE & ENFORCING (BTP v5.4.25)' if pc_active else 'NOT INSTALLED'}")
+    if pc_active:
+        print(f"    Hook location : {pre_commit_path}")
+    print(f"  Pre-Push Hook   : {'ACTIVE & ENFORCING (BTP v5.4.25)' if pp_active else 'NOT INSTALLED'}")
+    if pp_active:
+        print(f"    Hook location : {pre_push_path}")
+    print("=" * 74 + "\n")
 
 
 def cmd_ebpf_status(args):
@@ -1128,9 +1120,12 @@ def cmd_daemon_status(args):
 
 
 def cmd_mcp_start(args):
-    from mcp_server import start_mcp_server
+    try:
+        from btp_guard.mcp_server import start_mcp_server
+    except ImportError:
+        from src.btp_guard.mcp_server import start_mcp_server
     workspace = getattr(args, "workspace", None) or os.path.join(parent_dir, "workspace")
-    print(f"[*] Starting Bartholomew MCP Guard stdio server (BTP v3.1)...", file=sys.stderr)
+    print(f"[*] Starting Bartholomew MCP Guard stdio server (BTP v5.4.25)...", file=sys.stderr)
     start_mcp_server(workspace_root=workspace)
 
 
@@ -1149,10 +1144,13 @@ def cmd_mcp_install(args):
 
 
 def cmd_mcp_status(args):
-    from mcp_server import get_registered_tools
+    try:
+        from btp_guard.mcp_server import get_registered_tools
+    except ImportError:
+        from src.btp_guard.mcp_server import get_registered_tools
     tools = get_registered_tools()
     print("=" * 74)
-    print("BARTHOLOMEW MODEL CONTEXT PROTOCOL (MCP) RUNTIME STATUS -- BTP v5.4.23")
+    print("BARTHOLOMEW MODEL CONTEXT PROTOCOL (MCP) RUNTIME STATUS -- BTP v5.4.25")
     print("=" * 74)
     print("[*] Standard Spec      : Model Context Protocol (MCP 2024-11-05)")
     print("[*] Pre-flight Latency : Sub-35 microseconds (in-process AST & Secret Scrubber)")
@@ -1261,7 +1259,7 @@ def cmd_mcp_registry(args):
     has_smith = os.path.exists(smith_path)
 
     print("=" * 74)
-    print("BARTHOLOMEW OFFICIAL MCP REGISTRY & SMITHERY SPECIFICATION -- BTP v5.4.23")
+    print("BARTHOLOMEW OFFICIAL MCP REGISTRY & SMITHERY SPECIFICATION -- BTP v5.4.25")
     print("=" * 74)
     print(f"[*] MCP Registry Spec : {'VERIFIED' if has_reg else 'MISSING'} ({reg_path})")
     print(f"[*] Smithery Config    : {'VERIFIED' if has_smith else 'MISSING'} ({smith_path})")
@@ -2633,7 +2631,7 @@ def cmd_immune_run(args):
     seed = getattr(args, "seed", None)
 
     print("=" * 70)
-    print("BTP v5.4.23 AUTO-IMMUNITY ENGINE -- CONTINUOUS ADVERSARIAL RED-TEAMING")
+    print("BTP v5.4.25 AUTO-IMMUNITY ENGINE -- CONTINUOUS ADVERSARIAL RED-TEAMING")
     print("=" * 70)
     print(f"[*] Iterations        : {iterations}")
     print(f"[*] Auto-Healing Mode : {'ENABLED (Atomic Hot-Reload)' if auto_heal else 'DISABLED'}")
@@ -2663,7 +2661,7 @@ def cmd_immune_status(args):
     from src.immune.auto_immunity_engine import AutoImmunityCoordinator
     coordinator = AutoImmunityCoordinator()
     print("=" * 70)
-    print("BTP v5.4.23 AUTO-IMMUNITY ENGINE TELEMETRY")
+    print("BTP v5.4.25 AUTO-IMMUNITY ENGINE TELEMETRY")
     print("=" * 70)
     print(f"[*] Active Immune Invariants : {len(coordinator.synthesized_rules)}")
     print(f"[*] Policy File Location     : {coordinator.policy_path}")
@@ -2681,7 +2679,7 @@ def cmd_immune_status(args):
 def cmd_immune_rules(args):
     from src.immune.auto_immunity_engine import PolicyAutoHealer
     print("=" * 70)
-    print("BTP v5.4.23 IMMUNE HEURISTIC PATTERN MATRIX")
+    print("BTP v5.4.25 IMMUNE HEURISTIC PATTERN MATRIX")
     print("=" * 70)
     for tech, spec in PolicyAutoHealer.HEURISTIC_PATTERNS.items():
         print(f"  [{spec['id']}] Technique: {tech:<22} | Category: {spec['category']}")
@@ -2695,7 +2693,7 @@ def cmd_barter_balance(args):
     agent = getattr(args, "agent", "peer-agent")
     res = client.get_balance(agent_id=agent, gateway=getattr(args, "gateway", None))
     print("=" * 70)
-    print("BTP v5.4.23 BILATERAL BARTER -- AGENT AWU BALANCE")
+    print("BTP v5.4.25 BILATERAL BARTER -- AGENT AWU BALANCE")
     print("=" * 70)
     print(f"[*] Agent Identifier       : {res.get('agent_id', agent)}")
     print(f"[+] Attested Balance (AWU) : {res.get('balance_awu', 0.0):.4f} AWU")
@@ -2716,7 +2714,7 @@ def cmd_barter_pulse(args):
     task_type = getattr(args, "task_type", "compute_service")
     res = client.pulse(agent_id=agent, work_units=units, task_type=task_type, gateway=getattr(args, "gateway", None))
     print("=" * 70)
-    print("BTP v5.4.23 BILATERAL BARTER -- COMPUTE CREDIT PULSE")
+    print("BTP v5.4.25 BILATERAL BARTER -- COMPUTE CREDIT PULSE")
     print("=" * 70)
     print(f"[*] Status                 : {res.get('status', 'SETTLED')}")
     print(f"[*] Agent Identifier       : {res.get('agent_id', agent)}")
@@ -2738,7 +2736,7 @@ def cmd_barter_spend(args):
     task = getattr(args, "task", "compute_delegation")
     res = client.spend(sender_id=sender, recipient_id=recipient, units=units, task_type=task, gateway=getattr(args, "gateway", None))
     print("=" * 70)
-    print("BTP v5.4.23 BILATERAL BARTER -- ESCROW DELEGATION SETTLEMENT")
+    print("BTP v5.4.25 BILATERAL BARTER -- ESCROW DELEGATION SETTLEMENT")
     print("=" * 70)
     print(f"[*] Settlement Status      : {res.get('status', 'SETTLED')}")
     print(f"[*] Transaction ID         : {res.get('tx_id', 'unknown')}")
@@ -2763,7 +2761,7 @@ def cmd_barter_ledger(args):
     client = BTPBarterClient(getattr(args, "gateway", None))
     res = client.get_ledger(gateway=getattr(args, "gateway", None))
     print("=" * 70)
-    print("BTP v5.4.23 BILATERAL BARTER -- GLOBAL MERKLE LEDGER")
+    print("BTP v5.4.25 BILATERAL BARTER -- GLOBAL MERKLE LEDGER")
     print("=" * 70)
     print(f"[+] Total Economic Surplus : {res.get('total_surplus_awu', 0.0):.4f} AWU")
     print(f"[+] Verified M2M Calls     : {res.get('verified_calls_count', 0)}")
@@ -2784,7 +2782,7 @@ def cmd_barter_treasury(args):
     client = BTPBarterClient(getattr(args, "gateway", None))
     res = client.get_treasury(gateway=getattr(args, "gateway", None))
     print("=" * 70)
-    print("BTP v5.4.23 PROTOCOL TREASURY & EARNINGS METRICS")
+    print("BTP v5.4.25 PROTOCOL TREASURY & EARNINGS METRICS")
     print("=" * 70)
     print(f"[*] Treasury Vault ID     : {res.get('treasury_agent_id', 'protocol_treasury_vault')}")
     print(f"[+] Accumulated Earnings   : {res.get('accumulated_earnings_awu', 0.0):.4f} AWU")
@@ -3118,7 +3116,7 @@ def cmd_daemon_mesh(args):
     if getattr(args, "once", False):
         snap = daemon.step_heartbeat(sync_barter=True)
         print("=" * 76)
-        print("BTP v5.4.23 STANDING MESH DAEMON -- DISCRETE HEARTBEAT CYCLE")
+        print("BTP v5.4.25 STANDING MESH DAEMON -- DISCRETE HEARTBEAT CYCLE")
         print("=" * 76)
         print(f"[*] Node ID         : {snap['node_id']}")
         print(f"[*] Gateway         : {snap['gateway_url']}")
@@ -3137,7 +3135,7 @@ def cmd_daemon_status(args):
     import os
     hb_file = os.path.abspath(".btp_mesh_heartbeat.json")
     print("=" * 76)
-    print("BTP v5.4.23 STANDING MESH DAEMON STATUS")
+    print("BTP v5.4.25 STANDING MESH DAEMON STATUS")
     print("=" * 76)
     if os.path.exists(hb_file):
         try:
@@ -3615,6 +3613,11 @@ def main():
     parser = argparse.ArgumentParser(description="Bartholomew AI Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # profile
+    profile_p = subparsers.add_parser("profile", help="Profile agent session token economics and security ROI")
+    profile_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    profile_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
     # version
     subparsers.add_parser("version", help="Display BTP protocol version")
 
@@ -4076,8 +4079,8 @@ def main():
     wh_test_p.add_argument("--tenant", "-t", default="*", help="Target tenant ID")
     wh_test_p.add_argument("--severity", choices=["LOW", "MEDIUM", "HIGH", "CRITICAL"], default="HIGH", help="Severity level for test event")
 
-    # immune (BTP v5.4.23 Auto-Immunity Engine & Self-Healing Invariant Synthesizer)
-    immune_p = subparsers.add_parser("immune", help="BTP v5.4.23 Auto-Immunity Engine & Self-Healing Invariant Synthesizer")
+    # immune (BTP v5.4.25 Auto-Immunity Engine & Self-Healing Invariant Synthesizer)
+    immune_p = subparsers.add_parser("immune", help="BTP v5.4.25 Auto-Immunity Engine & Self-Healing Invariant Synthesizer")
     immune_sub = immune_p.add_subparsers(dest="immune_cmd")
 
     im_run_p = immune_sub.add_parser("run", help="Execute adversarial red-teaming fuzz cycle and auto-heal gaps")
@@ -4088,8 +4091,8 @@ def main():
     im_status_p = immune_sub.add_parser("status", help="Display active immune invariants and telemetry")
     im_rules_p = immune_sub.add_parser("rules", help="Display immune heuristic pattern matrix")
 
-    # barter (BTP v5.4.23 Bilateral Barter & AWU Circular Economy)
-    barter_p = subparsers.add_parser("barter", help="BTP v5.4.23 Bilateral Barter & AWU Circular Economy")
+    # barter (BTP v5.4.25 Bilateral Barter & AWU Circular Economy)
+    barter_p = subparsers.add_parser("barter", help="BTP v5.4.25 Bilateral Barter & AWU Circular Economy")
     barter_sub = barter_p.add_subparsers(dest="barter_cmd")
 
     bar_bal_p = barter_sub.add_parser("balance", help="Query agent AWU balance and economic surplus share")
@@ -4224,9 +4227,12 @@ def main():
     # hook (Git Pre-Commit Hook Management)
     hook_parser = subparsers.add_parser("hook", help="Manage automated local Git pre-commit AST security hooks")
     hook_sub = hook_parser.add_subparsers(dest="hook_cmd", help="Hook actions")
-    hook_sub.add_parser("install", help="Install BTP pre-commit security hook in .git/hooks/pre-commit")
-    hook_sub.add_parser("uninstall", help="Remove BTP pre-commit security hook")
-    hook_sub.add_parser("status", help="Check installation status of BTP pre-commit hook")
+    hook_in = hook_sub.add_parser("install", help="Install BTP pre-commit security hook in .git/hooks/pre-commit")
+    hook_in.add_argument("--dir", "-d", default=".", help="Target repository directory")
+    hook_un = hook_sub.add_parser("uninstall", help="Remove BTP pre-commit security hook")
+    hook_un.add_argument("--dir", "-d", default=".", help="Target repository directory")
+    hook_st = hook_sub.add_parser("status", help="Check installation status of BTP pre-commit hook")
+    hook_st.add_argument("--dir", "-d", default=".", help="Target repository directory")
 
     # ebpf (Kernel Syscall Sandboxing & Tracepoint Probes)
     ebpf_parser = subparsers.add_parser("ebpf", help="Inspect and test kernel-space system call interception and memory caps")
@@ -4413,6 +4419,8 @@ def main():
         cmd_protect(args)
     elif args.command == "model-context":
         cmd_model_context(args)
+    elif args.command == "profile":
+        cmd_profile(args)
     elif args.command == "version":
         cmd_version(args)
     elif args.command == "upgrade":
