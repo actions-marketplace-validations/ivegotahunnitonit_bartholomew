@@ -26,7 +26,7 @@ from src.policy_synthesizer import PolicySynthesizer
 
 
 def cmd_version(args):
-    print("Bartholomew Protocol (BTP v5.4.23) -- The #1 Agentic Runtime Protection (ARP) Platform")
+    print("Bartholomew Protocol (BTP v5.4.25) -- The #1 Agentic Runtime Protection (ARP) Platform")
     print("Engine: In-Process AST Gating, In-Flight Secret Scrubber & SOC 2 Merkle Receipts")
     print("Latency: Sub-35 microseconds (in-process) | Throughput: 1.05M evals/sec")
     print("Status: Community Free Tier active (Local AST Gating)")
@@ -303,7 +303,7 @@ def cmd_benchmark_ast(args):
     ]
 
     print("=" * 80)
-    print("      BARTHOLOMEW (BTP v5.4.23) IN-PROCESS AST INVARIANT BENCHMARK")
+    print("      BARTHOLOMEW (BTP v5.4.25) IN-PROCESS AST INVARIANT BENCHMARK")
     print("=" * 80)
     print(f"Target Vector Battery: {len(test_battery)} unique AST invariant patterns")
     print(f"Total Iterations:      {vectors_count:,} continuous in-process evaluations")
@@ -436,7 +436,7 @@ def cmd_whoami(args):
         from src.bartholomew_companion import BartholomewCompanion
         print(BartholomewCompanion.introduction())
     except ImportError:
-        print("I am Bartholomew (BTP v5.4.23). Sovereign Sentinel Companion for Autonomous Agents.")
+        print("I am Bartholomew (BTP v5.4.25). Sovereign Sentinel Companion for Autonomous Agents.")
 
 
 def cmd_models(args):
@@ -807,7 +807,7 @@ def cmd_try(args):
     from src import Guard
 
     print("=" * 76)
-    print("  Bartholomew Guard -- Instant In-Process Safety Sandbox (BTP v5.4.23)")
+    print("  Bartholomew Guard -- Instant In-Process Safety Sandbox (BTP v5.4.25)")
     print("=" * 76)
     print("[*] Initializing in-process AST gating engine...")
     time.sleep(0.2)
@@ -3207,7 +3207,7 @@ def cmd_activate(args):
     )
 
     print("=" * 70)
-    print("[BTP GUARD] BARTHOLOMEW PROTOCOL (BTP v5.4.23) LICENSE MANAGEMENT")
+    print("[BTP GUARD] BARTHOLOMEW PROTOCOL (BTP v5.4.25) LICENSE MANAGEMENT")
     print("=" * 70)
 
     # Operator / Admin issuance mode
@@ -3220,7 +3220,7 @@ def cmd_activate(args):
         token_hash = hashlib.sha256(raw_seed.encode("utf-8")).hexdigest()[:24]
         issued_token = f"{prefix}{token_hash}"
 
-        print(f"\n[+] Cryptographic Sovereign License Issued (BTP v5.4.23)")
+        print(f"\n[+] Cryptographic Sovereign License Issued (BTP v5.4.25)")
         print(f"  -> Recipient Email : {email}")
         print(f"  -> License Tier   : {tier_upper} (Sovereign Unrestricted)")
         print(f"  -> License Token  : {issued_token}")
@@ -3361,7 +3361,7 @@ def cmd_export_telemetry(args):
     out_path = getattr(args, "out", None)
 
     print("=" * 80)
-    print(f"      BARTHOLOMEW (BTP v5.4.23) ENTERPRISE SIEM TELEMETRY EXPORTER")
+    print(f"      BARTHOLOMEW (BTP v5.4.25) ENTERPRISE SIEM TELEMETRY EXPORTER")
     print("=" * 80)
     print(f"Target Format:     {fmt.upper()}")
     print(f"Sample Records:    {count:,}")
