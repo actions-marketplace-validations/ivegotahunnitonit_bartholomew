@@ -121,6 +121,32 @@ class BartholomewMCPServer:
         
         self.tools_schema = [
             {
+                "name": "btp_optimize_ecosystem",
+                "description": "Inspects workspace IDE extensions, toolchains, and packages to surface fact-backed bottlenecks, recommend 10x-50x faster alternative executions, and generate high-velocity shortcuts.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": True,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "workspace": {
+                            "type": "string",
+                            "description": "Workspace root directory to audit and optimize."
+                        }
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "recommendations": {"type": "array"},
+                        "projected_roi": {"type": "object"}
+                    }
+                }
+            },
+            {
                 "name": "btp_compress_context",
                 "description": "Extracts high-fidelity structural AST skeletons (classes, methods, types, docstrings) while eliding implementation bodies, conserving 65-85% of agent prompt tokens.",
                 "annotations": {
@@ -1209,6 +1235,19 @@ class BartholomewMCPServer:
             return {
                 "isError": False,
                 "content": [{"type": "text", "text": json.dumps(res, indent=2)}]
+            }
+
+        elif name == "btp_optimize_ecosystem":
+            try:
+                from src.ecosystem_advisor import EcosystemAdvisor
+            except ImportError:
+                from btp_guard.ecosystem_advisor import EcosystemAdvisor
+            ws = arguments.get("workspace") or self.workspace_root
+            advisor = EcosystemAdvisor(workspace_root=ws)
+            report = advisor.generate_optimization_report()
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps(report, indent=2)}]
             }
 
         elif name == "btp_profile_session":

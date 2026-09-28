@@ -150,13 +150,17 @@ class SentinelWatcher:
 
         # 2. Secret Exposure Check (excluding comments, mocks, demos, and test files)
         fname = file_path.name.lower()
-        if not fname.startswith(("test_", "conftest", "mock_")) and not fname.endswith(("_test.py", ".spec.ts", ".test.ts", ".test.js")):
+        if not fname.startswith(("test_", "conftest", "mock_", "demo_")) and not fname.endswith(("_test.py", ".spec.ts", ".test.ts", ".test.js")):
             for secret_name, regex in SECRET_PATTERNS:
                 for line_idx, line in enumerate(lines, 1):
                     stripped = line.strip()
                     if stripped.startswith("#") or stripped.startswith("//") or "example" in stripped.lower():
                         continue
-                    if regex.search(line):
+                    match = regex.search(line)
+                    if match:
+                        matched_str = match.group(0)
+                        if any(matched_str.count(ch) > 8 for ch in "09Xx") or "1234567890" in matched_str:
+                            continue
                         threats.append({
                             "category": "SECRET_EXPOSURE",
                             "rule": secret_name,

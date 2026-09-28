@@ -40,6 +40,24 @@ def cmd_hook(args):
     print(f"    {res['message']}")
 
 
+def cmd_optimize(args):
+    try:
+        from src.ecosystem_advisor import EcosystemAdvisor, print_optimization_matrix
+    except ImportError:
+        from btp_guard.ecosystem_advisor import EcosystemAdvisor, print_optimization_matrix
+    target_dir = getattr(args, "dir", ".") or "."
+    advisor = EcosystemAdvisor(workspace_root=target_dir)
+    report = advisor.generate_optimization_report()
+    if getattr(args, "apply", False):
+        sh_file = advisor.generate_shortcut_script()
+        print(f"[+] [BTP] Applied high-velocity workflow shortcuts: {sh_file}")
+
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print_optimization_matrix(report)
+
+
 def cmd_profile(args):
     try:
         from src.agent_profiler import AgentSessionProfiler, print_profile_report
@@ -3613,6 +3631,12 @@ def main():
     parser = argparse.ArgumentParser(description="Bartholomew AI Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # optimize
+    opt_p = subparsers.add_parser("optimize", help="Inspect extensions & packages for fact-backed bottlenecks, alternative executions, and shortcuts")
+    opt_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    opt_p.add_argument("--apply", action="store_true", help="Generate and apply high-velocity workflow shortcuts (.btp/shortcuts.sh)")
+    opt_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
     # profile
     profile_p = subparsers.add_parser("profile", help="Profile agent session token economics and security ROI")
     profile_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
@@ -4419,6 +4443,8 @@ def main():
         cmd_protect(args)
     elif args.command == "model-context":
         cmd_model_context(args)
+    elif args.command == "optimize":
+        cmd_optimize(args)
     elif args.command == "profile":
         cmd_profile(args)
     elif args.command == "version":
