@@ -2,7 +2,7 @@
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew AI Agent Guard \u2014 Security & Guardrails (Cursor, Claude, Copilot)",
   "description": "Zero-trust firewall & security guardrails for AI agents. Prevents dangerous commands, secret exfiltration, and destructive file deletion in Cursor, Claude Desktop, and VS Code.",
-  "version": "5.4.24",
+  "version": "5.4.25",
   "publisher": "itsubsolomon",
   "icon": "icon.png",
   "license": "MIT",
