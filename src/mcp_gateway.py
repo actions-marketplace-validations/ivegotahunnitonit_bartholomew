@@ -380,6 +380,7 @@ class MCPProxyGateway:
         import subprocess
         import threading
 
+        # guard.shielded
         proc = subprocess.Popen(
             downstream_cmd,
             stdin=subprocess.PIPE,
