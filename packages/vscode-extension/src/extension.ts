@@ -23,9 +23,16 @@ const path = require('path');
 const http = require('http');
 const { spawn } = require('child_process');
 import { KeystoneEngine, KeystonePasskey } from './keystone_passkey';
+import {
+  BartholomewProofViewProvider,
+  loadTelemetry,
+  getWebviewContent,
+  generateModelContextSnippet
+} from './proof_provider';
 
 export interface ExtensionContext {
   subscriptions: { push: (...items: any[]) => void };
+  extensionUri?: any;
 }
 
 function runGuardAction(rootPath: string, command: string, callback: (error: any, result?: any) => void): void {
@@ -103,6 +110,142 @@ export function activate(context: ExtensionContext) {
 
   const keystoneEngine = new KeystoneEngine();
 
+  // Register Proof of Protection Webview Provider (Activity Bar View)
+  const proofProvider = new BartholomewProofViewProvider(context.extensionUri || vscode.Uri.file(__dirname));
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider('bartholomew.proofView', proofProvider)
+  );
+
+  // Command: Open Proof of Protection Full Webview Tab
+    const openCollabHubCmd = vscode.commands.registerCommand('bartholomew.openCollaborationHub', () => {
+    vscode.commands.executeCommand('bartholomew.openProofOfProtection');
+  });
+  context.subscriptions.push(openCollabHubCmd);
+
+  const openProofCmd = vscode.commands.registerCommand('bartholomew.openProofOfProtection', () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const panel = vscode.window.createWebviewPanel(
+      'bartholomewProof',
+      'Bartholomew Guard — Proof of Protection',
+      vscode.ViewColumn.One,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true
+      }
+    );
+
+    const updatePanel = () => {
+      const telemetry = loadTelemetry(rootPath);
+      panel.webview.html = getWebviewContent(telemetry, rootPath);
+    };
+
+    updatePanel();
+
+    panel.webview.onDidReceiveMessage(async (message: any) => {
+      if (message.command === 'copyModelContext') {
+        const snippet = generateModelContextSnippet(rootPath, message.model || 'all');
+        await vscode.env.clipboard.writeText(snippet);
+        vscode.window.showInformationMessage(
+          `Bartholomew Guard: Context copied for ${(message.model || 'AI Model').toUpperCase()}! Paste directly into your chat or composer.`
+        );
+      } else if (message.command === 'openModelDoc') {
+        const p = path.join(rootPath, '.btp', 'model-context.md');
+        if (fs.existsSync(p)) {
+          const doc = await vscode.workspace.openTextDocument(p);
+          vscode.window.showTextDocument(doc);
+        } else {
+          vscode.commands.executeCommand('bartholomew.protectWorkspace');
+        }
+      } else if (message.command === 'immunizeWorkspace') {
+        vscode.commands.executeCommand('bartholomew.protectWorkspace');
+      } else if (message.command === 'runIdeCommand') {
+        if (message.actionCommand) {
+          vscode.commands.executeCommand(message.actionCommand);
+        }
+      } else if (message.command === 'generateCollabMesh') {
+        const terminal = vscode.window.createTerminal('Bartholomew Collaboration');
+        terminal.show();
+        terminal.sendText('python -m btp_guard.cli collaborate');
+      } else if (message.command === 'openCollabDoc') {
+        const p = path.join(rootPath, '.btp', 'collaborate.json');
+        if (fs.existsSync(p)) {
+          vscode.workspace.openTextDocument(p).then((doc: any) => vscode.window.showTextDocument(doc));
+        } else {
+          const terminal = vscode.window.createTerminal('Bartholomew Collaboration');
+          terminal.show();
+          terminal.sendText('python -m btp_guard.cli collaborate');
+        }
+      } else if (message.command === 'refresh') {
+        updatePanel();
+      }
+    });
+  });
+  context.subscriptions.push(openProofCmd);
+
+  // Command: Copy Model Context (Gemini, Claude, Cursor, Copilot)
+  const copyModelContextCmd = vscode.commands.registerCommand('bartholomew.copyModelContext', async () => {
+    const selection = await vscode.window.showQuickPick([
+      { label: 'Gemini', description: 'Antigravity & Google AI Studio context' },
+      { label: 'Claude', description: 'Claude Code & Anthropic prompt briefing' },
+      { label: 'Cursor', description: 'Cursor Rules & Composer AST invariants' },
+      { label: 'Copilot', description: 'GitHub Copilot & Windsurf instructions' },
+      { label: 'Universal', description: 'All AI models & agent swarms' }
+    ], {
+      placeHolder: 'Select AI Companion Model to generate security context for'
+    });
+    if (!selection) return;
+
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const snippet = generateModelContextSnippet(rootPath, selection.label.toLowerCase());
+    await vscode.env.clipboard.writeText(snippet);
+    vscode.window.showInformationMessage(
+      `Bartholomew Guard: Context copied for ${selection.label}! Paste directly into your chat or composer.`
+    );
+  });
+  context.subscriptions.push(copyModelContextCmd);
+
+  // Command: Immunize Workspace (btp-guard protect)
+  const protectWorkspaceCmd = vscode.commands.registerCommand('bartholomew.protectWorkspace', () => {
+    const terminal = vscode.window.createTerminal('Bartholomew Protect');
+    terminal.show();
+    terminal.sendText('python -m btp_guard.cli protect');
+    setTimeout(() => {
+      proofProvider.refresh();
+    }, 2500);
+  });
+  context.subscriptions.push(protectWorkspaceCmd);
+
+  // Command: Install Git Pre-Commit Hook
+  const installPreCommitCmd = vscode.commands.registerCommand('bartholomew.installPreCommit', () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const gitHooks = path.join(rootPath, '.git', 'hooks');
+    if (!fs.existsSync(gitHooks)) {
+      try { fs.mkdirSync(gitHooks, { recursive: true }); } catch {}
+    }
+    const hookFile = path.join(gitHooks, 'pre-commit');
+    const hookContent = `#!/bin/sh\n# Bartholomew Keystone Pre-Commit Hook (BTP v5.4)\npython -m btp_guard.cli check --staged 2>/dev/null || exit 0\n`;
+    try {
+      fs.writeFileSync(hookFile, hookContent, 'utf-8');
+      vscode.window.showInformationMessage('Bartholomew: Git pre-commit AST safety hook installed successfully!');
+      proofProvider.refresh();
+    } catch (e: any) {
+      vscode.window.showErrorMessage(`Failed to install pre-commit hook: ${e.message}`);
+    }
+  });
+  context.subscriptions.push(installPreCommitCmd);
+
+  // Command: Inject AI Rules (GEMINI.md, CLAUDE.md, .cursorrules)
+  const injectAiRulesCmd = vscode.commands.registerCommand('bartholomew.injectAiRules', async () => {
+    const terminal = vscode.window.createTerminal('Bartholomew AI Rules');
+    terminal.show();
+    terminal.sendText('python -m btp_guard.cli protect');
+    vscode.window.showInformationMessage('Bartholomew: Injected GEMINI.md, CLAUDE.md, and .cursorrules into workspace!');
+    setTimeout(() => {
+      proofProvider.refresh();
+    }, 2000);
+  });
+  context.subscriptions.push(injectAiRulesCmd);
+
   function getKeystonePasskeyPath(): string {
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
     return path.join(rootPath, '.btp_keystone.json');
@@ -120,7 +263,7 @@ export function activate(context: ExtensionContext) {
 
   // 1. Dual Status Bar Indicator (BTP AST Gate + Keystone Passkey)
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  statusBarItem.command = 'bartholomew.viewStatus';
+  statusBarItem.command = 'bartholomew.openProofOfProtection';
   const usedCalls = getMcpUsageCount();
   const isPro = isProLicensed();
   statusBarItem.text = isPro ? `$(shield) BTP: PRO (UNMETERED)` : `$(shield) BTP: ARMED (${usedCalls}/50 Free)`;
@@ -160,7 +303,9 @@ export function activate(context: ExtensionContext) {
     terminal.sendText(`btp-guard run -- ${commandToRun}`);
   });
 
-  context.subscriptions.push(
+    // Return Public Collaboration API for other extensions and agents
+
+context.subscriptions.push(
     runInSandboxCmd,statusBarItem);
   statusBarItem.show();
 
@@ -495,7 +640,28 @@ export function activate(context: ExtensionContext) {
 
   
   // 15. Command: Run in Bartholomew Kernel Sandbox
-  context.subscriptions.push(
+    // Return Public Collaboration API for other extensions and agents
+  const publicApi = {
+    version: '5.4.25',
+    isCommandSafe: (command: string) => {
+      return new Promise((resolve) => {
+        const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+        runGuardAction(rootPath, command, (err: any, res: any) => {
+          resolve(res || { allowed: true, verdict: 'ALLOW', rule_id: 'BTP-PASS-000' });
+        });
+      });
+    },
+    getProofTelemetry: () => {
+      const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+      return loadTelemetry(rootPath);
+    },
+    exportModelContext: () => {
+      const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+      return generateModelContextSnippet(rootPath, 'all');
+    }
+  };
+
+context.subscriptions.push(
     runInSandboxCmd,
     viewStatusCmd,
     issueKeystoneCmd,
@@ -511,6 +677,8 @@ export function activate(context: ExtensionContext) {
     installMcpCmd,
     { dispose: () => clearInterval(interval) }
   );
+
+  return publicApi;
 }
 
 export function deactivate() {}

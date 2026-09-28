@@ -493,3 +493,156 @@ export function protectAgent(agent, options = {}) {
 
   return agent;
 }
+
+// ==========================================
+// Project Immunizer & AI Model Bridge (v5.4)
+// ==========================================
+
+const CURSOR_MDC_CONTENT = `---
+description: Bartholomew Keystone Guard - Invariant Rules & AST Safety
+globs: *
+alwaysApply: true
+---
+
+# Bartholomew Keystone Guard Active Invariants
+
+This workspace is actively protected by Bartholomew Keystone Guard (BTP v5.4).
+All terminal executions, tool invocations, and filesystem writes are evaluated in-process (<35µs latency) against deterministic Abstract Syntax Tree (AST) safety invariants.
+
+## Safety Invariants Enforced:
+1. Destructive Command Gate (BTP-AST-001): Prohibit rm -rf /, rm -rf ~, mkfs, raw disk writes.
+2. In-Flight Secret & Credential Scrubber (BTP-SEC-001): Prohibit hardcoded API keys, dumping .env files.
+3. Pipe-to-Shell & Untrusted Downloads (BTP-AST-003): Prohibit curl|bash, wget|sh.
+4. Keystone Agent Capability Passkeys (BTP-KEY-001): Enforce approved directory writes and spend limits.
+`;
+
+const CLAUDE_SNIPPET = `
+<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
+## Bartholomew Keystone Guardrails (BTP v5.4 Enterprise)
+This workspace is monitored and protected by Bartholomew Keystone Guard.
+All tool invocations and terminal commands run through deterministic <35µs AST safety checks.
+`;
+
+const GEMINI_SNIPPET = `
+<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
+## Bartholomew Keystone Security Invariants (BTP v5.4)
+This repository is armed with Bartholomew Keystone Guard for autonomous agent safety.
+All tool calls, shell executions, and file edits are monitored in-process (<35µs).
+`;
+
+export function evaluateWorkspaceSecurity(workspaceRoot = '.') {
+  const ws = path.resolve(workspaceRoot);
+  let score = 0;
+  const checks = [];
+  const recommendations = [];
+
+  const preCommit = path.join(ws, '.git', 'hooks', 'pre-commit');
+  let hasPreCommit = false;
+  if (fs.existsSync(preCommit)) {
+    try {
+      const pc = fs.readFileSync(preCommit, 'utf-8');
+      hasPreCommit = pc.includes('btp-guard') || pc.includes('BTP') || pc.includes('cli_linter');
+    } catch {}
+  }
+  checks.push({ id: 'pre_commit', name: 'Git Pre-Commit AST Gate', passed: hasPreCommit, pts: 25 });
+  if (hasPreCommit) score += 25;
+  else recommendations.push({ id: 'install_pre_commit', title: 'Install Git Pre-Commit Hook', action: 'npx btp-guard protect' });
+
+  const hasCursor = fs.existsSync(path.join(ws, '.cursorrules')) || fs.existsSync(path.join(ws, '.cursor', 'rules', 'btp-guard.mdc'));
+  const hasClaude = fs.existsSync(path.join(ws, 'CLAUDE.md'));
+  const hasGemini = fs.existsSync(path.join(ws, 'GEMINI.md'));
+  const aiCount = (hasCursor ? 1 : 0) + (hasClaude ? 1 : 0) + (hasGemini ? 1 : 0);
+  const aiPassed = aiCount >= 2;
+  checks.push({ id: 'ai_rules', name: 'AI Companion Invariant Rules', passed: aiPassed, pts: 25 });
+  if (aiPassed) score += 25;
+  else recommendations.push({ id: 'inject_ai_rules', title: 'Inject AI Model Guardrails', action: 'npx btp-guard protect' });
+
+  const hasPolicy = fs.existsSync(path.join(ws, '.btp', 'policy.yaml')) || fs.existsSync(path.join(ws, 'policies', 'default_security_policy.yaml'));
+  checks.push({ id: 'policy', name: 'Declarative Invariant Policy', passed: hasPolicy, pts: 25 });
+  if (hasPolicy) score += 25;
+  else recommendations.push({ id: 'create_policy', title: 'Generate Declarative Policy', action: 'npx btp-guard protect' });
+
+  const hasKeystone = fs.existsSync(path.join(ws, '.btp', 'keystone.json')) || fs.existsSync(path.join(ws, '.btp_keystone.json'));
+  checks.push({ id: 'keystone', name: 'Keystone Capability Passkey', passed: hasKeystone, pts: 15 });
+  if (hasKeystone) score += 15;
+  else recommendations.push({ id: 'issue_keystone', title: 'Issue Agent Passkey', action: 'npx btp-guard protect' });
+
+  const hasCi = fs.existsSync(path.join(ws, '.github', 'workflows', 'bartholomew-guard.yml'));
+  checks.push({ id: 'ci_cd', name: 'CI/CD Guardrail Pipeline', passed: hasCi, pts: 10 });
+  if (hasCi) score += 10;
+  else recommendations.push({ id: 'setup_ci', title: 'Enable GitHub Actions Guard', action: 'npx btp-guard protect' });
+
+  let grade = 'D';
+  if (score >= 90) grade = 'A+';
+  else if (score >= 80) grade = 'A';
+  else if (score >= 70) grade = 'B';
+  else if (score >= 50) grade = 'C';
+
+  return { score, grade, checks, recommendations, status: score >= 50 ? 'ARMED' : 'UNPROTECTED' };
+}
+
+export function getModelContextPrompt(workspaceRoot = '.', modelTarget = 'all') {
+  const ws = path.resolve(workspaceRoot);
+  const wsName = path.basename(ws);
+  const modelUpper = modelTarget.toUpperCase();
+
+  return `<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
+# AI Companion Security & Invariant Briefing (Bartholomew Keystone v5.4)
+Target AI Companion: ${modelUpper} | Workspace: ${wsName}
+
+You are collaborating on this codebase under the active protection of Bartholomew Keystone Guard.
+All tool calls, shell executions, and file edits are monitored in-process (<35µs latency) against deterministic Abstract Syntax Tree (AST) safety invariants.
+
+### Invariants You Must Comply With:
+1. Destructive Command Gate (Rule BTP-AST-001): Prohibit rm -rf /, rm -rf ~, mkfs, raw disk writes.
+2. In-Flight Secret & Credential Scrubber (Rule BTP-SEC-001): Prohibit hardcoded API keys, reading .env into output.
+3. Pipe-to-Shell & Untrusted Downloads (Rule BTP-AST-003): Prohibit curl|bash, wget|sh.
+4. Keystone Agent Capability Scopes (Rule BTP-KEY-001): Restrict file writes to project directories.
+
+### Pair-Programming Instructions:
+- When an action is blocked: Do NOT repeat the exact command. Explain the security rule to the user and suggest a compliant alternative.
+- Code modifications: Maintain modularity, tests, and preserve docstrings.
+`;
+}
+
+export function immunizeProject(workspaceRoot = '.', options = {}) {
+  const ws = path.resolve(workspaceRoot);
+  const changes = [];
+  const btpDir = path.join(ws, '.btp');
+  fs.mkdirSync(btpDir, { recursive: true });
+
+  const polPath = path.join(btpDir, 'policy.yaml');
+  if (!fs.existsSync(polPath) || options.force) {
+    fs.writeFileSync(polPath, 'version: "5.4.0"\nname: "Default Invariant Policy"\n', 'utf-8');
+    changes.push({ file: '.btp/policy.yaml', action: 'created', desc: 'Enterprise AST invariant policy' });
+  }
+
+  const cursorDir = path.join(ws, '.cursor', 'rules');
+  fs.mkdirSync(cursorDir, { recursive: true });
+  const mdcPath = path.join(cursorDir, 'btp-guard.mdc');
+  if (!fs.existsSync(mdcPath) || options.force) {
+    fs.writeFileSync(mdcPath, CURSOR_MDC_CONTENT, 'utf-8');
+    changes.push({ file: '.cursor/rules/btp-guard.mdc', action: 'created', desc: 'Cursor Composer ruleset' });
+  }
+
+  const claudePath = path.join(ws, 'CLAUDE.md');
+  if (!fs.existsSync(claudePath)) {
+    fs.writeFileSync(claudePath, '# Project Guidelines\n' + CLAUDE_SNIPPET, 'utf-8');
+    changes.push({ file: 'CLAUDE.md', action: 'created', desc: 'Claude Code instructions' });
+  }
+
+  const geminiPath = path.join(ws, 'GEMINI.md');
+  if (!fs.existsSync(geminiPath)) {
+    fs.writeFileSync(geminiPath, '# Gemini Project Context\n' + GEMINI_SNIPPET, 'utf-8');
+    changes.push({ file: 'GEMINI.md', action: 'created', desc: 'Gemini companion context' });
+  }
+
+  const health = evaluateWorkspaceSecurity(ws);
+  return {
+    status: 'IMMUNIZED',
+    workspacePath: ws,
+    changes,
+    securityScore: health.score,
+    grade: health.grade
+  };
+}

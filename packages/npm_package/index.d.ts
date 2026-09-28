@@ -139,3 +139,35 @@ export interface ProtectAgentOptions {
  * Compatible with LangChain.js, Vercel AI SDK, Mastra, AutoGen JS, Claude SDK.
  */
 export function protectAgent<T extends object>(agent: T, options?: ProtectAgentOptions): T;
+
+export interface WorkspaceSecurityReport {
+  score: number;
+  grade: string;
+  status: string;
+  checks: Array<{ id: string; name: string; passed: boolean; pts: number }>;
+  recommendations: Array<{ id: string; title: string; action: string }>;
+}
+
+export interface ImmunizeResult {
+  status: string;
+  workspacePath: string;
+  changes: Array<{ file: string; action: string; desc: string }>;
+  securityScore: number;
+  grade: string;
+}
+
+/**
+ * Audits the active workspace for deterministic AST safety invariants and AI companion rules.
+ */
+export function evaluateWorkspaceSecurity(workspaceRoot?: string): WorkspaceSecurityReport;
+
+/**
+ * Returns structured prompt briefing for AI models (Gemini, Claude, Cursor, Copilot).
+ */
+export function getModelContextPrompt(workspaceRoot?: string, modelTarget?: string): string;
+
+/**
+ * One-command project immunizer: generates AI guardrails (.cursorrules, CLAUDE.md, GEMINI.md)
+ * and policy files for active workspace.
+ */
+export function immunizeProject(workspaceRoot?: string, options?: { force?: boolean }): ImmunizeResult;

@@ -7,7 +7,7 @@ import shutil
 def pack_package(pkg_dir, package_id, display_name, description):
     # Read version and details from package.json
     pkg_json_path = os.path.join(pkg_dir, 'package.json')
-    version = "5.4.24"
+    version = "5.4.25"
     publisher = "itsubsolomon"
     keywords = "ai,security,agent,mcp,trust,guardrails,cursor,copilot"
     categories = "Machine Learning,Security,Other"

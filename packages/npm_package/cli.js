@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
-import { scrubSensitiveCredentials, verifyTurnReceiptChaining, rfc8785Canonicalize } from './index.js';
+import { scrubSensitiveCredentials, verifyTurnReceiptChaining, rfc8785Canonicalize, evaluateWorkspaceSecurity, getModelContextPrompt, immunizeProject } from './index.js';
 import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -652,6 +652,57 @@ switch (command) {
       unit_price_usd: 0.01
     };
     console.log(args[1] === '--json' ? JSON.stringify(status) : `Tier: ${status.tier} (${status.status})\nMeter: ${status.meter} ($${status.unit_price_usd} per allowed action)`);
+    break;
+  }
+  case 'protect': {
+    const isAudit = args.includes('--audit-only');
+    if (isAudit) {
+      const health = evaluateWorkspaceSecurity(process.cwd());
+      if (args.includes('--json')) {
+        console.log(JSON.stringify(health, null, 2));
+      } else {
+        console.log(`\n======================================================================`);
+        console.log(`      BARTHOLOMEW WORKSPACE SECURITY AUDIT (BTP v5.4)`);
+        console.log(`======================================================================`);
+        console.log(`  Security Score: ${health.score}/100 (Grade: ${health.grade})`);
+        console.log(`  Status        : ${health.status}\n`);
+        console.log(`  Checklist:`);
+        for (const c of health.checks) {
+          console.log(`    [${c.passed ? 'x' : ' '}] ${c.name} (+${c.pts} pts)`);
+        }
+        console.log(`======================================================================\n`);
+      }
+      break;
+    }
+    const res = immunizeProject(process.cwd(), { force: args.includes('--force') });
+    if (args.includes('--json')) {
+      console.log(JSON.stringify(res, null, 2));
+    } else {
+      console.log(`\n==========================================================================`);
+      console.log(`      BARTHOLOMEW IMMUNIZATION COMPLETE -- WORKSPACE ARMED (BTP v5.4)`);
+      console.log(`==========================================================================`);
+      console.log(`  Workspace Root  : ${res.workspacePath}`);
+      console.log(`  Security Grade  : ${res.grade} (${res.securityScore}/100)`);
+      console.log(`  Status          : ACTIVE (<35us In-Process AST Safety Gate)\n`);
+      console.log(`  Protected AI Environments & Rules Configured:`);
+      for (const ch of res.changes) {
+        console.log(`    [+] ${ch.file.padEnd(35)} : ${ch.desc}`);
+      }
+      console.log(`\n  Direct Model Context:`);
+      console.log(`    - Gemini context  : Run 'npx btp-guard model-context --model gemini'`);
+      console.log(`    - Claude context  : Run 'npx btp-guard model-context --model claude'`);
+      console.log(`    - Cursor context  : Synced to .cursorrules & .cursor/rules/btp-guard.mdc`);
+      console.log(`    - Shared bridge   : .btp/model-context.md`);
+      console.log(`==========================================================================\n`);
+    }
+    break;
+  }
+  case 'model-context': {
+    let model = 'all';
+    const mIdx = args.indexOf('--model');
+    if (mIdx !== -1 && args[mIdx + 1]) model = args[mIdx + 1];
+    const prompt = getModelContextPrompt(process.cwd(), model);
+    console.log(prompt);
     break;
   }
   case 'claude':

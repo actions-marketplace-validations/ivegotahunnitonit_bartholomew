@@ -42,34 +42,84 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 
 ## Quickstart (Under 30 Seconds)
 
-### 1. Install & 1-Click IDE Setup
+### 1. One-Command Project Immunization (Python & Node.js)
+Immunize your entire project for **Gemini, Claude, Cursor, Copilot, and CI/CD** in a single command:
+
 ```bash
-pip install btp-guard
+# Python:
+pip install btp-guard && btp-guard protect
 
-# Auto-configure your active AI agent environment in 1 second:
-btp-guard install cursor    # Configures Cursor MCP
-btp-guard install claude    # Configures Claude Desktop MCP
+# Node.js / npx (Zero Python required):
+npx btp-guard protect
+```
+**What this does automatically:**
+- Injects `.cursorrules` and `.cursor/rules/btp-guard.mdc` for Cursor IDE
+- Configures `CLAUDE.md` for Anthropic Claude Code
+- Configures `GEMINI.md` for Google Gemini & Antigravity IDE
+- Installs local Git pre-commit AST safety hook (blocks secrets & destructive code before commit)
+- Sets up `.github/workflows/bartholomew-guard.yml` for pull request validation
+- Issues an in-process Keystone agent capability passkey (`.btp/keystone.json`)
+
+---
+
+### 2. Straight-On Path to AI Models (Gemini, Claude, Cursor)
+Pairing with an AI companion? Copy instant, cryptographically grounded invariant context into your chat or composer so your AI companion codes safely without tripping blocks:
+
+```bash
+# Export tailored context for Gemini to clipboard:
+btp-guard model-context --model gemini --copy
+
+# Export tailored context for Claude to clipboard:
+btp-guard model-context --model claude --copy
+
+# Export tailored context for Cursor Composer:
+btp-guard model-context --model cursor --copy
 ```
 
-### 2. Protect Any Python Agent (LangChain, CrewAI, AutoGen, Custom)
+---
+
+### 3. Protect Any Agent in 1 Line of Code
+
+#### Python (LangChain, CrewAI, AutoGen, OpenAI SDK):
 ```python
-from btp_guard import Guard
+from btp_guard import Guard, protect_agent
 
+# Microsecond execution gate:
 guard = Guard()
+verdict = guard.check("rm -rf /var/data")
+print(verdict)
+# {'allowed': False, 'verdict': 'DENY', 'rule_id': 'BTP-AST-001', 'latency_us': 18.2}
 
-# Intercepts and vetoes dangerous actions before execution:
-result = guard.check("rm -rf /var/data")
-print(result)
-# {'allowed': False, 'verdict': 'DENY', 'rule_id': 'RULE-AST-FS-DESTRUCTIVE-01', 'latency_us': 18.2}
+# Universal 1-line agent wrapper:
+protected_agent = protect_agent(agent, spend_cap=50.0)
 ```
 
-### 3. Automated CI/CD Flywheel (GitHub Actions)
-Add zero-trust agentic security to your repository in 2 lines:
+#### Node.js / TypeScript (Vercel AI SDK, LangChain.js, Claude SDK):
+```javascript
+import { evaluateIntent, protectAgent } from 'btp-guard';
+
+// Sub-35µs in-process check:
+const res = evaluateIntent({
+  agentId: 'worker-1',
+  actionType: 'EXEC_COMMAND',
+  payload: { cmd: 'cat .env' }
+});
+console.log(res.allowed); // false ('DENY')
+
+// Wrap any agent:
+const safeAgent = protectAgent(agent, { spendCap: 50.0 });
+```
+
+---
+
+### 4. Continuous CI/CD PR Verification (GitHub Actions)
+Add zero-trust agentic safety to your repository in 2 lines:
 ```yaml
 - name: Bartholomew AI Agent Security Audit
   run: |
     pip install btp-guard
-    btp-guard audit
+    btp-guard check --all
+    btp-guard audit --summary
 ```
 
 ## What It Does

@@ -1,0 +1,39 @@
+name: Bartholomew Guard Verification
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  bartholomew-security-check:
+    name: AST Safety & Invariant Verification
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Bartholomew Guard
+        run: |
+          pip install --upgrade btp-guard
+
+      - name: Execute Policy Validation & AST Lint
+        run: |
+          btp-guard check --all
+          btp-guard policy validate
+
+      - name: Generate SOC 2 Cryptographic Receipt
+        run: |
+          btp-guard audit --summary --json > btp-audit-receipt.json
+
+      - name: Upload Security Receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: bartholomew-audit-receipt
+          path: btp-audit-receipt.json

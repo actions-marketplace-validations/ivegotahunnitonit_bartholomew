@@ -34,6 +34,94 @@ def cmd_version(args):
     print("    https://bartholomew.info/cloud | https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600")
 
 
+def cmd_collaborate(args):
+    try:
+        from src.collaboration_engine import generate_collaboration_mesh, print_collaboration_summary
+    except ImportError:
+        from btp_guard.collaboration_engine import generate_collaboration_mesh, print_collaboration_summary
+    target_dir = getattr(args, "dir", ".") or "."
+    data = generate_collaboration_mesh(target_dir)
+    if getattr(args, "json", False):
+        print(json.dumps(data, indent=2))
+    else:
+        print_collaboration_summary(data)
+
+
+def cmd_protect(args):
+    try:
+        from src.project_immunizer import immunize_project, evaluate_workspace_security
+    except ImportError:
+        from btp_guard.project_immunizer import immunize_project, evaluate_workspace_security
+    import json
+    target_dir = getattr(args, "dir", ".") or "."
+    mode = getattr(args, "mode", "balanced")
+    force = getattr(args, "force", False)
+
+    if getattr(args, "audit_only", False):
+        health = evaluate_workspace_security(target_dir)
+        if getattr(args, "json", False):
+            print(json.dumps(health, indent=2))
+            return
+        print("\n" + "=" * 70)
+        print("      BARTHOLOMEW WORKSPACE SECURITY AUDIT (BTP v5.4)")
+        print("=" * 70)
+        print(f"  Security Score: {health['score']}/100 (Grade: {health['grade']})")
+        print(f"  Status        : {health['status']}")
+        print("\n  Checklist:")
+        for c in health["checks"]:
+            mark = "[x]" if c["passed"] else "[ ]"
+            print(f"    {mark} {c['name']} (+{c['pts']} pts)")
+        if health["recommendations"]:
+            print("\n  Actionable Recommendations to Improve:")
+            for r in health["recommendations"]:
+                print(f"    - {r['title']}: {r['description']}")
+                print(f"      Run: {r['action']}")
+        print("=" * 70 + "\n")
+        return
+
+    res = immunize_project(target_dir, mode=mode, force=force)
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+        return
+
+    print("\n" + "=" * 74)
+    print("      BARTHOLOMEW IMMUNIZATION COMPLETE -- WORKSPACE ARMED (BTP v5.4)")
+    print("=" * 74)
+    print(f"  Workspace Root  : {res['workspace_path']}")
+    print(f"  Security Grade  : {res['grade']} ({res['security_score']}/100)")
+    print("  Status          : ACTIVE (<35us In-Process AST Safety Gate)")
+    print("\n  Protected AI Environments & Rules Configured:")
+    for change in res["changes"]:
+        print(f"    [+] {change['file']:<35} : {change['desc']}")
+    print("\n  Direct Model Context:")
+    print("    - Gemini context  : Run 'btp-guard model-context --model gemini --copy'")
+    print("    - Claude context  : Run 'btp-guard model-context --model claude --copy'")
+    print("    - Cursor context  : Synced to .cursorrules & .cursor/rules/btp-guard.mdc")
+    print("    - Shared bridge   : .btp/model-context.md")
+    print("=" * 74 + "\n")
+
+
+def cmd_model_context(args):
+    try:
+        from src.project_immunizer import get_model_context_prompt, copy_to_clipboard
+    except ImportError:
+        from btp_guard.project_immunizer import get_model_context_prompt, copy_to_clipboard
+    target_dir = getattr(args, "dir", ".") or "."
+    model = getattr(args, "model", "all")
+    prompt = get_model_context_prompt(target_dir, model_target=model)
+
+    if getattr(args, "copy", False):
+        copied = copy_to_clipboard(prompt)
+        if copied:
+            print(f"[+] Context for {model.upper()} copied to clipboard! Paste directly into your chat or composer.")
+        else:
+            print("[-] Clipboard unavailable. Displaying context below:\n")
+            print(prompt)
+        return
+
+    print(prompt)
+
+
 def cmd_pricing(args):
     if getattr(args, "json", False):
         print(json.dumps({
@@ -3443,6 +3531,26 @@ def main():
     # version
     subparsers.add_parser("version", help="Display BTP protocol version")
 
+    # collaborate
+    collab_p = subparsers.add_parser("collaborate", help="Universal collaboration engine across the 50,000+ IDE extension & AI agent ecosystem")
+    collab_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    collab_p.add_argument("--json", action="store_true", help="Output machine-readable collaboration JSON")
+
+    # protect
+    protect_p = subparsers.add_parser("protect", help="One-command project immunizer for Cursor, Claude, Gemini, and CI/CD")
+    protect_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    protect_p.add_argument("--mode", choices=["balanced", "strict"], default="balanced", help="Protection mode")
+    protect_p.add_argument("--force", "-f", action="store_true", help="Force overwrite existing configuration files")
+    protect_p.add_argument("--audit-only", action="store_true", help="Audit workspace security score without modifying files")
+    protect_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
+    # model-context
+    model_ctx_p = subparsers.add_parser("model-context", help="Export structured security invariant context for Gemini, Claude, or Cursor")
+    model_ctx_p.add_argument("--model", "-m", choices=["gemini", "claude", "cursor", "copilot", "all"], default="all", help="Target AI model")
+    model_ctx_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    model_ctx_p.add_argument("--copy", "-c", action="store_true", help="Copy context directly to system clipboard")
+
+
     # trial
     trial_p = subparsers.add_parser("trial", help="Activate instant 14-day team Pro trial (no credit card required)")
     trial_p.add_argument("--email", "-e", type=str, default=None, help="Work or developer email to register trial")
@@ -4173,6 +4281,12 @@ def main():
         cmd_leads_list(args)
     elif args.command == "try":
         cmd_try(args)
+    elif args.command == "collaborate":
+        cmd_collaborate(args)
+    elif args.command == "protect":
+        cmd_protect(args)
+    elif args.command == "model-context":
+        cmd_model_context(args)
     elif args.command == "version":
         cmd_version(args)
     elif args.command == "upgrade":

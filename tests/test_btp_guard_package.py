@@ -22,7 +22,7 @@ from btp_guard.integrations import (
 
 class TestBTPGuardPackage(unittest.TestCase):
     def test_version_and_exports(self):
-        self.assertEqual(btp_guard.__version__, "5.4.23")
+        self.assertEqual(btp_guard.__version__, "5.4.25")
         self.assertTrue(callable(Guard))
         self.assertTrue(callable(secure_tool))
         self.assertTrue(issubclass(SecurityVetoException, Exception))

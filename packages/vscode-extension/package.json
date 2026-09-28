@@ -2,7 +2,7 @@
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew AI Agent Guard \u2014 Security & Guardrails (Cursor, Claude, Copilot)",
   "description": "Zero-trust firewall & security guardrails for AI agents. Prevents dangerous commands, secret exfiltration, and destructive file deletion in Cursor, Claude Desktop, and VS Code.",
-  "version": "5.4.24",
+  "version": "5.4.25",
   "publisher": "itsubsolomon",
   "icon": "icon.png",
   "license": "MIT",
@@ -50,6 +50,36 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "bartholomew.injectAiRules",
+        "title": "Bartholomew: Inject AI Model Rules (GEMINI.md, CLAUDE.md, .cursorrules)",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "bartholomew.installPreCommit",
+        "title": "Bartholomew: Install Git Pre-Commit AST Hook",
+        "icon": "$(git-commit)"
+      },
+      {
+        "command": "bartholomew.protectWorkspace",
+        "title": "Bartholomew: Immunize Project (btp-guard protect)",
+        "icon": "$(verified)"
+      },
+      {
+        "command": "bartholomew.copyModelContext",
+        "title": "Bartholomew: Copy AI Context (Gemini, Claude, Cursor)",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "bartholomew.openProofOfProtection",
+        "title": "Bartholomew: Open Proof of Protection & AI Bridge",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "bartholomew.openCollaborationHub",
+        "title": "Bartholomew: Open Ecosystem Collaboration Hub (50,000+ Extensions)",
+        "icon": "$(plug)"
+      },
       {
         "command": "bartholomew.viewStatus",
         "title": "Bartholomew: View Security Status & Trust Roots",
@@ -108,7 +138,25 @@
         "title": "Bartholomew: Run in Kernel Sandbox",
         "category": "Bartholomew"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bartholomew-guard",
+          "title": "Bartholomew Guard",
+          "icon": "icon.png"
+        }
+      ]
+    },
+    "views": {
+      "bartholomew-guard": [
+        {
+          "type": "webview",
+          "id": "bartholomew.proofView",
+          "name": "Proof of Protection & AI Bridge"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
