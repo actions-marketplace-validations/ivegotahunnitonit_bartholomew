@@ -16,3 +16,13 @@ All tool proposals, bash commands, file modifications, and database migrations a
 4. Canonical Tool Decoration:
    - Python: from btp_guard import Guard, secure_tool
    - Node: import { scrubSensitiveCredentials } from 'btp-guard'
+
+
+<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
+## Bartholomew Keystone Guardrails (BTP v5.4 Enterprise)
+This workspace is monitored and protected by **Bartholomew Keystone Guard**.
+All tool invocations and terminal commands run through deterministic <35µs AST safety checks:
+- **No Destructive Commands**: Never run `rm -rf /`, `rm -rf ~`, or unquoted wildcards on root/parent directories.
+- **No Hardcoded Secrets**: Never write or print credentials, tokens (`sk-*`), or `.env` file contents.
+- **No Raw Shell Pipes**: Never execute `curl ... | bash` or `wget ... | sh`.
+- **Self-Healing Compliance**: If a command or tool call is rejected by Bartholomew Guard, explain the security rule to the user and switch to a safe workspace-scoped alternative.

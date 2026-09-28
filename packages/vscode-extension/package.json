@@ -51,6 +51,31 @@
   "contributes": {
     "commands": [
       {
+        "command": "bartholomew.injectAiRules",
+        "title": "Bartholomew: Inject AI Model Rules (GEMINI.md, CLAUDE.md, .cursorrules)",
+        "icon": "$(file-code)"
+      },
+      {
+        "command": "bartholomew.installPreCommit",
+        "title": "Bartholomew: Install Git Pre-Commit AST Hook",
+        "icon": "$(git-commit)"
+      },
+      {
+        "command": "bartholomew.protectWorkspace",
+        "title": "Bartholomew: Immunize Project (btp-guard protect)",
+        "icon": "$(verified)"
+      },
+      {
+        "command": "bartholomew.copyModelContext",
+        "title": "Bartholomew: Copy AI Context (Gemini, Claude, Cursor)",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "bartholomew.openProofOfProtection",
+        "title": "Bartholomew: Open Proof of Protection & AI Bridge",
+        "icon": "$(shield)"
+      },
+      {
         "command": "bartholomew.viewStatus",
         "title": "Bartholomew: View Security Status & Trust Roots",
         "icon": "$(shield)"
@@ -108,7 +133,25 @@
         "title": "Bartholomew: Run in Kernel Sandbox",
         "category": "Bartholomew"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bartholomew-guard",
+          "title": "Bartholomew Guard",
+          "icon": "icon.png"
+        }
+      ]
+    },
+    "views": {
+      "bartholomew-guard": [
+        {
+          "type": "webview",
+          "id": "bartholomew.proofView",
+          "name": "Proof of Protection & AI Bridge"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

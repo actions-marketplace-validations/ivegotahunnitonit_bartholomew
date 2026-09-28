@@ -238,6 +238,9 @@ def activate_trial(email: str) -> Dict[str, Any]:
 
 def save_license(license_key: str) -> Dict[str, Any]:
     """Saves license key to local config file."""
+    global _CACHED_LICENSE, _CACHED_LICENSE_EXPIRY
+    _CACHED_LICENSE = None
+    _CACHED_LICENSE_EXPIRY = 0.0
     btp_dir = get_btp_dir()
     lic_info = parse_license_token(license_key)
     payload = {
