@@ -34,6 +34,54 @@ def cmd_version(args):
     print("    https://bartholomew.info/cloud | https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600")
 
 
+def cmd_shield(args):
+    try:
+        from src.process_shield import execute_shielded_command
+    except ImportError:
+        from btp_guard.process_shield import execute_shielded_command
+    cmd_args = getattr(args, "cmd", [])
+    auto_heal = not getattr(args, "no_heal", False)
+    exit_code = execute_shielded_command(cmd_args, auto_heal=auto_heal)
+    sys.exit(exit_code)
+
+
+def cmd_heal(args):
+    try:
+        from src.auto_heal import ASTAutoHealer
+    except ImportError:
+        from btp_guard.auto_heal import ASTAutoHealer
+    action_type = getattr(args, "type", "SHELL")
+    payload = getattr(args, "payload", "")
+    res = ASTAutoHealer.heal_action(action_type, payload)
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+        return
+    print("\n" + "=" * 76)
+    print("      BARTHOLOMEW AST AUTO-HEALER & SYNTAX REPAIR (BTP v5.4.25)")
+    print("=" * 76)
+    print(f"  Action Type      : {action_type}")
+    print(f"  Original Payload : {res['original_payload']}")
+    print(f"  Repaired Payload : {res['repaired_payload']}")
+    print(f"  Status           : {res['status']}")
+    print(f"  Explanation      : {res['repair_explanation']}")
+    print(f"  Latency Overhead : {res['latency_us']} us")
+    print("=" * 76 + "\n")
+
+
+def cmd_dashboard(args):
+    try:
+        from src.flight_deck import start_flight_deck
+    except ImportError:
+        from btp_guard.flight_deck import start_flight_deck
+    port = getattr(args, "port", 8787)
+    open_browser = not getattr(args, "no_browser", False)
+    server = start_flight_deck(port=port, open_browser=open_browser)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[*] Flight Deck stopped.")
+
+
 def cmd_collaborate(args):
     try:
         from src.collaboration_engine import generate_collaboration_mesh, print_collaboration_summary
@@ -3531,6 +3579,22 @@ def main():
     # version
     subparsers.add_parser("version", help="Display BTP protocol version")
 
+    # shield
+    shield_p = subparsers.add_parser("shield", help="Execute any shell command or agent subprocess under real-time AST protection")
+    shield_p.add_argument("cmd", nargs=argparse.REMAINDER, help="Command and arguments to shield")
+    shield_p.add_argument("--no-heal", action="store_true", help="Disable automatic safe command repair")
+
+    # heal
+    heal_p = subparsers.add_parser("heal", help="Auto-repair and neutralize dangerous shell commands or SQL queries")
+    heal_p.add_argument("payload", help="Command or query string to analyze and repair")
+    heal_p.add_argument("--type", "-t", choices=["SHELL", "SQL"], default="SHELL", help="Action type (default: SHELL)")
+    heal_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
+    # dashboard
+    dash_p = subparsers.add_parser("dashboard", help="Launch local Bartholomew Sovereign Flight Deck & Web UI")
+    dash_p.add_argument("--port", "-p", type=int, default=8787, help="Local listening port (default: 8787)")
+    dash_p.add_argument("--no-browser", action="store_true", help="Do not automatically launch web browser")
+
     # collaborate
     collab_p = subparsers.add_parser("collaborate", help="Universal collaboration engine across the 50,000+ IDE extension & AI agent ecosystem")
     collab_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
@@ -4281,6 +4345,12 @@ def main():
         cmd_leads_list(args)
     elif args.command == "try":
         cmd_try(args)
+    elif args.command == "shield":
+        cmd_shield(args)
+    elif args.command == "heal":
+        cmd_heal(args)
+    elif args.command == "dashboard":
+        cmd_dashboard(args)
     elif args.command == "collaborate":
         cmd_collaborate(args)
     elif args.command == "protect":
