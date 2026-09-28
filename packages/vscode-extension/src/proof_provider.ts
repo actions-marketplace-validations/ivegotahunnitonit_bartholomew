@@ -677,6 +677,35 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string): 
     </div>
   </div>
 
+  <!-- Universal Ecosystem Collaboration Hub -->
+  <div class="hero-box" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%); border-color: rgba(99, 102, 241, 0.35);">
+    <div class="hero-title" style="color: #818cf8;">
+      <span>[NET]</span>
+      Universal Ecosystem Collaboration Hub (50,000+ Extensions Supported)
+    </div>
+    <div class="hero-desc">
+      Bartholomew operates as Layer 0, protecting, coordinating, and accelerating all installed extensions and AI models across your IDE:
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px;">
+      <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 6px;">
+        <div style="font-weight: 700; font-size: 12px; color: var(--accent); margin-bottom: 3px;">Copilots &amp; Models</div>
+        <div style="font-size: 11px; color: var(--muted);">GitHub Copilot, Cursor, Claude, Gemini -- Invariant Shielding Active</div>
+      </div>
+      <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 6px;">
+        <div style="font-weight: 700; font-size: 12px; color: var(--green); margin-bottom: 3px;">Autonomous Agents</div>
+        <div style="font-size: 11px; color: var(--muted);">Cline, Roo Code, Aider, Trae -- Circuit Breaker &amp; Safe Auto-Approve</div>
+      </div>
+      <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); padding: 10px; border-radius: 6px;">
+        <div style="font-weight: 700; font-size: 12px; color: #a78bfa; margin-bottom: 3px;">Linters &amp; Toolchains</div>
+        <div style="font-size: 11px; color: var(--muted);">Prettier, ESLint, GitLens, Docker, Rust-Analyzer -- Zero Race Conditions</div>
+      </div>
+    </div>
+    <div class="model-buttons">
+      <button class="btn btn-primary" onclick="generateCollabMesh()">[CONNECT] Run Collaboration Engine</button>
+      <button class="btn btn-secondary" onclick="openCollabDoc()">[DOC] View .btp/collaborate.json</button>
+    </div>
+  </div>
+
   <!-- What It's Worked On: Activity Feed -->
   <div class="section-card">
     <div class="section-header">

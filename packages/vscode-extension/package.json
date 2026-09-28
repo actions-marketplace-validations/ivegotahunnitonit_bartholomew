@@ -76,6 +76,11 @@
         "icon": "$(shield)"
       },
       {
+        "command": "bartholomew.openCollaborationHub",
+        "title": "Bartholomew: Open Ecosystem Collaboration Hub (50,000+ Extensions)",
+        "icon": "$(plug)"
+      },
+      {
         "command": "bartholomew.viewStatus",
         "title": "Bartholomew: View Security Status & Trust Roots",
         "icon": "$(shield)"

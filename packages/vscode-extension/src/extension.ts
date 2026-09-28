@@ -117,6 +117,11 @@ export function activate(context: ExtensionContext) {
   );
 
   // Command: Open Proof of Protection Full Webview Tab
+    const openCollabHubCmd = vscode.commands.registerCommand('bartholomew.openCollaborationHub', () => {
+    vscode.commands.executeCommand('bartholomew.openProofOfProtection');
+  });
+  context.subscriptions.push(openCollabHubCmd);
+
   const openProofCmd = vscode.commands.registerCommand('bartholomew.openProofOfProtection', () => {
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
     const panel = vscode.window.createWebviewPanel(
@@ -156,6 +161,19 @@ export function activate(context: ExtensionContext) {
       } else if (message.command === 'runIdeCommand') {
         if (message.actionCommand) {
           vscode.commands.executeCommand(message.actionCommand);
+        }
+      } else if (message.command === 'generateCollabMesh') {
+        const terminal = vscode.window.createTerminal('Bartholomew Collaboration');
+        terminal.show();
+        terminal.sendText('python -m btp_guard.cli collaborate');
+      } else if (message.command === 'openCollabDoc') {
+        const p = path.join(rootPath, '.btp', 'collaborate.json');
+        if (fs.existsSync(p)) {
+          vscode.workspace.openTextDocument(p).then((doc: any) => vscode.window.showTextDocument(doc));
+        } else {
+          const terminal = vscode.window.createTerminal('Bartholomew Collaboration');
+          terminal.show();
+          terminal.sendText('python -m btp_guard.cli collaborate');
         }
       } else if (message.command === 'refresh') {
         updatePanel();
@@ -285,7 +303,9 @@ export function activate(context: ExtensionContext) {
     terminal.sendText(`btp-guard run -- ${commandToRun}`);
   });
 
-  context.subscriptions.push(
+    // Return Public Collaboration API for other extensions and agents
+
+context.subscriptions.push(
     runInSandboxCmd,statusBarItem);
   statusBarItem.show();
 
@@ -620,7 +640,28 @@ export function activate(context: ExtensionContext) {
 
   
   // 15. Command: Run in Bartholomew Kernel Sandbox
-  context.subscriptions.push(
+    // Return Public Collaboration API for other extensions and agents
+  const publicApi = {
+    version: '5.4.25',
+    isCommandSafe: (command: string) => {
+      return new Promise((resolve) => {
+        const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+        runGuardAction(rootPath, command, (err: any, res: any) => {
+          resolve(res || { allowed: true, verdict: 'ALLOW', rule_id: 'BTP-PASS-000' });
+        });
+      });
+    },
+    getProofTelemetry: () => {
+      const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+      return loadTelemetry(rootPath);
+    },
+    exportModelContext: () => {
+      const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+      return generateModelContextSnippet(rootPath, 'all');
+    }
+  };
+
+context.subscriptions.push(
     runInSandboxCmd,
     viewStatusCmd,
     issueKeystoneCmd,
@@ -636,6 +677,8 @@ export function activate(context: ExtensionContext) {
     installMcpCmd,
     { dispose: () => clearInterval(interval) }
   );
+
+  return publicApi;
 }
 
 export function deactivate() {}

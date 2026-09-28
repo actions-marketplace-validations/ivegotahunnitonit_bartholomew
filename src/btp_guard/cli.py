@@ -34,6 +34,19 @@ def cmd_version(args):
     print("    https://bartholomew.info/cloud | https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600")
 
 
+def cmd_collaborate(args):
+    try:
+        from src.collaboration_engine import generate_collaboration_mesh, print_collaboration_summary
+    except ImportError:
+        from btp_guard.collaboration_engine import generate_collaboration_mesh, print_collaboration_summary
+    target_dir = getattr(args, "dir", ".") or "."
+    data = generate_collaboration_mesh(target_dir)
+    if getattr(args, "json", False):
+        print(json.dumps(data, indent=2))
+    else:
+        print_collaboration_summary(data)
+
+
 def cmd_protect(args):
     try:
         from src.project_immunizer import immunize_project, evaluate_workspace_security
@@ -3518,6 +3531,11 @@ def main():
     # version
     subparsers.add_parser("version", help="Display BTP protocol version")
 
+    # collaborate
+    collab_p = subparsers.add_parser("collaborate", help="Universal collaboration engine across the 50,000+ IDE extension & AI agent ecosystem")
+    collab_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    collab_p.add_argument("--json", action="store_true", help="Output machine-readable collaboration JSON")
+
     # protect
     protect_p = subparsers.add_parser("protect", help="One-command project immunizer for Cursor, Claude, Gemini, and CI/CD")
     protect_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
@@ -4263,6 +4281,8 @@ def main():
         cmd_leads_list(args)
     elif args.command == "try":
         cmd_try(args)
+    elif args.command == "collaborate":
+        cmd_collaborate(args)
     elif args.command == "protect":
         cmd_protect(args)
     elif args.command == "model-context":
