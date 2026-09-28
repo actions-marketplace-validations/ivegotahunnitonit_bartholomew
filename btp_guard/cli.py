@@ -26,12 +26,97 @@ from src.policy_synthesizer import PolicySynthesizer
 
 
 def cmd_version(args):
-    print("Bartholomew Protocol (BTP v5.4.23) -- The #1 Agentic Runtime Protection (ARP) Platform")
+    print("Bartholomew Protocol (BTP v5.4.25) -- The #1 Agentic Runtime Protection (ARP) Platform")
     print("Engine: In-Process AST Gating, In-Flight Secret Scrubber & SOC 2 Merkle Receipts")
     print("Latency: Sub-35 microseconds (in-process) | Throughput: 1.05M evals/sec")
     print("Status: Community Free Tier active (Local AST Gating)")
     print("[+] Bartholomew Sovereign Sentinel & L402 Swarm Settlement Active:")
     print("    https://bartholomew.info/cloud | https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600")
+
+
+def cmd_shield(args):
+    try:
+        from src.process_shield import execute_shielded_command
+    except ImportError:
+        from btp_guard.process_shield import execute_shielded_command
+    cmd_args = getattr(args, "cmd", [])
+    auto_heal = not getattr(args, "no_heal", False)
+    exit_code = execute_shielded_command(cmd_args, auto_heal=auto_heal)
+    sys.exit(exit_code)
+
+
+def cmd_heal(args):
+    try:
+        from src.auto_heal import ASTAutoHealer
+    except ImportError:
+        from btp_guard.auto_heal import ASTAutoHealer
+    action_type = getattr(args, "type", "SHELL")
+    payload = getattr(args, "payload", "")
+    res = ASTAutoHealer.heal_action(action_type, payload)
+    if getattr(args, "json", False):
+        print(json.dumps(res, indent=2))
+        return
+    print("\n" + "=" * 76)
+    print("      BARTHOLOMEW AST AUTO-HEALER & SYNTAX REPAIR (BTP v5.4.25)")
+    print("=" * 76)
+    print(f"  Action Type      : {action_type}")
+    print(f"  Original Payload : {res['original_payload']}")
+    print(f"  Repaired Payload : {res['repaired_payload']}")
+    print(f"  Status           : {res['status']}")
+    print(f"  Explanation      : {res['repair_explanation']}")
+    print(f"  Latency Overhead : {res['latency_us']} us")
+    print("=" * 76 + "\n")
+
+
+def cmd_dashboard(args):
+    try:
+        from src.flight_deck import start_flight_deck
+    except ImportError:
+        from btp_guard.flight_deck import start_flight_deck
+    port = getattr(args, "port", 8787)
+    open_browser = not getattr(args, "no_browser", False)
+    server = start_flight_deck(port=port, open_browser=open_browser)
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n[*] Flight Deck stopped.")
+
+
+def cmd_compress(args):
+    try:
+        from src.context_compressor import compress_workspace_context as compress_repository, print_compression_summary
+    except ImportError:
+        from btp_guard.context_compressor import compress_workspace_context as compress_repository, print_compression_summary
+    target_dir = getattr(args, "dir", ".") or "."
+    summary = compress_repository(target_dir)
+    if getattr(args, "json", False):
+        print(json.dumps(summary, indent=2))
+    else:
+        print_compression_summary(summary)
+
+
+def cmd_watch(args):
+    try:
+        from src.sentinel_watcher import run_sentinel
+    except ImportError:
+        from btp_guard.sentinel_watcher import run_sentinel
+    target_dir = getattr(args, "dir", ".") or "."
+    auto_heal = getattr(args, "heal", False)
+    interval = getattr(args, "interval", 1.0)
+    once = getattr(args, "once", False)
+    res = run_sentinel(root_dir=target_dir, auto_heal=auto_heal, poll_interval=interval, once=once)
+    if once:
+        if getattr(args, "json", False):
+            print(json.dumps(res, indent=2))
+        else:
+            print("\n" + "=" * 76)
+            print("      BARTHOLOMEW REAL-TIME SENTINEL AUDIT REPORT")
+            print("=" * 76)
+            print(f"  Files Monitored  : {res['files_scanned']}")
+            print(f"  Violations Found : {res['violations_found']}")
+            for f in res.get("findings", []):
+                print(f"  - {f['file']}: {[t.get('rule') or t.get('category') for t in f.get('threats', [])]}")
+            print("=" * 76 + "\n")
 
 
 def cmd_collaborate(args):
@@ -255,7 +340,7 @@ def cmd_benchmark_ast(args):
     ]
 
     print("=" * 80)
-    print("      BARTHOLOMEW (BTP v5.4.23) IN-PROCESS AST INVARIANT BENCHMARK")
+    print("      BARTHOLOMEW (BTP v5.4.25) IN-PROCESS AST INVARIANT BENCHMARK")
     print("=" * 80)
     print(f"Target Vector Battery: {len(test_battery)} unique AST invariant patterns")
     print(f"Total Iterations:      {vectors_count:,} continuous in-process evaluations")
@@ -388,7 +473,7 @@ def cmd_whoami(args):
         from src.bartholomew_companion import BartholomewCompanion
         print(BartholomewCompanion.introduction())
     except ImportError:
-        print("I am Bartholomew (BTP v5.4.23). Sovereign Sentinel Companion for Autonomous Agents.")
+        print("I am Bartholomew (BTP v5.4.25). Sovereign Sentinel Companion for Autonomous Agents.")
 
 
 def cmd_models(args):
@@ -759,7 +844,7 @@ def cmd_try(args):
     from src import Guard
 
     print("=" * 76)
-    print("  Bartholomew Guard -- Instant In-Process Safety Sandbox (BTP v5.4.23)")
+    print("  Bartholomew Guard -- Instant In-Process Safety Sandbox (BTP v5.4.25)")
     print("=" * 76)
     print("[*] Initializing in-process AST gating engine...")
     time.sleep(0.2)
@@ -1010,11 +1095,13 @@ def cmd_daemon_start(args):
     daemon_script = os.path.join(parent_dir, "daemon", "daemon_server.py")
     if args.background:
         if sys.platform == "win32":
+            # guard.shielded
             proc = subprocess.Popen(
                 [sys.executable, daemon_script],
                 creationflags=subprocess.CREATE_NO_WINDOW if hasattr(subprocess, 'CREATE_NO_WINDOW') else 0
             )
         else:
+            # guard.shielded
             proc = subprocess.Popen([sys.executable, daemon_script], start_new_session=True)
         print(f"[OK] Daemon launched in background (PID: {proc.pid}).")
     else:
@@ -3159,7 +3246,7 @@ def cmd_activate(args):
     )
 
     print("=" * 70)
-    print("[BTP GUARD] BARTHOLOMEW PROTOCOL (BTP v5.4.23) LICENSE MANAGEMENT")
+    print("[BTP GUARD] BARTHOLOMEW PROTOCOL (BTP v5.4.25) LICENSE MANAGEMENT")
     print("=" * 70)
 
     # Operator / Admin issuance mode
@@ -3172,7 +3259,7 @@ def cmd_activate(args):
         token_hash = hashlib.sha256(raw_seed.encode("utf-8")).hexdigest()[:24]
         issued_token = f"{prefix}{token_hash}"
 
-        print(f"\n[+] Cryptographic Sovereign License Issued (BTP v5.4.23)")
+        print(f"\n[+] Cryptographic Sovereign License Issued (BTP v5.4.25)")
         print(f"  -> Recipient Email : {email}")
         print(f"  -> License Tier   : {tier_upper} (Sovereign Unrestricted)")
         print(f"  -> License Token  : {issued_token}")
@@ -3313,7 +3400,7 @@ def cmd_export_telemetry(args):
     out_path = getattr(args, "out", None)
 
     print("=" * 80)
-    print(f"      BARTHOLOMEW (BTP v5.4.23) ENTERPRISE SIEM TELEMETRY EXPORTER")
+    print(f"      BARTHOLOMEW (BTP v5.4.25) ENTERPRISE SIEM TELEMETRY EXPORTER")
     print("=" * 80)
     print(f"Target Format:     {fmt.upper()}")
     print(f"Sample Records:    {count:,}")
@@ -3530,6 +3617,35 @@ def main():
 
     # version
     subparsers.add_parser("version", help="Display BTP protocol version")
+
+    # shield
+    shield_p = subparsers.add_parser("shield", help="Execute any shell command or agent subprocess under real-time AST protection")
+    shield_p.add_argument("cmd", nargs=argparse.REMAINDER, help="Command and arguments to shield")
+    shield_p.add_argument("--no-heal", action="store_true", help="Disable automatic safe command repair")
+
+    # heal
+    heal_p = subparsers.add_parser("heal", help="Auto-repair and neutralize dangerous shell commands or SQL queries")
+    heal_p.add_argument("payload", help="Command or query string to analyze and repair")
+    heal_p.add_argument("--type", "-t", choices=["SHELL", "SQL"], default="SHELL", help="Action type (default: SHELL)")
+    heal_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
+    # dashboard
+    dash_p = subparsers.add_parser("dashboard", help="Launch local Bartholomew Sovereign Flight Deck & Web UI")
+    dash_p.add_argument("--port", "-p", type=int, default=8787, help="Local listening port (default: 8787)")
+    dash_p.add_argument("--no-browser", action="store_true", help="Do not automatically launch web browser")
+
+    # compress
+    compress_p = subparsers.add_parser("compress", help="Compress AST context to reduce agent token consumption by 65-85 percent")
+    compress_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    compress_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
+    # watch
+    watch_p = subparsers.add_parser("watch", help="Real-time workspace sentinel and file change security monitor")
+    watch_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    watch_p.add_argument("--heal", action="store_true", help="Automatically neutralize and repair detected code threats")
+    watch_p.add_argument("--interval", "-i", type=float, default=1.0, help="File polling cadence in seconds (default: 1.0)")
+    watch_p.add_argument("--once", action="store_true", help="Perform a single non-continuous audit scan and exit")
+    watch_p.add_argument("--json", action="store_true", help="Output machine-readable JSON (with --once)")
 
     # collaborate
     collab_p = subparsers.add_parser("collaborate", help="Universal collaboration engine across the 50,000+ IDE extension & AI agent ecosystem")
@@ -4281,6 +4397,16 @@ def main():
         cmd_leads_list(args)
     elif args.command == "try":
         cmd_try(args)
+    elif args.command == "shield":
+        cmd_shield(args)
+    elif args.command == "heal":
+        cmd_heal(args)
+    elif args.command == "dashboard":
+        cmd_dashboard(args)
+    elif args.command == "compress":
+        cmd_compress(args)
+    elif args.command == "watch":
+        cmd_watch(args)
     elif args.command == "collaborate":
         cmd_collaborate(args)
     elif args.command == "protect":
