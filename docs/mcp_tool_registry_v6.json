@@ -152,6 +152,25 @@
       "category": "MONITORING",
       "description": "Start the Bartholomew Sovereign Flight Deck dashboard on localhost:8787 with live invariant telemetry.",
       "tier": "FREE"
+    },
+    {
+      "name": "btp_workspace_intel",
+      "category": "INTELLIGENCE",
+      "description": "Full workspace intelligence: stack, AI tooling, security posture score, LLM token cost estimates, and optimization opportunities.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_scan_dependencies",
+      "category": "SUPPLY_CHAIN",
+      "description": "Scan dependency manifests for malicious packages, typosquats, supply chain attacks, and CVEs via OSV.dev.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_prompt_firewall",
+      "category": "AI_DEFENSE",
+      "description": "Scan any text payload for prompt injection attacks before it enters the AI model context window. Sub-1ms, 15+ pattern categories.",
+      "tier": "FREE"
     }
-  ]
+  ],
+  "total_tools": 28
 }

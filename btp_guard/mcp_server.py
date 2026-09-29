@@ -1537,3 +1537,52 @@ def get_registered_tools() -> List[Dict[str, Any]]:
 
 if __name__ == "__main__":
     start_mcp_server()
+
+
+# ─── NEW PILLAR TOOLS ────────────────────────────────────────────────────────
+
+def _btp_workspace_intel(self, args):
+    """Workspace Intelligence Report — stack, security, cost, optimizations."""
+    try:
+        from src.workspace_intel import WorkspaceIntelligence
+    except ImportError:
+        from btp_guard.workspace_intel import WorkspaceIntelligence
+    try:
+        intel = WorkspaceIntelligence(workspace_root=self.workspace_root)
+        report = intel.generate_report()
+        return {"success": True, "report": report}
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def _btp_scan_dependencies(self, args):
+    """Scan all dependency manifests for malicious packages, typosquats, and CVEs."""
+    try:
+        from src.dependency_threat import DependencyThreatScanner
+    except ImportError:
+        from btp_guard.dependency_threat import DependencyThreatScanner
+    try:
+        check_osv = args.get("check_osv", False)
+        scanner = DependencyThreatScanner(workspace_root=self.workspace_root)
+        report = scanner.scan_all(check_osv=check_osv)
+        return report
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
+
+def _btp_prompt_firewall(self, args):
+    """Scan a text payload for prompt injection attack patterns."""
+    try:
+        from src.prompt_injection_firewall import PromptInjectionFirewall
+    except ImportError:
+        from btp_guard.prompt_injection_firewall import PromptInjectionFirewall
+    try:
+        payload = args.get("payload", "")
+        strict = args.get("strict_mode", False)
+        source = args.get("source", "mcp")
+        fw = PromptInjectionFirewall(strict_mode=strict)
+        result = fw.scan(payload, source=source)
+        result["plain_explanation"] = fw.generate_plain_explanation(result)
+        return result
+    except Exception as e:
+        return {"success": False, "error": str(e)}

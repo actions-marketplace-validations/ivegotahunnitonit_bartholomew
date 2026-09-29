@@ -4990,3 +4990,62 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def cmd_intel(args):
+    """Workspace Intelligence Report — full stack, security, cost, and optimization analysis."""
+    try:
+        from src.workspace_intel import WorkspaceIntelligence
+    except ImportError:
+        from btp_guard.workspace_intel import WorkspaceIntelligence
+    ws = getattr(args, "dir", ".") or "."
+    intel = WorkspaceIntelligence(workspace_root=ws)
+    report = intel.generate_report()
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print(intel.format_plaintext(report))
+
+
+def cmd_scan_deps(args):
+    """Dependency Threat Scanner — malicious packages, typosquats, CVEs."""
+    try:
+        from src.dependency_threat import DependencyThreatScanner
+    except ImportError:
+        from btp_guard.dependency_threat import DependencyThreatScanner
+    ws = getattr(args, "dir", ".") or "."
+    check_osv = getattr(args, "osv", False)
+    scanner = DependencyThreatScanner(workspace_root=ws)
+    report = scanner.scan_all(check_osv=check_osv)
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print(scanner.format_plaintext(report))
+    if not report["clean"]:
+        sys.exit(1)
+
+
+def cmd_firewall(args):
+    """Prompt Injection Firewall — scan text or stdin for injection attacks."""
+    try:
+        from src.prompt_injection_firewall import PromptInjectionFirewall
+    except ImportError:
+        from btp_guard.prompt_injection_firewall import PromptInjectionFirewall
+    fw = PromptInjectionFirewall(strict_mode=getattr(args, "strict", False))
+    payload = getattr(args, "payload", None) or ""
+    if not payload:
+        payload = sys.stdin.read()
+    if not payload:
+        print("[*] No payload provided. Pipe text or pass --payload.")
+        return
+    result = fw.scan(payload, source="cli")
+    explanation = fw.generate_plain_explanation(result)
+    if getattr(args, "json", False):
+        print(json.dumps(result, indent=2))
+    else:
+        status = "[BLOCK]" if result["blocked"] else "[ALLOW]"
+        print(f"  {status}  Risk: {result['risk_score']}/100  Latency: {result['latency_us']} us")
+        print(f"  {explanation}")
+        print(f"  Receipt: {result['receipt']}")
+    if result["blocked"]:
+        sys.exit(2)
