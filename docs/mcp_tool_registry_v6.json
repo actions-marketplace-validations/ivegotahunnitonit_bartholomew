@@ -152,6 +152,49 @@
       "category": "MONITORING",
       "description": "Start the Bartholomew Sovereign Flight Deck dashboard on localhost:8787 with live invariant telemetry.",
       "tier": "FREE"
+    },
+    {
+      "name": "btp_workspace_intel",
+      "category": "INTELLIGENCE",
+      "description": "Full workspace intelligence: stack, AI tooling, security posture score, LLM token cost estimates, and optimization opportunities.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_scan_dependencies",
+      "category": "SUPPLY_CHAIN",
+      "description": "Scan dependency manifests for malicious packages, typosquats, supply chain attacks, and CVEs via OSV.dev.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_prompt_firewall",
+      "category": "AI_DEFENSE",
+      "description": "Scan any text payload for prompt injection attacks before it enters the AI model context window. Sub-1ms, 15+ pattern categories.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_check_drift",
+      "category": "DRIFT_DETECTION",
+      "description": "Check an agent action against the session objective for context drift. Returns alignment score 0-100, verdict ON_TRACK or DRIFT_DETECTED, and plain-English explanation.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_drift_report",
+      "category": "DRIFT_DETECTION",
+      "description": "Get full session drift report: total actions, average alignment score, flagged count, drift rate %, worst drift action, and timeline.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_budget_record",
+      "category": "BUDGET_GOVERNOR",
+      "description": "Record token usage for a task and check against session/per-task/velocity budgets. Trips circuit breaker if any limit is exceeded.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_budget_report",
+      "category": "BUDGET_GOVERNOR",
+      "description": "Get full budget report: spend vs. limit, model rates, per-task breakdown, velocity, circuit state.",
+      "tier": "FREE"
     }
-  ]
+  ],
+  "total_tools": 32
 }
