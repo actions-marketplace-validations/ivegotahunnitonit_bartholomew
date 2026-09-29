@@ -121,6 +121,52 @@ class BartholomewMCPServer:
         
         self.tools_schema = [
             {
+                "name": "btp_stream_siem_telemetry",
+                "description": "Translates and streams BTP security events and Merkle receipts into enterprise formats for Splunk HEC, Datadog Logs v2, CrowdStrike Falcon, and AWS Security Hub.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": True,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "event_type": {"type": "string", "description": "Type of event to relay"},
+                        "severity": {"type": "string", "description": "Severity level (INFO, MEDIUM, HIGH, CRITICAL)"},
+                        "action": {"type": "string", "description": "Verdict action (ALLOW, BLOCK)"}
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "payloads": {"type": "object"}
+                    }
+                }
+            },
+            {
+                "name": "btp_ring0_kernel_guard",
+                "description": "Inspects and audits low-level Ring-0 eBPF kernel hooks, system call interception tracepoints, and process containment invariants.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": True,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "verify": {"type": "boolean", "description": "Whether to run low-level invariant verification battery"}
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "status": {"type": "object"}
+                    }
+                }
+            },
+            {
                 "name": "btp_optimize_ecosystem",
                 "description": "Inspects workspace IDE extensions, toolchains, and packages to surface fact-backed bottlenecks, recommend 10x-50x faster alternative executions, and generate high-velocity shortcuts.",
                 "annotations": {
@@ -1235,6 +1281,34 @@ class BartholomewMCPServer:
             return {
                 "isError": False,
                 "content": [{"type": "text", "text": json.dumps(res, indent=2)}]
+            }
+
+        elif name == "btp_stream_siem_telemetry":
+            try:
+                from src.siem_relay import SIEMRelay
+            except ImportError:
+                from btp_guard.siem_relay import SIEMRelay
+            relay = SIEMRelay()
+            event_type = arguments.get("event_type", "MCP_TOOL_EXECUTION")
+            severity = arguments.get("severity", "INFO")
+            action = arguments.get("action", "ALLOW")
+            payloads = relay.relay_event(event_type=event_type, action=action, agent_id="mcp-agent", severity=severity)
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps(payloads, indent=2)}]
+            }
+
+        elif name == "btp_ring0_kernel_guard":
+            try:
+                from src.ring0_controller import Ring0Controller
+            except ImportError:
+                from btp_guard.ring0_controller import Ring0Controller
+            controller = Ring0Controller()
+            verify = arguments.get("verify", False)
+            data = controller.verify_kernel_invariants() if verify else controller.get_status()
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps(data, indent=2)}]
             }
 
         elif name == "btp_optimize_ecosystem":
