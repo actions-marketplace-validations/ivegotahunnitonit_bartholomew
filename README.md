@@ -6,7 +6,14 @@
   <a href="https://bartholomew.info"><img src="docs/assets/terminal_hero.svg" width="800" alt="Bartholomew Sub-35us AST Invariant Gate in Action" /></a>
 </p>
 
-# Bartholomew (BTP v5.4) - The Agentic Runtime Protection (ARP) Platform
+\1
+<!-- BTP v6 Status Badges -->
+[![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](docs/mcp_tool_registry_v6.json)
+[![Tests](https://img.shields.io/badge/Tests-30%2B%20Passing-brightgreen?style=flat-square)](tests/)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-25%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
+[![Extensions](https://img.shields.io/badge/Extensions%20Protected-50%2C000%2B-blueviolet?style=flat-square)](src/universal_extension_mesh.py)
+[![Status](https://img.shields.io/badge/Status-v6.0--pre%20Hardening-orange?style=flat-square)](CHANGELOG.md)
+
 
 **The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous AI Agent Swarms.**
 

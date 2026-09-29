@@ -55,6 +55,11 @@
       {
         "command": "keystone.auditReceipts",
         "title": "Keystone: View Clearance Audit Receipts"
+      },
+      {
+        "command": "keystone.openDashboard",
+        "title": "Keystone: Open Passkey Dashboard & Capability Monitor",
+        "icon": "$(shield)"
       }
     ]
   },
