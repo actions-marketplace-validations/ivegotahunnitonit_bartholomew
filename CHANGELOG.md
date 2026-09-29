@@ -2,6 +2,76 @@
 
 ## [Unreleased — v6.0.0-pre] (Hardening Sprint)
 
+## [Unreleased] — v6.0.0-rc1
+
+### New Pillars (v6.0-pre series)
+- **Prompt Injection Firewall** (`src/prompt_injection_firewall.py`)
+  - 15+ compiled pattern categories: DIRECT_OVERRIDE, PERSONA_HIJACK, CREDENTIAL_EXFIL,
+    ROLE_SPOOFING, TOOL_HIJACK, BEHAVIOR_CONDITIONING, BOUNDARY_INJECTION, EXPLICIT_MARKER
+  - `scan()`, `scan_context_window()`, `get_stats()`, `generate_plain_explanation()`
+  - Sub-1ms per scan. Zero external deps. Tamper-evident SHA-256 receipts.
+
+- **Workspace Intelligence Report** (`src/workspace_intel.py`)
+  - Stack detection: Python/Node/Go/Rust/Ruby/Docker/K8s/Terraform/Nx
+  - AI tooling inventory: CLAUDE.md, GEMINI.md, .cursorrules, Copilot, Continue.dev
+  - Security posture score 0-100 with A+/A/B/C/D grade
+  - LLM token cost estimates with 69.6% compression savings across 5 models
+  - 6 categorized optimization opportunities
+
+- **Dependency Threat Scanner** (`src/dependency_threat.py`)
+  - Curated DB of 22 known malicious packages (PyPI + npm)
+  - Levenshtein typosquat detection against 25 high-value targets
+  - Parses requirements.txt, package.json, go.mod
+  - Optional OSV.dev live CVE lookup (`check_osv=True`)
+
+- **Agent Context Drift Detector** (`src/context_drift_detector.py`)
+  - 10-category SCOPE_TAXONOMY semantic alignment engine
+  - Per-action scoring 0-100 with rolling window drift delta
+  - Session report: avg score, flagged rate %, ON_TRACK / MODERATE_DRIFT / CRITICAL_DRIFT
+  - Configurable `drift_threshold` and `window_size`
+
+- **Token Budget Governor v2** (`src/token_budget_governor_v2.py`)
+  - Model-aware cost tracking: GPT-4o, GPT-4o-mini, Claude 3.5, Claude Haiku, Gemini 2
+  - Per-session budget + per-task budget + velocity circuit breaker
+  - Thread-safe. Tamper-evident spend receipts.
+
+- **Action Replay & Forensics Ledger** (`src/action_replay_ledger.py`)
+  - Tamper-evident append-only ledger using SHA-256 chain hashing
+  - Records every agent action with timestamp, tool, args, verdict, receipt
+  - Replay any session step-by-step for compliance audits
+
+- **In-context Secret Masker v2** (`src/secret_masker_v2.py`)
+  - 12 regex patterns: API keys, JWTs, AWS secrets, GCP SA keys, SSH keys,
+    .env secrets, Bearer tokens, connection strings, GitHub PATs
+  - Replaces secrets with `BTP-VAULT-REF-xxxx` before content enters model context
+  - `mask()`, `unmask()`, `audit_secrets()`, `get_vault()`
+
+- **Multi-workspace Fleet View** (`src/fleet_view.py`)
+  - Aggregates WorkspaceIntelligence across multiple repos in one report
+  - Fleet-level security grade, worst-offender ranking, combined optimization list
+  - `btp-guard fleet` CLI command
+
+### MCP Tools (32 total)
+- Added: `btp_workspace_intel`, `btp_scan_dependencies`, `btp_prompt_firewall`
+- Added: `btp_check_drift`, `btp_drift_report`, `btp_budget_record`, `btp_budget_report`
+
+### CLI Commands
+- `btp-guard intel` — Workspace Intelligence Report
+- `btp-guard scan-deps` — Dependency Threat Scan
+- `btp-guard firewall` — Prompt Injection Firewall (stdin or --payload)
+- `btp-guard fleet` — Multi-workspace Fleet View
+
+### Tests
+- v6 comprehensive suite: 107 passing across 4 test files
+- Total codebase: 3,100+ tests
+
+### Infrastructure
+- Flight Deck dashboard: Firewall Scanner tab + Workspace Intel tab
+- MCP server: all 32 tools routed with session-persistent state (drift detector, budget governor)
+- VSIX v5.4.27: bartholomew-guard-vscode + bartholomew-keystone
+
+
+
 ### Added
 - **Universal Extension Mesh** (`src/universal_extension_mesh.py`): Discovers and protects
   Copilot, Copilot Chat, Cline, Roo-Code, Continue.dev, Cursor, Windsurf, Ruff, Biome.
