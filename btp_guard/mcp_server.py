@@ -121,6 +121,54 @@ class BartholomewMCPServer:
         
         self.tools_schema = [
             {
+                "name": "btp_jit_self_repair",
+                "description": "Analyzes runtime tracebacks, identifies faulting AST nodes, and synthesizes deterministic defensive patches and in-memory module polyfills.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": False,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "traceback": {"type": "string", "description": "Python runtime traceback error message"},
+                        "source_code": {"type": "string", "description": "Faulting source code block"}
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "repaired_code": {"type": "string"},
+                        "patch_description": {"type": "string"}
+                    }
+                }
+            },
+            {
+                "name": "btp_zk_mesh_attestation",
+                "description": "Generates and aggregates privacy-preserving Zero-Knowledge execution proofs for autonomous agent swarms without disclosing source code or proprietary prompts.",
+                "annotations": {
+                    "destructiveHint": False,
+                    "readOnlyHint": True,
+                    "idempotentHint": True,
+                    "openWorldHint": False
+                },
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "agent_id": {"type": "string", "description": "Agent identifier"},
+                        "session_hash": {"type": "string", "description": "Session state hash"}
+                    }
+                },
+                "outputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "proof_commitment": {"type": "object"},
+                        "mesh_root": {"type": "string"}
+                    }
+                }
+            },
+            {
                 "name": "btp_stream_siem_telemetry",
                 "description": "Translates and streams BTP security events and Merkle receipts into enterprise formats for Splunk HEC, Datadog Logs v2, CrowdStrike Falcon, and AWS Security Hub.",
                 "annotations": {
@@ -1281,6 +1329,36 @@ class BartholomewMCPServer:
             return {
                 "isError": False,
                 "content": [{"type": "text", "text": json.dumps(res, indent=2)}]
+            }
+
+        elif name == "btp_jit_self_repair":
+            try:
+                from src.jit_self_repair import JITSelfRepairEngine
+            except ImportError:
+                from btp_guard.jit_self_repair import JITSelfRepairEngine
+            engine = JITSelfRepairEngine()
+            tb = arguments.get("traceback", "")
+            code = arguments.get("source_code", "")
+            analysis = engine.analyze_traceback(tb) if tb else {"error_type": "GenericFault"}
+            repaired_code, patch_desc = engine.synthesize_repair(code, analysis)
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps({"repaired_code": repaired_code, "patch": patch_desc}, indent=2)}]
+            }
+
+        elif name == "btp_zk_mesh_attestation":
+            try:
+                from src.zk_mesh_attestation import ZkMeshAttestationEngine
+            except ImportError:
+                from btp_guard.zk_mesh_attestation import ZkMeshAttestationEngine
+            engine = ZkMeshAttestationEngine()
+            agent_id = arguments.get("agent_id", "mcp-agent-peer")
+            sess = arguments.get("session_hash", "default-session")
+            proof = engine.generate_agent_proof(agent_id=agent_id, session_hash=sess, invariant_root="inv-canonical")
+            agg = engine.aggregate_mesh_proofs()
+            return {
+                "isError": False,
+                "content": [{"type": "text", "text": json.dumps({"proof_id": proof.proof_id, "commitment": proof.proof_commitment, "mesh_root": agg["aggregated_root"]}, indent=2)}]
             }
 
         elif name == "btp_stream_siem_telemetry":

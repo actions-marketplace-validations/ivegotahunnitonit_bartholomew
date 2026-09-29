@@ -109,3 +109,81 @@ def test_mcp_v6_tool_handlers(tmp_path):
     assert res2["isError"] is False
     data2 = json.loads(res2["content"][0]["text"])
     assert data2["status"] == "PASS"
+
+
+def test_jit_self_repair_engine():
+    from src.jit_self_repair import JITSelfRepairEngine
+    engine = JITSelfRepairEngine()
+    
+    # 1. ZeroDivisionError
+    tb1 = "Traceback (most recent call last):\n  File \"main.py\", line 12, in <module>\nZeroDivisionError: division by zero"
+    analysis1 = engine.analyze_traceback(tb1)
+    assert analysis1["error_type"] == "ZeroDivisionError"
+    repaired1, desc1 = engine.synthesize_repair("val = a / b", analysis1)
+    assert "1e-9" in repaired1
+    
+    # 2. KeyError
+    tb2 = "Traceback (most recent call last):\n  File \"agent.py\", line 4\nKeyError: 'api_token'"
+    analysis2 = engine.analyze_traceback(tb2)
+    assert analysis2["error_type"] == "KeyError"
+    repaired2, desc2 = engine.synthesize_repair("tok = config['api_token']", analysis2)
+    assert ".get(" in repaired2
+    
+    # 3. Polyfill injection
+    assert engine.inject_in_memory_polyfill("tiktoken") is True
+    import tiktoken
+    enc = tiktoken.get_encoding("cl100k_base")
+    assert enc.encode("hello") == [104, 101, 108, 108, 111]
+
+
+def test_zk_mesh_attestation_engine():
+    from src.zk_mesh_attestation import ZkMeshAttestationEngine
+    mesh = ZkMeshAttestationEngine(mesh_id="test-mesh-fleet")
+    
+    # Generate 4 agent proofs
+    for i in range(4):
+        mesh.generate_agent_proof(
+            agent_id=f"agent-{i}",
+            session_hash=f"hash-{i}",
+            invariant_root=f"inv-{i}",
+            private_action_count=50
+        )
+    assert len(mesh.attestations) == 4
+    
+    # Verify peer attestation
+    assert mesh.verify_peer_attestation(mesh.attestations[0]) is True
+    
+    # Aggregate proofs
+    agg = mesh.aggregate_mesh_proofs()
+    assert agg["status"] == "RECURSIVE_ROOT_VALID"
+    assert agg["total_proofs"] == 4
+    assert len(agg["aggregated_root"]) == 64
+    assert agg["compression_ratio"] == "4:1"
+
+
+def test_mcp_all_25_tools(tmp_path):
+    from btp_guard.mcp_server import BartholomewMCPServer
+    server = BartholomewMCPServer(workspace_root=str(tmp_path))
+    tool_names = [t["name"] for t in server.tools_schema]
+    
+    assert "btp_jit_self_repair" in tool_names
+    assert "btp_zk_mesh_attestation" in tool_names
+    assert len(tool_names) >= 25
+    
+    # Test btp_jit_self_repair
+    res_jit = server.handle_tool_call("btp_jit_self_repair", {
+        "traceback": "ZeroDivisionError: division by zero",
+        "source_code": "x = a / b"
+    })
+    assert res_jit["isError"] is False
+    data_jit = json.loads(res_jit["content"][0]["text"])
+    assert "repaired_code" in data_jit
+    
+    # Test btp_zk_mesh_attestation
+    res_zk = server.handle_tool_call("btp_zk_mesh_attestation", {
+        "agent_id": "test-peer-99",
+        "session_hash": "sess-alpha"
+    })
+    assert res_zk["isError"] is False
+    data_zk = json.loads(res_zk["content"][0]["text"])
+    assert "mesh_root" in data_zk
