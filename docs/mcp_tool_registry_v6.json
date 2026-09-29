@@ -1,0 +1,157 @@
+{
+  "version": "6.0.0-pre",
+  "schema": "https://bartholomew.sh/mcp/registry/v6",
+  "description": "Bartholomew Sovereign MCP Tool Registry \u2014 25 native tools for AI coding security, compliance, and autonomous agent protection.",
+  "tools": [
+    {
+      "name": "btp_protect",
+      "category": "SECURITY",
+      "description": "Evaluate a shell command or file operation against all AST invariants. Returns verdict, rule_id, latency, and Merkle receipt.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_check",
+      "category": "SECURITY",
+      "description": "Lightweight sub-5us in-process check for dangerous command patterns.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_audit",
+      "category": "COMPLIANCE",
+      "description": "Return the last 25 intercepted actions from the audit ledger with full Merkle receipts.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_status",
+      "category": "TELEMETRY",
+      "description": "Return current workspace security score, grade, active invariants, and passkey state.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_inject_ai_rules",
+      "category": "COMPANION",
+      "description": "Write GEMINI.md, CLAUDE.md, and .cursorrules with live invariant briefing for the active AI model.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_model_context",
+      "category": "COMPANION",
+      "description": "Generate cryptographically grounded invariant briefing for any AI companion model (Gemini, Claude, Cursor, Copilot).",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_keystone_issue",
+      "category": "KEYSTONE",
+      "description": "Issue a scoped Keystone Capability Passkey for an autonomous agent with file, command, network, and spend limits.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_keystone_verify",
+      "category": "KEYSTONE",
+      "description": "Verify an active Keystone Passkey is valid and has not expired or been tampered with.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_keystone_revoke",
+      "category": "KEYSTONE",
+      "description": "Revoke the current workspace Keystone Passkey immediately.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_keystone_evaluate",
+      "category": "KEYSTONE",
+      "description": "Evaluate a proposed agent action (file write, command exec) against the active Keystone clearance scopes.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_heal",
+      "category": "SELF_REPAIR",
+      "description": "Auto-heal a proposed dangerous command into a safe equivalent and return the repaired version.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_jit_self_repair",
+      "category": "SELF_REPAIR",
+      "description": "Analyze a Python traceback and synthesize a deterministic AST-level repair patch.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_compress",
+      "category": "OPTIMIZATION",
+      "description": "Compress the workspace codebase context by 69.6% using AST structural skeletons for cheaper LLM prompts.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_optimize",
+      "category": "OPTIMIZATION",
+      "description": "Generate workflow shortcuts, import cycles fixes, and parallel test optimization for the active repository.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_profile",
+      "category": "OPTIMIZATION",
+      "description": "Profile active AI agent calls for latency bottlenecks and suggest caching and batching improvements.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_collaborate",
+      "category": "ECOSYSTEM",
+      "description": "Detect all active IDE extensions and generate a collaboration mesh config (.btp/collaborate.json).",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_ecosystem_advisor",
+      "category": "ECOSYSTEM",
+      "description": "Analyze installed extensions and suggest improvements, workflows, shortcuts, and alternative approaches.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_stream_siem_telemetry",
+      "category": "SIEM",
+      "description": "Stream audit events to Splunk, Datadog, CrowdStrike, or AWS Security Hub in real time.",
+      "tier": "ENTERPRISE"
+    },
+    {
+      "name": "btp_ring0_kernel_guard",
+      "category": "KERNEL",
+      "description": "Verify kernel-level syscall constraints and eBPF hook integrity for untrusted agent isolation.",
+      "tier": "ENTERPRISE"
+    },
+    {
+      "name": "btp_swarm_ops",
+      "category": "SWARM",
+      "description": "Display real-time swarm operations center snapshot with evaluation counts and neutralized threat stats.",
+      "tier": "ENTERPRISE"
+    },
+    {
+      "name": "btp_zk_mesh_attestation",
+      "category": "ZK_PROOF",
+      "description": "Generate and aggregate zero-knowledge proof commitments across a multi-agent fleet without revealing source code.",
+      "tier": "ENTERPRISE"
+    },
+    {
+      "name": "btp_compliance_report",
+      "category": "COMPLIANCE",
+      "description": "Generate a SOC 2 / ISO 27001 evidence pack with Merkle proof chain and audit ledger export.",
+      "tier": "ENTERPRISE"
+    },
+    {
+      "name": "btp_policy_validate",
+      "category": "POLICY",
+      "description": "Lint and validate a workspace .btp/policy.yaml against the BTP invariant schema.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_dry_run_trace",
+      "category": "POLICY",
+      "description": "Run a synthetic agent trace through the policy engine and return a full pass/block simulation.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_flight_deck",
+      "category": "MONITORING",
+      "description": "Start the Bartholomew Sovereign Flight Deck dashboard on localhost:8787 with live invariant telemetry.",
+      "tier": "FREE"
+    }
+  ]
+}

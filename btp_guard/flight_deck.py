@@ -685,3 +685,5 @@ def run_flight_deck(root_path: str = ".", port: int = 8787, open_browser: bool =
 
 if __name__ == "__main__":
     run_flight_deck(root_path=".", port=8787, open_browser=False)
+
+start_flight_deck = run_flight_deck
