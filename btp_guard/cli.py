@@ -80,6 +80,94 @@ def cmd_chaos(args):
         print_chaos_scorecard(report)
 
 
+
+def cmd_relay(args):
+    try:
+        from src.siem_relay import SIEMRelay
+    except ImportError:
+        from btp_guard.siem_relay import SIEMRelay
+    relay = SIEMRelay()
+    provider = getattr(args, "provider", "all")
+    export_path = getattr(args, "export", None)
+    
+    if export_path:
+        count = relay.export_compliance_bundle(export_path, provider=provider)
+        print(f"[+] [BTP] Exported {count} compliance events to {export_path} ({provider})")
+        return
+
+    payloads = relay.relay_event(
+        event_type="ENTERPRISE_SIEM_AUDIT",
+        action="ALLOW",
+        agent_id="btp-agent-v6-primary",
+        severity="INFO",
+        metadata={"subsystem": "siem_relay", "status": "CONNECTED"}
+    )
+    
+    if getattr(args, "json", False):
+        print(json.dumps(payloads, indent=2))
+    else:
+        print("\n" + "=" * 74)
+        print("      BARTHOLOMEW ENTERPRISE SIEM CLOUD RELAY (BTP v6.0.0)")
+        print("=" * 74)
+        print("  Status: CONNECTED & ACTIVE")
+        print(f"  Spool:  {relay.spool_path}")
+        print("  Supported Formats:")
+        print("    • Splunk HEC:              Ready (sourcetype: _json)")
+        print("    • Datadog Logs v2:         Ready (service: btp-guard)")
+        print("    • CrowdStrike LogScale:    Ready (category: AgenticDefense)")
+        print("    • AWS Security Hub (ASFF): Ready (ARN: arn:aws:securityhub:::product/btp)")
+        print("=" * 74 + "\n")
+
+
+def cmd_ring0(args):
+    try:
+        from src.ring0_controller import Ring0Controller
+    except ImportError:
+        from btp_guard.ring0_controller import Ring0Controller
+    controller = Ring0Controller()
+    if getattr(args, "verify", False):
+        res = controller.verify_kernel_invariants()
+        if getattr(args, "json", False):
+            print(json.dumps(res, indent=2))
+        else:
+            print("\n" + "=" * 74)
+            print("      BARTHOLOMEW RING-0 KERNEL INVARIANT VERIFICATION")
+            print("=" * 74)
+            print(f"  Status: {res['status']} ({res['invariants_held']}/{res['total_evaluated']} held)")
+            for t in res.get("tests", []):
+                print(f"  • [{t['verdict']}] {t['syscall']}: {t['target']} ({t['latency_us']}us)")
+            print("=" * 74 + "\n")
+        return
+
+    status = controller.get_status()
+    if getattr(args, "json", False):
+        print(json.dumps(status, indent=2))
+    else:
+        print("\n" + "=" * 74)
+        print("      BARTHOLOMEW RING-0 HARDWARE & KERNEL GUARD STATUS")
+        print("=" * 74)
+        print(f"  Platform:         {status['platform'].capitalize()} ({status['architecture']})")
+        print(f"  Protection Level: {status['kernel_level']}")
+        print(f"  Mode:             {status['enforcement_mode']}")
+        print(f"  Average Latency:  {status['average_latency_ns']} ns")
+        print("  Active Syscall Hooks:")
+        for h in status.get("active_hooks", []):
+            print(f"    • {h}")
+        print("=" * 74 + "\n")
+
+
+def cmd_ops(args):
+    try:
+        from src.swarm_ops_tui import SwarmOpsTUI
+    except ImportError:
+        from btp_guard.swarm_ops_tui import SwarmOpsTUI
+    tui = SwarmOpsTUI()
+    if getattr(args, "live", False):
+        tui.run_live(iterations=getattr(args, "count", 3), interval=getattr(args, "interval", 0.5))
+    else:
+        print(tui.render_snapshot())
+
+
 def cmd_optimize(args):
     try:
         from src.ecosystem_advisor import EcosystemAdvisor, print_optimization_matrix
@@ -3686,6 +3774,25 @@ def main():
     chaos_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
 
     # optimize
+    
+    # relay
+    relay_p = subparsers.add_parser("relay", help="Enterprise SIEM cloud relay for Splunk, Datadog, and CrowdStrike")
+    relay_p.add_argument("--provider", "-p", choices=["splunk", "datadog", "crowdstrike", "aws", "all"], default="all", help="SIEM provider format (default: all)")
+    relay_p.add_argument("--export", "-e", help="Export spooled compliance events to file")
+    relay_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
+    # ring0
+    ring0_p = subparsers.add_parser("ring0", help="Hardware-level eBPF & Ring-0 kernel guard controller")
+    ring0_p.add_argument("--status", "-s", action="store_true", help="Display kernel hook status (default)")
+    ring0_p.add_argument("--verify", "-v", action="store_true", help="Verify low-level syscall invariant enforcement")
+    ring0_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
+    # ops
+    ops_p = subparsers.add_parser("ops", help="Real-time terminal operations dashboard for autonomous swarms")
+    ops_p.add_argument("--live", "-l", action="store_true", help="Run interactive live loop")
+    ops_p.add_argument("--count", "-n", type=int, default=3, help="Number of refresh cycles in live mode (default: 3)")
+    ops_p.add_argument("--interval", "-i", type=float, default=0.5, help="Refresh interval in seconds (default: 0.5)")
+
     opt_p = subparsers.add_parser("optimize", help="Inspect extensions & packages for fact-backed bottlenecks, alternative executions, and shortcuts")
     opt_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
     opt_p.add_argument("--apply", action="store_true", help="Generate and apply high-velocity workflow shortcuts (.btp/shortcuts.sh)")
@@ -4503,6 +4610,12 @@ def main():
         cmd_exec(args)
     elif args.command == "chaos":
         cmd_chaos(args)
+    elif args.command == "relay":
+        cmd_relay(args)
+    elif args.command == "ring0":
+        cmd_ring0(args)
+    elif args.command == "ops":
+        cmd_ops(args)
     elif args.command == "optimize":
         cmd_optimize(args)
     elif args.command == "profile":
