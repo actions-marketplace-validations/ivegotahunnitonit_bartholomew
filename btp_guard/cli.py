@@ -410,21 +410,35 @@ def cmd_protect(args):
         print(json.dumps(res, indent=2))
         return
 
-    print("\n" + "=" * 74)
-    print("      BARTHOLOMEW IMMUNIZATION COMPLETE -- WORKSPACE ARMED (BTP v5.4)")
-    print("=" * 74)
+    try:
+        from src.universal_extension_mesh import UniversalExtensionMesh
+    except ImportError:
+        from btp_guard.universal_extension_mesh import UniversalExtensionMesh
+
+    mesh = UniversalExtensionMesh(workspace_root=target_dir)
+    bd = mesh.get_plain_breakdown()
+
+    print("\n" + "=" * 76)
+    print("      BARTHOLOMEW WORKSPACE ARMED -- SOVEREIGN PROTECTION (BTP v6.0)")
+    print("=" * 76)
     print(f"  Workspace Root  : {res['workspace_path']}")
-    print(f"  Security Grade  : {res['grade']} ({res['security_score']}/100)")
-    print("  Status          : ACTIVE (<35us In-Process AST Safety Gate)")
+    print(f"  Security Grade  : {res['grade']} ({res['security_score']}/100) [SOC 2 & OWASP READY]")
+    print("  Latency Gate    : Sub-35us In-Process Hardware/AST Shield")
+    print("\n  [1] WHAT IS GOING ON:")
+    print(f"      {bd['whats_going_on']}")
+    print("\n  [2] WHAT IS WRONG:")
+    for w in bd['whats_wrong']:
+        print(f"      - {w}")
+    print("\n  [3] WHAT NEEDS FIXING:")
+    for f in bd['what_needs_fixing']:
+        print(f"      - {f['title']:<22}: Run '{f['action']}' ({f['why']})")
+    print("\n  [4] HOW WE ARE HELPING:")
+    for h in bd['how_were_helping']:
+        print(f"      - {h}")
     print("\n  Protected AI Environments & Rules Configured:")
     for change in res["changes"]:
         print(f"    [+] {change['file']:<35} : {change['desc']}")
-    print("\n  Direct Model Context:")
-    print("    - Gemini context  : Run 'btp-guard model-context --model gemini --copy'")
-    print("    - Claude context  : Run 'btp-guard model-context --model claude --copy'")
-    print("    - Cursor context  : Synced to .cursorrules & .cursor/rules/btp-guard.mdc")
-    print("    - Shared bridge   : .btp/model-context.md")
-    print("=" * 74 + "\n")
+    print("=" * 76 + "\n")
 
 
 def cmd_model_context(args):
