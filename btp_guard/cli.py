@@ -4130,6 +4130,14 @@ def main():
     collab_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
     collab_p.add_argument("--json", action="store_true", help="Output machine-readable collaboration JSON")
 
+    # arm / protect
+    arm_p = subparsers.add_parser("arm", help="1-command project immunizer and AST pre-commit/CI arming")
+    arm_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
+    arm_p.add_argument("--mode", choices=["balanced", "strict"], default="balanced", help="Protection mode")
+    arm_p.add_argument("--force", "-f", action="store_true", help="Force overwrite existing configuration files")
+    arm_p.add_argument("--audit-only", action="store_true", help="Audit workspace security score without modifying files")
+    arm_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
+
     # protect
     protect_p = subparsers.add_parser("protect", help="One-command project immunizer for Cursor, Claude, Gemini, and CI/CD")
     protect_p.add_argument("--dir", "-d", default=".", help="Target workspace directory (default: .)")
@@ -4931,7 +4939,7 @@ def main():
         cmd_watch(args)
     elif args.command == "collaborate":
         cmd_collaborate(args)
-    elif args.command == "protect":
+    elif args.command in ("protect", "arm"):
         cmd_protect(args)
     elif args.command == "model-context":
         cmd_model_context(args)

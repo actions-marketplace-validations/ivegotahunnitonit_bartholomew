@@ -838,6 +838,7 @@ switch (command) {
     console.log(args[1] === '--json' ? JSON.stringify(status) : `Tier: ${status.tier} (${status.status})\nMeter: ${status.meter} ($${status.unit_price_usd} per allowed action)`);
     break;
   }
+  case 'arm':
   case 'protect': {
     const isAudit = args.includes('--audit-only');
     if (isAudit) {
@@ -922,7 +923,8 @@ switch (command) {
     printBanner();
     console.log(`Usage:
   ${BOLD}npx btp-guard intel${RESET}                 Workspace Security Audit & AST Posture Report
-  ${BOLD}npx btp-guard protect${RESET}               Immunize workspace, arm pre-commit & AI model rules
+  ${BOLD}npx btp-guard arm${RESET}                   Immunize workspace, arm pre-commit & AI model rules
+  ${BOLD}npx btp-guard protect${RESET}               Alias for arm
   ${BOLD}npx btp-guard firewall "<query>"${RESET}    Sub-20µs prompt injection & destructive command firewall
   ${BOLD}npx btp-guard scan-deps${RESET}             Scan dependencies for supply chain attacks & typosquats
   ${BOLD}npx btp-guard try${RESET}                   Run instant interactive safety sandbox (<35µs AST gate)

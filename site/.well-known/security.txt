@@ -1,4 +1,4 @@
-# Bartholomew Trust Protocol (BTP v5.4.1) Security Policy
+# Bartholomew Trust Protocol (BTP v6.0.0) Security Policy
 # RFC 9116 Compliant Security Disclosure Specification
 
 Contact: mailto:security@bartholomew.info

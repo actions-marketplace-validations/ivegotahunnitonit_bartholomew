@@ -1,6 +1,6 @@
 {
   "name": "btp-guard",
-  "version": "6.0.0",
+  "version": "6.0.1",
   "description": "BTP v6.0.0 The Agentic Runtime Protection (ARP) Gateway - Sub-35us In-Process Tool Gating, Autonomous Micro-Escrow & SOC 2 Merkle Receipts",
   "main": "index.js",
   "types": "index.d.ts",

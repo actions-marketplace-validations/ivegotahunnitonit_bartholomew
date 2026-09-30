@@ -506,7 +506,7 @@ alwaysApply: true
 
 # Bartholomew Keystone Guard Active Invariants
 
-This workspace is actively protected by Bartholomew Keystone Guard (BTP v5.4).
+This workspace is actively protected by Bartholomew Keystone Guard (BTP v6.0.0).
 All terminal executions, tool invocations, and filesystem writes are evaluated in-process (<35µs latency) against deterministic Abstract Syntax Tree (AST) safety invariants.
 
 ## Safety Invariants Enforced:
@@ -518,14 +518,14 @@ All terminal executions, tool invocations, and filesystem writes are evaluated i
 
 const CLAUDE_SNIPPET = `
 <!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
-## Bartholomew Keystone Guardrails (BTP v5.4 Enterprise)
+## Bartholomew Keystone Guardrails (BTP v6.0.0 Enterprise)
 This workspace is monitored and protected by Bartholomew Keystone Guard.
 All tool invocations and terminal commands run through deterministic <35µs AST safety checks.
 `;
 
 const GEMINI_SNIPPET = `
 <!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
-## Bartholomew Keystone Security Invariants (BTP v5.4)
+## Bartholomew Keystone Security Invariants (BTP v6.0.0)
 This repository is armed with Bartholomew Keystone Guard for autonomous agent safety.
 All tool calls, shell executions, and file edits are monitored in-process (<35µs).
 `;
@@ -611,12 +611,14 @@ export function immunizeProject(workspaceRoot = '.', options = {}) {
   const btpDir = path.join(ws, '.btp');
   fs.mkdirSync(btpDir, { recursive: true });
 
+  // 1. Declarative AST Policy
   const polPath = path.join(btpDir, 'policy.yaml');
   if (!fs.existsSync(polPath) || options.force) {
-    fs.writeFileSync(polPath, 'version: "5.4.0"\nname: "Default Invariant Policy"\n', 'utf-8');
+    fs.writeFileSync(polPath, 'version: "6.0.0"\nname: "Default AST Invariant Policy"\nlatency_sla_us: 35.0\n', 'utf-8');
     changes.push({ file: '.btp/policy.yaml', action: 'created', desc: 'Enterprise AST invariant policy' });
   }
 
+  // 2. AI Companion Invariant Rules (Cursor, Claude, Gemini)
   const cursorDir = path.join(ws, '.cursor', 'rules');
   fs.mkdirSync(cursorDir, { recursive: true });
   const mdcPath = path.join(cursorDir, 'btp-guard.mdc');
@@ -626,20 +628,69 @@ export function immunizeProject(workspaceRoot = '.', options = {}) {
   }
 
   const claudePath = path.join(ws, 'CLAUDE.md');
-  if (!fs.existsSync(claudePath)) {
+  if (!fs.existsSync(claudePath) || options.force) {
     fs.writeFileSync(claudePath, '# Project Guidelines\n' + CLAUDE_SNIPPET, 'utf-8');
     changes.push({ file: 'CLAUDE.md', action: 'created', desc: 'Claude Code instructions' });
   }
 
   const geminiPath = path.join(ws, 'GEMINI.md');
-  if (!fs.existsSync(geminiPath)) {
+  if (!fs.existsSync(geminiPath) || options.force) {
     fs.writeFileSync(geminiPath, '# Gemini Project Context\n' + GEMINI_SNIPPET, 'utf-8');
     changes.push({ file: 'GEMINI.md', action: 'created', desc: 'Gemini companion context' });
   }
 
+  // 3. Keystone Capability Passkey
+  const keystonePath = path.join(ws, '.btp_keystone.json');
+  if (!fs.existsSync(keystonePath) || options.force) {
+    const keyData = {
+      passkey_id: "key_" + crypto.randomBytes(8).toString("hex"),
+      agent_id: "universal-agent",
+      issuer: "Bartholomew-Keystone-Authority",
+      issued_at: new Date().toISOString(),
+      scopes: { files: { allow: ["src/", "site/"], deny: [".env", "id_rsa"] } }
+    };
+    fs.writeFileSync(keystonePath, JSON.stringify(keyData, null, 2), 'utf-8');
+    changes.push({ file: '.btp_keystone.json', action: 'created', desc: 'Keystone capability passkey' });
+  }
+
+  // 4. CI/CD GitHub Actions Guard
+  const workflowDir = path.join(ws, '.github', 'workflows');
+  fs.mkdirSync(workflowDir, { recursive: true });
+  const ciPath = path.join(workflowDir, 'bartholomew-guard.yml');
+  if (!fs.existsSync(ciPath) || options.force) {
+    const ciYaml = `name: Bartholomew Guard Security Check
+on: [push, pull_request]
+jobs:
+  security-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run Bartholomew AST & Dependency Guard
+        run: |
+          npx --yes btp-guard intel
+          npx --yes btp-guard scan-deps
+`;
+    fs.writeFileSync(ciPath, ciYaml, 'utf-8');
+    changes.push({ file: '.github/workflows/bartholomew-guard.yml', action: 'created', desc: 'CI/CD AST security gate' });
+  }
+
+  // 5. Git Pre-Commit Hook (if git initialized)
+  const gitHooksDir = path.join(ws, '.git', 'hooks');
+  if (fs.existsSync(gitHooksDir)) {
+    const preCommitPath = path.join(gitHooksDir, 'pre-commit');
+    if (!fs.existsSync(preCommitPath) || options.force) {
+      const hookContent = `#!/bin/sh\n# Bartholomew Guard Pre-Commit Sentinel\nnpx --yes btp-guard scan-deps || exit 1\n`;
+      fs.writeFileSync(preCommitPath, hookContent, { mode: 0o755, encoding: 'utf-8' });
+      changes.push({ file: '.git/hooks/pre-commit', action: 'created', desc: 'Git pre-commit security hook' });
+    }
+  }
+
   const health = evaluateWorkspaceSecurity(ws);
   return {
-    status: 'IMMUNIZED',
+    status: 'ARMED',
     workspacePath: ws,
     changes,
     securityScore: health.score,
