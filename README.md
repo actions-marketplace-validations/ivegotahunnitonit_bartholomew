@@ -14,7 +14,7 @@
 [![Status](https://img.shields.io/badge/Status-v6.0.0%20GA-brightgreen?style=flat-square)](CHANGELOG.md)
 
 
-**The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous AI Agent Swarms.**
+**The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous Agent Swarms.**
 
 Bartholomew is the industry standard **agentic runtime security firewall**, providing sub-35us deterministic execution verification for autonomous agents, tool runtimes, and the Model Context Protocol (MCP).
 
@@ -23,7 +23,7 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 [![Open VSX Downloads](https://img.shields.io/badge/Open%20VSX-6%2C096%2B%20Installs-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/npm/v/btp-guard?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
-[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/evals-100%2C000%2B%20vectors-brightgreen)](tests/)
 [![Hugging Face Space](https://img.shields.io/badge/Hugging%20Face-Simulator%20Space-yellow?logo=huggingface&logoColor=white)](https://huggingface.co/spaces/acnbartholomew/bartholomew-agent-guard)
@@ -80,8 +80,8 @@ pip install btp-guard && btp-guard arm
 
 ---
 
-### 2. Straight-On Path to AI Models (Gemini, Claude, Cursor)
-Pairing with an AI companion? Copy instant, cryptographically grounded invariant context into your chat or composer so your AI companion codes safely without tripping blocks:
+### 2. Straight-On Path to Agent Models (Gemini, Claude, Cursor)
+Pairing with an agent companion? Copy instant, cryptographically grounded invariant context into your chat or composer so your agent companion codes safely without tripping blocks:
 
 ```bash
 # Export tailored context for Gemini to clipboard:
@@ -142,7 +142,7 @@ Add zero-trust agentic safety to your repository in 2 lines:
 
 ## What It Does
 
-Bartholomew is the execution gate for autonomous AI agents.
+Bartholomew is the execution gate for autonomous agents.
 
 It sits between an agent and real-world execution (shell, SQL, file I/O, cloud APIs) and decides whether proposed actions should be allowed before they execute.
 
@@ -278,7 +278,7 @@ npx btp-guard claude
 View the complete [Claude Code Integration Guide](docs/CLAUDE_CODE_INTEGRATION_GUIDE.md).
 
 ### 2. CI/CD GitHub Action for AI-Generated PRs
-Automatically audit Pull Requests proposed by AI coding agents (Devin, Copilot, SWE-bench bots) for secret leaks and destructive shell patterns in `.github/workflows/ai-guard.yml`:
+Automatically audit Pull Requests proposed by autonomous coding agents (Devin, Copilot, SWE-bench bots) for secret leaks and destructive shell patterns in `.github/workflows/ai-guard.yml`:
 ```yaml
 - name: Bartholomew ARP Guard
   uses: ivegotahunnitonit/bartholomew@main
@@ -293,7 +293,7 @@ View the [GitHub Action Marketplace Guide](docs/GITHUB_ACTION_MARKETPLACE.md).
 
 ## Autonomous Agent Economy & Enterprise Security
 
-Bartholomew provides foundational economic and trust primitives for autonomous AI swarms:
+Bartholomew provides foundational economic and trust primitives for autonomous agent swarms:
 
 1. **[Verified MCP Security Seal Program](docs/MCP_VERIFICATION_PROGRAM.md)**: Cryptographic safety certification for Model Context Protocol (MCP) servers and community tools against our 100,000+ invariant attack benchmark.
 2. **[HTTP 402 / L402 Autonomous M2M Attestation](docs/L402_M2M_ATTESTATION_PROTOCOL.md)**: Sub-millisecond pay-per-receipt attestation where autonomous agent swarms settle micro-fees (10 sats / $0.0001) directly on the wire without human credit cards.
@@ -392,7 +392,7 @@ Auto-scaffold or drop the pre-configured rules into your project root:
 npx btp-guard init
 ```
 - **Terminal Invariant Defense**: Blocks recursive deletions (`rm -rf`), database destructions (`DROP TABLE`), and pipe execution (`curl | sh`).
-- **Zero Secret Leakage**: Masks `.env*`, private keys (`id_rsa`, `id_ed25519`, `.pem`, `.key`), and credentials from AI agent context.
+- **Zero Secret Leakage**: Masks `.env*`, private keys (`id_rsa`, `id_ed25519`, `.pem`, `.key`), and credentials from agent context.
 - **Boundary Confinement**: Restricts agent file modifications strictly to the active workspace.
 - View the submission specs: [Cursorrules Directory Pack](docs/CURSORRULES_DIRECTORY_SUBMISSION.md) | [Windsurf Rules Pack](docs/WINDSURF_RULES_SUBMISSION.md).
 
@@ -489,7 +489,7 @@ python -m pytest -q
   <img src="docs/assets/verified_mcp_seal.png" width="90" alt="Bartholomew Logo" />
 </p>
 
-Bartholomew is developed and maintained as an open-source security standard for autonomous AI agents, tool runtimes, and the Model Context Protocol (MCP).
+Bartholomew is developed and maintained as an open-source security standard for autonomous agents, tool runtimes, and the Model Context Protocol (MCP).
 
 Support ongoing invariant security research, red-team benchmarks, and public infrastructure:
 

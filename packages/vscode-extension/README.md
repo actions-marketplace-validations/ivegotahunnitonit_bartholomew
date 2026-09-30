@@ -4,10 +4,10 @@
 
 # Bartholomew Guard - AI Agent Safety and Guardrails (Cursor, Claude, Copilot)
 
-> **Zero-trust firewall and execution guardrails for autonomous AI agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
+> **Zero-trust firewall and execution guardrails for autonomous agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
 > *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct AI Model Context Bridge.*
 
-[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
 [![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.34-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
@@ -20,7 +20,7 @@
 
 ## Extension Overview
 
-Bartholomew Guard operates in-process between autonomous AI coding assistants (Cursor Composer, Claude Code, GitHub Copilot, Gemini Antigravity, Windsurf, Roo Code, Cline) and your operating system. Every proposed command, file write, script execution, or network invocation is intercepted and verified against deterministic invariants in **under 35 microseconds** before execution:
+Bartholomew Guard operates in-process between autonomous coding assistants (Cursor Composer, Claude Code, GitHub Copilot, Gemini Antigravity, Windsurf, Roo Code, Cline) and your operating system. Every proposed command, file write, script execution, or network invocation is intercepted and verified against deterministic invariants in **under 35 microseconds** before execution:
 
 - **Destructive Command Interception**: Blocks destructive operations such as `rm -rf`, `mkfs`, raw block overwrites, and unauthorized branch deletions.
 - **In-Flight Secret and Credential Redaction**: Intercepts high-entropy API keys (`sk-*`, AWS keys, JWTs, OAuth tokens) and replaces them with cryptographically verified redaction masks before transmission.
@@ -78,7 +78,7 @@ Whenever Bartholomew Guard audits your workspace or intercepts an agent operatio
 
 #### In VS Code, Cursor, or Windsurf
 1. Open the Extensions pane (`Ctrl+Shift+X` or `Cmd+Shift+X`).
-2. Search for **`Bartholomew AI Agent Guard`**.
+2. Search for **`Bartholomew Agent Guard`**.
 3. Click **Install**.
 
 #### Via Extensions CLI

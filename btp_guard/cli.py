@@ -49,7 +49,7 @@ def cmd_inject(args):
     ws = getattr(args, "dir", ".") or "."
     res = run_bridge_injection(workspace_root=ws, target=target)
     print("\n" + "=" * 74)
-    print("      BARTHOLOMEW AI BRIDGE CONTEXT INJECTOR (BTP v5.4.26)")
+    print("      BARTHOLOMEW AGENT BRIDGE CONTEXT INJECTOR (BTP v5.4.26)")
     print("=" * 74)
     for r in res.get("results", []):
         print(f"  - [{r['target'].upper()}] {r['file']}: {r['message']}")
@@ -272,7 +272,7 @@ def cmd_version(args):
     print("Latency: Sub-35 microseconds (in-process) | Throughput: 1.05M evals/sec")
     print("Status: Community Free Tier active (Local AST Gating)")
     print("[+] Bartholomew Sovereign Sentinel & L402 Swarm Settlement Active:")
-    print("    https://bartholomew.info/cloud | https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600")
+    print("    https://bartholomew.info/cloud | https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605")
 
 
 def cmd_shield(args):
@@ -444,7 +444,7 @@ def cmd_protect(args):
     print("\n  [4] HOW WE ARE HELPING:")
     for h in bd['how_were_helping']:
         print(f"      - {h}")
-    print("\n  Protected AI Environments & Rules Configured:")
+    print("\n  Protected Agent Environments & Rules Configured:")
     for change in res["changes"]:
         print(f"    [+] {change['file']:<35} : {change['desc']}")
     print("=" * 76 + "\n")
@@ -891,7 +891,7 @@ def cmd_swarm_status(args):
         {"name": "Google Gemini 3.8 Ultra", "id": "gemini-3.8-ultra-coder", "scopes": ["ast:read", "tool:eval", "thought:guard"], "collateral": 10000.0},
         {"name": "Anthropic Claude 3.7 Sonnet", "id": "claude-3.7-sonnet-researcher", "scopes": ["ast:read", "sandbox:read", "hybrid:intercept"], "collateral": 8000.0},
         {"name": "GPT-Astra / OpenAI Agents SDK", "id": "gpt-astra-treasury-operator", "scopes": ["escrow:lock", "api:dispatch", "schema:verify"], "collateral": 12000.0},
-        {"name": "Cloudflare Workers AI", "id": "cloudflare-edge-worker-ai", "scopes": ["edge:dispatch", "kv:replay", "sub50us:gate"], "collateral": 5000.0},
+        {"name": "Cloudflare Workers", "id": "cloudflare-edge-worker-ai", "scopes": ["edge:dispatch", "kv:replay", "sub50us:gate"], "collateral": 5000.0},
         {"name": "Microsoft AutoGen Swarm", "id": "autogen-consensus-swarm-leader", "scopes": ["swarm:groupchat", "quorum:vote", "barter:mint"], "collateral": 5000.0},
         {"name": "GitHub Copilot / Cursor", "id": "cursor-copilot-dev-agent", "scopes": ["workspace:read", "git:inspect", "mcp:stdio"], "collateral": 3000.0},
     ]
@@ -1028,7 +1028,7 @@ def cmd_leads_list(args):
 
         print(f"--- OUTREACH & LEAD PIPELINE STATUS ---")
         print(f"  [+] Wave 1 (Priority Founders)     : {len(w1)} dispatched")
-        print(f"  [+] Wave 2 (Community AI Builders) : {len(w2)} dispatched")
+        print(f"  [+] Wave 2 (Community Agent Builders) : {len(w2)} dispatched")
         print(f"  [+] Wave 3 (Startup CTOs & Leads)  : {len(w3)} dispatched")
         if other:
             print(f"  [+] Pending / Incoming Leads       : {len(other)} queued")
@@ -1958,7 +1958,7 @@ def cmd_audit(args):
         tenant_id = getattr(args, "tenant", None) or "ten_default_enterprise"
         exporter = ComplianceDossierExporter(
             tenant_id=tenant_id,
-            org_id=getattr(args, "org", None) or "Autonomous AI Deployment"
+            org_id=getattr(args, "org", None) or "Autonomous Agent Deployment"
         )
         out = getattr(args, "out", None)
         fmt = getattr(args, "format", "md")
@@ -1988,7 +1988,7 @@ def cmd_audit(args):
         from src.trust_protocol import BartholomewTrustAuthority
 
         generator = ComplianceReportGenerator(
-            organization_name=getattr(args, "org", None) or "Autonomous AI Deployment",
+            organization_name=getattr(args, "org", None) or "Autonomous Agent Deployment",
             policy_id="urn:btp:policy:soc2-owasp-agentic-baseline"
         )
 
@@ -3237,7 +3237,7 @@ def cmd_billing_invoice(args):
         print(f"[*] TOTAL AMOUNT DUE     : $25,000.00 USD")
         print("-" * 75)
         print("CORPORATE WIRE REMITTANCE INSTRUCTIONS:")
-        print("  Beneficiary Name       : Bartholomew Trust Protocol / Sovereign AI Security")
+        print("  Beneficiary Name       : Bartholomew Trust Protocol / Sovereign Agent Security")
         print("  Settlement Currency    : USD ($)")
         print("  Remittance Method      : FedNow / Direct Domestic ACH / Wire Transfer")
         print(f"  Payment Reference / PO : {inv_id}")
@@ -3782,7 +3782,7 @@ License Tier: {lic.get('tier', 'COMMUNITY')}
     print("=" * 70)
     print(f"[BTP GUARD] Compliance Dossier exported to: {out_path}")
     print(f"Audit Status: {status_header}")
-    print("[+] All SOC 2 Type II and EU AI Act compliance evidence signed and valid.")
+    print("[+] All SOC 2 Type II and EU Digital Regulations compliance evidence signed and valid.")
     print("=" * 70)
 
 
@@ -4040,7 +4040,7 @@ def cmd_replay(args):
 
 
 def cmd_mask(args):
-    """Mask secrets in a file or stdin before sending to AI context."""
+    """Mask secrets in a file or stdin before sending to agent context."""
     try:
         from src.secret_masker_v2 import SecretMaskerV2
     except ImportError:
@@ -4306,7 +4306,7 @@ def cmd_telemetry(args):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Bartholomew AI Agent Guardrail CLI")
+    parser = argparse.ArgumentParser(description="Bartholomew Autonomous Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # inject
@@ -4436,7 +4436,7 @@ def main():
     telem_p.add_argument("--count", "-c", type=int, default=100, help="Number of telemetry events to export (default: 100)")
     telem_p.add_argument("--out", "-o", help="Output file path (e.g. otel_traces.json)")
 
-    comp_p = subparsers.add_parser("export-compliance", help="Export auditor-ready SOC 2 / EU AI Act compliance dossier")
+    comp_p = subparsers.add_parser("export-compliance", help="Export auditor-ready SOC 2 / EU Digital Regulations compliance dossier")
     comp_p.add_argument("--output", "-o", type=str, default="BARTHOLOMEW_COMPLIANCE_DOSSIER.md", help="Output dossier markdown file path")
 
     # activate
@@ -4514,7 +4514,7 @@ def main():
     replay_p.add_argument("--log", help="Path to replay ledger JSONL file")
     replay_p.add_argument("--json", action="store_true", help="Output JSON")
     
-    mask_p = subparsers.add_parser("mask", help="In-context Secret Masker — scan and mask secrets before sending to AI context")
+    mask_p = subparsers.add_parser("mask", help="In-context Secret Masker — scan and mask secrets before sending to agent context")
     mask_p.add_argument("--file", help="File to mask")
     
     scope_p = subparsers.add_parser("scope", help="Agent Permission Scope Guard — check declared permissions manifest")
@@ -4665,10 +4665,10 @@ def main():
     aud_p = subparsers.add_parser("audit", help="Audit local codebase for OWASP Agentic AI vulnerabilities")
     aud_p.add_argument("path", nargs="?", default=".", help="Target directory to audit (default: .)")
     aud_p.add_argument("--certify", action="store_true", help="Generate verifiable SOC 2 / OWASP compliance certificate with Merkle root & signature")
-    aud_p.add_argument("--dossier", action="store_true", help="Export comprehensive CISO-ready SOC 2 / EU AI Act cryptographic dossier")
+    aud_p.add_argument("--dossier", action="store_true", help="Export comprehensive CISO-ready SOC 2 / EU Digital Regulations cryptographic dossier")
     aud_p.add_argument("--tenant", "-t", default="ten_default_enterprise", help="Tenant workspace ID for dossier")
     aud_p.add_argument("--format", "-F", choices=["md", "json"], default="md", help="Export format for compliance dossier")
-    aud_p.add_argument("--org", type=str, default="Autonomous AI Deployment", help="Organization name for audit certificate")
+    aud_p.add_argument("--org", type=str, default="Autonomous Agent Deployment", help="Organization name for audit certificate")
     aud_p.add_argument("--out", "-o", type=str, default=None, help="Output path for certificate HTML or JSON package")
 
     # check

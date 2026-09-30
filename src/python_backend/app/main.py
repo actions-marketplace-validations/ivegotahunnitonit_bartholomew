@@ -1763,7 +1763,7 @@ def ai_agent_manifest():
         "description": "Autonomous sub-millisecond cryptographic execution & safety gateway for multi-agent systems.",
         "discovery_endpoint": "/.well-known/btp-configuration.json",
         "runtime_sidecar_endpoint": "/sidecar/evaluate",
-        "machine_payment_rail": "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600",
+        "machine_payment_rail": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605",
         "supported_invariants": [
             "BTP-SEC-001: Payload Tamper-Resistance (RFC 8785)",
             "BTP-SEC-002: Cross-Context Replay Isolation",

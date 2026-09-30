@@ -130,7 +130,7 @@ function runInit(subargs = []) {
   if (/langgraph/i.test(fileContent) || /langchain/i.test(fileContent)) { framework = 'langgraph'; detectedFrameworks.push('LangGraph / LangChain'); }
   if (/gemini|google-genai|google\.generativeai/i.test(fileContent) || subargs.includes('--gemini')) { framework = 'gemini'; detectedFrameworks.push('Google Gemini 3.8 / Generative AI'); }
   if (/autogen/i.test(fileContent) || /pyautogen/i.test(fileContent)) { framework = 'autogen'; detectedFrameworks.push('Microsoft AutoGen'); }
-  if (/openai/i.test(fileContent)) { framework = 'openai'; detectedFrameworks.push('OpenAI Agent SDK / Swarm'); }
+  if (/openai/i.test(fileContent)) { framework = 'openai'; detectedFrameworks.push('OpenAgent SDK / Swarm'); }
   if (/anthropic/i.test(fileContent)) { framework = 'anthropic'; detectedFrameworks.push('Anthropic Claude MCP'); }
   if (fs.existsSync(path.join(targetDir, '.cursor'))) detectedFrameworks.push('Cursor IDE Integration');
   if (fs.existsSync(path.join(targetDir, '.vscode'))) detectedFrameworks.push('VS Code Workspace');

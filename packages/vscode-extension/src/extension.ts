@@ -147,7 +147,7 @@ export function activate(context: ExtensionContext) {
         const snippet = generateModelContextSnippet(rootPath, message.model || 'all');
         await vscode.env.clipboard.writeText(snippet);
         vscode.window.showInformationMessage(
-          `Bartholomew Guard: Context copied for ${(message.model || 'AI Model').toUpperCase()}! Paste directly into your chat or composer.`
+          `Bartholomew Guard: Context copied for ${(message.model || 'Agent Model').toUpperCase()}! Paste directly into your chat or composer.`
         );
       } else if (message.command === 'immunize' || message.command === 'immunizeWorkspace') {
         vscode.commands.executeCommand('bartholomew.protectWorkspace');
@@ -307,9 +307,9 @@ export function activate(context: ExtensionContext) {
   });
   context.subscriptions.push(installPreCommitCmd);
 
-  // Command: Inject AI Rules (GEMINI.md, CLAUDE.md, .cursorrules)
+  // Command: Inject Agent Rules (GEMINI.md, CLAUDE.md, .cursorrules)
   const injectAiRulesCmd = vscode.commands.registerCommand('bartholomew.injectAiRules', async () => {
-    const terminal = vscode.window.createTerminal('Bartholomew AI Rules');
+    const terminal = vscode.window.createTerminal('Bartholomew Agent Rules');
     terminal.show();
     terminal.sendText('python -m btp_guard.cli protect');
     vscode.window.showInformationMessage('Bartholomew: Injected GEMINI.md, CLAUDE.md, and .cursorrules into workspace!');
@@ -341,7 +341,7 @@ export function activate(context: ExtensionContext) {
   const isPro = isProLicensed();
   statusBarItem.text = isPro ? `$(shield) BTP: PRO (UNMETERED)` : `$(shield) BTP: ARMED (${usedCalls}/50 Free)`;
   statusBarItem.tooltip = isPro ? `Bartholomew Pro (Unmetered Developer Seat Active)` : `Bartholomew Free Tier: ${usedCalls}/50 evaluations used. Click to upgrade to Pro ($49/mo)`;
-  statusBarItem.tooltip = `Bartholomew Autonomous AI Guard (BTP v6.0 Sovereign Enterprise) - Sub-25µs AST & Keystone Active`;
+  statusBarItem.tooltip = `Bartholomew Autonomous Agent Guard (BTP v6.0 Sovereign Enterprise) - Sub-25µs AST & Keystone Active`;
   
   // 15. Command: Run in Bartholomew Kernel Sandbox
   const runInSandboxCmd = vscode.commands.registerCommand('bartholomew.runInSandbox', async () => {
@@ -388,7 +388,7 @@ context.subscriptions.push(
   context.subscriptions.push(upgradeProCmd);
 
   const backOpenSourceCmd = vscode.commands.registerCommand('bartholomew.backOpenSource', () => {
-    vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600'));
+    vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605'));
   });
   context.subscriptions.push(backOpenSourceCmd);
 
@@ -439,7 +439,7 @@ context.subscriptions.push(
       : `• Keystone Passkey: None issued yet (Run 'Keystone: Issue Agent Capability Passkey')`;
 
     const message = isConfigured
-      ? `Bartholomew Autonomous AI Guard (BTP v6.0 Sovereign Runtime)\n\n• Status: ACTIVE (Sovereign Enterprise Unrestricted)\n• In-Process AST Gating: Sub-25 µs\n• Merkle Receipt Ledger: ENABLED (RFC 8785 + Ed25519)\n• Model Context Protocol (MCP): REGISTERED\n• L402 Lightning Settlements: READY\n${passkeyDetails}`
+      ? `Bartholomew Autonomous Agent Guard (BTP v6.0 Sovereign Runtime)\n\n• Status: ACTIVE (Sovereign Enterprise Unrestricted)\n• In-Process AST Gating: Sub-25 µs\n• Merkle Receipt Ledger: ENABLED (RFC 8785 + Ed25519)\n• Model Context Protocol (MCP): REGISTERED\n• L402 Lightning Settlements: READY\n${passkeyDetails}`
       : `Bartholomew BTP is not yet initialized in this workspace.\n\nRun 'btp-guard init' in terminal to generate sovereign keys & policy.`;
 
     vscode.window.showInformationMessage(

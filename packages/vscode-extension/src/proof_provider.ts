@@ -164,7 +164,7 @@ export function loadTelemetry(rootPath: string): ProofTelemetry {
       deniedCommands
     },
     breakdown: {
-      goingOn: 'All AI agent tool invocations, shell executions, and file modifications are evaluated in-process before execution.',
+      goingOn: 'All autonomous agent tool invocations, shell executions, and file modifications are evaluated in-process before execution.',
       wrongs: ['0 active invariant violations detected across workspace AST tree.'],
       fixings: ['Maintain Git pre-commit barrier and keep active Keystone passkey valid.'],
       helpings: ['Sub-35us deterministic AST evaluation', 'Secret exfiltration scrubbing', 'Agent spend ceiling caps']
@@ -189,8 +189,8 @@ export function generateModelContextSnippet(rootPath: string, model: string): st
   const workspaceName = path.basename(rootPath);
 
   return `<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
-# AI Companion Security & Invariant Briefing (Bartholomew Keystone v6.0)
-Target AI Companion: ${model.toUpperCase()} | Workspace: ${workspaceName}
+# Agent Companion Security & Invariant Briefing (Bartholomew Keystone v6.0)
+Target Agent Companion: ${model.toUpperCase()} | Workspace: ${workspaceName}
 
 You are collaborating on this codebase under the active protection of **Bartholomew Guard**.
 All tool calls, shell executions, and file edits are monitored in-process (<35us latency) against deterministic Abstract Syntax Tree (AST) safety invariants:
@@ -749,7 +749,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       padding-left: 30px;
     }
 
-    /* TAB 3: AI COMPANIONS */
+    /* TAB 3: AGENT COMPANIONS */
     .companions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -858,6 +858,17 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
 </head>
 <body>
 
+  <div style="background:linear-gradient(135deg, rgba(99,91,255,0.15) 0%, rgba(16,185,129,0.15) 100%); border:1px solid rgba(99,91,255,0.4); border-radius:8px; padding:10px 16px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-size:14px;">💜</span>
+      <span style="font-size:12px; font-weight:700; color:#e2e8f0;">Bartholomew is 100% Free & Open-Source. Back continuous development via Stripe:</span>
+    </div>
+    <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" style="display:inline-flex; align-items:center; gap:6px; background:#635BFF; color:#ffffff; padding:5px 12px; border-radius:6px; font-size:11px; font-weight:800; text-decoration:none;">
+      Back Open Source
+    </a>
+  </div>
+
+
   <!-- Top Brand Header with Bartholomew Shield Logo -->
   <div class="top-header">
     <div class="brand-wrap">
@@ -945,7 +956,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
   <div class="nav-tabs">
     <button class="tab-item active" onclick="switchTab('simulator')">Threat Simulator</button>
     <button class="tab-item" onclick="switchTab('invariants')">Security Invariants</button>
-    <button class="tab-item" onclick="switchTab('companions')">AI Companions</button>
+    <button class="tab-item" onclick="switchTab('companions')">Agent Companions</button>
     <button class="tab-item" onclick="switchTab('ledger')">Audit Ledger</button>
   </div>
 
@@ -991,7 +1002,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     </div>
   </div>
 
-  <!-- TAB 3: AI COMPANIONS -->
+  <!-- TAB 3: AGENT COMPANIONS -->
   <div id="tab-companions" class="tab-pane">
     <div class="companions-grid">
       <div class="companion-card">
@@ -1194,7 +1205,7 @@ export class BartholomewProofViewProvider implements vscode.WebviewViewProvider 
       if (message.command === 'copyModelContext') {
         const snippet = generateModelContextSnippet(rootPath, message.model || 'all');
         await vscode.env.clipboard.writeText(snippet);
-        const m = (message.model || 'AI Model').toUpperCase();
+        const m = (message.model || 'Agent Model').toUpperCase();
         vscode.window.showInformationMessage('Bartholomew Guard: Invariant briefing copied for ' + m + '!');
       } else if (message.command === 'immunize') {
         vscode.commands.executeCommand('bartholomew.protectWorkspace');

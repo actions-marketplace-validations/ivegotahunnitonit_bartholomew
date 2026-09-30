@@ -1,6 +1,6 @@
 # btp-guard
 
-[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
  (Node.js & TypeScript)
 
 > **Sub-35µs In-Process Execution Firewall & Deterministic AST Safety Gate for AI Agents**  
@@ -15,7 +15,7 @@
 
 ## What is Bartholomew Guard?
 
-Bartholomew Guard is an ultra-fast in-process security gateway for autonomous AI agents (Gemini, Claude, Cursor, Copilot, LangChain.js, Vercel AI SDK).
+Bartholomew Guard is an ultra-fast in-process security gateway for autonomous agents (Gemini, Claude, Cursor, Copilot, LangChain.js, Vercel AI SDK).
 
 It sits in memory between your AI agent and the operating system. Before any bash command, SQL query, file edit, or MCP tool call executes, Bartholomew evaluates the action against deterministic Abstract Syntax Tree (AST) safety invariants in **under 35 microseconds**—blocking destructive operations (`rm -rf`, `DROP TABLE`), redacting in-flight credentials (`sk-*`, AWS tokens), and signing cryptographic RFC 8785 Ed25519 receipts.
 
@@ -30,7 +30,7 @@ npx btp-guard protect
 ```
 
 ### 2. Export Context for Your AI Model (Gemini, Claude, Cursor)
-Copy tailored invariant instructions directly to your clipboard so your AI companion codes safely without tripping blocks:
+Copy tailored invariant instructions directly to your clipboard so your agent companion codes safely without tripping blocks:
 ```bash
 npx btp-guard model-context --model gemini
 npx btp-guard model-context --model claude

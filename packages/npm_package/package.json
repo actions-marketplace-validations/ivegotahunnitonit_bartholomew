@@ -23,7 +23,7 @@
   },
   "funding": {
     "type": "stripe",
-    "url": "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600"
+    "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
   },
   "scripts": {
     "test": "node test.js"

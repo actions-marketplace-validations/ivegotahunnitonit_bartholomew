@@ -52,7 +52,7 @@ The in-process AI agent execution gateway providing sub-35µs tool gating, zero 
 3. The shield icon in your status bar confirms real-time AST protection is active.
 
 ### Commercial Plans & Cloud Fleet:
-* **Bartholomew Pro ($49/mo)**: Real-time Cloud Telemetry Dashboard & Slack alerts -> [Upgrade to Pro](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
+* **Bartholomew Pro ($49/mo)**: Real-time Cloud Telemetry Dashboard & Slack alerts -> [Upgrade to Pro](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 * **Enterprise Fleet ($199/mo)**: Multi-tenant workspace isolation & SOC 2 Type II audit packs -> [Upgrade to Enterprise](https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601)
 * **Portal**: https://bartholomew.info/pricing
 """

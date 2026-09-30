@@ -1,7 +1,7 @@
 {
   "name": "bartholomew-guard-vscode",
-  "displayName": "Bartholomew AI Agent Guard - Security and Guardrails (Cursor, Claude, Copilot)",
-  "description": "BTP v6.1.0 Zero-trust firewall, locked single-tenant telemetry vault, autonomous yield daemon, and execution guardrails for AI agents (Cursor, Claude, Copilot, Windsurf).",
+  "displayName": "Bartholomew Agent Guard - Security and Guardrails (Cursor, Claude, Copilot)",
+  "description": "BTP v6.1.0 Zero-trust firewall, locked single-tenant telemetry vault, autonomous yield daemon, and execution guardrails for autonomous agents (Cursor, Claude, Copilot, Windsurf).",
   "version": "6.1.0",
   "publisher": "itsubsolomon",
   "icon": "icon.png",
@@ -27,7 +27,7 @@
     "Machine Learning"
   ],
   "keywords": [
-    "ai",
+    "agents",
     "security",
     "agent",
     "guardrails",
@@ -202,6 +202,6 @@
   ],
   "funding": {
     "type": "stripe",
-    "url": "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600"
+    "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
   }
 }

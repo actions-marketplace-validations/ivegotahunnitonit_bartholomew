@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, Any, Tuple
 
 FREE_TIER_CALL_LIMIT = 50  # Unlimited local evaluations under REAPER-style fair developer model
-STRIPE_PRO_URL = "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600"
+STRIPE_PRO_URL = "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
 STRIPE_ENTERPRISE_URL = "https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601"
 STORE_URL = "https://bartholomew.info/store/"
 FIRST_USE_NOTICE_KEY = "upgrade_notice_shown"
