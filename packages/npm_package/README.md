@@ -9,7 +9,7 @@
 [![npm version](https://img.shields.io/npm/v/btp-guard?style=flat-square&color=38bdf8)](https://www.npmjs.com/package/btp-guard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg?style=flat-square)](https://www.npmjs.com/package/btp-guard)
-[![Smithery MCP](https://img.shields.io/badge/Smithery%20MCP-100%2F100%20Verified-blue)](https://smithery.ai/servers/itsubsolomon/calls_10k)
+[![Smithery MCP](https://img.shields.io/badge/Smithery%20MCP-100%2F100%20Verified-blue)](https://smithery.ai/servers/bartholomew/calls_10k)
 
 ---
 
