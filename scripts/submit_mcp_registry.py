@@ -126,7 +126,7 @@ def print_manual_instructions(registry_data):
 * **Display Name**: {registry_data.get('displayName')}
 * **Category**: Security / Governance & Verification / Developer Tools
 * **Protocol Version**: {registry_data.get('version')}
-* **Repository**: https://github.com/bartholomew-ai/bartholomew
+* **Repository**: https://github.com/ivegotahunnitonit/bartholomew
 * **PyPI**: https://pypi.org/project/btp-guard/5.4.23/
 * **Live Discovery**: https://acn-26670.web.app/.well-known/mcp.json
 
@@ -158,6 +158,22 @@ Bartholomew Sentinel is an in-process AI agent execution gateway providing deter
 ```
 """
     print(pr_body)
+    
+    print("=" * 76)
+    print("AWESOME MCP SERVERS (punkpeye/awesome-mcp-servers) ENTRY:")
+    print("=" * 76)
+    print("TARGET REPOSITORY: https://github.com/punkpeye/awesome-mcp-servers")
+    print("CATEGORY         : Security & Governance")
+    print("MARKDOWN LINE    :")
+    print("- [Bartholomew Sentinel](https://github.com/ivegotahunnitonit/bartholomew) - Sub-35µs in-process AST invariant gate, secret scrubbing, and Ed25519 execution proofs for AI agents.")
+    print("=" * 76)
+    print("SMITHERY REGISTRY (smithery.ai) ONE-CLICK INDEX:")
+    print("=" * 76)
+    print("1. Go to https://smithery.ai")
+    print("2. Enter repository URL: https://github.com/ivegotahunnitonit/bartholomew")
+    print("3. smithery.yaml in repo root will be automatically recognized and indexed.")
+    print("=" * 76)
+
     print("=" * 76)
     print("PR SUBMISSION URL:")
     print(f"  https://github.com/modelcontextprotocol/servers/compare")

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/schema.json",
+  "name": "bartholomew-guard",
+  "displayName": "Bartholomew AI Agent Guard & Execution Sentinel",
+  "description": "Deterministic sub-35µs in-process AST execution firewall, secret scrubbing, and cryptographic Keystone passkey verification for Claude Desktop, Cursor, Windsurf, and autonomous agent swarms.",
+  "version": "6.0.0",
+  "author": "itsubsolomon",
+  "license": "MIT",
+  "homepage": "https://bartholomew.info",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivegotahunnitonit/bartholomew.git"
+  },
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "security",
+    "guardrails",
+    "cursor",
+    "claude",
+    "copilot",
+    "firewall",
+    "zero-trust",
+    "secret-scrubber"
+  ],
+  "transports": {
+    "stdio": {
+      "command": "python",
+      "args": ["-m", "mcp_server.server"]
+    },
+    "http": {
+      "url": "https://bartolomew-cloud-engine-322603900775.us-central1.run.app/api/v1/m2m/verify",
+      "type": "http"
+    }
+  },
+  "tools": 40,
+  "discovery": {
+    "manifestUrl": "https://bartholomew.info/.well-known/mcp.json"
+  }
+}

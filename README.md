@@ -12,7 +12,7 @@
 [![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen-brightgreen?style=flat-square)](tests/)
 [![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
 [![Extensions](https://img.shields.io/badge/Extensions%20Protected-50%2C000%2B-blueviolet?style=flat-square)](src/universal_extension_mesh.py)
-[![Status](https://img.shields.io/badge/Status-v6.0.0--rc1%20GA-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/Status-v6.0.0%20GA-brightgreen?style=flat-square)](CHANGELOG.md)
 
 
 **The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous AI Agent Swarms.**
@@ -21,7 +21,7 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 
 [![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.21-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Open VSX Downloads](https://img.shields.io/badge/Open%20VSX-6%2C096%2B%20Installs-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/npm/v/btp-guard?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

@@ -192,3 +192,7 @@ vscode-extension/*.vsix
 # Local Pitch Decks & Proprietary Decks
 *PITCH_DECK*
 src/python_backend/PITCH_DECK.html
+
+# Local generated audit and marketplace packages
+dossier*.json
+marketplace_ready/
