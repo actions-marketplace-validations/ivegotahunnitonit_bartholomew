@@ -40,7 +40,7 @@ function showFirstUseUpgradeOffer() {
 function printBanner() {
   console.log(`
 ${BOLD}${CYAN}
-   ${YELLOW}* BARTHOLOMEW TRUST PROTOCOL (BTP v5.4.19) -- EXECUTION SENTINEL${CYAN}    
+   ${YELLOW}* BARTHOLOMEW TRUST PROTOCOL (BTP v6.0.0) -- EXECUTION SENTINEL${CYAN}    
    ${RESET}Sub-35us AST Safety Gating, Zero Leakage & SOC 2 Merkle Receipts   ${BOLD}${CYAN}
 ${RESET}
 `);
@@ -108,7 +108,7 @@ function runDemo() {
   console.log(`${BOLD}${MAGENTA}Integration Commands:${RESET}`);
   console.log(`  • Setup Claude Desktop: ${BOLD}npx btp-guard init${RESET}`);
   console.log(`  • Scrub any file/pipe:  ${BOLD}npx btp-guard scrub <payload.json>${RESET}`);
-  console.log(`  • Online Command Center: ${CYAN}https://acn-fastapi-backend-322603900775.us-central1.run.app/dashboard${RESET}\n`);
+  console.log(`  • Online Command Center: ${CYAN}https://bartholomew.info/telemetry.html${RESET}\n`);
   showFirstUseUpgradeOffer();
 }
 
@@ -145,7 +145,7 @@ function runInit(subargs = []) {
   const btpDir = path.join(targetDir, '.btp');
   if (!fs.existsSync(btpDir)) fs.mkdirSync(btpDir, { recursive: true });
 
-  const policyYaml = `# Bartholomew Protocol (BTP v5.4.19) Project Policy
+  const policyYaml = `# Bartholomew Protocol (BTP v6.0.0) Project Policy
 version: "5.4.19"
 framework: "${framework}"
 invariants:
@@ -234,10 +234,10 @@ invariants:
 
   // 4a. Configure Cursor (.cursorrules)
   const cursorRulesPath = path.join(targetDir, '.cursorrules');
-  const cursorRulesContent = `# Bartholomew Cursor Configuration (.cursorrules) - BTP v5.4.19
+  const cursorRulesContent = `# Bartholomew Cursor Configuration (.cursorrules) - BTP v6.0.0
 [ai]
 system_prompt_guard = """
-You are operating under the Bartholomew Trust Protocol (BTP v5.4.19) local execution boundary.
+You are operating under the Bartholomew Trust Protocol (BTP v6.0.0) local execution boundary.
 1. NEVER attempt to read, write, or exfiltrate credentials, .env files, private keys (id_rsa, id_ed25519), or API secrets.
 2. NEVER emit destructive file system deletion commands (such as rm -rf, mkfs, format) or unverified shell pipes (curl | sh).
 3. Confine all automated tool calls, file mutations, and terminal execution to the active workspace project boundaries.
@@ -339,7 +339,7 @@ is_safe, violation = guard.check(command_or_sql)${RESET}`);
   console.log(`    ${CYAN}engine = KeystoneEngine()${RESET}`);
   console.log(`    ${CYAN}clearance = engine.check_clearance(passkey, "COMMAND_EXEC", "npm test")${RESET}`);
 
-  console.log(`\n${GREEN}[SUCCESS] Project protected by Bartholomew BTP v5.4.19!${RESET}`);
+  console.log(`\n${GREEN}[SUCCESS] Project protected by Bartholomew BTP v6.0.0!${RESET}`);
   console.log(`\n${BOLD}[INFO] Need Fleet Monitoring or Live Threat Alerts?${RESET}`);
   console.log(`  -> Cloud Console:   ${CYAN}https://bartholomew.info/cloud${RESET}`);
   console.log(`  -> Team Editions:   ${CYAN}npx btp-guard pricing${RESET}  or  ${CYAN}https://bartholomew.info/pricing${RESET}\n`);
