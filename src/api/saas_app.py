@@ -27,7 +27,7 @@ from app.stripe_webhook_handler import handle_stripe_webhook, get_provisioned_cu
 
 STRIPE_PAYMENT_LINKS = {
     "DEVELOPER_FREE":  "https://buy.stripe.com/8x2cN518VgyC86k0qY9R602",
-    "PRO_REPO_$49":    "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600",
+    "PRO_REPO_$49":    "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605",
     "TEAM_ORG_$199":   "https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601",
 }
 

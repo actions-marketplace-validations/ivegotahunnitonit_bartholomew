@@ -2,12 +2,13 @@
   <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="96" height="96" alt="Bartholomew Shield Logo" />
 </p>
 
-# Bartholomew Guard - AI Agent Safety and Guardrails (Cursor, Claude, Copilot)
+# Bartholomew Guard - Autonomous Agent Safety and Guardrails (Cursor, Claude, Copilot)
 
-> **Zero-trust firewall and execution guardrails for autonomous AI agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
-> *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct AI Model Context Bridge.*
+> **Zero-trust firewall and execution guardrails for autonomous agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
+> *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct Agent Context Bridge.*
 
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/bartholomew.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
 [![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.34-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
@@ -19,7 +20,7 @@
 
 ## Extension Overview
 
-Bartholomew Guard operates in-process between autonomous AI coding assistants (Cursor Composer, Claude Code, GitHub Copilot, Gemini Antigravity, Windsurf, Roo Code, Cline) and your operating system. Every proposed command, file write, script execution, or network invocation is intercepted and verified against deterministic invariants in **under 35 microseconds** before execution:
+Bartholomew Guard operates in-process between autonomous coding assistants (Cursor Composer, Claude Code, GitHub Copilot, Gemini Antigravity, Windsurf, Roo Code, Cline) and your operating system. Every proposed command, file write, script execution, or network invocation is intercepted and verified against deterministic invariants in **under 35 microseconds** before execution:
 
 - **Destructive Command Interception**: Blocks destructive operations such as `rm -rf`, `mkfs`, raw block overwrites, and unauthorized branch deletions.
 - **In-Flight Secret and Credential Redaction**: Intercepts high-entropy API keys (`sk-*`, AWS keys, JWTs, OAuth tokens) and replaces them with cryptographically verified redaction masks before transmission.
@@ -49,11 +50,11 @@ Interactive real-time threat simulator and four structured diagnostic panels. Te
 
 ---
 
-### 3. Direct AI Model Context Bridge Core
+### 3. Direct Agent Context Bridge Core
 One-click context injection buttons formatted specifically for Google Gemini / Antigravity, Anthropic Claude Code, Cursor Composer, and GitHub Copilot. Copy invariant rules directly into your prompt or composer.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/model_bridge_core.png" width="100%" alt="Bartholomew Direct AI Model Context Bridge" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/model_bridge_core.png" width="100%" alt="Bartholomew Direct Agent Context Bridge" />
 </p>
 
 ---
@@ -77,13 +78,13 @@ Whenever Bartholomew Guard audits your workspace or intercepts an agent operatio
 
 #### In VS Code, Cursor, or Windsurf
 1. Open the Extensions pane (`Ctrl+Shift+X` or `Cmd+Shift+X`).
-2. Search for **`Bartholomew AI Agent Guard`**.
+2. Search for **`Bartholomew Agent Guard`**.
 3. Click **Install**.
 
 #### Via Extensions CLI
 ```bash
 # In VS Code:
-code --install-extension itsubsolomon.bartholomew-guard-vscode
+code --install-extension bartholomew.bartholomew-guard-vscode
 
 # In Cursor:
 cursor --install-extension Bartholomew.bartholomew-guard-vscode
@@ -107,9 +108,9 @@ This generates `.btp/policy.yaml` and installs the Git AST pre-commit barrier to
 3. Choose a preset attack scenario (e.g. `Blocked Wipe (rm -rf /)` or `Secret Leak`).
 4. Click **Test Gate** to verify real-time sub-35us AST interception and review the generated SHA-256 cryptographic proof receipt.
 
-### Step 4: Bridge into AI Coding Companions
+### Step 4: Bridge into Autonomous Agent Coding Companions
 
-Select the **AI Companions** tab to get customized system instructions for:
+Select the **Agent Companions** tab to get customized system instructions for:
 - **Anthropic Claude Desktop**: Automatically injects MCP security invariants.
 - **Cursor IDE**: Direct `.cursorrules` enforcement snippet.
 - **Google Gemini / Antigravity**: Scoped context prompt with Keystone token verification.

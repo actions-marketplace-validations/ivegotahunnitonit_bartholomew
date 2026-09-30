@@ -7,7 +7,7 @@ import path from 'path';
 import os from 'os';
 import { scrubSecrets, evaluateToolCall, loadLicense } from '../index.js';
 
-const STRIPE_PRO_URL = "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600";
+const STRIPE_PRO_URL = "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605";
 const STRIPE_ENTERPRISE_URL = "https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601";
 const STORE_URL = "https://bartholomew.info/store/";
 

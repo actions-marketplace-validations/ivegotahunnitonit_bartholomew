@@ -3,13 +3,13 @@
   "id": "bartholomew-devops-gate",
   "name": "Bartholomew DevOps Gate: Agent Security and Attestation",
   "version": "1.0.1",
-  "publisher": "itsubsolomon",
+  "publisher": "bartholomew",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "CI/CD security gate for autonomous AI agents. Deterministic AST invariant firewall, secret scrubbing, and Verified Bartholomew Seal attestation for Azure Pipelines.",
+  "description": "CI/CD security gate for autonomous agents. Deterministic AST invariant firewall, secret scrubbing, and Verified Bartholomew Seal attestation for Azure Pipelines.",
   "categories": [
     "Azure Pipelines"
   ],

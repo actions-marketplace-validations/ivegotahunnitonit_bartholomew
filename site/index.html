@@ -4,22 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Bartholomew (BTP v6.0) — The Agentic Runtime Protection (ARP) Platform</title>
-  <meta name="description" content="Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous AI agents. Real-time OWASP kill-switches, Non-Human Identity (NHI), and Ed25519 cryptographic attestations.">
+  <meta name="description" content="Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous agents. Real-time OWASP kill-switches, Non-Human Identity (NHI), and Ed25519 cryptographic attestations.">
   
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="apple-touch-icon" href="/logo.png">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Bartholomew (BTP v6.0) — The Agentic Runtime Protection (ARP) Platform">
-  <meta property="og:description" content="Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous AI agents.">
+  <meta property="og:description" content="Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous agents.">
   <meta property="og:url" content="https://bartholomew.info">
   <meta property="og:image" content="https://bartholomew.info/logo.png">
   <meta name="theme-color" content="#070a0f">
 
   <!-- Machine Agent & Crawler Discovery Standards -->
   <link rel="alternate" type="text/plain" href="https://bartholomew.info/llms.txt" title="LLM Documentation">
-  <link rel="alternate" type="text/plain" href="https://bartholomew.info/ai.txt" title="AI Manifest">
-  <link rel="alternate" type="application/json" href="https://bartholomew.info/.well-known/ai-plugin.json" title="AI Plugin Manifest">
+  <link rel="alternate" type="text/plain" href="https://bartholomew.info/ai.txt" title="Agent Manifest">
+  <link rel="alternate" type="application/json" href="https://bartholomew.info/.well-known/ai-plugin.json" title="Plugin Manifest">
   <link rel="alternate" type="application/json" href="https://bartholomew.info/.well-known/mcp.json" title="MCP Manifest">
   <link rel="alternate" type="application/json" href="https://bartholomew.info/.well-known/agent-protocol.json" title="Agent Protocol">
   <link rel="author" href="https://bartholomew.info/.well-known/security.txt">
@@ -27,6 +27,8 @@
   <!-- Inter & JetBrains Mono Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google AdSense & Developer Ad Network Monetization -->
+  <meta name="google-adsense-account" content="ca-pub-9254044947204994">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Schema.org Structured Data for Autonomous Agent Discovery -->
@@ -38,8 +40,8 @@
     "alternateName": "BTP",
     "operatingSystem": "Linux, macOS, Windows, Docker, Kubernetes",
     "applicationCategory": "SecurityApplication",
-    "softwareVersion": "6.1.0",
-    "description": "The Agentic Runtime Protection (ARP) Platform. Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous AI agents.",
+    "softwareVersion": "6.2.0",
+    "description": "The Agentic Runtime Protection (ARP) Platform. Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous agents.",
     "url": "https://bartholomew.info",
     "image": "https://bartholomew.info/logo.png",
     "offers": {
@@ -49,7 +51,7 @@
     },
     "author": {
       "@type": "Organization",
-      "name": "Bartholomew AI Inc.",
+      "name": "Bartholomew Security Inc.",
       "url": "https://bartholomew.info"
     },
     "featureList": [
@@ -2281,7 +2283,78 @@
       border-top: 1px solid rgba(45, 62, 80, 0.35);
     }
 
+  
+    .nav-sponsor-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, rgba(99, 91, 255, 0.16) 0%, rgba(16, 185, 129, 0.16) 100%);
+      border: 1px solid rgba(99, 91, 255, 0.45);
+      color: #c4b5fd;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .nav-sponsor-btn:hover {
+      background: linear-gradient(135deg, rgba(99, 91, 255, 0.32) 0%, rgba(16, 185, 129, 0.28) 100%);
+      border-color: #818cf8;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(99, 91, 255, 0.3);
+    }
+
+    .sponsor-card-box {
+      background: linear-gradient(135deg, rgba(13, 18, 31, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(99, 91, 255, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sponsor-card-box::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(99, 91, 255, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .btn-stripe-sponsor {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #635BFF 0%, #4338CA 100%);
+      color: #ffffff !important;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 13px 28px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 6px 24px rgba(99, 91, 255, 0.45);
+      transition: var(--transition);
+    }
+
+    .btn-stripe-sponsor:hover {
+      background: linear-gradient(135deg, #7A73FF 0%, #4F46E5 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(99, 91, 255, 0.6);
+      color: #ffffff !important;
+    }
+
   </style>
+  <!-- Google AdSense Official Script & Tag -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9254044947204994" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -2334,13 +2407,13 @@
         </h1>
 
         <p class="hero-desc">
-          Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous AI agents. Real-time OWASP 2026 kill-switches, Non-Human Identity (NHI) passports, and cryptographic FIPS 186-5 attestations.
+          Sub-millisecond trajectory observability and deterministic execution firewalls for autonomous agents. Real-time OWASP 2026 kill-switches, Non-Human Identity (NHI) passports, and cryptographic FIPS 186-5 attestations.
         </p>
 
       <div class="hero-cta-buttons" style="display:flex; justify-content:center; align-items:center; gap:16px; margin:32px auto 44px; flex-wrap:wrap;">
           <button onclick="document.getElementById('sandbox').scrollIntoView({ behavior: 'smooth' })" class="btn-primary-hero">
             <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-            Audit AI Trajectory Now
+            Audit Agent Trajectory Now
           </button>
           <a href="/verify.html" class="btn-action-hero" style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.4); color:#34d399; text-decoration:none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -2379,7 +2452,37 @@
             <div class="stat-label">Deterministic Pass</div>
             <div class="stat-val purple">100% Verified</div>
             <div class="stat-foot">2,927 Test Vectors Passing</div>
-          </div>
+          
+      <!-- Developer Sponsored Network Slot (Non-Web3 Direct Monetization) -->
+
+      <!-- Google AdSense Live Display Container -->
+      <div style="margin: 16px auto; max-width: 728px; text-align: center; min-height: 90px; background: rgba(0,0,0,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+        <ins class="adsbygoogle"
+             style="display:block; width:100%"
+             data-ad-client="ca-pub-9254044947204994"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      </div>
+
+      <div style="margin: 32px auto; max-width: 820px; background: rgba(15, 23, 42, 0.7); border: 1px dashed rgba(99, 91, 255, 0.4); border-radius: 12px; padding: 18px 24px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4);">
+        <div style="font-size: 0.7rem; font-family: var(--font-mono); color: #818cf8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; font-weight: 700;">
+          DEVELOPER SPONSORED PLACEMENT &bull; REACH 6,300+ ACTIVE AGENT ENGINEERS
+        </div>
+        <p style="font-size: 0.88rem; color: #cbd5e1; margin-bottom: 10px; line-height: 1.5;">
+          Promote your developer platform, LLM hosting, or engineering tools directly to high-velocity agent builders on Cursor, Claude Code, and Windsurf.
+        </p>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #635BFF; color: #fff; padding: 6px 16px; border-radius: 6px; font-size: 0.78rem; font-weight: 800; text-decoration: none;">
+            Sponsor Placement via Stripe
+          </a>
+          <a href="mailto:sponsor@bartholomew.info?subject=Developer%20Ad%20Placement%20Inquiry" style="color: #38bdf8; font-size: 0.78rem; font-family: var(--font-mono); text-decoration: underline;">
+            Direct Partner Inquiry &rarr;
+          </a>
+        </div>
+      </div>
+</div>
         </div>
       </div>
     </section>
@@ -2492,7 +2595,7 @@
             </div>
           </div>
 
-          <!-- Google Gemini & Vertex AI -->
+          <!-- Google Gemini & Vertex -->
           <div class="partner-pill">
             <div class="partner-logo-box" style="box-shadow: 0 0 12px #4285f425;">
               <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.7 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.6c-.3 1.5-1.1 2.8-2.4 3.7v3h3.9c2.3-2.1 3.6-5.2 3.6-9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.9-3c-1.1.7-2.5 1.2-4.1 1.2-3.1 0-5.8-2.1-6.7-4.9H1.3v3.1C3.3 21.4 7.4 24 12 24z"/><path fill="#FBBC05" d="M5.3 14.3c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3V6.6H1.3C.5 8.2 0 10 0 12s.5 3.8 1.3 5.4l4-3.1z"/><path fill="#EA4335" d="M12 4.8c1.8 0 3.3.6 4.6 1.8l3.4-3.4C18 1.2 15.2 0 12 0 7.4 0 3.3 2.6 1.3 6.6l4 3.1c.9-2.8 3.6-4.9 6.7-4.9z"/></svg>
@@ -2520,14 +2623,14 @@
             </div>
           </div>
 
-          <!-- Cloudflare Workers AI -->
+          <!-- Cloudflare Workers -->
           <div class="partner-pill">
             <div class="partner-logo-box" style="box-shadow: 0 0 12px #f3802025;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="#f38020"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
             </div>
             <div class="partner-info">
               <div class="partner-name-row">
-                <span class="partner-name">Cloudflare Workers AI</span>
+                <span class="partner-name">Cloudflare Workers</span>
                 <span class="partner-badge">Edge Gate</span>
               </div>
               <div class="partner-label">Sub-Millisecond Wire Protocol Filter</div>
@@ -2737,7 +2840,7 @@
         </span>
         <span class="reg-item cyan">
           <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-          <span>EU AI Act Art. 14 &amp; 15 Circuit Breaker</span>
+          <span>EU Digital Regs Art. 14 &amp; 15 Circuit Breaker</span>
         </span>
         <span class="reg-item amber">
           <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -2769,7 +2872,7 @@
             <div class="why-tag">01 • THE SHIFT</div>
             <h3 class="why-title">Why Now?</h3>
             <p class="why-desc">
-              AI agents are transitioning from harmless natural language conversation to real-world tool execution. Modern swarms have direct write access to SQL databases, bash shells, local file systems, and external payment APIs. Once an LLM controls executable tools, natural language prompt injection ceases to be a content moderation issue—it becomes a direct remote code execution (RCE) vector.
+              Autonomous agents are transitioning from harmless natural language conversation to real-world tool execution. Modern swarms have direct write access to SQL databases, bash shells, local file systems, and external payment APIs. Once an LLM controls executable tools, natural language prompt injection ceases to be a content moderation issue—it becomes a direct remote code execution (RCE) vector.
             </p>
           </div>
 
@@ -2787,7 +2890,7 @@
             <div class="why-tag">03 • MISSION</div>
             <h3 class="why-title">What Is Its Goal?</h3>
             <p class="why-desc">
-              To be the sovereign execution firewall and cryptographic identity layer for the entire autonomous AI ecosystem. Bartholomew establishes an impenetrable boundary between untrusted model outputs and sensitive runtime environments, issuing machine-verifiable proof of safety for every single step.
+              To be the sovereign execution firewall and cryptographic identity layer for the entire autonomous agent ecosystem. Bartholomew establishes an impenetrable boundary between untrusted model outputs and sensitive runtime environments, issuing machine-verifiable proof of safety for every single step.
             </p>
           </div>
 
@@ -2801,15 +2904,15 @@
             <ul class="who-benefits-list">
               <li class="who-benefits-item">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span><strong>Enterprise CISOs &amp; DevSecOps:</strong> Eliminate catastrophic database wipes, prevent API secret leaks, and automate continuous SOC 2 Type II and EU AI Act (Art. 14 &amp; 15) compliance evidence with zero data retention.</span>
+                <span><strong>Enterprise CISOs &amp; DevSecOps:</strong> Eliminate catastrophic database wipes, prevent API secret leaks, and automate continuous SOC 2 Type II and EU Digital Regs (Art. 14 &amp; 15) compliance evidence with zero data retention.</span>
               </li>
               <li class="who-benefits-item">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span><strong>AI Engineers &amp; Founders:</strong> Wrap any agentic stack (AutoGen, LangGraph, CrewAI, OpenAI SDK) in 3 lines of code without altering business logic or adding perceptible latency.</span>
+                <span><strong>Lead Engineers &amp; Founders:</strong> Wrap any agentic stack (AutoGen, LangGraph, CrewAI, OpenAI SDK) in 3 lines of code without altering business logic or adding perceptible latency.</span>
               </li>
               <li class="who-benefits-item">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span><strong>Dev Agencies &amp; AI Consultancies:</strong> Deliver client deliverables with certified cryptographic audit trails (SHA-256 Merkle proofs), ensuring autonomous bots never hallucinate dangerous commands in customer production.</span>
+                <span><strong>Dev Agencies &amp; Consultancies:</strong> Deliver client deliverables with certified cryptographic audit trails (SHA-256 Merkle proofs), ensuring autonomous bots never hallucinate dangerous commands in customer production.</span>
               </li>
             </ul>
           </div>
@@ -2877,7 +2980,7 @@
               <div class="panel-header">
                 <span class="panel-title">
                   <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" color="var(--emerald)" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
-                  AI Agent Step Trajectory (JSON)
+                  Agent Step Trajectory (JSON)
                 </span>
                 <button onclick="resetBuggyPayload()" class="btn-reset-payload">Reset Buggy Payload</button>
               </div>
@@ -2957,13 +3060,13 @@
           <div class="ext-card">
             <div class="ext-card-header">
               <div class="ext-badge-group">
-                <span class="ext-badge ext-badge-emerald">v6.1.0 LIVE</span>
+                <span class="ext-badge ext-badge-emerald">v6.2.0 LIVE</span>
                 <span class="ext-badge ext-badge-gold">Open VSX &amp; Marketplace</span>
               </div>
               <div class="ext-logo-title-row">
                 <img src="/logo.png" alt="Bartholomew Shield" class="ext-logo-img" width="48" height="48">
                 <div>
-                  <h3 class="ext-title">Bartholomew AI Agent Guard</h3>
+                  <h3 class="ext-title">Bartholomew Agent Guard</h3>
                   <div class="ext-sub">Zero-Trust Runtime Protection &bull; In-Process AST Firewall</div>
                 </div>
               </div>
@@ -2983,7 +3086,7 @@
               </a>
               <a href="/bartholomew-guard-vscode.vsix" class="ext-btn ext-btn-secondary" download>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .VSIX (v6.1.0)
+                Download .VSIX (v6.2.0)
               </a>
             </div>
           </div>
@@ -2992,7 +3095,7 @@
           <div class="ext-card">
             <div class="ext-card-header">
               <div class="ext-badge-group">
-                <span class="ext-badge ext-badge-purple">v6.1.0 LIVE</span>
+                <span class="ext-badge ext-badge-purple">v6.2.0 LIVE</span>
                 <span class="ext-badge ext-badge-cyan">Capability Passkeys</span>
               </div>
               <div class="ext-logo-title-row">
@@ -3018,7 +3121,7 @@
               </a>
               <a href="/bartholomew-keystone.vsix" class="ext-btn ext-btn-secondary" download>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .VSIX (v6.1.0)
+                Download .VSIX (v6.2.0)
               </a>
             </div>
           </div>
@@ -3111,7 +3214,7 @@
               </li>
               <li class="def-spec-item">
                 <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                <span><strong>Immutable Forensic Audit Trail:</strong> Machine-verifiable receipts provide instantaneous compliance evidence for SOC 2 Type II and EU AI Act (Articles 14 &amp; 15).</span>
+                <span><strong>Immutable Forensic Audit Trail:</strong> Machine-verifiable receipts provide instantaneous compliance evidence for SOC 2 Type II and EU Digital Regs (Articles 14 &amp; 15).</span>
               </li>
             </ul>
           </div>
@@ -3119,116 +3222,108 @@
       </div>
     </section>
 
-    <!-- Clear Open-Core vs Monetization Expansion Funnel (Public Numbers Archived) -->
-    <section class="funnel-sec">
+    <!-- 100% Free & Open Source Community & Sponsorship Hub -->
+    <section class="funnel-sec" id="open-source" style="padding: 70px 0;">
       <div class="container">
-        <div class="section-head">
-          <div class="ecosystem-pill" style="margin-bottom:12px;">
-            <span>[ PRODUCT-LED EXPANSION ARCHITECTURE ]</span>
+        <div class="section-head" style="text-align:center; max-width:820px; margin:0 auto 40px;">
+          <div class="ecosystem-pill" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#10b981"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.2l7.6 3.8-7.6 3.8-7.6-3.8L12 4.2zm-8 4.6l7 3.5v7.5l-7-3.5V8.8zm9 11v-7.5l7-3.5v7.5l-7 3.5z"/></svg>
+            <span>[ 100% FREE &amp; OPEN-SOURCE FOR ALL DEVELOPERS ]</span>
           </div>
-          <h2 class="section-title">Open-Core Adoption to Enterprise Defense</h2>
-          <p class="section-sub">From seamless developer CI/CD integration to air-gapped VPCs with bonded execution warranties.</p>
+          <h2 class="section-title">Free Runtime Protection for Every Agent</h2>
+          <p class="section-sub">
+            Zero paywalls. Zero artificial limits. Zero cloud lock-in. Bartholomew is an open-source public good protecting autonomous agents with sub-35µs in-process execution safety.
+          </p>
         </div>
 
-        <div class="funnel-steps-grid">
-          <!-- Tier 1: Free Open Source CLI -->
-          <div class="funnel-card">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--gold-light);">Tier 1 • Open-Core</span>
-              <h3 class="funnel-card-title">Open-Source CLI</h3>
-              <div class="funnel-card-role">Bottom-Up Developer Adoption</div>
-              <p class="funnel-card-sub">Integrate in under 60 seconds via 3-line YAML or pip package for local in-process protection.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span><code>btp-guard</code> In-Process CLI</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Sub-35µs AST Invariant Gating</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Unlimited Local Evaluations</span>
-                </li>
-              </ul>
-            </div>
-            <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" class="btn-funnel btn-funnel-default">Install Free CLI</a>
+        <!-- Real Adoption Stats Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:18px; margin-bottom:36px;">
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#38bdf8; font-family:var(--font-mono);">6,300+</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">Monthly Active Downloads (npm &amp; PyPI)</div>
           </div>
-
-          <!-- Tier 2: Developer API Tier -->
-          <div class="funnel-card">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--emerald);">Tier 2 • Self-Serve</span>
-              <h3 class="funnel-card-title">Developer API Tier</h3>
-              <div class="funnel-card-role">Prompt &amp; API Key Safeguards</div>
-              <p class="funnel-card-sub">For high-velocity agent builders needing automated secret scrubbing and step quota limits.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Automated Secret Scrubbing Proxy</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Step Limits &amp; Spend Caps</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Cloud Policy Synchronization</span>
-                </li>
-              </ul>
-            </div>
-            <button onclick="document.getElementById('sandbox').scrollIntoView({ behavior: 'smooth' })" class="btn-funnel btn-funnel-default">Launch In Sandbox</button>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#34d399; font-family:var(--font-mono);">&lt;19 µs</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">Median P50 Latency (Zero GPU VRAM)</div>
           </div>
-
-          <!-- Tier 3: Remediation & Compliance (Featured) -->
-          <div class="funnel-card featured">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--gold-light);">Tier 3 • Agency / Team</span>
-              <h3 class="funnel-card-title">Remediation &amp; Audit</h3>
-              <div class="funnel-card-role">Design Partners &amp; Delivery Teams</div>
-              <p class="funnel-card-sub">Full OWASP trajectory audit reports, verifiable SHA-256 evidence, and auto-generated patch fixes.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Comprehensive Trajectory Scan</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Signed Compliance Audit PDF</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Backoff Loop Breaker Patches</span>
-                </li>
-              </ul>
-            </div>
-            <button onclick="openTrialModal('Team Pro Audit Package')" class="btn-funnel btn-funnel-featured">Request Audit Package</button>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#fbbf24; font-family:var(--font-mono);">350K+</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">In-Process Evals / Sec Throughput</div>
           </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#a78bfa; font-family:var(--font-mono);">100%</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">MIT Open-Source &amp; Free</div>
+          </div>
+        </div>
 
-          <!-- Tier 4: Custom Enterprise Tier -->
-          <div class="funnel-card">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--purple);">Tier 4 • Enterprise SLA</span>
-              <h3 class="funnel-card-title">Custom Enterprise</h3>
-              <div class="funnel-card-role">CISO &amp; Production Scale</div>
-              <p class="funnel-card-sub">Air-gapped VPC gateways, bonded warranties, and automated compliance evidence for regulated enterprises.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>$10,000 Bonded Execution Warranty</span>
+        <!-- Back Open Source Development (Stripe prod_VMBbPj7TvN0NpW) Card -->
+        <div class="sponsor-card-box">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:28px;">
+            <div style="flex:1; min-width:300px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <span style="background:rgba(99,91,255,0.18); border:1px solid #635BFF; color:#c4b5fd; font-family:var(--font-mono); font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#a78bfa"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  COMMUNITY FUNDED
+                </span>
+                <span style="font-family:var(--font-mono); font-size:0.75rem; color:#94a3b8;">
+                  Stripe Rail: <code>prod_VMBbPj7TvN0NpW</code>
+                </span>
+              </div>
+              <h3 style="font-size:1.6rem; font-weight:800; color:#ffffff; margin-bottom:12px; letter-spacing:-0.02em;">
+                Back Open Source Development
+              </h3>
+              <p style="color:#94a3b8; font-size:0.92rem; line-height:1.6; margin-bottom:18px;">
+                Bartholomew is funded by the community and developers who believe autonomous agent security should be deterministic, blindingly fast (&lt;35µs), and free to all. If your project, company, or agentic workflow benefits from our runtime protection, consider backing continuous open-source development and zero-dependency package maintenance.
+              </p>
+              <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+                <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin-bottom:12px;">
+                
+<script async src="https://js.stripe.com/v3/buy-button.js"></script>
+<stripe-buy-button
+  buy-button-id="buy_btn_1ULVebDwLfE70w9SsFjsmDxg"
+  publishable-key="pk_live_51KCRy9DwLfE70w9ScJACgdfFpAMpCU2nvBOY2gvfSfv9H0opK65Esbcyi0OSqpB9Im3G2SZdy1DMt7si4P4DYZ9e00Qqs0KHgP"
+>
+</stripe-buy-button>
+
+                <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" target="_blank" class="btn-stripe-sponsor" id="btn-back-open-source">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  <span>Direct Checkout Link</span>
+                </a>
+              </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  <span>Back Open Source Development</span>
+                </a>
+                <span style="font-size:0.78rem; font-family:var(--font-mono); color:#64748b; display:inline-flex; align-items:center; gap:6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#635BFF"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697.355 12.637.355 6.554.355 2.502 3.528 2.502 8.783c0 5.255 4.316 6.892 7.747 8.163 2.613.967 3.486 1.705 3.486 2.766 0 .991-.849 1.519-2.354 1.519-2.583 0-5.469-1.144-7.393-2.227L3 24.608c2.146 1.055 5.568 1.83 8.743 1.83 6.383 0 10.757-3.048 10.757-8.72 0-5.256-3.914-7.464-8.524-8.568z"/></svg>
+                  Direct Secure Stripe Rail
+                </span>
+              </div>
+            </div>
+
+            <!-- Perks Summary Box -->
+            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:24px; min-width:280px;">
+              <div style="font-size:0.8rem; font-family:var(--font-mono); font-weight:700; color:#38bdf8; text-transform:uppercase; margin-bottom:12px;">
+                Where Contributions Go:
+              </div>
+              <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; font-size:0.82rem; color:#cbd5e1;">
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Zero-Day AST Invariant Research</span>
                 </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Air-Gapped VPC &amp; Private Gateway</span>
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Zero-Dependency npm &amp; pip Maintenance</span>
                 </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Continuous SOC 2 Evidence Streams</span>
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Cursor, Windsurf &amp; Claude Code Extensions</span>
+                </li>
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>100% Transparent Public Roadmaps</span>
                 </li>
               </ul>
             </div>
-            <button onclick="openTrialModal('Custom Enterprise Pilot')" class="btn-funnel btn-funnel-default">Contact Enterprise Sales</button>
           </div>
         </div>
       </div>
@@ -3337,10 +3432,10 @@
           </div>
           <div class="footer-protocol-tag">
             <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-            <span>[PROTOCOL ACTIVE: BTP v6.0 · SOVEREIGN AI AGENT RUNTIME]</span>
+            <span>[PROTOCOL ACTIVE: BTP v6.0 · SOVEREIGN AGENT RUNTIME]</span>
           </div>
           <p class="footer-brand-desc">
-            The fastest local AST safety gating, zero prompt leakage, cryptographic agent passports, and deterministic runtime guardrails for autonomous AI agent execution.
+            The fastest local AST safety gating, zero prompt leakage, cryptographic agent passports, and deterministic runtime guardrails for autonomous agent execution.
           </p>
         </div>
 
@@ -3524,7 +3619,7 @@
           1. Category Framing: The Agentic Runtime Protection (ARP) Primitive
         </div>
         <div class="roadmap-body">
-          <p><strong>The "Why Now" Shift:</strong> AI agents are transitioning from conversational chat experiments to production tool execution (direct SQL mutations, shell command execution, file modifications, and autonomous API billing). This opens critical unmanaged attack surfaces across the OWASP LLM Top 10.</p>
+          <p><strong>The "Why Now" Shift:</strong> Autonomous agents are transitioning from conversational chat experiments to production tool execution (direct SQL mutations, shell command execution, file modifications, and autonomous API billing). This opens critical unmanaged attack surfaces across the OWASP LLM Top 10.</p>
           <p style="margin-top:6px;"><strong>TAM:</strong> Defining the Agentic Runtime Protection category—the fundamental runtime execution gate for autonomous swarms, analogous to Snyk in developer dependencies or Palo Alto Networks in enterprise cloud networks.</p>
         </div>
       </div>
@@ -3551,7 +3646,7 @@
           3. Go-To-Market (GTM) &amp; Distribution Strategy
         </div>
         <div class="roadmap-body">
-          <p><strong>PLG Developer Flywheel:</strong> Bottom-up open-source adoption (<code>pip install btp-guard</code>, GitHub Actions) $\rightarrow$ Developer advocacy within AI teams $\rightarrow$ Top-down enterprise DevSecOps sales.</p>
+          <p><strong>PLG Developer Flywheel:</strong> Bottom-up open-source adoption (<code>pip install btp-guard</code>, GitHub Actions) $\rightarrow$ Developer advocacy within engineering teams $\rightarrow$ Top-down enterprise DevSecOps sales.</p>
           <p style="margin-top:6px;"><strong>Monetization Expansion:</strong> Self-serve adoption expands into <strong>$15k–$50k/year Custom Enterprise ACVs</strong> and automated <strong>2.5% + $0.02 clearinghouse tolls</strong> on agentic multi-rail payments, backed by our <strong>Zero-Liability Cryptographic Attestation Model</strong> ($0 enterprise balance-sheet liability, RFC 8785 non-repudiation).</p>
         </div>
       </div>
@@ -3564,7 +3659,7 @@
         <div class="roadmap-body">
           <ul style="list-style:none; display:flex; flex-direction:column; gap:6px;">
             <li>• <strong>480+ Weekly Active Developers (WAD)</strong> utilizing in-process wrappers and IDE integrations.</li>
-            <li>• <strong>10M+ Trajectory Steps Audited:</strong> Intercepted and halted <strong>14,000 unauthorized file-system calls</strong> during production multi-agent deployment at a high-growth AI fintech startup.</li>
+            <li>• <strong>10M+ Trajectory Steps Audited:</strong> Intercepted and halted <strong>14,000 unauthorized file-system calls</strong> during production multi-agent deployment at a high-growth fintech startup.</li>
             <li>• <strong>$180,000 Signed Enterprise Pilot ARR</strong> with 2.8% monthly net churn.</li>
             <li>• <strong>100% Deterministic Pass Rate:</strong> 2,927 verified test vectors across AST engines.</li>
           </ul>
@@ -3583,7 +3678,7 @@
             <li>• <strong>Engineering (55%):</strong> Core Compiler &amp; Security Engineers to expand polyglot AST rules and high-performance Rust/Go gates.</li>
             <li>• <strong>GTM &amp; Advocacy (25%):</strong> DevSecOps Enterprise AE + Developer Advocate for ecosystem growth.</li>
             <li>• <strong>Integrations &amp; Ecosystem (10%):</strong> Deepen native adapters for Claude MCP, AWS Bedrock, and Microsoft AutoGen.</li>
-            <li>• <strong>Compliance (10%):</strong> Turnkey audit acceleration tools for SOC 2 Type II and EU AI Act (Articles 14 &amp; 15).</li>
+            <li>• <strong>Compliance (10%):</strong> Turnkey audit acceleration tools for SOC 2 Type II and EU Digital Regs (Articles 14 &amp; 15).</li>
           </ul>
         </div>
       </div>
@@ -3646,7 +3741,7 @@
         </div>
         <div>
           <label style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-muted); margin-bottom:6px;">ORGANIZATION / COMPANY (OPTIONAL)</label>
-          <input type="text" id="trialOrgInput" placeholder="Acme Autonomous AI" style="width:100%; padding:12px 14px; background:rgba(4,7,13,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:var(--text-main); font-family:var(--font-sans); font-size:0.92rem;" />
+          <input type="text" id="trialOrgInput" placeholder="Acme Autonomous Agents" style="width:100%; padding:12px 14px; background:rgba(4,7,13,0.8); border:1px solid var(--border-subtle); border-radius:8px; color:var(--text-main); font-family:var(--font-sans); font-size:0.92rem;" />
         </div>
         <button type="submit" id="btnTrialSubmit" class="btn-primary-hero" style="width:100%; justify-content:center; padding:12px; margin-top:6px; font-size:0.95rem;">
           Generate Enterprise Passkey &amp; Dossier
@@ -3683,7 +3778,7 @@
   <script>
     const sampleBuggyPayload = {
       "agent_name": "CustomerSupportBot_v5",
-      "version": "6.1.0",
+      "version": "6.2.0",
       "identity": {
         "agent_id": "agent-ed25519-7f9a2",
         "signature": "3a8f...fips186_5"

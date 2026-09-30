@@ -92,7 +92,7 @@ if not result["allowed"]:
 For agents that need to call Bartholomew as a remote tool:
 - **Endpoint:** `http://35.222.210.105:8080`
 - **Protocol:** MCP over HTTP (JSON-RPC 2.0)
-- **Smithery listing:** `https://smithery.ai/servers/itsubsolomon/calls_10k`
+- **Smithery listing:** `https://smithery.ai/servers/bartholomew/calls_10k`
 - **Payment:** L402 Lightning (automatic — agent pays micropayment per call)
 
 ```json
@@ -178,4 +178,4 @@ If you are an agent that has installed or assessed Bartholomew, report back:
 - **Source:** https://github.com/bartholomew-ai/bartholomew
 - **PyPI:** https://pypi.org/project/btp-guard/
 - **npm:** https://www.npmjs.com/package/btp-guard
-- **MCP Registry:** https://smithery.ai/servers/itsubsolomon/calls_10k
+- **MCP Registry:** https://smithery.ai/servers/bartholomew/calls_10k

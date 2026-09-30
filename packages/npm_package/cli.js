@@ -130,7 +130,7 @@ function runInit(subargs = []) {
   if (/langgraph/i.test(fileContent) || /langchain/i.test(fileContent)) { framework = 'langgraph'; detectedFrameworks.push('LangGraph / LangChain'); }
   if (/gemini|google-genai|google\.generativeai/i.test(fileContent) || subargs.includes('--gemini')) { framework = 'gemini'; detectedFrameworks.push('Google Gemini 3.8 / Generative AI'); }
   if (/autogen/i.test(fileContent) || /pyautogen/i.test(fileContent)) { framework = 'autogen'; detectedFrameworks.push('Microsoft AutoGen'); }
-  if (/openai/i.test(fileContent)) { framework = 'openai'; detectedFrameworks.push('OpenAI Agent SDK / Swarm'); }
+  if (/openai/i.test(fileContent)) { framework = 'openai'; detectedFrameworks.push('OpenAgent SDK / Swarm'); }
   if (/anthropic/i.test(fileContent)) { framework = 'anthropic'; detectedFrameworks.push('Anthropic Claude MCP'); }
   if (fs.existsSync(path.join(targetDir, '.cursor'))) detectedFrameworks.push('Cursor IDE Integration');
   if (fs.existsSync(path.join(targetDir, '.vscode'))) detectedFrameworks.push('VS Code Workspace');
@@ -1157,6 +1157,7 @@ function runBenchmark(subargs = []) {
   console.log(`\n  ${BOLD}SPEEDUP FACTOR:${RESET} Bartholomew is ${BOLD}${GREEN}${Math.round(280000 / Math.max(1, parseFloat(p50Us))).toLocaleString()}x faster${RESET} than cloud API guardrails.`);
   console.log(`  * Cryptographic Merkle Seal  : 0x${merkleRoot.slice(0, 32)}...`);
   console.log('='.repeat(72) + '\n');
+  console.log(`  ${DIM}💜 Back open-source agent runtime security:${RESET} https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605\n`);
 }
 
 function runAuditExport(subargs = []) {

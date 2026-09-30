@@ -18,7 +18,7 @@ Unlike heavy model-based guards (e.g. Llama Guard 3) that consume 16 GB of GPU V
 ### 🔗 Production Ecosystem & Links
 - **GitHub Repository:** [ivegotahunnitonit/bartholomew](https://github.com/ivegotahunnitonit/bartholomew)
 - **Open VSX Extension:** [Bartholomew Guard on Open VSX](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-- **Microsoft Marketplace:** [Bartholomew Guard on VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
+- **Microsoft Marketplace:** [Bartholomew Guard on VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
 - **Private Telemetry Vault:** [bartholomew.info/telemetry](https://bartholomew.info/telemetry) (Restricted Single-Tenant Node Stream)
 - **Documentation & Web Lab:** [bartholomew.info](https://bartholomew.info)
 - **PyPI Package:** [`pip install btp-guard`](https://pypi.org/project/btp-guard/)

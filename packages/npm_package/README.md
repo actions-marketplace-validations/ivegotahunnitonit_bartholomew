@@ -1,20 +1,23 @@
-# btp-guard (Node.js & TypeScript)
+# btp-guard
 
-> **Sub-35µs In-Process Execution Firewall & Deterministic AST Safety Gate for AI Agents**  
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
+ (Node.js & TypeScript)
+
+> **Sub-35µs In-Process Execution Firewall & Deterministic AST Safety Gate for Autonomous Agents**  
 > *Bartholomew Trust Protocol (BTP v5.4.24) — Zero External Dependencies*
 
 [![npm version](https://img.shields.io/npm/v/btp-guard?style=flat-square&color=38bdf8)](https://www.npmjs.com/package/btp-guard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-0-brightgreen.svg?style=flat-square)](https://www.npmjs.com/package/btp-guard)
-[![Smithery MCP](https://img.shields.io/badge/Smithery%20MCP-100%2F100%20Verified-blue)](https://smithery.ai/servers/itsubsolomon/calls_10k)
+[![Smithery MCP](https://img.shields.io/badge/Smithery%20MCP-100%2F100%20Verified-blue)](https://smithery.ai/servers/bartholomew/calls_10k)
 
 ---
 
 ## What is Bartholomew Guard?
 
-Bartholomew Guard is an ultra-fast in-process security gateway for autonomous AI agents (Gemini, Claude, Cursor, Copilot, LangChain.js, Vercel AI SDK).
+Bartholomew Guard is an ultra-fast in-process security gateway for autonomous agents (Gemini, Claude, Cursor, Copilot, LangChain.js, Vercel Agent SDK).
 
-It sits in memory between your AI agent and the operating system. Before any bash command, SQL query, file edit, or MCP tool call executes, Bartholomew evaluates the action against deterministic Abstract Syntax Tree (AST) safety invariants in **under 35 microseconds**—blocking destructive operations (`rm -rf`, `DROP TABLE`), redacting in-flight credentials (`sk-*`, AWS tokens), and signing cryptographic RFC 8785 Ed25519 receipts.
+It sits in memory between your autonomous agent and the operating system. Before any bash command, SQL query, file edit, or MCP tool call executes, Bartholomew evaluates the action against deterministic Abstract Syntax Tree (AST) safety invariants in **under 35 microseconds**—blocking destructive operations (`rm -rf`, `DROP TABLE`), redacting in-flight credentials (`sk-*`, AWS tokens), and signing cryptographic RFC 8785 Ed25519 receipts.
 
 ---
 
@@ -26,8 +29,8 @@ Immunize your active project in 1 second. This automatically sets up `.cursorrul
 npx btp-guard protect
 ```
 
-### 2. Export Context for Your AI Model (Gemini, Claude, Cursor)
-Copy tailored invariant instructions directly to your clipboard so your AI companion codes safely without tripping blocks:
+### 2. Export Context for Your Agents (Gemini, Claude, Cursor)
+Copy tailored invariant instructions directly to your clipboard so your agent companion codes safely without tripping blocks:
 ```bash
 npx btp-guard model-context --model gemini
 npx btp-guard model-context --model claude
@@ -38,7 +41,7 @@ npx btp-guard model-context --model cursor
 ```javascript
 import { protectAgent } from 'btp-guard';
 
-// Automatically protects any agent object (Vercel AI SDK, LangChain, Claude, Custom)
+// Automatically protects any agent object (Vercel Agent SDK, LangChain, Claude, Custom)
 const agent = protectAgent(rawAgent, { spendCap: 50.0 });
 ```
 

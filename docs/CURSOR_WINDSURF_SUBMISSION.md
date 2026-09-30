@@ -3,11 +3,11 @@
 
 ### 1. Extension Profile
 - **Name:** Bartholomew Guard — AI Agent Safety & Runtime Seam
-- **Publisher ID:** `itsubsolomon`
-- **Extension ID:** `itsubsolomon.bartholomew-guard-vscode`
-- **Companion Passkey:** `itsubsolomon.bartholomew-keystone`
-- **Open-VSX URL:** https://open-vsx.org/extension/itsubsolomon/bartholomew-guard-vscode
-- **Open-VSX Publisher Hub:** https://open-vsx.org/publisher/itsubsolomon
+- **Publisher ID:** `bartholomew`
+- **Extension ID:** `bartholomew.bartholomew-guard-vscode`
+- **Companion Passkey:** `bartholomew.bartholomew-keystone`
+- **Open-VSX URL:** https://open-vsx.org/extension/bartholomew/bartholomew-guard-vscode
+- **Open-VSX Publisher Hub:** https://open-vsx.org/publisher/bartholomew
 - **Version:** `5.4.21`
 - **License:** MIT
 - **Website:** https://bartholomew.info
@@ -31,7 +31,7 @@ Bartholomew Guard is a zero-latency runtime execution gate engineered specifical
 
 ### 4. 1-Click Installation Command
 ```bash
-code --install-extension itsubsolomon.bartholomew-guard-vscode && code --install-extension itsubsolomon.bartholomew-keystone
+code --install-extension bartholomew.bartholomew-guard-vscode && code --install-extension bartholomew.bartholomew-keystone
 ```
 
 ---
