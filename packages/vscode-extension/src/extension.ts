@@ -391,6 +391,15 @@ context.subscriptions.push(
     vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605'));
   });
   context.subscriptions.push(backOpenSourceCmd);
+  // Dedicated Status Bar Item: Back Open Source Development
+  const sponsorStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
+  sponsorStatusBar.text = '$(heart) Back BTP';
+  sponsorStatusBar.tooltip = 'Back Open Source Development via Stripe (Bartholomew Security)';
+  sponsorStatusBar.command = 'bartholomew.backOpenSource';
+  sponsorStatusBar.color = '#a78bfa';
+  sponsorStatusBar.show();
+  context.subscriptions.push(sponsorStatusBar);
+
 
   // 2. Poll local daemon or files for real-time telemetry
   const pollDaemon = () => {

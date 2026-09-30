@@ -203,5 +203,9 @@
   "funding": {
     "type": "stripe",
     "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
-  }
+  },
+  "sponsor": {
+    "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
+  },
+  "homepage": "https://bartholomew.info"
 }
