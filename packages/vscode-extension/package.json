@@ -3,7 +3,7 @@
   "displayName": "Bartholomew Agent Guard - Security and Guardrails (Cursor, Claude, Copilot)",
   "description": "BTP v6.1.0 Zero-trust firewall, locked single-tenant telemetry vault, autonomous yield daemon, and execution guardrails for autonomous agents (Cursor, Claude, Copilot, Windsurf).",
   "version": "6.1.0",
-  "publisher": "itsubsolomon",
+  "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "MIT",
   "galleryBanner": {

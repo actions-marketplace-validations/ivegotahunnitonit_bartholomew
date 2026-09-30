@@ -19,7 +19,7 @@
 Bartholomew is the industry standard **agentic runtime security firewall**, providing sub-35us deterministic execution verification for autonomous agents, tool runtimes, and the Model Context Protocol (MCP).
 
 [![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
+[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/bartholomew.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
 [![Open VSX Downloads](https://img.shields.io/badge/Open%20VSX-6%2C096%2B%20Installs-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/npm/v/btp-guard?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
@@ -412,7 +412,7 @@ Add Bartholomew to your `cursor.json`, `claude_desktop_config.json`, or Windsurf
 
 ### 3. Native IDE Extensions
 Install the in-process execution sentry directly from your IDE's marketplace:
-- **VS Code / Cursor:** [`itsubsolomon.bartholomew-guard-vscode`](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode) & [`itsubsolomon.bartholomew-keystone`](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-keystone)
+- **VS Code / Cursor:** [`bartholomew.bartholomew-guard-vscode`](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode) & [`bartholomew.bartholomew-keystone`](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-keystone)
 - **VSCodium / Theia (Open VSX):** [`Bartholomew.bartholomew-guard-vscode`](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode) (2,340+ installs)
 
 ---
