@@ -3,6 +3,9 @@ name: Publish IDE Extensions
 on:
   release:
     types: [published]
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -13,44 +16,42 @@ jobs:
     name: Publish · VS Code Marketplace & Open-VSX
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Install Publishing Tools
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
         run: |
           npm install -g @vscode/vsce ovsx
+          python -m pip install --upgrade pip
 
-      - name: Build Extensions (.vsix)
+      - name: Package Latest VSIX Bundles
         run: |
           python scripts/package_all_vsix.py
 
-      - name: Publish Bartholomew Guard to VS Code Marketplace
-        if: env.VSCE_PAT != ''
+      - name: Publish to Marketplaces
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: |
-          vsce publish --packagePath packages/vscode-extension/bartholomew-guard-vscode-5.4.21.vsix --pat "$VSCE_PAT" || true
-
-      - name: Publish Bartholomew Keystone to VS Code Marketplace
-        if: env.VSCE_PAT != ''
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
-        run: |
-          vsce publish --packagePath packages/bartholomew-keystone/bartholomew-keystone-5.4.21.vsix --pat "$VSCE_PAT" || true
-
-      - name: Publish Bartholomew Guard to Open-VSX
-        if: env.OVSX_PAT != ''
-        env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: |
-          ovsx publish packages/vscode-extension/bartholomew-guard-vscode-5.4.21.vsix --pat "$OVSX_PAT" || true
-
-      - name: Publish Bartholomew Keystone to Open-VSX
-        if: env.OVSX_PAT != ''
-        env:
-          OVSX_PAT: ${{ secrets.OVSX_PAT }}
-        run: |
-          ovsx publish packages/bartholomew-keystone/bartholomew-keystone-5.4.21.vsix --pat "$OVSX_PAT" || true
+          args=""
+          if [ -n "$VSCE_PAT" ]; then
+            args="$args --vsce-pat $VSCE_PAT"
+          fi
+          if [ -n "$OVSX_PAT" ]; then
+            args="$args --ovsx-pat $OVSX_PAT"
+          fi
+          if [ -n "$args" ]; then
+            python scripts/publish_extensions.py $args
+          else
+            echo "[NOTE] Neither VSCE_PAT nor OVSX_PAT configured in repository secrets. Skipping upload."
+          fi
