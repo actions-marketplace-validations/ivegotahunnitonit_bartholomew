@@ -126,7 +126,7 @@ def _fuzz_batch_worker(batch_size: int, worker_id: int) -> dict:
 def run_million_attack_fuzzer(total_attacks: int = 1_000_000):
     num_cpus = max(1, multiprocessing.cpu_count())
     print(f"\n================================================================================")
-    print(f"🚀 INITIATING BARTHOLOMEW 1,000,000 ADVERSARIAL INVARIANT FUZZER")
+    print(f" INITIATING BARTHOLOMEW 1,000,000 ADVERSARIAL INVARIANT FUZZER")
     print(f"================================================================================")
     print(f"Target Cycles       : {total_attacks:,} Synthesized Attacks")
     print(f"CPU Parallel Cores  : {num_cpus} Workers")
@@ -164,7 +164,7 @@ def run_million_attack_fuzzer(total_attacks: int = 1_000_000):
     interception_rate = (total_blocked / total_attacks) * 100.0
 
     print(f"\n================================================================================")
-    print(f"🏆 ONE MILLION ATTACK BENCHMARK COMPLETED")
+    print(f" ONE MILLION ATTACK BENCHMARK COMPLETED")
     print(f"================================================================================")
     print(f"Total Adversarial Cycles : {total_attacks:,}")
     print(f"Total Intercepted (Clean): {total_blocked:,}")
@@ -192,7 +192,7 @@ def run_million_attack_fuzzer(total_attacks: int = 1_000_000):
     with open("ONE_MILLION_TEST_REPORT.json", "w", encoding="utf-8") as fp:
         json.dump(report, fp, indent=2)
 
-    print("📄 Saved certified proof to 'ONE_MILLION_TEST_REPORT.json'")
+    print(" Saved certified proof to 'ONE_MILLION_TEST_REPORT.json'")
     return total_escapes == 0
 
 

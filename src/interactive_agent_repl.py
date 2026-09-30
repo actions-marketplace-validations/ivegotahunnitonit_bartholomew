@@ -114,9 +114,9 @@ def run_agent_repl():
     authority = BartholomewTrustAuthority()
     mu_tracker = MarginalUtilityTracker()
 
-    print(f"\n{BOLD}{CYAN}╔═══════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{BOLD}{CYAN}║     BARTHOLOMEW AUTONOMOUS AGENT REPL · LIVE PRE-FLIGHT GATE          ║{RESET}")
-    print(f"{BOLD}{CYAN}╚═══════════════════════════════════════════════════════════════════════╝{RESET}")
+    print(f"\n{BOLD}{CYAN}{RESET}")
+    print(f"{BOLD}{CYAN}     BARTHOLOMEW AUTONOMOUS AGENT REPL · LIVE PRE-FLIGHT GATE          {RESET}")
+    print(f"{BOLD}{CYAN}{RESET}")
     print(f"{DIM}[*] Session Key: {authority.public_key_hex[:32]}...{RESET}")
     print(f"{DIM}[*] Invariant Engine: Polyglot AST · Hermetic Sandbox · LDMU Decay · RFC 8785{RESET}")
     print(f"{DIM}[*] Type any natural language goal, or 'exit' / 'quit' to leave.{RESET}\n")
@@ -136,7 +136,7 @@ def run_agent_repl():
 
     while True:
         try:
-            user_input = input(f"{BOLD}{GREEN}agent-operator ❯ {RESET}").strip()
+            user_input = input(f"{BOLD}{GREEN}agent-operator  {RESET}").strip()
             if not user_input:
                 continue
             if user_input.lower() in ["exit", "quit", "q"]:
@@ -150,7 +150,7 @@ def run_agent_repl():
             actions = simulate_agent_reasoning(user_input)
 
             for step_idx, act in enumerate(actions, 1):
-                print(f"  {BOLD}🧠 [PLAN]{RESET}  {act['summary']}")
+                print(f"  {BOLD} [PLAN]{RESET}  {act['summary']}")
                 
                 # Check with Bartholomew Invariant Gate
                 t0 = time.perf_counter()
@@ -162,7 +162,7 @@ def run_agent_repl():
                     is_ast_safe, ast_msg, ast_meta = PolyglotASTValidator.validate_code(code_payload, language=lang)
                     if not is_ast_safe:
                         lat_us = (time.perf_counter() - t0) * 1_000_000
-                        print(f"  {BOLD}{CRIMSON}🛑 [GATE]{RESET}  {CRIMSON}Blocked ({lat_us:.1f} µs): {ast_msg}{RESET}\n")
+                        print(f"  {BOLD}{CRIMSON} [GATE]{RESET}  {CRIMSON}Blocked ({lat_us:.1f} µs): {ast_msg}{RESET}\n")
                         continue
 
                 # 2. Trust Authority Pre-flight Evaluation
@@ -178,10 +178,10 @@ def run_agent_repl():
                 sig = receipt.get("signature", "")
 
                 if verdict == "ALLOW":
-                    print(f"  {BOLD}{CYAN}⚡ [GATE]{RESET}  Polyglot Invariant: PASS · Latency: {lat_us:.1f} µs")
-                    print(f"  {BOLD}{GREEN}✅ [EXEC]{RESET}  {GREEN}Approved & Signed [Ed25519: {sig[:16]}...] · Success{RESET}\n")
+                    print(f"  {BOLD}{CYAN} [GATE]{RESET}  Polyglot Invariant: PASS · Latency: {lat_us:.1f} µs")
+                    print(f"  {BOLD}{GREEN} [EXEC]{RESET}  {GREEN}Approved & Signed [Ed25519: {sig[:16]}...] · Success{RESET}\n")
                 else:
-                    print(f"  {BOLD}{CRIMSON}🛑 [GATE]{RESET}  {CRIMSON}Blocked ({lat_us:.1f} µs): {reason}{RESET}")
+                    print(f"  {BOLD}{CRIMSON} [GATE]{RESET}  {CRIMSON}Blocked ({lat_us:.1f} µs): {reason}{RESET}")
                     print(f"  {DIM}[+] [RECP]{RESET}  {AMBER}Audit Proof Logged [Ed25519: {sig[:16]}...]{RESET}\n")
 
         except (KeyboardInterrupt, EOFError):

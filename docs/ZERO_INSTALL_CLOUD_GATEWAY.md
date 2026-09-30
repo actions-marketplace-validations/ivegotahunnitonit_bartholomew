@@ -9,15 +9,15 @@ Bartholomew operates directly off the cloud infrastructure, providing sub-35 mic
 
 ```
  [Grok Bot / Muse / Meta AI / Web Agent]
-                   │
-                   ▼ (HTTP / Webhook / REST / MCP)
+                   
+                    (HTTP / Webhook / REST / MCP)
       [Bartholomew Cloud Gateway]
       • Sub-35µs Polyglot AST Engine (Python, JS/TS, Go, Rust, Bash)
       • In-flight Secret & Token Redaction (OpenAI, AWS, GitHub PATs)
       • Ed25519 Attestation Ledger
-                   │
-         ┌─────────┴─────────┐
-         ▼                   ▼
+                   
+         
+                            
       [ALLOW]             [DENY]
   Execute safe tool    Intercept & return
   with signed proof    mitigation receipt

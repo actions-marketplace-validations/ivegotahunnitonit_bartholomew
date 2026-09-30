@@ -11,7 +11,7 @@ Setup in n8n:
   3. Or use an "HTTP Request" node to call the /dify/gate endpoint
 
 JavaScript Code node snippet (paste into n8n Code node):
-─────────────────────────────────────────────────────────
+
 const action = $input.first().json.action ?? $input.first().json.text;
 
 const response = await fetch('http://35.222.210.105:8080/dify/gate', {
@@ -30,7 +30,7 @@ if (!response.ok) {
 
 const result = await response.json();
 return [{ json: { ...result, original_input: $input.first().json } }];
-─────────────────────────────────────────────────────────
+
 
 Python equivalent (for n8n Python Code nodes or local testing):
 """
@@ -98,7 +98,7 @@ async def n8n_http_gate(action: str, agent_id: str = "n8n-agent") -> dict:
         return resp.json()
 
 
-# ── n8n workflow JSON export (import this into n8n) ────────────────
+#  n8n workflow JSON export (import this into n8n) 
 N8N_WORKFLOW_TEMPLATE = {
     "name": "Bartholomew-Secured AI Workflow",
     "nodes": [
@@ -148,5 +148,5 @@ if __name__ == "__main__":
 
     for inp in test_inputs:
         result = n8n_code_node_gate(inp)
-        status = "✅" if not result.get("blocked") else "❌"
+        status = "" if not result.get("blocked") else ""
         print(f"{status} {list(inp.values())[0][:50]!r} → {result.get('bartholomew_verdict', 'BLOCKED')}")

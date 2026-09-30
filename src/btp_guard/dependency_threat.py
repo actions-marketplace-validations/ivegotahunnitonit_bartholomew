@@ -23,7 +23,7 @@ import urllib.error
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 
-# ─── CURATED MALICIOUS PACKAGE DATABASE ──────────────────────────────────────
+#  CURATED MALICIOUS PACKAGE DATABASE 
 KNOWN_MALICIOUS = {
     # Python - documented supply chain attacks
     "python-requests":       "Typosquat of 'requests'. Contains credential exfiltration payload.",
@@ -55,7 +55,7 @@ KNOWN_MALICIOUS = {
     "setup-tools":           "Typosquat of 'setuptools'. Backdoor on build.",
 }
 
-# ─── TYPOSQUAT TARGET PATTERNS ───────────────────────────────────────────────
+#  TYPOSQUAT TARGET PATTERNS 
 HIGH_VALUE_TARGETS = [
     "requests", "numpy", "pandas", "torch", "tensorflow", "langchain",
     "openai", "anthropic", "fastapi", "flask", "django", "scikit-learn",

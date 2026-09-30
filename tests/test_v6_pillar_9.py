@@ -6,7 +6,7 @@ Tests for BTP v6 Pillar 9:
 import pytest
 
 
-# ─── PERMISSION SCOPE GUARD ────────────────────────────────────────────────
+#  PERMISSION SCOPE GUARD 
 
 def test_psg_allows_declared_file_read():
     from src.permission_scope_guard import AgentPermissionScopeGuard, ACTION_FILE_READ

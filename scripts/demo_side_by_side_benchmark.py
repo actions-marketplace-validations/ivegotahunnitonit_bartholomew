@@ -56,19 +56,19 @@ TEST_SCENARIOS = [
 
 
 def run_side_by_side_demo():
-    print(f"\n{BOLD}{CYAN}╔═════════════════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{BOLD}{CYAN}║     BARTHOLOMEW TIER-0 FAST PATH vs. CLOUD LLM-AS-A-JUDGE GUARDRAILS BENCHMARK                  ║{RESET}")
-    print(f"{BOLD}{CYAN}╚═════════════════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+    print(f"\n{BOLD}{CYAN}{RESET}")
+    print(f"{BOLD}{CYAN}     BARTHOLOMEW TIER-0 FAST PATH vs. CLOUD LLM-AS-A-JUDGE GUARDRAILS BENCHMARK                  {RESET}")
+    print(f"{BOLD}{CYAN}{RESET}\n")
 
     time.sleep(1.0)
 
     for idx, sc in enumerate(TEST_SCENARIOS, 1):
         print(f"{BOLD}[TEST {idx}/4]{RESET} Scenario: {BOLD}{sc['name']}{RESET}")
         print(f"         Payload : {DIM}{sc['payload'][:65]}...{RESET}")
-        print("─" * 97)
+        print("" * 97)
 
         # 1. Simulate Cloud Guardrail (Round-trip HTTPS + LLM inference)
-        print(f"  {AMBER}▶ CLOUD LLM GUARDRAIL (Bedrock / Cloud API):{RESET} Evaluating via HTTPS...")
+        print(f"  {AMBER} CLOUD LLM GUARDRAIL (Bedrock / Cloud API):{RESET} Evaluating via HTTPS...")
         sim_cloud_latency_ms = 1420.0 + (idx * 115)
         time.sleep(1.2)  # Visual pause representing real cloud round-trip
         cloud_cost = 0.0024
@@ -81,12 +81,12 @@ def run_side_by_side_demo():
         real_latency_us = (time.perf_counter() - t0) * 1_000_000
 
         verdict_str = f"{GREEN}[ALLOWED]{RESET}" if (is_safe and len(redacts) == 0) else (f"{AMBER}[AUTO-REDACTED]{RESET}" if len(redacts) > 0 else f"{CRIMSON}[VETOED]{RESET}")
-        print(f"  {GREEN}▶ BARTHOLOMEW TIER-0 LOCAL INVARIANT GATE:{RESET} In-Memory AST + Secret Evaluation")
+        print(f"  {GREEN} BARTHOLOMEW TIER-0 LOCAL INVARIANT GATE:{RESET} In-Memory AST + Secret Evaluation")
         print(f"    Verdict : {verdict_str} | Latency: {BOLD}{GREEN}{real_latency_us:.2f} µs{RESET} | Cloud Cost: {BOLD}{GREEN}$0.0000{RESET} ({BOLD}99.9% Faster{RESET})")
-        print("═" * 97 + "\n")
+        print("" * 97 + "\n")
         time.sleep(0.8)
 
-    print(f"{BOLD}{GREEN}✔ BENCHMARK COMPLETE: Bartholomew Tier-0 drops 100% of attack payloads in <50 µs with $0.00 cloud spend.{RESET}\n")
+    print(f"{BOLD}{GREEN} BENCHMARK COMPLETE: Bartholomew Tier-0 drops 100% of attack payloads in <50 µs with $0.00 cloud spend.{RESET}\n")
 
 
 if __name__ == "__main__":

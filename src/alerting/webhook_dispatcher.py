@@ -134,7 +134,7 @@ class WebhookFormatter:
         blocks = [
             {
                 "type": "header",
-                "text": {"type": "plain_text", "text": f"🛡️ BTP Guard: {event.title}"}
+                "text": {"type": "plain_text", "text": f" BTP Guard: {event.title}"}
             },
             {
                 "type": "section",
@@ -191,7 +191,7 @@ class WebhookFormatter:
             fields.append({"name": "Quarantined Payload", "value": f"```{event.target_payload[:250]}```", "inline": False})
 
         embed = {
-            "title": f"🛡️ BTP Security Alert: {event.title}",
+            "title": f" BTP Security Alert: {event.title}",
             "description": event.description,
             "color": color,
             "fields": fields,

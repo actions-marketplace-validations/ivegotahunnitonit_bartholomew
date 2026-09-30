@@ -1,4 +1,4 @@
-# 🏛️ Bartholomew Bonded Agent Insurance & Escrow Protocol
+#  Bartholomew Bonded Agent Insurance & Escrow Protocol
 
 Bartholomew provides **cryptographic bonded indemnification** for autonomous AI agent swarms, enabling enterprises to safely grant autonomous execution capabilities to third-party agents.
 

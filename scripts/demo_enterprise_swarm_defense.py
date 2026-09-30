@@ -45,10 +45,10 @@ C_BLUE = "\033[38;5;39m"
 
 
 def print_header():
-    print(f"\n{C_BOLD}{C_CYAN}╔══════════════════════════════════════════════════════════════════════════════════════════════════╗{C_RESET}")
-    print(f"{C_BOLD}{C_CYAN}║     BARTHOLOMEW ENTERPRISE MULTI-AGENT INVARIANT GATE & PENETRATION BENCHMARK                    ║{C_RESET}")
-    print(f"{C_BOLD}{C_CYAN}║     Continuous In-Process AST Interception & Byzantine Multi-Rail Escrow Slashing                ║{C_RESET}")
-    print(f"{C_BOLD}{C_CYAN}╚══════════════════════════════════════════════════════════════════════════════════════════════════╝{C_RESET}\n")
+    print(f"\n{C_BOLD}{C_CYAN}{C_RESET}")
+    print(f"{C_BOLD}{C_CYAN}     BARTHOLOMEW ENTERPRISE MULTI-AGENT INVARIANT GATE & PENETRATION BENCHMARK                    {C_RESET}")
+    print(f"{C_BOLD}{C_CYAN}     Continuous In-Process AST Interception & Byzantine Multi-Rail Escrow Slashing                {C_RESET}")
+    print(f"{C_BOLD}{C_CYAN}{C_RESET}\n")
 
 
 def run_simulation():
@@ -101,7 +101,7 @@ def run_simulation():
         registry.register_passport(p)
         arbitrator.register_validator(p)
 
-    print(f"  {C_GREEN}✔ Swarm Online:{C_RESET} 6 Sovereign Passports registered (Ed25519 verified, $43,000 reserve bonded)")
+    print(f"  {C_GREEN} Swarm Online:{C_RESET} 6 Sovereign Passports registered (Ed25519 verified, $43,000 reserve bonded)")
 
     # Lock $5,000 escrow on agent-gpt-astra-worker
     deposit_dba = escrow_pool.lock_escrow(
@@ -111,7 +111,7 @@ def run_simulation():
         passport=passport_astra,
         settlement_rail="L402_LIGHTNING"
     )
-    print(f"  {C_GREEN}✔ Escrow Locked:{C_RESET} ID {deposit_dba.escrow_id} ($5,000.00 USD bonded on L402 Lightning rail)\n")
+    print(f"  {C_GREEN} Escrow Locked:{C_RESET} ID {deposit_dba.escrow_id} ($5,000.00 USD bonded on L402 Lightning rail)\n")
 
     # 2. Attack Scenarios
     scenarios = [
@@ -150,7 +150,7 @@ def run_simulation():
     ]
 
     for sc in scenarios:
-        print(f"{C_BOLD}{C_BLUE}──────────────────────────────────────────────────────────────────────────────────────────────────{C_RESET}")
+        print(f"{C_BOLD}{C_BLUE}{C_RESET}")
         print(f"{C_BOLD}[SCENARIO {sc['num']}] {sc['name']}{C_RESET}")
         print(f"  {C_DIM}Target Agent:{C_RESET} {sc['agent']} | {C_DIM}Language:{C_RESET} {sc['lang']}")
         print(f"  {C_DIM}Raw Payload :{C_RESET} {sc['payload'][:70]}...")
@@ -160,12 +160,12 @@ def run_simulation():
         if sc["expected"] == "VETO":
             is_safe, reason, meta = PolyglotASTValidator.validate_code(sc["payload"], language=sc["lang"])
             latency_us = (time.perf_counter() - t0) * 1_000_000
-            print(f"  {C_CRIMSON}▶ [BARTHOLOMEW VETO]{C_RESET} {reason}")
+            print(f"  {C_CRIMSON} [BARTHOLOMEW VETO]{C_RESET} {reason}")
             print(f"  {C_GREEN}[BTP-FAST] Decision Latency:{C_RESET} {latency_us:.2f} µs | {C_GREEN}Cloud Token Spend:{C_RESET} $0.0000 (Local In-Process AST)")
 
         elif sc["expected"] == "REDACT":
             clean_str, secrets_found, mask_lat = SecretVaultMasker.mask_text(sc["payload"])
-            print(f"  {C_AMBER}▶ [IN-FLIGHT REDACTION]{C_RESET} Found {len(secrets_found)} credential(s) -> Sanitized in-memory")
+            print(f"  {C_AMBER} [IN-FLIGHT REDACTION]{C_RESET} Found {len(secrets_found)} credential(s) -> Sanitized in-memory")
             print(f"  {C_DIM}Sanitized Payload  :{C_RESET} {clean_str[:70]}...")
             print(f"  {C_GREEN}[BTP-FAST] Redaction Latency:{C_RESET} {mask_lat:.2f} µs | {C_GREEN}Credentials Leaked:{C_RESET} 0 bytes")
 
@@ -178,7 +178,7 @@ def run_simulation():
                 private_payload=sc["payload"],
                 state_pre_hash="state_pre_0x9a8b7c6d"
             )
-            print(f"  {C_PURPLE}▶ [ZK-FAULT PROOF GENERATED]{C_RESET} Proof ID: {zk_proof.proof_id}")
+            print(f"  {C_PURPLE} [ZK-FAULT PROOF GENERATED]{C_RESET} Proof ID: {zk_proof.proof_id}")
             print(f"    Prover: agent-gemini-planner (Gemini-3.8-Ultra) | Pedersen Commitment: {zk_proof.pedersen_commitment[:32]}...")
 
             # 2. Open Swarm Dispute & Byzantine Voting across Frontier Allies
@@ -197,7 +197,7 @@ def run_simulation():
 
             # 3. Resolve Dispute via Byzantine Quorum
             ok_res, _, cert = arbitrator.resolve_dispute(dispute.dispute_id)
-            print(f"  {C_GREEN}▶ [BYZANTINE QUORUM REACHED]{C_RESET} Verdict: {cert.verdict} ({cert.quorum_count}/{dispute.required_quorum} peer votes across Gemini, Claude, AutoGen, Copilot)")
+            print(f"  {C_GREEN} [BYZANTINE QUORUM REACHED]{C_RESET} Verdict: {cert.verdict} ({cert.quorum_count}/{dispute.required_quorum} peer votes across Gemini, Claude, AutoGen, Copilot)")
 
             # 4. Settle Escrow & Execute Slashing
             ok_slash, msg, receipt = escrow_pool.arbitrate_and_slash(
@@ -208,15 +208,15 @@ def run_simulation():
             )
             latency_us = (time.perf_counter() - t0) * 1_000_000
 
-            print(f"  {C_CRIMSON}▶ [ESCROW SLASHED]{C_RESET} ${receipt['indemnity_amount_usd']:,.2f} USD liquidated via {receipt['settlement_rail']}")
+            print(f"  {C_CRIMSON} [ESCROW SLASHED]{C_RESET} ${receipt['indemnity_amount_usd']:,.2f} USD liquidated via {receipt['settlement_rail']}")
             print(f"    L402 Preimage Revealed: {receipt.get('l402_preimage_revealed', 'N/A')}")
-            print(f"  {C_CRIMSON}▶ [PASSPORT CIRCUIT BREAKER TRIPPED]{C_RESET} {passport_astra.agent_id} trust score: {passport_astra.trust_score:.2f} (Revoked)")
+            print(f"  {C_CRIMSON} [PASSPORT CIRCUIT BREAKER TRIPPED]{C_RESET} {passport_astra.agent_id} trust score: {passport_astra.trust_score:.2f} (Revoked)")
             print(f"  {C_GREEN}[BTP-FAST] Arbitration & Slashing SLA:{C_RESET} {latency_us / 1000:.2f} ms | {C_GREEN}Human Intervention:{C_RESET} 0%")
 
-    print(f"\n{C_BOLD}{C_GREEN}══════════════════════════════════════════════════════════════════════════════════════════════════{C_RESET}")
-    print(f"{C_BOLD}{C_GREEN}✔ BENCHMARK COMPLETE: 100% of attack vectors dropped in sub-35µs with zero remote token spend.{C_RESET}")
+    print(f"\n{C_BOLD}{C_GREEN}{C_RESET}")
+    print(f"{C_BOLD}{C_GREEN} BENCHMARK COMPLETE: 100% of attack vectors dropped in sub-35µs with zero remote token spend.{C_RESET}")
     print(f"{C_BOLD}{C_GREEN}  Milestone 4.1 Swarm Slashing Arbitration & ZK-Fault Proofs Verified.{C_RESET}")
-    print(f"{C_BOLD}{C_GREEN}══════════════════════════════════════════════════════════════════════════════════════════════════{C_RESET}\n")
+    print(f"{C_BOLD}{C_GREEN}{C_RESET}\n")
 
 
 if __name__ == "__main__":

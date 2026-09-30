@@ -137,22 +137,22 @@ It sits between an agent and real-world execution (shell, SQL, file I/O, cloud A
 
 ```
                     [ Autonomous Agent / LLM ]
-                                │
-                                ▼  (Proposes Tool Call / Bash / SQL)
-  ┌────────────────────────────────────────────────────────────────────────┐
-  │                 Bartholomew In-Process Runtime Gateway                 │
-  │                                                                        │
-  │   [ Polyglot AST Invariant Gate ] ──► Sub-millisecond syntax check     │
-  │   [ In-Flight Secret Vault ]       ──► Real-time credential scrubbing   │
-  │   [ Declarative Policy Engine ]   ──► Spend caps & command allowlists  │
-  │   [ Cryptographic Attestation ]   ──► RFC 8785 Ed25519 Signed Receipts │
-  └───────────────────────────────────┬────────────────────────────────────┘
-                                      │
-                         ┌────────────┴────────────┐
-                         ▼                         ▼
+                                
+                                  (Proposes Tool Call / Bash / SQL)
+  
+                   Bartholomew In-Process Runtime Gateway                 
+                                                                          
+     [ Polyglot AST Invariant Gate ]  Sub-millisecond syntax check     
+     [ In-Flight Secret Vault ]        Real-time credential scrubbing   
+     [ Declarative Policy Engine ]    Spend caps & command allowlists  
+     [ Cryptographic Attestation ]    RFC 8785 Ed25519 Signed Receipts 
+  
+                                      
+                         
+                                                  
                     [ ALLOW ]                  [ DENY ]
-                         │                         │
-                         ▼                         ▼
+                                                  
+                                                  
              [ Target System / DB / OS ]   [ Execution Veto + Audit Evidence ]
 ```
 

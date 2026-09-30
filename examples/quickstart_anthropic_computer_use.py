@@ -32,7 +32,7 @@ def run_computer_use_demo():
     result = protect_tool_call("bash", safe_payload)
     print(f"  Decision: {result['status']} | Latency: {result.get('latency_us', 42.1):.1f} µs")
     assert result['status'] == 'APPROVED', "Benign tool call should be approved"
-    print("  ✅ DISPATCH PERMITTED — executing tool.")
+    print("   DISPATCH PERMITTED — executing tool.")
 
     # 2. Malicious Computer Use Tool Call: Blocked deterministic hard veto
     dangerous_payload = {"command": "rm -rf / --no-preserve-root"}
@@ -43,10 +43,10 @@ def run_computer_use_demo():
         blocked = protect_tool_call("bash", dangerous_payload)
         if blocked.get("status") == "VETOED" or blocked.get("blocked"):
             print(f"  Decision: VETOED | Reason: {blocked.get('reason')}")
-            print("  🛡️  BLOCKED IN-MEMORY BEFORE KERNEL DISPATCH (Zero data loss)")
+            print("    BLOCKED IN-MEMORY BEFORE KERNEL DISPATCH (Zero data loss)")
     except Exception as e:
         print(f"  Decision: HARD VETO | Reason: {e}")
-        print("  🛡️  BLOCKED IN-MEMORY BEFORE KERNEL DISPATCH (Zero data loss)")
+        print("    BLOCKED IN-MEMORY BEFORE KERNEL DISPATCH (Zero data loss)")
 
     print("\n" + "=" * 70)
     print("  Anthropic Computer Use Quickstart completed successfully.")

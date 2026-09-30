@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
 
-# ─── ACTION CATEGORIES ──────────────────────────────────────────────────────
+#  ACTION CATEGORIES 
 ACTION_FILE_READ   = "file:read"
 ACTION_FILE_WRITE  = "file:write"
 ACTION_FILE_DELETE = "file:delete"
@@ -48,7 +48,7 @@ ALL_ACTIONS = {
     ACTION_SHELL, ACTION_HTTP, ACTION_MCP_TOOL, ACTION_ENV_READ, ACTION_PROCESS,
 }
 
-# ─── PERMISSION MANIFEST ────────────────────────────────────────────────────
+#  PERMISSION MANIFEST 
 DEFAULT_MANIFEST = {
     "allow_actions": [ACTION_FILE_READ, ACTION_MCP_TOOL],
     "deny_actions":  [ACTION_FILE_DELETE, ACTION_SHELL, ACTION_PROCESS],

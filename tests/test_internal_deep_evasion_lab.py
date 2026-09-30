@@ -107,9 +107,9 @@ ADVANCED_RED_TEAM_ATTACKS = [
 
 
 def run_red_team_lab():
-    print(f"\n{BOLD}{CYAN}╔══════════════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{BOLD}{CYAN}║    BARTHOLOMEW INTERNAL LAB: 10 ADVANCED ADVERSARIAL RED-TEAM EVASIONS       ║{RESET}")
-    print(f"{BOLD}{CYAN}╚══════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+    print(f"\n{BOLD}{CYAN}{RESET}")
+    print(f"{BOLD}{CYAN}    BARTHOLOMEW INTERNAL LAB: 10 ADVANCED ADVERSARIAL RED-TEAM EVASIONS       {RESET}")
+    print(f"{BOLD}{CYAN}{RESET}\n")
 
     passed_count = 0
     total_attacks = len(ADVANCED_RED_TEAM_ATTACKS)
@@ -141,10 +141,10 @@ def run_red_team_lab():
         print("-" * 80)
 
     avg_lat = sum(latencies) / len(latencies)
-    print(f"\n{BOLD}════════════════════════════════════════════════════════════════════════════════{RESET}")
+    print(f"\n{BOLD}{RESET}")
     print(f"{BOLD}LAB SCORECARD: {passed_count}/{total_attacks} ADVANCED ATTACKS INTERCEPTED ({(passed_count/total_attacks)*100:.1f}%){RESET}")
     print(f"{BOLD}AVERAGE INTERCEPTION LATENCY: {avg_lat:.2f} µs (Sub-Millisecond){RESET}")
-    print(f"{BOLD}════════════════════════════════════════════════════════════════════════════════{RESET}\n")
+    print(f"{BOLD}{RESET}\n")
 
     return passed_count == total_attacks
 

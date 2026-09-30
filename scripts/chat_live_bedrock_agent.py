@@ -49,9 +49,9 @@ def load_aws_env():
 
 def main():
     load_aws_env()
-    print(f"\n{BOLD}{CYAN}╔═════════════════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{BOLD}{CYAN}║     BARTHOLOMEW LIVE AMAZON BEDROCK AGENT TERMINAL (BTP v2.3)                                     ║{RESET}")
-    print(f"{BOLD}{CYAN}╚═════════════════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+    print(f"\n{BOLD}{CYAN}{RESET}")
+    print(f"{BOLD}{CYAN}     BARTHOLOMEW LIVE AMAZON BEDROCK AGENT TERMINAL (BTP v2.3)                                     {RESET}")
+    print(f"{BOLD}{CYAN}{RESET}\n")
 
     import boto3
     ak = os.environ.get("AWS_ACCESS_KEY_ID")
@@ -78,12 +78,12 @@ def main():
             latency_us = (time.perf_counter() - t0) * 1_000_000
 
             if not is_safe:
-                print(f"  {CRIMSON}🛑 BARTHOLOMEW TIER-0 VETO:{RESET} {msg} (Latency: {BOLD}{latency_us:.2f} µs{RESET})")
+                print(f"  {CRIMSON} BARTHOLOMEW TIER-0 VETO:{RESET} {msg} (Latency: {BOLD}{latency_us:.2f} µs{RESET})")
                 print(f"  {DIM}[Blocked locally before touching AWS Bedrock billing]{RESET}\n")
                 continue
 
             # 2. Invoke Bedrock with Guard
-            print(f"  {AMBER}▶ Invoking Amazon Bedrock Claude...{RESET}")
+            print(f"  {AMBER} Invoking Amazon Bedrock Claude...{RESET}")
             try:
                 # Try invoking converse
                 resp = client.converse(

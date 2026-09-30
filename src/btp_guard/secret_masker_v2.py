@@ -23,7 +23,7 @@ import threading
 from typing import Dict, List, Tuple, Optional
 
 
-# ─── SECRET DETECTION PATTERNS ───────────────────────────────────────────────
+#  SECRET DETECTION PATTERNS 
 SECRET_PATTERNS = [
     # Generic API keys
     ("API_KEY",       re.compile(r'(?i)(api[_-]?key|apikey)\s*[=:]\s*["\']?([A-Za-z0-9\-_]{20,})["\']?')),

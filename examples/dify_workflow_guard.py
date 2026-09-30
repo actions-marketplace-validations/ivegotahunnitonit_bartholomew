@@ -29,7 +29,7 @@ from btp_guard import Guard
 guard = Guard(spend_cap=100.0)
 
 
-# ── FastAPI endpoint for Dify Custom Tool integration ──────────────
+#  FastAPI endpoint for Dify Custom Tool integration 
 
 def create_dify_gate_app():
     """Creates a FastAPI app exposing Bartholomew as a Dify Custom Tool."""
@@ -86,14 +86,14 @@ def create_dify_gate_app():
     return app
 
 
-# ── Dify workflow simulation (local test) ─────────────────────────
+#  Dify workflow simulation (local test) 
 
 def simulate_dify_workflow(steps: list[dict]):
     """
     Simulates a Dify workflow locally with Bartholomew gating at each step.
     In production, Dify calls the /dify/gate endpoint directly.
     """
-    print("🔄 Starting Dify Workflow with Bartholomew Guard")
+    print(" Starting Dify Workflow with Bartholomew Guard")
     results = []
 
     for i, step in enumerate(steps):
@@ -102,7 +102,7 @@ def simulate_dify_workflow(steps: list[dict]):
         print(f"\n[Step {i+1}] {node_type}: {action[:60]}...")
 
         result = guard.check(action, agent_id=f"dify-node-{i}")
-        status = "✅ ALLOWED" if result["allowed"] else "❌ BLOCKED"
+        status = " ALLOWED" if result["allowed"] else " BLOCKED"
         print(f"  {status} — {result['reason']} ({result['latency_us']:.1f}µs)")
         results.append({**step, "gate_result": result})
 

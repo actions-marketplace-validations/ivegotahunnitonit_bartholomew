@@ -5,7 +5,7 @@
 
 Production-ready, runnable recipes integrating Bartholomew Agentic Runtime Protection (`btp-guard`) into leading AI frameworks with sub-35µs deterministic execution gating.
 
-## 🚀 1-Click Runnable Cookbooks
+##  1-Click Runnable Cookbooks
 
 Every script below is self-contained and runnable in one command:
 

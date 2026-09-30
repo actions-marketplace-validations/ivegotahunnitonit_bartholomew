@@ -29,10 +29,10 @@ if (command === 'activate') {
 
 function printHelp() {
   console.log(`
-\x1b[1m\x1b[36m╔══════════════════════════════════════════════════════════════════════╗
-║               ★ MCP-PROXY-GUARD (BTP v3.0) — ACTIVE                 ║
-║   In-Process Security Gateway & Credential Scrubber for MCP Servers ║
-╚══════════════════════════════════════════════════════════════════════╝\x1b[0m
+\x1b[1m\x1b[36m
+                MCP-PROXY-GUARD (BTP v3.0) — ACTIVE                 
+   In-Process Security Gateway & Credential Scrubber for MCP Servers 
+\x1b[0m
 
 \x1b[1mUsage:\x1b[0m
   # Wrap any MCP server transparently in Claude Desktop / Cursor:
@@ -95,13 +95,13 @@ function runActivate(key) {
       activated_at: Date.now(),
       status: "ACTIVE"
     }, null, 2));
-    console.log(`\n\x1b[32m✓ License activated successfully!\x1b[0m`);
+    console.log(`\n\x1b[32m License activated successfully!\x1b[0m`);
     console.log(`  -> Tier: \x1b[1m${tier}\x1b[0m`);
     console.log(`  -> Status: ACTIVE`);
     return;
   }
 
-  console.log(`\x1b[32m✓ MCP-PROXY-GUARD Sovereign Enterprise Active\x1b[0m`);
+  console.log(`\x1b[32m MCP-PROXY-GUARD Sovereign Enterprise Active\x1b[0m`);
   console.log(`  All credentials scrubbed in-flight and destructive commands vetoed.`);
   console.log(`  Portal: https://bartholomew.info\n`);
 }

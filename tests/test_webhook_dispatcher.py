@@ -26,7 +26,7 @@ class TestWebhookDispatcher(unittest.TestCase):
         
         self.assertIn("attachments", payload)
         blocks = payload["attachments"][0]["blocks"]
-        self.assertTrue(any("🚨 [Bartholomew ARP]" in str(b) for b in blocks))
+        self.assertTrue(any(" [Bartholomew ARP]" in str(b) for b in blocks))
         self.assertTrue(any("agent-swarm-worker-42" in str(b) for b in blocks))
         self.assertTrue(any("rm -rf / --no-preserve-root" in str(b) for b in blocks))
 
@@ -36,7 +36,7 @@ class TestWebhookDispatcher(unittest.TestCase):
         
         self.assertIn("embeds", payload)
         embed = payload["embeds"][0]
-        self.assertEqual(embed["title"], "🚨 Security Intercept: DENY")
+        self.assertEqual(embed["title"], " Security Intercept: DENY")
         self.assertEqual(embed["color"], 15673924) # Red color
         self.assertTrue(any(f["name"] == "Agent Identifier" and "agent-swarm-worker-42" in f["value"] for f in embed["fields"]))
 

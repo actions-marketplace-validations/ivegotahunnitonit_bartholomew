@@ -8,7 +8,7 @@ import time
 import pytest
 
 
-# ─── AGENT CONTEXT DRIFT DETECTOR ─────────────────────────────────────────
+#  AGENT CONTEXT DRIFT DETECTOR 
 
 def test_drift_aligned_action():
     from src.context_drift_detector import AgentContextDriftDetector
@@ -136,7 +136,7 @@ def test_drift_classify_text():
     assert "TEST" in cats2
 
 
-# ─── TOKEN BUDGET GOVERNOR ─────────────────────────────────────────────────
+#  TOKEN BUDGET GOVERNOR 
 
 def test_budget_allows_within_limit():
     from src.token_budget_governor_v2 import AgentTokenBudgetGovernor

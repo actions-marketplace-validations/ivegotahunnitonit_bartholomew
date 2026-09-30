@@ -66,7 +66,7 @@ def demo_framework_safety():
     )
     print(f"  Turn 2 Allowed: {allowed2} | Reason: {reason2} | Latency: {us2:.1f} µs")
     assert not allowed2, "Split multi-turn attack in Turn 2 must be blocked by stateful session guard"
-    print("  🛡️  STATEFUL MULTI-TURN ATTACK INTERCEPTED")
+    print("    STATEFUL MULTI-TURN ATTACK INTERCEPTED")
 
     # --- 3. LangChain Tool Protection ---
     print("\n[Framework 3] LangChain Tool Protection:")

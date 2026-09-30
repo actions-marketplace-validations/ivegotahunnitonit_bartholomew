@@ -393,7 +393,7 @@ const server = http.createServer(async (req, res) => {
 if (process.argv[1] && (process.argv[1].endsWith('server.js') || process.argv[1].includes('stripe_connect_v2'))) {
   server.listen(PORT, () => {
     console.log('='.repeat(70));
-    console.log(`🚀 Bartholomew Stripe Connect V2 Server running on http://localhost:${PORT}`);
+    console.log(` Bartholomew Stripe Connect V2 Server running on http://localhost:${PORT}`);
     console.log(`• Storefront UI         : http://localhost:${PORT}/`);
     console.log(`• Connect Onboarding API: http://localhost:${PORT}/api/connect/accounts`);
     console.log(`• Thin Webhooks Endpoint: http://localhost:${PORT}/api/webhooks/thin`);

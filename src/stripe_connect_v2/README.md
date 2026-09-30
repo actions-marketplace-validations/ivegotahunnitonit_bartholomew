@@ -9,7 +9,7 @@ This directory contains a complete sample implementation of **Stripe Connect V2*
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Option A: Node.js / Express
 ```bash
@@ -34,7 +34,7 @@ uvicorn stripe_connect_v2.server:app --port 4242 --reload
 
 ---
 
-## 🔑 Key Architecture & API Details
+##  Key Architecture & API Details
 
 ### 1. Unified `stripeClient`
 Every request is dispatched through an instantiated Stripe Client instance:

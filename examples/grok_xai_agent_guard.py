@@ -24,7 +24,7 @@ client = OpenAI(
 GROK_MODEL = os.getenv("GROK_MODEL", "grok-2-latest")
 
 
-# ── Bartholomew-gated tools ────────────────────────────────────────
+#  Bartholomew-gated tools 
 
 @guard.protect
 def web_search(query: str) -> dict:
@@ -47,7 +47,7 @@ def query_database(sql: str) -> dict:
     return {"rows": [], "sql": sql, "gated_by": "bartholomew"}
 
 
-# ── Grok agent loop ────────────────────────────────────────────────
+#  Grok agent loop 
 
 def run_grok_agent(user_request: str, max_turns: int = 5):
     """
@@ -135,7 +135,7 @@ def run_grok_agent(user_request: str, max_turns: int = 5):
 
             fn = TOOL_MAP.get(fn_name)
             result = fn(**args) if fn else {"error": "Unknown tool"}
-            print(f"[Bartholomew] ✓ {result}")
+            print(f"[Bartholomew]  {result}")
 
             messages.append({
                 "role": "tool",

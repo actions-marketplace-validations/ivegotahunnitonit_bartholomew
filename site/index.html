@@ -2904,7 +2904,7 @@
           <div style="background:#030712; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px; font-family:var(--font-mono); font-size:0.72rem; color:#e2e8f0; min-height:160px; overflow-x:auto;">
             <div style="display:flex; justify-content:space-between; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:6px; margin-bottom:8px; font-size:0.68rem; color:#64748b;">
               <span>RUNTIME TELEMETRY CONSOLE</span>
-              <span id="nim-terminal-status" style="color:#10b981;">● BTP GUARD ACTIVE</span>
+              <span id="nim-terminal-status" style="color:#10b981;"> BTP GUARD ACTIVE</span>
             </div>
             <pre id="nim-terminal-output" style="margin:0; white-space:pre-wrap; line-height:1.4; color:#38bdf8;">Select a scenario above to test real-time in-process gating on NVIDIA NIM inference...</pre>
           </div>
@@ -3499,7 +3499,7 @@
       if (!out || !status) return;
 
       if (scenario === 'safe') {
-        status.innerHTML = '<span style="color:#10b981;">● AUTHORIZED (28.4µs)</span>';
+        status.innerHTML = '<span style="color:#10b981;"> AUTHORIZED (28.4µs)</span>';
         out.style.color = '#34d399';
         out.textContent = JSON.stringify({
           "protocol": "BTP-v5.4",
@@ -3514,7 +3514,7 @@
           "ed25519_signature": "e5b8a0...4f91"
         }, null, 2);
       } else if (scenario === 'threat') {
-        status.innerHTML = '<span style="color:#f43f5e;">▲ BTP-VETO (19.1µs)</span>';
+        status.innerHTML = '<span style="color:#f43f5e;"> BTP-VETO (19.1µs)</span>';
         out.style.color = '#f43f5e';
         out.textContent = JSON.stringify({
           "protocol": "BTP-v5.4",
@@ -3529,7 +3529,7 @@
           "incident_id": "INC-NIM-88410"
         }, null, 2);
       } else if (scenario === 'secret') {
-        status.innerHTML = '<span style="color:#facc15;">● SCRUBBED & REDACTED (12.5µs)</span>';
+        status.innerHTML = '<span style="color:#facc15;"> SCRUBBED & REDACTED (12.5µs)</span>';
         out.style.color = '#fde047';
         out.textContent = JSON.stringify({
           "protocol": "BTP-v5.4",
@@ -3543,7 +3543,7 @@
           "merkle_seal": "a1f492...01cb"
         }, null, 2);
       } else if (scenario === 'keystone') {
-        status.innerHTML = '<span style="color:#38bdf8;">● KEYSTONE VERIFIED (31.0µs)</span>';
+        status.innerHTML = '<span style="color:#38bdf8;"> KEYSTONE VERIFIED (31.0µs)</span>';
         out.style.color = '#38bdf8';
         out.textContent = JSON.stringify({
           "protocol": "BTP-v5.4",

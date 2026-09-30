@@ -46,7 +46,7 @@ def run_openai_agents_sdk_demo():
     res1 = protect_tool_call(safe_tool_call["name"], safe_tool_call["arguments"])
     print(f"  Verdict: {res1['status']} | Latency: {res1.get('latency_us', 0):.1f} µs")
     assert res1["status"] == "APPROVED", "Benign tool call should be approved"
-    print("  ✅ DISPATCH PERMITTED — executing query safely.")
+    print("   DISPATCH PERMITTED — executing query safely.")
 
     # 2. Catastrophic Database Mutation: DROP TABLE attempt
     malicious_sql_call = {
@@ -61,7 +61,7 @@ def run_openai_agents_sdk_demo():
     print(f"  Verdict: {res2['status']} | Latency: {res2.get('latency_us', 0):.1f} µs")
     print(f"  Reason:  {res2.get('reason')}")
     assert res2["status"] == "VETOED" or res2.get("blocked"), "Destructive SQL must be vetoed"
-    print("  🛡️  BLOCKED IN-MEMORY — Zero mutations applied to production database.")
+    print("    BLOCKED IN-MEMORY — Zero mutations applied to production database.")
 
     # 3. Prompt Injection / Shell Escape via Tool Argument
     malicious_shell_call = {
@@ -76,7 +76,7 @@ def run_openai_agents_sdk_demo():
     print(f"  Verdict: {res3['status']} | Latency: {res3.get('latency_us', 0):.1f} µs")
     print(f"  Reason:  {res3.get('reason')}")
     assert res3["status"] == "VETOED" or res3.get("blocked"), "Exfiltration command must be blocked"
-    print("  🛡️  BLOCKED IN-MEMORY — Data exfiltration attempt halted before OS socket open.")
+    print("    BLOCKED IN-MEMORY — Data exfiltration attempt halted before OS socket open.")
 
     # Cryptographic Proof of Audit
     receipt = res3.get("receipt", {})
@@ -129,7 +129,7 @@ def run_openai_agents_sdk_demo():
         )
         assert False, "Should have raised BTPViolationError"
     except BTPViolationError as err:
-        print(f"  🛡️  BTPViolationError Intercepted Successfully!")
+        print(f"    BTPViolationError Intercepted Successfully!")
         print(f"      Action:  {err.action_type}")
         print(f"      Reason:  {err.reason}")
         print(f"      Latency: {err.latency_us:.1f} µs")

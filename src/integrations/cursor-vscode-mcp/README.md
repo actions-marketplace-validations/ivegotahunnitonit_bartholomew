@@ -7,7 +7,7 @@
 
 ---
 
-## ⚡ What is Bartholomew Guard?
+##  What is Bartholomew Guard?
 
 Bartholomew Guard is an in-process safety seam for AI developer agents (Cursor Composer, Windsurf, Claude Code, AutoGen, CrewAI, LangGraph). It intercepts tool invocations in memory before commands touch the filesystem, database, or network:
 
@@ -18,7 +18,7 @@ Bartholomew Guard is an in-process safety seam for AI developer agents (Cursor C
 
 ---
 
-## 🚀 Quickstart
+##  Quickstart
 
 1. Install this extension in **Cursor** or **VS Code**.
 2. Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS) and run:
@@ -29,12 +29,12 @@ Bartholomew Guard is an in-process safety seam for AI developer agents (Cursor C
 
 ---
 
-## 💼 Sovereign Enterprise Architecture
+##  Sovereign Enterprise Architecture
 
 Bartholomew provides 100% unrestricted sovereign execution gating for developer agents:
 - **Zero Paywalls**: AST gating, secret scrubbing, and local Merkle receipts are fully unlocked.
 - **Keystone Capability Passkeys**: Ephemeral cryptographically signed capability tokens.
 - **SOC 2 Type II Dossiers**: Machine-verifiable audit proofs out of the box.
 
-👉 **Get Your Cloud API Key**: [https://bartholomew.info/cloud](https://bartholomew.info/cloud)  
-👉 **Pricing & Subscriptions**: [https://bartholomew.info/store/](https://bartholomew.info/store/)
+ **Get Your Cloud API Key**: [https://bartholomew.info/cloud](https://bartholomew.info/cloud)  
+ **Pricing & Subscriptions**: [https://bartholomew.info/store/](https://bartholomew.info/store/)

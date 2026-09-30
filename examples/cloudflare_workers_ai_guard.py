@@ -61,7 +61,7 @@ async def run_workers_ai_tool(prompt: str, tool_name: str = "execute_database_qu
             raise
 
 
-# ── wrangler.toml snippet ──────────────────────────────────────────
+#  wrangler.toml snippet 
 WRANGLER_TOML_SNIPPET = """
 # wrangler.toml — add to your Cloudflare Workers project
 [[ai]]

@@ -13,7 +13,7 @@ TARGET_URL = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8080/mcp/v1
 
 def simulate_agent_execution():
     print(f"Targeting MCP Server at: {TARGET_URL}\n")
-    print("🤖 Step 1: Agent attempting to execute a database query via Bartholomew MCP...")
+    print(" Step 1: Agent attempting to execute a database query via Bartholomew MCP...")
     
     # 1. Prepare standard MCP JSON-RPC payload invoking a tool without payment
     mcp_payload = {
@@ -40,15 +40,15 @@ def simulate_agent_execution():
             if "error" in result_json and result_json["error"]["code"] == 402:
                 error_data = result_json["error"]["data"]
                 
-                print("\n🛑 [SUCCESS] Server successfully triggered Stripe Agentic Paywall!")
-                print(f"💵 Price Per Verification: ${error_data['amount_usd']} USD")
-                print(f"🔑 Target Invoice Hash: {error_data['payment_hash']}")
-                print(f"⛓️ Target Pay-to-String (Invoice): {error_data['invoice']}")
-                print(f"📑 Agent Instructions: {result_json['error']['message']}")
-                print("\n💡 Verification: The gateway securely hard-blocked tool dispatch until paid.")
+                print("\n [SUCCESS] Server successfully triggered Stripe Agentic Paywall!")
+                print(f" Price Per Verification: ${error_data['amount_usd']} USD")
+                print(f" Target Invoice Hash: {error_data['payment_hash']}")
+                print(f" Target Pay-to-String (Invoice): {error_data['invoice']}")
+                print(f" Agent Instructions: {result_json['error']['message']}")
+                print("\n Verification: The gateway securely hard-blocked tool dispatch until paid.")
 
                 # Step 2: Now simulate agent paying the invoice and passing the L402 token
-                print("\n💳 Step 2: Simulating autonomous agent micropayment via Stripe Agentic Commerce...")
+                print("\n Step 2: Simulating autonomous agent micropayment via Stripe Agentic Commerce...")
                 paid_payload = {
                     "jsonrpc": "2.0",
                     "id": 2,
@@ -65,11 +65,11 @@ def simulate_agent_execution():
                 }
                 paid_response = requests.post(TARGET_URL, json=paid_payload, timeout=10)
                 paid_json = paid_response.json()
-                print("🛡️ Execution Response After Payment:")
+                print(" Execution Response After Payment:")
                 print(json.dumps(paid_json, indent=2))
                 
                 # Step 3: Now simulate safe query
-                print("\n🛡️ Step 3: Simulating paid safe query...")
+                print("\n Step 3: Simulating paid safe query...")
                 safe_payload = {
                     "jsonrpc": "2.0",
                     "id": 3,
@@ -86,18 +86,18 @@ def simulate_agent_execution():
                 }
                 safe_response = requests.post(TARGET_URL, json=safe_payload, timeout=10)
                 safe_json = safe_response.json()
-                print("✅ Safe Execution Response:")
+                print(" Safe Execution Response:")
                 print(json.dumps(safe_json, indent=2))
                 
             else:
-                print("\n⚠️ Warning: Server allowed execution without challenging for payment.")
+                print("\n Warning: Server allowed execution without challenging for payment.")
                 print(json.dumps(result_json, indent=2))
         else:
-            print(f"❌ Server communication failed. Status code: {response.status_code}")
+            print(f" Server communication failed. Status code: {response.status_code}")
             print(response.text)
 
     except Exception as e:
-        print(f"❌ Execution error: {str(e)}")
+        print(f" Execution error: {str(e)}")
 
 if __name__ == "__main__":
     simulate_agent_execution()

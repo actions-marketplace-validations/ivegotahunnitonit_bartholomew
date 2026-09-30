@@ -25,10 +25,10 @@ const command = args[0] || 'demo';
 
 function printBanner() {
   console.log(`
-${BOLD}${CYAN}╔══════════════════════════════════════════════════════════════════════╗
-║   ${YELLOW}★ BARTHOLOMEW TRUST PROTOCOL (BTP v2.4.1) — MCP SECURITY PROXY${CYAN}   ║
-║   ${RESET}Sub-5µs Micro-Rollbacks & In-Flight Credential Scrubbing for AI     ${BOLD}${CYAN}║
-╚══════════════════════════════════════════════════════════════════════╝${RESET}
+${BOLD}${CYAN}
+   ${YELLOW} BARTHOLOMEW TRUST PROTOCOL (BTP v2.4.1) — MCP SECURITY PROXY${CYAN}   
+   ${RESET}Sub-5µs Micro-Rollbacks & In-Flight Credential Scrubbing for AI     ${BOLD}${CYAN}
+${RESET}
 `);
 }
 
@@ -48,7 +48,7 @@ function runDemo() {
   const endScrub = process.hrtime.bigint();
   const scrubUs = Number(endScrub - startScrub) / 1000;
 
-  console.log(`  ${GREEN}✓ Redacted Keys:${RESET}    ${scrubResult.redactionCount} keys scrubbed in ${BOLD}${scrubUs.toFixed(2)} µs${RESET}`);
+  console.log(`  ${GREEN} Redacted Keys:${RESET}    ${scrubResult.redactionCount} keys scrubbed in ${BOLD}${scrubUs.toFixed(2)} µs${RESET}`);
   console.log(`  ${DIM}Scrubbed Payload:${RESET} ${JSON.stringify(scrubResult.data)}\n`);
 
   console.log(`${BOLD}[2/3] Copy-on-Write Micro-Rollback Simulation (<5µs):${RESET}`);
@@ -58,7 +58,7 @@ function runDemo() {
   console.log(`  ${DIM}Pre-flight Snapshot:${RESET} Capturing in-memory byte buffer...`);
   const snapshotBuffer = fs.readFileSync(mockTarget);
 
-  console.log(`  ${YELLOW}⚠ Simulated Agent Mutation:${RESET} Writing unauthorized code outside boundary...`);
+  console.log(`  ${YELLOW} Simulated Agent Mutation:${RESET} Writing unauthorized code outside boundary...`);
   fs.writeFileSync(mockTarget, "CORRUPTED_INJECTED_DATA");
 
   // Instant Rollback Trigger
@@ -69,8 +69,8 @@ function runDemo() {
 
   try { fs.unlinkSync(mockTarget); } catch (e) {}
 
-  console.log(`  ${GREEN}✓ Micro-Rollback:${RESET}    Pristine state restored in ${BOLD}${rollbackUs.toFixed(2)} µs${RESET}`);
-  console.log(`  ${GREEN}✓ Zero Residuals:${RESET}    Orphaned disk artifacts cleanly purged.\n`);
+  console.log(`  ${GREEN} Micro-Rollback:${RESET}    Pristine state restored in ${BOLD}${rollbackUs.toFixed(2)} µs${RESET}`);
+  console.log(`  ${GREEN} Zero Residuals:${RESET}    Orphaned disk artifacts cleanly purged.\n`);
 
   console.log(`${BOLD}[3/3] Chained Merkle Turn Receipt Verification:${RESET}`);
   const parentHash = "029807446fb2b9ada32c113e93926b39029807446fb2b9ada32c113e93926b39";
@@ -88,7 +88,7 @@ function runDemo() {
   const endChain = process.hrtime.bigint();
   const chainUs = Number(endChain - startChain) / 1000;
 
-  console.log(`  ${GREEN}✓ Merkle Chaining:${RESET}   ${chainRes.msg} in ${BOLD}${chainUs.toFixed(2)} µs${RESET}`);
+  console.log(`  ${GREEN} Merkle Chaining:${RESET}   ${chainRes.msg} in ${BOLD}${chainUs.toFixed(2)} µs${RESET}`);
   console.log(`  ${CYAN}• Status:${RESET}            100% Offline Mathematical Integrity Verified\n`);
 
   console.log(`${BOLD}${MAGENTA}Integration Commands:${RESET}`);
@@ -124,7 +124,7 @@ function runInit() {
   console.log(YELLOW + JSON.stringify(snippet, null, 2) + RESET);
 
   if (fs.existsSync(configPath)) {
-    console.log(`\n${GREEN}✓ Config file found!${RESET} You can inspect or update it directly.`);
+    console.log(`\n${GREEN} Config file found!${RESET} You can inspect or update it directly.`);
   } else {
     console.log(`\n${DIM}(File does not exist yet. Launch Claude Desktop once to initialize it).${RESET}`);
   }

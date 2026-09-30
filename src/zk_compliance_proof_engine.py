@@ -377,7 +377,7 @@ class ZKComplianceEngine:
           - Public witness commitment W = g^w mod p
           - Challenge e = H(C_r, W, policy, session, step)
           - Response s = r + e*w mod q
-          - Verify: g^s == C_r * W^e  (mod p)  ✓
+          - Verify: g^s == C_r * W^e  (mod p)  
 
         Returns (proof, witness, blinding) — caller discards witness/blinding.
         """
@@ -422,7 +422,7 @@ class ZKComplianceEngine:
           - Aggregate W:         g^w_agg mod p   (= product of g^w_i)
           - Challenge:           e = H(C_r_agg, W_agg, policy, session)
           - Response:            s = r_agg + e * w_agg mod q
-          - Verify:              g^s == C_r_agg * W_agg^e  (mod p)  ✓
+          - Verify:              g^s == C_r_agg * W_agg^e  (mod p)  
 
         Returns (C_r_agg, W_agg, e_agg, s_agg).
         """
