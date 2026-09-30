@@ -1,0 +1,64 @@
+{
+  "name": "bartholomew-guard",
+  "displayName": "Bartholomew Guard \u2014 Sovereign AI Agent Security Layer",
+  "description": "Layer 0 trust and security for every AI coding agent. 32 MCP tools covering: Prompt Injection Firewall, Dependency Threat Scanner, Workspace Intelligence, Agent Context Drift Detection, Token Budget Governance, ZK-Mesh Attestation, SIEM Relay, and Ring-0 protection.",
+  "version": "6.0.0-pre",
+  "author": "Bartholomew",
+  "repository": "https://github.com/ivegotahunnitonit/bartholomew",
+  "categories": [
+    "security",
+    "agent-safety",
+    "ai-tools",
+    "compliance"
+  ],
+  "tools": [
+    "btp_execute_command",
+    "btp_evaluate_intent",
+    "btp_get_security_status",
+    "btp_workspace_intel",
+    "btp_scan_dependencies",
+    "btp_prompt_firewall",
+    "btp_check_drift",
+    "btp_drift_report",
+    "btp_budget_record",
+    "btp_budget_report",
+    "btp_audit_log",
+    "btp_get_ring0_status",
+    "btp_zk_attestation",
+    "btp_siem_export",
+    "btp_jit_repair"
+  ],
+  "pricing": {
+    "free": [
+      "btp_execute_command",
+      "btp_evaluate_intent",
+      "btp_get_security_status",
+      "btp_workspace_intel",
+      "btp_scan_dependencies",
+      "btp_prompt_firewall",
+      "btp_check_drift",
+      "btp_drift_report",
+      "btp_budget_record",
+      "btp_budget_report"
+    ],
+    "pro": [
+      "btp_audit_log",
+      "btp_get_ring0_status",
+      "btp_jit_repair"
+    ],
+    "enterprise": [
+      "btp_zk_attestation",
+      "btp_siem_export"
+    ]
+  },
+  "installation": {
+    "pip": "pip install btp-guard",
+    "mcp_config": {
+      "command": "python",
+      "args": [
+        "-m",
+        "btp_guard.mcp_server"
+      ]
+    }
+  }
+}

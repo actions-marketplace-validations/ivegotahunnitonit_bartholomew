@@ -1,5 +1,5 @@
 {
-  "version": "6.0.0-pre",
+  "version": "6.0.0-rc1",
   "schema": "https://bartholomew.sh/mcp/registry/v6",
   "description": "Bartholomew Sovereign MCP Tool Registry \u2014 25 native tools for AI coding security, compliance, and autonomous agent protection.",
   "tools": [
@@ -194,7 +194,55 @@
       "category": "BUDGET_GOVERNOR",
       "description": "Get full budget report: spend vs. limit, model rates, per-task breakdown, velocity, circuit state.",
       "tier": "FREE"
+    },
+    {
+      "name": "btp_fleet_view",
+      "category": "FLEET",
+      "description": "Aggregate WorkspaceIntelligence across multiple repos. Returns fleet grade, worst/best workspace, critical optimizations.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_replay_record",
+      "category": "FORENSICS",
+      "description": "Append an action to the tamper-evident SHA-256 chained replay ledger.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_replay_report",
+      "category": "FORENSICS",
+      "description": "Get session forensic summary: total actions, blocked, healed, chain validity.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_replay_verify",
+      "category": "FORENSICS",
+      "description": "Walk the full SHA-256 chain and verify no tampering has occurred at any link.",
+      "tier": "PRO"
+    },
+    {
+      "name": "btp_mask_secrets",
+      "category": "SECRET_MASKER",
+      "description": "Scan text for 12 secret patterns and replace with BTP-VAULT-REF-{hex} before AI context.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_mask_stats",
+      "category": "SECRET_MASKER",
+      "description": "Return vault stats: total masked, secret types found, vault size.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_permission_check",
+      "category": "PERMISSION_GUARD",
+      "description": "Check if an agent action (file:read/write, shell:exec, http:request, mcp:tool) is within the declared permission manifest.",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_permission_summary",
+      "category": "PERMISSION_GUARD",
+      "description": "Get permission scope guard summary: total checks, violations, violation rate.",
+      "tier": "FREE"
     }
   ],
-  "total_tools": 32
+  "total_tools": 40
 }
