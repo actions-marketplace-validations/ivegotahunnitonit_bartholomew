@@ -1318,6 +1318,40 @@ def cmd_onboard(args):
 
 
 
+
+def cmd_daemon_yield(args):
+    """Runs the unified autonomous yield daemon (Subnet consensus + DePIN compute)."""
+    try:
+        from src.unified_yield_daemon import UnifiedYieldDaemon
+    except ImportError:
+        from btp_guard.unified_yield_daemon import UnifiedYieldDaemon
+    daemon = UnifiedYieldDaemon(interval_seconds=getattr(args, "interval", 15.0))
+    if getattr(args, "once", False):
+        snap = daemon.run_single_cycle()
+        print("\n" + "=" * 76)
+        print("  BARTHOLOMEW UNIFIED YIELD DAEMON -- DISCRETE HARVEST CYCLE (BTP v6.0)")
+        print("=" * 76)
+        print(f"  Subnet Validator  : {snap['subnet']['hotkey']}")
+        print(f"  Consensus Score   : {snap['subnet']['consensus_score']} | Emissions: {snap['subnet']['emissions_tao']} TAO (+{snap['subnet']['awu_accumulated']} AWU)")
+        print(f"  DePIN Compute     : {snap['depin']['worker_id']} | Total: ${snap['depin']['cumulative_yield_usd']} USD ({snap['depin']['evals_per_sec']:,} evals/sec)")
+        print(f"  Arbitrage Spread  : ${snap['arbitrage']['spread_captured_usd']:.4f} USD ({snap['arbitrage']['total_queries']} queries)")
+        print("=" * 76 + "\n")
+    else:
+        print("\n" + "=" * 76)
+        print("  BARTHOLOMEW UNIFIED YIELD DAEMON STARTING (BTP v6.0)")
+        print("=" * 76)
+        print("  [*] Running background harvester (Subnet Consensus + DePIN Compute + Token Arbitrage)")
+        print(f"  [*] Heartbeat Interval: {getattr(args, 'interval', 15.0)} seconds")
+        print("  [*] Status File       : .btp/node_daemon_status.json")
+        print("=" * 76 + "\n")
+        daemon.start_background()
+        try:
+            while True:
+                time.sleep(1.0)
+        except KeyboardInterrupt:
+            daemon.stop()
+            print("\n[*] Daemon stopped cleanly.")
+
 def cmd_daemon_start(args):
     port = args.port or 8080
     host = args.host or "127.0.0.1"
@@ -3318,6 +3352,40 @@ def cmd_bridge_claim(args):
     print("=" * 70)
 
 
+
+def cmd_daemon_yield(args):
+    """Runs the unified autonomous yield daemon (Subnet consensus + DePIN compute)."""
+    try:
+        from src.unified_yield_daemon import UnifiedYieldDaemon
+    except ImportError:
+        from btp_guard.unified_yield_daemon import UnifiedYieldDaemon
+    daemon = UnifiedYieldDaemon(interval_seconds=getattr(args, "interval", 15.0))
+    if getattr(args, "once", False):
+        snap = daemon.run_single_cycle()
+        print("\n" + "=" * 76)
+        print("  BARTHOLOMEW UNIFIED YIELD DAEMON -- DISCRETE HARVEST CYCLE (BTP v6.0)")
+        print("=" * 76)
+        print(f"  Subnet Validator  : {snap['subnet']['hotkey']}")
+        print(f"  Consensus Score   : {snap['subnet']['consensus_score']} | Emissions: {snap['subnet']['emissions_tao']} TAO (+{snap['subnet']['awu_accumulated']} AWU)")
+        print(f"  DePIN Compute     : {snap['depin']['worker_id']} | Total: ${snap['depin']['cumulative_yield_usd']} USD ({snap['depin']['evals_per_sec']:,} evals/sec)")
+        print(f"  Arbitrage Spread  : ${snap['arbitrage']['spread_captured_usd']:.4f} USD ({snap['arbitrage']['total_queries']} queries)")
+        print("=" * 76 + "\n")
+    else:
+        print("\n" + "=" * 76)
+        print("  BARTHOLOMEW UNIFIED YIELD DAEMON STARTING (BTP v6.0)")
+        print("=" * 76)
+        print("  [*] Running background harvester (Subnet Consensus + DePIN Compute + Token Arbitrage)")
+        print(f"  [*] Heartbeat Interval: {getattr(args, 'interval', 15.0)} seconds")
+        print("  [*] Status File       : .btp/node_daemon_status.json")
+        print("=" * 76 + "\n")
+        daemon.start_background()
+        try:
+            while True:
+                time.sleep(1.0)
+        except KeyboardInterrupt:
+            daemon.stop()
+            print("\n[*] Daemon stopped cleanly.")
+
 def cmd_daemon_start(args):
     from src.daemon.m2m_wire_daemon import M2MWireDaemon
     host = getattr(args, "host", "127.0.0.1")
@@ -4467,6 +4535,11 @@ def main():
     start_p.add_argument("--background", "-b", action="store_true", help="Run in background")
     start_p.add_argument("--m2m", action="store_true", default=True, help="Run in autonomous M2M wire barter mode")
 
+
+    yield_p = daemon_sub.add_parser("yield", help="Run unified yield harvester (Subnet + DePIN + Arbitrage)")
+    yield_p.add_argument("--once", action="store_true", help="Execute single discrete harvest cycle and exit")
+    yield_p.add_argument("--interval", "-i", type=float, default=15.0, help="Harvest interval in seconds (default: 15.0)")
+
     status_p = daemon_sub.add_parser("status", help="Query local daemon heartbeat & telemetry")
     status_p.add_argument("--port", type=int, default=8443, help="Daemon port")
 
@@ -5464,7 +5537,9 @@ def main():
     elif args.command == "onboard":
         cmd_onboard(args)
     elif args.command == "daemon":
-        if args.daemon_cmd == "start":
+        if args.daemon_cmd in ("yield", "harvest"):
+            cmd_daemon_yield(args)
+        elif args.daemon_cmd == "start":
             cmd_daemon_start(args)
         elif args.daemon_cmd == "ledger":
             cmd_daemon_ledger(args)

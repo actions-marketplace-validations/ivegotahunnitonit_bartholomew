@@ -1,0 +1,31 @@
+version: "6.0.0"
+policy_id: "urn:btp:policy:financial-trading-agent-v6"
+description: "Strict monetary bounds and invariant gates for autonomous DeFi, trading, and budget-managing agents."
+
+rules:
+  - id: "RULE_MAX_SINGLE_TX_CAP"
+    name: "Maximum Single Transaction Cap"
+    field: "amount_usd"
+    type: "max_threshold"
+    value: 1000.00
+    action: "DENY"
+    message: "Single transaction exceeds autonomous authorization ceiling of $1,000.00 USD."
+
+  - id: "RULE_SLIPPAGE_TOLERANCE"
+    name: "Maximum Execution Slippage Bound"
+    field: "max_slippage_pct"
+    type: "max_threshold"
+    value: 1.50
+    action: "DENY"
+    message: "Order slippage exceeds safe bound of 1.50% (MEV protection trigger)."
+
+  - id: "RULE_FORBIDDEN_COUNTERPARTIES"
+    name: "Sanctioned & High-Risk Destination Filter"
+    field: "destination_address"
+    type: "disallowed_values"
+    disallowed:
+      - "tornado_cash_router"
+      - "unverified_mixer"
+      - "blacklisted_pool"
+    action: "DENY"
+    message: "Transaction destination flagged by OFAC / AML compliance baseline."

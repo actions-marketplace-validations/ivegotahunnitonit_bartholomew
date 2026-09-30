@@ -1,0 +1,28 @@
+version: "6.0.0"
+policy_id: "urn:btp:policy:multi-agent-swarm-v6"
+description: "Coordination invariants and cross-tenant containment for multi-agent frameworks (CrewAI, AutoGen, LangGraph)."
+
+rules:
+  - id: "RULE_RECURSIVE_LOOP_CIRCUIT_BREAKER"
+    name: "Infinite Agent Message Churn Breaker"
+    field: "turn_depth"
+    type: "max_threshold"
+    value: 12
+    action: "DENY"
+    message: "Agent communication cycle exceeded max recursion limit (12 turns). Throttled to prevent token burn."
+
+  - id: "RULE_CROSS_TENANT_ISOLATION"
+    name: "Single-Tenant Boundary Enforcer"
+    field: "tenant_scope"
+    type: "match_strict"
+    value: "STRICT_SINGLE_TENANT"
+    action: "DENY"
+    message: "Cross-tenant data access violation: Agents cannot read or dispatch outside their authorized tenant sandbox."
+
+  - id: "RULE_BYZANTINE_CONSENSUS_QUORUM"
+    name: "Multi-Agent Consensus Quorum Requirement"
+    field: "quorum_approval_ratio"
+    type: "min_threshold"
+    value: 0.67
+    action: "DENY"
+    message: "Multi-agent tool call lacks supermajority consensus (min 67% peer approval required)."

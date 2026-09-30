@@ -82,8 +82,8 @@ class UnifiedYieldDaemon:
             },
             "depin": {
                 "worker_id": depin_stat["worker_id"],
-                "cumulative_yield_usd": depin_stat["cumulative_yield_usd"],
-                "evals_per_sec": depin_res["evals_per_sec"]
+                "cumulative_yield_usd": depin_stat.get("total_earned_usd", 0.0),
+                "evals_per_sec": depin_res.get("throughput_evals_sec", 0)
             },
             "arbitrage": {
                 "total_queries": arb_stat["total_queries"],
