@@ -551,7 +551,9 @@ export function evaluateWorkspaceSecurity(workspaceRoot = '.') {
   const hasCursor = fs.existsSync(path.join(ws, '.cursorrules')) || fs.existsSync(path.join(ws, '.cursor', 'rules', 'btp-guard.mdc'));
   const hasClaude = fs.existsSync(path.join(ws, 'CLAUDE.md'));
   const hasGemini = fs.existsSync(path.join(ws, 'GEMINI.md'));
-  const aiCount = (hasCursor ? 1 : 0) + (hasClaude ? 1 : 0) + (hasGemini ? 1 : 0);
+  const hasWindsurf = fs.existsSync(path.join(ws, '.windsurfrules'));
+  const hasCopilot = fs.existsSync(path.join(ws, '.github', 'copilot-instructions.md'));
+  const aiCount = (hasCursor ? 1 : 0) + (hasClaude ? 1 : 0) + (hasGemini ? 1 : 0) + (hasWindsurf ? 1 : 0) + (hasCopilot ? 1 : 0);
   const aiPassed = aiCount >= 2;
   checks.push({ id: 'ai_rules', name: 'AI Companion Invariant Rules', passed: aiPassed, pts: 25 });
   if (aiPassed) score += 25;
@@ -637,6 +639,26 @@ export function immunizeProject(workspaceRoot = '.', options = {}) {
   if (!fs.existsSync(geminiPath) || options.force) {
     fs.writeFileSync(geminiPath, '# Gemini Project Context\n' + GEMINI_SNIPPET, 'utf-8');
     changes.push({ file: 'GEMINI.md', action: 'created', desc: 'Gemini companion context' });
+  }
+
+  const windsurfPath = path.join(ws, '.windsurfrules');
+  if (!fs.existsSync(windsurfPath) || options.force) {
+    fs.writeFileSync(windsurfPath, '# Windsurf Cascade Rules\n' + CLAUDE_SNIPPET, 'utf-8');
+    changes.push({ file: '.windsurfrules', action: 'created', desc: 'Windsurf Cascade ruleset' });
+  }
+
+  const cursorRulesPath = path.join(ws, '.cursorrules');
+  if (!fs.existsSync(cursorRulesPath) || options.force) {
+    fs.writeFileSync(cursorRulesPath, CURSOR_MDC_CONTENT, 'utf-8');
+    changes.push({ file: '.cursorrules', action: 'created', desc: 'Cursor root ruleset' });
+  }
+
+  const copilotDir = path.join(ws, '.github');
+  fs.mkdirSync(copilotDir, { recursive: true });
+  const copilotPath = path.join(copilotDir, 'copilot-instructions.md');
+  if (!fs.existsSync(copilotPath) || options.force) {
+    fs.writeFileSync(copilotPath, '# GitHub Copilot Workspace Instructions\n' + CLAUDE_SNIPPET, 'utf-8');
+    changes.push({ file: '.github/copilot-instructions.md', action: 'created', desc: 'GitHub Copilot instructions' });
   }
 
   // 3. Keystone Capability Passkey

@@ -98,6 +98,7 @@ console.log('Grade:', audit.grade); // "A+"
 
 | Command | Description |
 |---|---|
+| `npx btp-guard telemetry` | Launch authenticated, single-tenant private threat telemetry vault in your browser |
 | `npx btp-guard protect` | Immunize repository with `.cursorrules`, `CLAUDE.md`, `GEMINI.md`, and pre-commit hooks |
 | `npx btp-guard protect --audit-only` | Audit workspace security score (0–100) without modifying files |
 | `npx btp-guard model-context --model <name>` | Generate formatted security briefing for Gemini, Claude, or Cursor |
