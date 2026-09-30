@@ -92,6 +92,30 @@
           "destination": "/leaderboard.html"
         },
         {
+          "source": "/pricing",
+          "destination": "/pricing.html"
+        },
+        {
+          "source": "/pricing.html",
+          "destination": "/pricing.html"
+        },
+        {
+          "source": "/pro",
+          "destination": "/pro.html"
+        },
+        {
+          "source": "/pro.html",
+          "destination": "/pro.html"
+        },
+        {
+          "source": "/telemetry",
+          "destination": "/telemetry.html"
+        },
+        {
+          "source": "/telemetry.html",
+          "destination": "/telemetry.html"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
