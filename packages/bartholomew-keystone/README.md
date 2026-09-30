@@ -3,7 +3,7 @@
 > **Issue tamper-evident, cryptographically signed permission slips for autonomous AI agents.**  
 > *Define deterministic boundaries for file modifications, command executions, external network calls, and financial spend in Cursor, Claude Desktop, Windsurf, and VS Code.*
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.29-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.30-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
 [![Works With](https://img.shields.io/badge/Works%20With-Bartholomew%20Guard-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
@@ -29,7 +29,7 @@ System prompt instructions ("Please do not touch `.env`") are easily ignored or 
 ### Active Cryptographic Clearance & Scopes
 Visualizing active capability boundaries: $25.00 session spend ceiling, 2-hour temporal TTL, filesystem write restrictions, command sandboxing whitelists, and network egress controls.
 
-![Bartholomew Keystone Passkey Core](images/keystone_passkey_core.png)
+![Bartholomew Keystone Passkey Core](https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/packages/bartholomew-keystone/images/keystone_passkey_core.png)
 
 ---
 

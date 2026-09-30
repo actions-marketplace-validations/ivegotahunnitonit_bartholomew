@@ -4,7 +4,7 @@
 > *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct AI Model Context Bridge.*
 
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.29-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.30-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -30,21 +30,21 @@ Bartholomew Guard operates in-process between autonomous AI coding assistants (C
 ### 1. Proof of Protection Dashboard Core
 Real-time telemetry showing your workspace security score (100/100, Grade A+), active invariant status, evaluation latency (<24.8us), and the live action forensics ledger.
 
-![Bartholomew Guard Telemetry Dashboard](images/dashboard_core.png)
+![Bartholomew Guard Telemetry Dashboard](https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/packages/vscode-extension/images/dashboard_core.png)
 
 ---
 
 ### 2. Plain-English Analysis Core
 Instant diagnostic clarity across four structured panels detailing exactly what your agents are doing, what risks exist, what remediations are required, and how Bartholomew is actively safeguarding the workspace.
 
-![Bartholomew Plain-English Breakdown Core](images/breakdown_core.png)
+![Bartholomew Plain-English Breakdown Core](https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/packages/vscode-extension/images/breakdown_core.png)
 
 ---
 
 ### 3. Direct AI Model Context Bridge Core
 One-click context injection buttons formatted specifically for Google Gemini / Antigravity, Anthropic Claude Code, Cursor Composer, and GitHub Copilot. Copy invariant rules directly into your prompt or composer.
 
-![Bartholomew Direct AI Model Context Bridge](images/model_bridge_core.png)
+![Bartholomew Direct AI Model Context Bridge](https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/packages/vscode-extension/images/model_bridge_core.png)
 
 ---
 
