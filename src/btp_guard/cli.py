@@ -1071,7 +1071,7 @@ def cmd_try(args):
     from src import Guard
 
     print("=" * 76)
-    print("  Bartholomew Guard -- Instant In-Process Safety Sandbox (BTP v5.4.25)")
+    print("  Bartholomew Guard -- Instant In-Process Safety Sandbox (BTP v6.0.0)")
     print("=" * 76)
     print("[*] Initializing in-process AST gating engine...")
     time.sleep(0.2)
@@ -1121,7 +1121,11 @@ def cmd_try(args):
         if len(reason) > 60:
             reason = reason[:57] + "..."
         print(f"      Verdict: [{verdict}] | Latency: {latency:.1f}us")
-        print(f"      Detail : {reason}\n")
+        if s.get("category") == "IN-FLIGHT CREDENTIAL SCRUBBING":
+            masked_act, redactions, _ = guard.mask_secrets(s["action"])
+            print(f"      Scrubbed: {masked_act} ({len(redactions)} secret(s) redacted in-flight)\n")
+        else:
+            print(f"      Detail : {reason}\n")
 
     print("-" * 76)
     print("  HOW TO PROTECT YOUR AGENT (1 Line):")

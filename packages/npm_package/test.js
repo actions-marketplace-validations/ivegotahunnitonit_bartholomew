@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 async function runTests() {
   console.log("==========================================================");
-  console.log("  BTP v5.4.10 Node.js Verifier Self-Test Suite");
+  console.log("  BTP v6.0.0 Node.js Verifier Self-Test Suite");
   console.log("==========================================================");
 
   let vectorPath = path.join(__dirname, "btp_test_vectors.json");
