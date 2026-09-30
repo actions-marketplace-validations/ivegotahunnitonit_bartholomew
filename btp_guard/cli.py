@@ -5049,3 +5049,44 @@ def cmd_firewall(args):
         print(f"  Receipt: {result['receipt']}")
     if result["blocked"]:
         sys.exit(2)
+
+
+def cmd_fleet(args):
+    """Multi-workspace Fleet View."""
+    try:
+        from src.fleet_view import FleetView
+    except ImportError:
+        from btp_guard.fleet_view import FleetView
+    roots = args.roots if hasattr(args, "roots") and args.roots else None
+    fleet = FleetView(workspace_roots=roots)
+    report = fleet.generate_fleet_report()
+    print(fleet.format_plaintext(report))
+
+
+def cmd_replay(args):
+    """Show Action Replay forensic summary for a log file or current session."""
+    print("[BTP] Action Replay Ledger")
+    print("  Use btp_replay_record MCP tool to build a session replay.")
+    print("  Supports: record(), verify_chain(), export_jsonl(), generate_incident_report()")
+
+
+def cmd_mask(args):
+    """Mask secrets in a file or stdin before sending to AI context."""
+    import sys
+    try:
+        from src.secret_masker_v2 import SecretMaskerV2
+    except ImportError:
+        from btp_guard.secret_masker_v2 import SecretMaskerV2
+    sm = SecretMaskerV2()
+    if hasattr(args, "file") and args.file:
+        with open(args.file, encoding="utf-8") as f:
+            text = f.read()
+    else:
+        text = sys.stdin.read()
+    masked, findings = sm.mask(text)
+    print(masked)
+    if findings:
+        print(f"\n[BTP] Masked {len(findings)} secret(s):", file=sys.stderr)
+        for f in findings:
+            print(f"  [{f['type']}] {f['ref']} (len={f['original_length']})", file=sys.stderr)
+
