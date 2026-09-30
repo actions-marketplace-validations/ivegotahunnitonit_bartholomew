@@ -240,10 +240,15 @@ export function activate(context: ExtensionContext) {
       return;
     }
     const text = editor.document.getText();
-    const hasSecrets = text.includes('sk-') || text.includes('AIzaSy') || text.includes('ghp_') || text.includes('AKIA');
-    const hasDangerous = text.includes('rm -rf') || (text.includes('subprocess.Popen(') && text.includes('shell=True'));
-    if (hasSecrets || hasDangerous) {
-      vscode.window.showWarningMessage('Bartholomew Guard: Potential risk or unmasked secret detected in active file!');
+    const hasSecrets = /sk-[a-zA-Z0-9_-]{20,}|AIzaSy[a-zA-Z0-9_-]{33}|gh[pousr]_[a-zA-Z0-9_-]{20,}|AKIA[0-9A-Z]{16}/.test(text);
+    const hasInjection = /ignore (all |your )?(previous|prior|above) instructions?|system prompt override|exfiltrate (api_key|secret|token)/i.test(text);
+    const hasDestructive = /rm\s+-rf|DROP\s+TABLE|TRUNCATE\s+TABLE|curl[^|]+\|\s*(ba)?sh/.test(text);
+    if (hasSecrets) {
+      vscode.window.showWarningMessage('Bartholomew Guard: Unmasked high-entropy API credential detected in active file!');
+    } else if (hasInjection) {
+      vscode.window.showErrorMessage('Bartholomew Guard: Prompt injection or jailbreak override pattern detected!');
+    } else if (hasDestructive) {
+      vscode.window.showErrorMessage('Bartholomew Guard: Destructive system command detected in file!');
     } else {
       vscode.window.showInformationMessage('Bartholomew Guard: Active file verified clean. (0 Invariant Violations)');
     }
@@ -291,7 +296,7 @@ export function activate(context: ExtensionContext) {
       try { fs.mkdirSync(gitHooks, { recursive: true }); } catch {}
     }
     const hookFile = path.join(gitHooks, 'pre-commit');
-    const hookContent = `#!/bin/sh\n# Bartholomew Keystone Pre-Commit Hook (BTP v5.4)\npython -m btp_guard.cli check --staged 2>/dev/null || exit 0\n`;
+    const hookContent = `#!/bin/sh\n# Bartholomew Keystone Pre-Commit Hook (BTP v6.0)\npython -m btp_guard.cli check --staged 2>/dev/null || exit 0\n`;
     try {
       fs.writeFileSync(hookFile, hookContent, 'utf-8');
       vscode.window.showInformationMessage('Bartholomew: Git pre-commit AST safety hook installed successfully!');
@@ -336,7 +341,7 @@ export function activate(context: ExtensionContext) {
   const isPro = isProLicensed();
   statusBarItem.text = isPro ? `$(shield) BTP: PRO (UNMETERED)` : `$(shield) BTP: ARMED (${usedCalls}/50 Free)`;
   statusBarItem.tooltip = isPro ? `Bartholomew Pro (Unmetered Developer Seat Active)` : `Bartholomew Free Tier: ${usedCalls}/50 evaluations used. Click to upgrade to Pro ($49/mo)`;
-  statusBarItem.tooltip = `Bartholomew Autonomous AI Guard (BTP v5.4 Sovereign Enterprise) - Sub-25µs AST & Keystone Active`;
+  statusBarItem.tooltip = `Bartholomew Autonomous AI Guard (BTP v6.0 Sovereign Enterprise) - Sub-25µs AST & Keystone Active`;
   
   // 15. Command: Run in Bartholomew Kernel Sandbox
   const runInSandboxCmd = vscode.commands.registerCommand('bartholomew.runInSandbox', async () => {
@@ -429,7 +434,7 @@ context.subscriptions.push(
       : `• Keystone Passkey: None issued yet (Run 'Keystone: Issue Agent Capability Passkey')`;
 
     const message = isConfigured
-      ? `Bartholomew Autonomous AI Guard (BTP v5.4 Sovereign Runtime)\n\n• Status: ACTIVE (Sovereign Enterprise Unrestricted)\n• In-Process AST Gating: Sub-25 µs\n• Merkle Receipt Ledger: ENABLED (RFC 8785 + Ed25519)\n• Model Context Protocol (MCP): REGISTERED\n• L402 Lightning Settlements: READY\n${passkeyDetails}`
+      ? `Bartholomew Autonomous AI Guard (BTP v6.0 Sovereign Runtime)\n\n• Status: ACTIVE (Sovereign Enterprise Unrestricted)\n• In-Process AST Gating: Sub-25 µs\n• Merkle Receipt Ledger: ENABLED (RFC 8785 + Ed25519)\n• Model Context Protocol (MCP): REGISTERED\n• L402 Lightning Settlements: READY\n${passkeyDetails}`
       : `Bartholomew BTP is not yet initialized in this workspace.\n\nRun 'btp-guard init' in terminal to generate sovereign keys & policy.`;
 
     vscode.window.showInformationMessage(
