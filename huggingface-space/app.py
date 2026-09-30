@@ -49,7 +49,7 @@ except Exception as e:
 
 def evaluate_attack(payload):
     if not payload or not payload.strip():
-        return "### ⚪ Please enter a command or select an attack preset.", "N/A", "N/A", {}
+        return "###  Please enter a command or select an attack preset.", "N/A", "N/A", {}
     
     res = guard.check(payload)
     allowed = res.get("allowed", False)
@@ -59,9 +59,9 @@ def evaluate_attack(payload):
     receipt = res.get("receipt", {})
     
     if allowed:
-        status_md = f"### 🟢 **ALLOWED (SAFE)**\n\n**Verdict:** `{verdict}`\n\n*Action passed all AST safety invariant checks without policy violation.*"
+        status_md = f"###  **ALLOWED (SAFE)**\n\n**Verdict:** `{verdict}`\n\n*Action passed all AST safety invariant checks without policy violation.*"
     else:
-        status_md = f"### 🔴 **BLOCKED (SECURITY VETO)**\n\n**Verdict:** `{verdict}`\n\n**Trigger:** `{reason}`"
+        status_md = f"###  **BLOCKED (SECURITY VETO)**\n\n**Verdict:** `{verdict}`\n\n**Trigger:** `{reason}`"
         
     return status_md, latency, reason, receipt
 
@@ -113,22 +113,22 @@ benchmark_doc = '''
 with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue", neutral_hue="slate"), css=demo_css, title="Bartholomew AI Agent Attack Simulator") as demo:
     with gr.Column(elem_id="header"):
         gr.HTML('''
-        <div class="hero-badge">⚡ &lt;35µs DETERMINISTIC RUNTIME FIREWALL • 0 MB VRAM</div>
-        <h1 style="font-size: 2.2rem; font-weight: 800; margin-top: 0.2rem;">🛡️ Bartholomew AI Agent Attack Simulator</h1>
+        <div class="hero-badge"> &lt;35µs DETERMINISTIC RUNTIME FIREWALL • 0 MB VRAM</div>
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin-top: 0.2rem;"> Bartholomew AI Agent Attack Simulator</h1>
         <p style="color: #64748b; font-size: 1.05rem; max-width: 750px; margin: 0 auto;">
             Experience sub-millisecond compiler AST invariant gating against prompt injection, destructive shell breakouts, and data exfiltration before tools execute.
         </p>
         <div style="margin-top: 10px; display: flex; justify-content: center; gap: 15px;">
-            <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" style="text-decoration:none; font-weight:600; color:#0284c7;">⭐ GitHub Repo (ivegotahunnitonit/bartholomew)</a>
+            <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" style="text-decoration:none; font-weight:600; color:#0284c7;"> GitHub Repo (ivegotahunnitonit/bartholomew)</a>
             <span>•</span>
-            <a href="https://pypi.org/project/btp-guard/" target="_blank" style="text-decoration:none; font-weight:600; color:#0284c7;">📦 PyPI: btp-guard</a>
+            <a href="https://pypi.org/project/btp-guard/" target="_blank" style="text-decoration:none; font-weight:600; color:#0284c7;"> PyPI: btp-guard</a>
             <span>•</span>
-            <a href="https://bartholomew.info/sim-lab.html" target="_blank" style="text-decoration:none; font-weight:600; color:#0284c7;">🧪 Live Web Lab</a>
+            <a href="https://bartholomew.info/sim-lab.html" target="_blank" style="text-decoration:none; font-weight:600; color:#0284c7;"> Live Web Lab</a>
         </div>
         ''')
 
     with gr.Tabs():
-        with gr.TabItem("🧪 Live Attack Simulator"):
+        with gr.TabItem(" Live Attack Simulator"):
             with gr.Row():
                 with gr.Column(scale=5):
                     input_text = gr.Textbox(
@@ -140,18 +140,18 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue", neutral_hue="slate"), cs
                     
                     gr.Markdown("**Quick Attack Presets (Click to test):**")
                     with gr.Row():
-                        btn_rm = gr.Button("🚨 Shell Breakout (rm -rf)", size="sm")
-                        btn_sql = gr.Button("🚨 SQL Wipe (DROP TABLE)", size="sm")
-                        btn_ssrf = gr.Button("🚨 Cloud SSRF (169.254)", size="sm")
+                        btn_rm = gr.Button(" Shell Breakout (rm -rf)", size="sm")
+                        btn_sql = gr.Button(" SQL Wipe (DROP TABLE)", size="sm")
+                        btn_ssrf = gr.Button(" Cloud SSRF (169.254)", size="sm")
                     with gr.Row():
-                        btn_rev = gr.Button("🚨 Reverse Shell (bash -i)", size="sm")
-                        btn_sec = gr.Button("🚨 Secret Leak (sk-proj...)", size="sm")
-                        btn_safe = gr.Button("✅ Safe Read Query", size="sm")
+                        btn_rev = gr.Button(" Reverse Shell (bash -i)", size="sm")
+                        btn_sec = gr.Button(" Secret Leak (sk-proj...)", size="sm")
+                        btn_safe = gr.Button(" Safe Read Query", size="sm")
                         
-                    eval_btn = gr.Button("⚡ Test Against Bartholomew AST Gate", variant="primary", size="lg")
+                    eval_btn = gr.Button(" Test Against Bartholomew AST Gate", variant="primary", size="lg")
 
                 with gr.Column(scale=4):
-                    status_output = gr.Markdown("### ⚪ Ready for evaluation")
+                    status_output = gr.Markdown("###  Ready for evaluation")
                     with gr.Row():
                         latency_output = gr.Label(label="AST Execution Latency", value="0 µs")
                     reason_output = gr.Textbox(label="Rule Violation / Invariant Code", interactive=False)
@@ -171,23 +171,23 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue", neutral_hue="slate"), cs
                 outputs=[status_output, latency_output, reason_output, receipt_output]
             )
 
-        with gr.TabItem("🤖 Hugging Face smolagents Integration"):
+        with gr.TabItem(" Hugging Face smolagents Integration"):
             gr.Markdown(smolagents_doc)
 
         
-        with gr.TabItem("🏆 Empirical Leaderboard & GPU Calculator"):
+        with gr.TabItem(" Empirical Leaderboard & GPU Calculator"):
             gr.Markdown("""
             ### Empirical Guardrails Leaderboard (100 Concurrent Agents / 50k Operations)
             
             | Security Platform | Median Latency (P50) | GPU VRAM Required | Throughput | Attestation Standard |
             | :--- | :--- | :--- | :--- | :--- |
-            | **⚡ Bartholomew (`btp-guard`)** | **15.70 µs** | **0 MB (Pure CPU)** | **23,860 evals/sec** | **RFC 8785 Ed25519** |
+            | ** Bartholomew (`btp-guard`)** | **15.70 µs** | **0 MB (Pure CPU)** | **23,860 evals/sec** | **RFC 8785 Ed25519** |
             | **NeMo Guardrails (NVIDIA)** | 180,000 µs (180 ms) | 4 – 8 GB VRAM | ~5.5 evals/sec | None |
             | **Llama Guard 3 (Meta 8B)** | 650,000 µs (650 ms) | 16 GB VRAM | ~1.5 evals/sec | None |
             | **OpenAI Moderation API** | 220,000 µs (220 ms) | Cloud API (External) | ~4.5 evals/sec | None |
             """)
             
-            gr.Markdown("### 💰 Interactive Cloud GPU Savings Calculator")
+            gr.Markdown("###  Interactive Cloud GPU Savings Calculator")
             with gr.Row():
                 agents_slider = gr.Slider(minimum=1, maximum=500, value=50, step=1, label="Concurrent Autonomous Agent Workers")
                 calls_slider = gr.Slider(minimum=500, maximum=20000, value=2500, step=500, label="Tool Calls per Day per Agent")
@@ -207,7 +207,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="blue", neutral_hue="slate"), cs
             agents_slider.change(calc_savings, inputs=[agents_slider, calls_slider], outputs=[annual_savings, hours_saved, speed_advantage])
             calls_slider.change(calc_savings, inputs=[agents_slider, calls_slider], outputs=[annual_savings, hours_saved, speed_advantage])
 
-        with gr.TabItem("📊 Architectural Benchmark"):
+        with gr.TabItem(" Architectural Benchmark"):
             gr.Markdown(benchmark_doc)
 
 if __name__ == "__main__":

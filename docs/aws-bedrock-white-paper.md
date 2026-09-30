@@ -20,7 +20,7 @@ This white paper introduces the **Tier-0 Local Fast Path Architecture** using th
 In a traditional cloud-only guardrail pipeline:
 
 ```
-[Agent Intent] ──(HTTPS ~1,500ms / $0.002)──> [AWS Bedrock Guardrail] ──> [Tool Execution]
+[Agent Intent] (HTTPS ~1,500ms / $0.002)> [AWS Bedrock Guardrail] > [Tool Execution]
 ```
 
 Every single tool proposal—including repetitive retry loops, invalid commands, syntax errors, and prompt injections—is transmitted over the network and evaluated by a cloud model.
@@ -30,27 +30,27 @@ Every single tool proposal—including repetitive retry loops, invalid commands,
 ## The Solution: The Tier-0 Fast Path Architecture
 
 ```
-                                  ┌────────────────────────┐
-                                  │ Autonomous Agent Host  │
-                                  │ (ECS / Lambda / EKS)   │
-                                  └──────────┬─────────────┘
-                                             │ (Proposed Tool Action)
+                                  
+                                   Autonomous Agent Host  
+                                   (ECS / Lambda / EKS)   
+                                  
+                                              (Proposed Tool Action)
                                              
-                        ┌─────────────────────────────────────────┐
-                        │   Bartholomew Tier-0 In-Memory Gate     │
-                        │   - Polyglot AST Compiler Check         │
-                        │   - In-Flight Secret Vault Scrubber     │
-                        │   - Local Spend & LDMU Recursion Bounds │
-                        └────────────┬───────────────┬────────────┘
-                                     │               │
-                              [Passed (<50 µs)]   [Blocked (<50 µs)]
-                                     │               │
+                        
+                           Bartholomew Tier-0 In-Memory Gate     
+                           - Polyglot AST Compiler Check         
+                           - In-Flight Secret Vault Scrubber     
+                           - Local Spend & LDMU Recursion Bounds 
+                        
                                                     
-                        ┌────────────────────────┐ ┌─────────────────────────┐
-                        │ Amazon Bedrock Runtime │ │  Intercepted Locally  │
-                        │ (Cloud Execution)      │ │ Latency: 38 µs          │
-                        │ Cost: Normal Cloud Fee │ │ Cloud Cost: $0.00       │
-                        └────────────────────────┘ └─────────────────────────┘
+                              [Passed (<50 µs)]   [Blocked (<50 µs)]
+                                                    
+                                                    
+                         
+                         Amazon Bedrock Runtime    Intercepted Locally  
+                         (Cloud Execution)        Latency: 38 µs          
+                         Cost: Normal Cloud Fee   Cloud Cost: $0.00       
+                         
 ```
 
 ### How Tier-0 Gating Works:

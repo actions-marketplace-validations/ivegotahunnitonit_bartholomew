@@ -1,4 +1,4 @@
-# 🛡️ Bartholomew Enterprise Pilot Guide: Agentic Runtime Protection (ARP)
+#  Bartholomew Enterprise Pilot Guide: Agentic Runtime Protection (ARP)
 **BTP v5.4.22 — Production Release & Verification Blueprint**
 
 ---
@@ -11,7 +11,7 @@ However, Large Language Models are inherently nondeterministic. They hallucinate
 
 ---
 
-## ⚡ Deployment Model 1: Zero-Code HTTP Reverse Proxy Sidecar
+##  Deployment Model 1: Zero-Code HTTP Reverse Proxy Sidecar
 
 Teams using any language (Python, Node.js, Go, Rust, Java, or bash) can deploy Bartholomew as an in-process or local container sidecar without changing a single line of business logic.
 
@@ -55,7 +55,7 @@ response = client.chat.completions.create(
 
 ---
 
-## ⚡ Deployment Model 2: 1-Line In-Process SDK Integration
+##  Deployment Model 2: 1-Line In-Process SDK Integration
 
 For Python teams wanting sub-microsecond in-process execution with zero network hops:
 
@@ -91,7 +91,7 @@ result = guarded_trade(amount=25000, ticker="NVDA")
 
 ---
 
-## 📊 Certified Performance & Stress Verification
+##  Certified Performance & Stress Verification
 
 Bartholomew v5.4.22 has been certified across a continuous battery of cryptographic stress tests:
 
@@ -106,7 +106,7 @@ Bartholomew v5.4.22 has been certified across a continuous battery of cryptograp
 
 ---
 
-## 💰 Monetization & Clearinghouse Economic Engine
+##  Monetization & Clearinghouse Economic Engine
 
 Every clearanced financial action across Stripe, Apple Pay, Google Pay, and Visa Direct is cleared through Bartholomew's non-custodial clearinghouse:
 
@@ -119,7 +119,7 @@ Every clearanced financial action across Stripe, Apple Pay, Google Pay, and Visa
 
 ---
 
-## 📜 SOC 2 & ISO 27001 Cryptographic Audit Dossiers
+##  SOC 2 & ISO 27001 Cryptographic Audit Dossiers
 
 To generate an auditor-ready cryptographic compliance dossier for enterprise security reviews:
 

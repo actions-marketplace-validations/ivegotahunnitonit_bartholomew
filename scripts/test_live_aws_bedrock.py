@@ -110,9 +110,9 @@ def initialize_bedrock_client(region_name: str = "us-east-1"):
 
 
 def run_bedrock_test_suite():
-    print(f"\n{BOLD}{CYAN}╔═════════════════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{BOLD}{CYAN}║     BARTHOLOMEW TIER-0 FAST PATH × AMAZON BEDROCK RUNTIME INTEGRATION SUITE                     ║{RESET}")
-    print(f"{BOLD}{CYAN}╚═════════════════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+    print(f"\n{BOLD}{CYAN}{RESET}")
+    print(f"{BOLD}{CYAN}     BARTHOLOMEW TIER-0 FAST PATH × AMAZON BEDROCK RUNTIME INTEGRATION SUITE                     {RESET}")
+    print(f"{BOLD}{CYAN}{RESET}\n")
 
     client, client_desc = initialize_bedrock_client()
     print(f"[*] Initialized Bedrock Backend : {BOLD}{client_desc}{RESET}")
@@ -172,17 +172,17 @@ def run_bedrock_test_suite():
 
         verdict = meta.get("verdict", "UNKNOWN")
         if verdict == "DENY":
-            print(f"  Result : {CRIMSON}🛑 INTERCEPTED & BLOCKED{RESET} | Latency: {BOLD}{latency_us:.2f} µs{RESET}")
+            print(f"  Result : {CRIMSON} INTERCEPTED & BLOCKED{RESET} | Latency: {BOLD}{latency_us:.2f} µs{RESET}")
             print(f"  Reason : {DIM}{msg}{RESET}")
         else:
             redacts = meta.get("redactions_count", 0)
             redact_str = f" | {AMBER}{redacts} Secrets Redacted{RESET}" if redacts > 0 else ""
-            print(f"  Result : {GREEN}✔ APPROVED & SIGNED{RESET}{redact_str} | Latency: {BOLD}{GREEN}{latency_us:.2f} µs{RESET}")
+            print(f"  Result : {GREEN} APPROVED & SIGNED{RESET}{redact_str} | Latency: {BOLD}{GREEN}{latency_us:.2f} µs{RESET}")
 
         assert verdict == tc["expected_verdict"], f"Expected {tc['expected_verdict']}, got {verdict}"
-        print("─" * 97)
+        print("" * 97)
 
-    print(f"\n{BOLD}{GREEN}✔ ALL AMAZON BEDROCK TIER-0 GATES VERIFIED 100% CLEAN (Average Latency: 36.4 µs){RESET}\n")
+    print(f"\n{BOLD}{GREEN} ALL AMAZON BEDROCK TIER-0 GATES VERIFIED 100% CLEAN (Average Latency: 36.4 µs){RESET}\n")
 
 
 if __name__ == "__main__":

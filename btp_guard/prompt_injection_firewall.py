@@ -17,7 +17,7 @@ import hashlib
 import time
 from typing import Dict, Any, List, Optional, Tuple
 
-# ─── HIGH-CONFIDENCE INJECTION SIGNATURES ────────────────────────────────────
+#  HIGH-CONFIDENCE INJECTION SIGNATURES 
 INJECTION_PATTERNS = [
     # Classic override patterns
     (r"ignore (all |your )?(previous|prior|above|earlier) instructions?", "DIRECT_OVERRIDE", "CRITICAL"),

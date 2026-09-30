@@ -100,8 +100,8 @@ def run_autogen_swarm_demo():
         execute_sql_query(hostile_query)
         print("[-] FAILED: Hostile query was not caught!")
     except BTPViolationError as e:
-        print(f"[✔] Bartholomew VETO Triggered: {e.reason}")
-        print(f"[✔] Rule ID: {e.rule_id} | Interception Latency: {e.latency_us:.2f} µs")
+        print(f"[] Bartholomew VETO Triggered: {e.reason}")
+        print(f"[] Rule ID: {e.rule_id} | Interception Latency: {e.latency_us:.2f} µs")
 
     # 5. Adversarial AutoGen System Wipe Attempt
     print("\n--- [5] Confused-Deputy System Wipe Attempt (Dropped in Sub-35µs) ---")
@@ -110,8 +110,8 @@ def run_autogen_swarm_demo():
         run_system_maintenance(hostile_cmd)
         print("[-] FAILED: Hostile command was not caught!")
     except BTPViolationError as e:
-        print(f"[✔] Bartholomew VETO Triggered: {e.reason}")
-        print(f"[✔] Rule ID: {e.rule_id} | Interception Latency: {e.latency_us:.2f} µs")
+        print(f"[] Bartholomew VETO Triggered: {e.reason}")
+        print(f"[] Rule ID: {e.rule_id} | Interception Latency: {e.latency_us:.2f} µs")
 
     print("\n" + "=" * 80)
     print("  AutoGen Swarm Consensus Protected: Zero Remote Token Spend, In-Process Gated")

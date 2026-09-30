@@ -43,7 +43,7 @@ def _safe_console_text(text: str) -> str:
         text.encode(enc)
         return text
     except Exception:
-        return text.replace("🛑", "[BLOCKED]").replace("🔐", "[MERKLE]").replace("👉", "->").replace("µs", "us")
+        return text.replace("", "[BLOCKED]").replace("", "[MERKLE]").replace("", "->").replace("µs", "us")
 
 class SecurityVetoException(Exception):
     """Raised when Bartholomew intercepts a dangerous tool call."""
@@ -51,9 +51,9 @@ class SecurityVetoException(Exception):
         cmd_preview = payload_preview[:60] if payload_preview else "destructive operation"
         msg = _safe_console_text(
             f"[BARTHOLOMEW SECURITY VETO] {reason}\n"
-            f"🛑 [Bartholomew-Guard] Vetoed command '{cmd_preview}' in {latency_us:.1f}µs.\n"
-            f"🔐 A local Merkle compliance receipt has been compiled.\n"
-            f"👉 Running multiple agents? Auto-stream these logs to a centralized SOC 2 dashboard and export Audit Packs at: https://bartholomew.info/cloud\n"
+            f" [Bartholomew-Guard] Vetoed command '{cmd_preview}' in {latency_us:.1f}µs.\n"
+            f" A local Merkle compliance receipt has been compiled.\n"
+            f" Running multiple agents? Auto-stream these logs to a centralized SOC 2 dashboard and export Audit Packs at: https://bartholomew.info/cloud\n"
         )
         super().__init__(msg)
         self.reason = reason
@@ -102,9 +102,9 @@ def secure_tool(
                         raise SecurityVetoException(reason, meta, payload_preview=candidate, latency_us=latency_us)
                     else:
                         print(
-                            f"\n🛑 [Bartholomew-Guard] Vetoed command '{candidate[:60]}' in {latency_us:.1f}µs.\n"
-                            f"🔐 A local Merkle compliance receipt has been compiled.\n"
-                            f"👉 Running multiple agents? Auto-stream these logs to a centralized SOC 2 dashboard and export Audit Packs at: https://bartholomew.info/cloud\n"
+                            f"\n [Bartholomew-Guard] Vetoed command '{candidate[:60]}' in {latency_us:.1f}µs.\n"
+                            f" A local Merkle compliance receipt has been compiled.\n"
+                            f" Running multiple agents? Auto-stream these logs to a centralized SOC 2 dashboard and export Audit Packs at: https://bartholomew.info/cloud\n"
                         )
                         return f"TOOL_EXECUTION_BLOCKED: {reason}"
 

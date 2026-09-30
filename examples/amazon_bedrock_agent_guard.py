@@ -23,7 +23,7 @@ bedrock_agent = boto3.client(
 )
 
 
-# ── Lambda action group handler (deploy this as your Bedrock Lambda) ──
+#  Lambda action group handler (deploy this as your Bedrock Lambda) 
 
 def lambda_handler(event: dict, context=None) -> dict:
     """
@@ -88,7 +88,7 @@ def _dispatch_tool(api_path: str, params: dict) -> dict:
     return {"status": "unknown_tool", "path": api_path}
 
 
-# ── Invoke a Bedrock Agent with Bartholomew ────────────────────────
+#  Invoke a Bedrock Agent with Bartholomew 
 
 def run_bedrock_agent(user_prompt: str, agent_id: str, agent_alias_id: str):
     """

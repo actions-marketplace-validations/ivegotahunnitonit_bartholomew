@@ -93,7 +93,7 @@ class WebhookDispatcher:
                                 "type": "header",
                                 "text": {
                                     "type": "plain_text",
-                                    "text": f"🚨 [Bartholomew ARP] Agent Security Intercept: {verdict}",
+                                    "text": f" [Bartholomew ARP] Agent Security Intercept: {verdict}",
                                     "emoji": True
                                 }
                             },
@@ -142,7 +142,7 @@ class WebhookDispatcher:
                 "avatar_url": "https://bartholomew.info/favicon.ico",
                 "embeds": [
                     {
-                        "title": f"🚨 Security Intercept: {verdict}",
+                        "title": f" Security Intercept: {verdict}",
                         "description": f"**Threat Intercepted:** {reason}",
                         "color": color,
                         "fields": [

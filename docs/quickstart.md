@@ -103,7 +103,7 @@ cursor --install-extension Bartholomew.bartholomew-guard-vscode
 
 Want to see it in action without installing anything?  
 Test preset attacks (`rm -rf`, `DROP TABLE`, credential leak) live in your browser:  
-👉 **[https://bartholomew.info/cookbook](https://bartholomew.info/cookbook)**
+ **[https://bartholomew.info/cookbook](https://bartholomew.info/cookbook)**
 
 ---
 

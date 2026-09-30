@@ -18,7 +18,7 @@ LLAMA_ENDPOINT = os.getenv("LLAMA_ENDPOINT", "http://localhost:11434/v1")
 LLAMA_MODEL = os.getenv("LLAMA_MODEL", "llama3.1:70b")
 
 
-# ── Guarded tools the Llama agent can call ─────────────────────────
+#  Guarded tools the Llama agent can call 
 
 @guard.protect
 def execute_shell_command(command: str) -> dict:
@@ -34,7 +34,7 @@ def query_database(sql: str) -> dict:
     return {"rows": [], "query": sql, "status": "gated_by_bartholomew"}
 
 
-# ── Llama agent loop ───────────────────────────────────────────────
+#  Llama agent loop 
 
 def run_llama_agent(user_request: str):
     """

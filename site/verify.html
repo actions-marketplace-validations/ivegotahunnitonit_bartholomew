@@ -738,20 +738,20 @@
       // Step 1: AST Parsing
       setTimeout(() => {
         steps[0].classList.add('show', 'done');
-        steps[0].innerHTML = `<span>[1/4]</span> ✓ AST syntax tree & symbol table parsed (0 violations)`;
+        steps[0].innerHTML = `<span>[1/4]</span>  AST syntax tree & symbol table parsed (0 violations)`;
       }, 500);
 
       // Step 2: Invariant Check
       setTimeout(() => {
         steps[1].classList.add('show', 'done');
-        steps[1].innerHTML = `<span>[2/4]</span> ✓ 550/550 Invariant safety rules passed (Zero-Leak Verified)`;
+        steps[1].innerHTML = `<span>[2/4]</span>  550/550 Invariant safety rules passed (Zero-Leak Verified)`;
       }, 1200);
 
       // Step 3: Dispatch Benchmark
       const lat = (28 + Math.random() * 5).toFixed(1);
       setTimeout(() => {
         steps[2].classList.add('show', 'done');
-        steps[2].innerHTML = `<span>[3/4]</span> ✓ In-process tool execution benchmark: ${lat} µs dispatch seam`;
+        steps[2].innerHTML = `<span>[3/4]</span>  In-process tool execution benchmark: ${lat} µs dispatch seam`;
         document.getElementById('kpiLatency').textContent = `${lat} µs`;
       }, 1900);
 
@@ -771,7 +771,7 @@
         }
 
         steps[3].classList.add('show', 'done');
-        steps[3].innerHTML = `<span>[4/4]</span> ✓ Ed25519 attestation signed! Seal: ${newSealId} [RECORDED ON CLOUD FLEET]`;
+        steps[3].innerHTML = `<span>[4/4]</span>  Ed25519 attestation signed! Seal: ${newSealId} [RECORDED ON CLOUD FLEET]`;
 
         // Update UI
         document.getElementById('certTarget').textContent = target;

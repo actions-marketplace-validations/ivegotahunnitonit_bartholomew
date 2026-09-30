@@ -46,7 +46,7 @@ const signature = hmac.digest('hex');
 const stripeSignatureHeader = `t=${timestamp},v1=${signature}`;
 
 console.log('='.repeat(70));
-console.log('⚡ SIMULATING STRIPE V2 THIN EVENT DISPATCH');
+console.log(' SIMULATING STRIPE V2 THIN EVENT DISPATCH');
 console.log('='.repeat(70));
 console.log(`• Event Type  : ${thinEventPayload.type}`);
 console.log(`• Event ID    : ${thinEventPayload.id}`);
@@ -72,7 +72,7 @@ const req = http.request(options, (res) => {
   res.on('end', () => {
     console.log(`[Response] HTTP ${res.statusCode}: ${responseData}`);
     if (res.statusCode === 200) {
-      console.log('✓ Thin event successfully parsed and processed by server!');
+      console.log(' Thin event successfully parsed and processed by server!');
     } else {
       console.log('! Note: If using real Stripe verification, start server with STRIPE_WEBHOOK_SECRET matching the test secret.');
     }

@@ -11,7 +11,7 @@ import re
 import pytest
 
 
-# ─── PROMPT INJECTION FIREWALL ─────────────────────────────────────────────
+#  PROMPT INJECTION FIREWALL 
 
 def test_pif_blocks_direct_override():
     from src.prompt_injection_firewall import PromptInjectionFirewall
@@ -117,7 +117,7 @@ def test_pif_receipt_is_hex():
     assert re.fullmatch(r"[0-9a-f]+", result["receipt"])
 
 
-# ─── WORKSPACE INTELLIGENCE REPORT ────────────────────────────────────────
+#  WORKSPACE INTELLIGENCE REPORT 
 
 def test_intel_detects_python_stack(tmp_path):
     (tmp_path / "requirements.txt").write_text("requests==2.31.0\nfastapi==0.104.0", encoding="utf-8")
@@ -211,7 +211,7 @@ def test_intel_plaintext_contains_grade(tmp_path):
     assert report["security"]["grade"] in text
 
 
-# ─── DEPENDENCY THREAT SCANNER ─────────────────────────────────────────────
+#  DEPENDENCY THREAT SCANNER 
 
 def test_deps_detects_known_malicious_python(tmp_path):
     lines = "requests==2.31.0\npython-requests==1.0.0\nnumpy==1.24.0"

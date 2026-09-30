@@ -48,7 +48,7 @@ function activate(context) {
             };
 
             fs.writeFileSync(mcpConfigPath, JSON.stringify(mcpData, null, 2), 'utf8');
-            vscode.window.showInformationMessage('🛡️ Bartholomew Guard MCP Server successfully configured in ~/.cursor/mcp.json!');
+            vscode.window.showInformationMessage(' Bartholomew Guard MCP Server successfully configured in ~/.cursor/mcp.json!');
         } catch (err) {
             vscode.window.showErrorMessage(`Failed to configure MCP: ${err.message}`);
         }

@@ -1,6 +1,6 @@
 ---
 title: Bartholomew AI Agent Attack Simulator
-emoji: 🛡️
+emoji: 
 colorFrom: blue
 colorTo: indigo
 sdk: static
@@ -15,7 +15,7 @@ Bartholomew is an open-source, deterministic firewall for AI agents, tool calls,
 
 Unlike heavy model-based guards (e.g. Llama Guard 3) that consume 16 GB of GPU VRAM and take 650ms per check, Bartholomew runs at the compiler AST level on CPU in under **35 microseconds** with **0 MB GPU memory**.
 
-### 🔗 Links
+###  Links
 - **GitHub:** [ivegotahunnitonit/bartholomew](https://github.com/ivegotahunnitonit/bartholomew)
 - **PyPI:** [`pip install btp-guard`](https://pypi.org/project/btp-guard/)
 - **Documentation & Web Lab:** [bartholomew.info](https://bartholomew.info)

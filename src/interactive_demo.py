@@ -44,12 +44,12 @@ from src.trust_protocol import BartholomewTrustAuthority
 
 
 BANNER = f"""{C_AMBER}{C_BOLD}
-  ██████╗  █████╗ ██████╗ ████████╗██╗  ██╗ ██████╗ ██╗     ██████╗ ███╗   ███╗███████╗██╗   ██╗
-  ██╔══██╗██╔══██╗██╔══██╗╚══██╔══╝██║  ██║██╔═══██╗██║    ██╔═══██╗████╗ ████║██╔════╝██║   ██║
-  ██████╔╝███████║██████╔╝   ██║   ███████║██║   ██║██║    ██║   ██║██╔████╔██║█████╗  ██║   ██║
-  ██╔══██╗██╔══██║██╔══██╗   ██║   ██╔══██║██║   ██║██║    ██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║
-  ██████╔╝██║  ██║██║  ██║   ██║   ██║  ██║╚██████╔╝███████╗╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝
-  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ 
+                      
+            
+                       
+                       
+                
+                          
 {C_RESET}{C_CYAN}  [ BARTHOLOMEW TRUST PROTOCOL v5.4.23 // DETERMINISTIC IN-PROCESS AGENT GATE ]{C_RESET}
   {C_DIM}Sub-Microsecond AST Pre-Flight Gating · Hermetic Sandboxing · RFC 8785 Ed25519 Notary{C_RESET}
   {C_DIM}Frontier Partners: Google Gemini 3.8 · Claude 3.7 · GPT-Astra · Cloudflare · AutoGen · Copilot{C_RESET}
@@ -57,7 +57,7 @@ BANNER = f"""{C_AMBER}{C_BOLD}
 
 
 def print_divider():
-    print(f"{C_DIM}────────────────────────────────────────────────────────────────────────────────────────{C_RESET}")
+    print(f"{C_DIM}{C_RESET}")
 
 
 def run_interactive_demo(speed: float = 0.5):
@@ -235,12 +235,12 @@ def run_interactive_demo(speed: float = 0.5):
         # Output Results
         if verdict == "BLOCKED":
             blocked_count += 1
-            print(f"  {C_CRIMSON}{C_BOLD}► VERDICT: [BLOCKED] in {latency_us:.1f} µs{C_RESET}")
+            print(f"  {C_CRIMSON}{C_BOLD} VERDICT: [BLOCKED] in {latency_us:.1f} µs{C_RESET}")
             print(f"    {C_CRIMSON}Rule Hit:{C_RESET} {rule}")
             print(f"    {C_DIM}Details:{C_RESET}  {detail}")
         else:
             approved_count += 1
-            print(f"  {C_EMERALD}{C_BOLD}► VERDICT: [APPROVED] in {latency_us:.1f} µs{C_RESET}")
+            print(f"  {C_EMERALD}{C_BOLD} VERDICT: [APPROVED] in {latency_us:.1f} µs{C_RESET}")
             print(f"    {C_EMERALD}Attestation:{C_RESET} {rule}")
             print(f"    {C_CYAN}Receipt:{C_RESET}     {detail}")
 

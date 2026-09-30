@@ -104,7 +104,7 @@ class BartholomewSentinel:
         def _send():
             try:
                 payload = json.dumps({
-                    "content": f"🚨 **BTP Sentinel Threat Intercept** | Node: `{self.node_id}`\n"
+                    "content": f" **BTP Sentinel Threat Intercept** | Node: `{self.node_id}`\n"
                                f"• **Rule**: `{threat_event['rule_id']}` ({threat_event['threat_type']})\n"
                                f"• **Latency**: `{threat_event['latency_us']} µs`\n"
                                f"• **Agent**: `{threat_event['agent_id']}`\n"

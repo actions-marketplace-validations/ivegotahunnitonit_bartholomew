@@ -74,8 +74,8 @@ class BtpStripeAgentGuard:
             raise BtpStripeLicenseRequiredException(
                 f"[BTP-MONETIZATION] Free tier limit reached ({self.FREE_TIER_LIMIT} protected calls). "
                 f"Autonomous agent financial protections require an active license.\n"
-                f"👉 Upgrade to Pro ($49/mo): {STRIPE_PRO_URL}\n"
-                f"👉 Enterprise with $50k Warranty: {STRIPE_ENTERPRISE_URL}"
+                f" Upgrade to Pro ($49/mo): {STRIPE_PRO_URL}\n"
+                f" Enterprise with $50k Warranty: {STRIPE_ENTERPRISE_URL}"
             )
 
     def secure_stripe_call(

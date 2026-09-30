@@ -7,7 +7,7 @@
 
 ---
 
-## ⚡ What's New in v5.4.20
+##  What's New in v5.4.20
 
 ### 1. Official GitHub Action for AI Agent PR Gating
 - Published turnkey composite GitHub Action (`action.yml`) for the **GitHub Marketplace**.

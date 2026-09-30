@@ -10,7 +10,7 @@ import json
 import pytest
 
 
-# ─── ACTION REPLAY & FORENSICS LEDGER ─────────────────────────────────────
+#  ACTION REPLAY & FORENSICS LEDGER 
 
 def test_replay_records_action():
     from src.action_replay_ledger import ActionReplayLedger
@@ -108,7 +108,7 @@ def test_replay_summary_structure():
     assert summary["chain_valid"] is True
 
 
-# ─── IN-CONTEXT SECRET MASKER V2 ──────────────────────────────────────────
+#  IN-CONTEXT SECRET MASKER V2 
 
 def test_masker_replaces_openai_key():
     from src.secret_masker_v2 import SecretMaskerV2
@@ -207,7 +207,7 @@ def test_masker_vault_size_grows():
     assert sm.get_vault_size() >= 2
 
 
-# ─── MULTI-WORKSPACE FLEET VIEW ────────────────────────────────────────────
+#  MULTI-WORKSPACE FLEET VIEW 
 
 def test_fleet_single_workspace(tmp_path):
     (tmp_path / "requirements.txt").write_text("flask==2.3.0", encoding="utf-8")

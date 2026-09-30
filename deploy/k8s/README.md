@@ -6,12 +6,12 @@ Enterprise deployment package for running Bartholomew Guard as an in-process sid
 
 ```text
 [Agent Pod / Swarm Worker] 
-        │
-        ▼ (Local IPC / localhost:8080)
-[Bartholomew Guard Sidecar (v5.4.10)]  <── Sub-35µs AST Invariant Gate & Merkle Receipts
-        │
-        ├─► [ALLOW] ──► OS Syscall / External LLM API
-        └─► [VETO]  ──► Drops execution, issues signed compliance receipt
+        
+         (Local IPC / localhost:8080)
+[Bartholomew Guard Sidecar (v5.4.10)]  < Sub-35µs AST Invariant Gate & Merkle Receipts
+        
+         [ALLOW]  OS Syscall / External LLM API
+         [VETO]   Drops execution, issues signed compliance receipt
 ```
 
 ## Quickstart: Helm Installation

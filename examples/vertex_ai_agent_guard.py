@@ -21,7 +21,7 @@ LOCATION = os.getenv("VERTEX_LOCATION", "us-central1")
 MODEL = os.getenv("VERTEX_MODEL", "gemini-2.0-flash-001")
 
 
-# ── Bartholomew-gated tools ────────────────────────────────────────
+#  Bartholomew-gated tools 
 
 @guard.protect
 def execute_bigquery(sql: str, dataset: str = "main") -> dict:
@@ -44,7 +44,7 @@ def write_to_gcs(bucket: str, path: str, content: str) -> dict:
     return {"bucket": bucket, "path": path, "status": "written"}
 
 
-# ── Vertex AI Reasoning Engine / Gemini function calling loop ──────
+#  Vertex AI Reasoning Engine / Gemini function calling loop 
 
 def run_vertex_agent(user_request: str, max_turns: int = 5):
     """
@@ -133,7 +133,7 @@ def run_vertex_agent(user_request: str, max_turns: int = 5):
 
         fn = TOOL_MAP.get(fn_name)
         result = fn(**args) if fn else {"error": "Unknown tool"}
-        print(f"[Bartholomew] ✓ {result}")
+        print(f"[Bartholomew]  {result}")
 
         response = chat.send_message(
             genai.protos.Part(

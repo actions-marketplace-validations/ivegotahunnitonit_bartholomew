@@ -15,13 +15,13 @@ As autonomous AI multi-agent swarms scale across enterprise cloud infrastructure
 ## 2. Architecture & Data Flow
 
 ```
-┌─────────────────────────┐                            ┌─────────────────────────┐
-│   Agent A (Planner)     │                            │   Agent B (Executor)    │
-│ ─────────────────────── │                            │ ─────────────────────── │
-│ 1. Synthesizes Task     │                            │ 3. Verifies Ed25519 Seal│
-│ 2. Signs A2A Envelope   │ ──(BTP/A2A/2.3 Packet)───> │ 4. Checks Granted Scope │
-│    [Ed25519 PrivateKey] │                            │ 5. Executes Tool Safely │
-└─────────────────────────┘                            └─────────────────────────┘
+                            
+   Agent A (Planner)                                    Agent B (Executor)    
+                                
+ 1. Synthesizes Task                                  3. Verifies Ed25519 Seal
+ 2. Signs A2A Envelope    (BTP/A2A/2.3 Packet)>  4. Checks Granted Scope 
+    [Ed25519 PrivateKey]                              5. Executes Tool Safely 
+                            
 ```
 
 ---

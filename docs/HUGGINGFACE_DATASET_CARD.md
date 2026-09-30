@@ -19,7 +19,7 @@ size_categories:
 - 100K<n<1M
 ---
 
-# 🛡️ Bartholomew BTP Agent Red-Team & Invariant Evals (105,000 Vectors)
+#  Bartholomew BTP Agent Red-Team & Invariant Evals (105,000 Vectors)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Format: Parquet](https://img.shields.io/badge/Format-Apache%20Parquet-blue.svg)](https://parquet.apache.org/)
@@ -32,7 +32,7 @@ All records are stored in high-performance **Apache Parquet format** on the `ref
 
 ---
 
-## 🚀 Quickstart: 1-Line Python Ingestion
+##  Quickstart: 1-Line Python Ingestion
 
 ```python
 from datasets import load_dataset
@@ -62,7 +62,7 @@ print(df)
 
 ---
 
-## 📊 Benchmark Taxonomy & Threat Coverage
+##  Benchmark Taxonomy & Threat Coverage
 
 The 105,000 vectors cover the entire spectrum of autonomous tool-execution vulnerabilities:
 
@@ -77,7 +77,7 @@ The 105,000 vectors cover the entire spectrum of autonomous tool-execution vulne
 
 ---
 
-## 🏆 Empirical Leaderboard: Guardrail Comparison
+##  Empirical Leaderboard: Guardrail Comparison
 
 Evaluated on 100 concurrent agent threads executing 50,000 continuous tool calls:
 
@@ -90,7 +90,7 @@ Evaluated on 100 concurrent agent threads executing 50,000 continuous tool calls
 
 ---
 
-## 📜 Dataset Schema
+##  Dataset Schema
 
 Each row contains the following structured fields:
 
@@ -111,7 +111,7 @@ Each row contains the following structured fields:
 
 ---
 
-## 🔬 Citation
+##  Citation
 
 If you use this benchmark in academic research or enterprise evaluation, please cite:
 

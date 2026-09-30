@@ -1,0 +1,158 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b132b"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#111b33" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#0a1020" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="accentCyan" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00e5ff"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="url(#bgGrad)" rx="12"/>
+  <rect width="898" height="518" x="1" y="1" fill="none" stroke="#1e293b" stroke-width="1.5" rx="11"/>
+
+  <!-- Top Bar -->
+  <g transform="translate(24, 24)">
+    <!-- Logo Shield -->
+    <path d="M 0 6 L 18 0 L 36 6 L 36 24 C 36 36 18 44 18 44 C 18 44 0 36 0 24 Z" fill="url(#accentCyan)" filter="url(#glow)"/>
+    <path d="M 12 18 L 16 26 L 25 14" fill="none" stroke="#050811" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <text x="50" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto" font-size="16" font-weight="700">BARTHOLOMEW SOVEREIGN GUARD</text>
+    <text x="50" y="38" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">IN-PROCESS AST INVARIANT GATEWAY // LATENCY: &lt;24.8 us // VERIFIED SOC 2</text>
+
+    <!-- Status Badges -->
+    <rect x="670" y="8" width="180" height="28" rx="14" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+    <circle cx="686" cy="22" r="4" fill="#34d399"/>
+    <text x="698" y="26" fill="#34d399" font-family="Consolas, monospace" font-size="11" font-weight="700">[STATUS: ARMED]</text>
+  </g>
+
+  <!-- 4 Telemetry Metric Cards -->
+  <g transform="translate(24, 86)">
+    <!-- Card 1: Score -->
+    <rect width="202" height="88" rx="8" fill="url(#cardGrad)" stroke="#1e293b"/>
+    <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">SECURITY AUDIT SCORE</text>
+    <text x="16" y="58" fill="#10b981" font-family="Consolas, monospace" font-size="28" font-weight="700">100<tspan font-size="14" fill="#64748b">/100</tspan></text>
+    <rect x="135" y="36" width="50" height="24" rx="4" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+    <text x="148" y="52" fill="#10b981" font-family="Consolas, monospace" font-size="12" font-weight="700">A+</text>
+
+    <!-- Card 2: Operations Evaluated -->
+    <g transform="translate(216, 0)">
+      <rect width="202" height="88" rx="8" fill="url(#cardGrad)" stroke="#1e293b"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">OPERATIONS AUDITED</text>
+      <text x="16" y="58" fill="#38bdf8" font-family="Consolas, monospace" font-size="24" font-weight="700">73,420,119</text>
+      <text x="16" y="76" fill="#64748b" font-family="Consolas, monospace" font-size="10">Zero cloud roundtrips</text>
+    </g>
+
+    <!-- Card 3: Pillars -->
+    <g transform="translate(432, 0)">
+      <rect width="202" height="88" rx="8" fill="url(#cardGrad)" stroke="#1e293b"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">ACTIVE INVARIANTS</text>
+      <text x="16" y="58" fill="#a78bfa" font-family="Consolas, monospace" font-size="24" font-weight="700">15 PILLARS</text>
+      <text x="16" y="76" fill="#64748b" font-family="Consolas, monospace" font-size="10">40 native MCP tools</text>
+    </g>
+
+    <!-- Card 4: Threats Blocked -->
+    <g transform="translate(648, 0)">
+      <rect width="204" height="88" rx="8" fill="url(#cardGrad)" stroke="#1e293b"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">THREATS INTERCEPTED</text>
+      <text x="16" y="58" fill="#f8fafc" font-family="Consolas, monospace" font-size="24" font-weight="700">0 EXFILTRATED</text>
+      <text x="16" y="76" fill="#10b981" font-family="Consolas, monospace" font-size="10">100% Hermetic sandbox</text>
+    </g>
+  </g>
+
+  <!-- Live Intercepted Action Ledger -->
+  <g transform="translate(24, 190)">
+    <rect width="852" height="195" rx="8" fill="url(#cardGrad)" stroke="#1e293b"/>
+    <text x="16" y="26" fill="#38bdf8" font-family="Consolas, monospace" font-size="11" font-weight="700">LIVE ACTION FORENSICS LEDGER (.btp/audit.log)</text>
+    <line x1="16" y1="36" x2="836" y2="36" stroke="#1e293b" stroke-width="1"/>
+
+    <!-- Row 1 -->
+    <g transform="translate(16, 48)">
+      <text x="0" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="11">23:14:02</text>
+      <rect x="65" y="2" width="60" height="20" rx="3" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+      <text x="75" y="16" fill="#10b981" font-family="Consolas, monospace" font-size="10" font-weight="700">[ALLOW]</text>
+      <text x="140" y="16" fill="#f8fafc" font-family="Consolas, monospace" font-size="11">tool_call: git status</text>
+      <text x="530" y="16" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">Rule: BTP-AST-001</text>
+      <text x="680" y="16" fill="#38bdf8" font-family="Consolas, monospace" font-size="11">Latency: 14.2 us</text>
+      <text x="790" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="10">SHA: 9f8e...</text>
+    </g>
+
+    <!-- Row 2 -->
+    <g transform="translate(16, 78)">
+      <text x="0" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="11">23:14:05</text>
+      <rect x="65" y="2" width="60" height="20" rx="3" fill="#ef4444" fill-opacity="0.15" stroke="#ef4444"/>
+      <text x="75" y="16" fill="#ef4444" font-family="Consolas, monospace" font-size="10" font-weight="700">[BLOCK]</text>
+      <text x="140" y="16" fill="#f8fafc" font-family="Consolas, monospace" font-size="11">shell: rm -rf /var/cache (Destructive delete prohibited)</text>
+      <text x="530" y="16" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">Rule: BTP-SEC-004</text>
+      <text x="680" y="16" fill="#38bdf8" font-family="Consolas, monospace" font-size="11">Latency: 18.7 us</text>
+      <text x="790" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="10">SHA: 4d2a...</text>
+    </g>
+
+    <!-- Row 3 -->
+    <g transform="translate(16, 108)">
+      <text x="0" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="11">23:14:11</text>
+      <rect x="65" y="2" width="60" height="20" rx="3" fill="#10b981" fill-opacity="0.15" stroke="#10b981"/>
+      <text x="75" y="16" fill="#10b981" font-family="Consolas, monospace" font-size="10" font-weight="700">[ALLOW]</text>
+      <text x="140" y="16" fill="#f8fafc" font-family="Consolas, monospace" font-size="11">file_read: src/permission_scope_guard.py</text>
+      <text x="530" y="16" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">Rule: BTP-FS-002</text>
+      <text x="680" y="16" fill="#38bdf8" font-family="Consolas, monospace" font-size="11">Latency: 11.9 us</text>
+      <text x="790" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="10">SHA: e71c...</text>
+    </g>
+
+    <!-- Row 4 -->
+    <g transform="translate(16, 138)">
+      <text x="0" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="11">23:14:19</text>
+      <rect x="65" y="2" width="60" height="20" rx="3" fill="#a78bfa" fill-opacity="0.15" stroke="#a78bfa"/>
+      <text x="75" y="16" fill="#a78bfa" font-family="Consolas, monospace" font-size="10" font-weight="700">[MASKED]</text>
+      <text x="140" y="16" fill="#f8fafc" font-family="Consolas, monospace" font-size="11">in_flight: Sensitive API key masked before prompt context</text>
+      <text x="530" y="16" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">Rule: BTP-MSK-001</text>
+      <text x="680" y="16" fill="#38bdf8" font-family="Consolas, monospace" font-size="11">Latency: 22.4 us</text>
+      <text x="790" y="16" fill="#64748b" font-family="Consolas, monospace" font-size="10">SHA: 1b93...</text>
+    </g>
+  </g>
+
+  <!-- Universal Extension Mesh Footprint -->
+  <g transform="translate(24, 400)">
+    <rect width="852" height="96" rx="8" fill="url(#cardGrad)" stroke="#1e293b"/>
+    <text x="16" y="24" fill="#a78bfa" font-family="Consolas, monospace" font-size="11" font-weight="700">UNIVERSAL EXTENSION MESH (ACTIVE DEFENSE MATRIX)</text>
+
+    <g transform="translate(16, 36)">
+      <!-- Copilot -->
+      <rect width="195" height="46" rx="4" fill="#0f172a" stroke="#334155"/>
+      <text x="12" y="20" fill="#f8fafc" font-size="11" font-weight="700">GitHub Copilot</text>
+      <text x="12" y="36" fill="#10b981" font-family="Consolas, monospace" font-size="9">[ACTIVE_SHIELD] Pre-flight AST</text>
+
+      <!-- Claude -->
+      <g transform="translate(205, 0)">
+        <rect width="195" height="46" rx="4" fill="#0f172a" stroke="#334155"/>
+        <text x="12" y="20" fill="#f8fafc" font-size="11" font-weight="700">Claude Code / Cline</text>
+        <text x="12" y="36" fill="#10b981" font-family="Consolas, monospace" font-size="9">[ACTIVE_SHIELD] CLAUDE.md briefing</text>
+      </g>
+
+      <!-- Gemini -->
+      <g transform="translate(410, 0)">
+        <rect width="195" height="46" rx="4" fill="#0f172a" stroke="#334155"/>
+        <text x="12" y="20" fill="#f8fafc" font-size="11" font-weight="700">Gemini / Antigravity</text>
+        <text x="12" y="36" fill="#10b981" font-family="Consolas, monospace" font-size="9">[ACTIVE_SHIELD] GEMINI.md policy</text>
+      </g>
+
+      <!-- Cursor -->
+      <g transform="translate(615, 0)">
+        <rect width="205" height="46" rx="4" fill="#0f172a" stroke="#334155"/>
+        <text x="12" y="20" fill="#f8fafc" font-size="11" font-weight="700">Cursor / Windsurf</text>
+        <text x="12" y="36" fill="#10b981" font-family="Consolas, monospace" font-size="9">[ACTIVE_SHIELD] .cursorrules armed</text>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -6,7 +6,7 @@ Cursor, AWS Bedrock, Windsurf) and any downstream MCP Server (Filesystem, Shell,
 
 Architecture:
   [MCP Client] <--(stdio/HTTP)--> [Bartholomew MCP Gateway] <--(stdio)--> [Downstream MCP Server]
-                                             │
+                                             
                                    [In-Flight Secret Redaction]
                                    [Transactional Workspace CoW]
                                    [Chained Ed25519 Receipts]

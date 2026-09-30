@@ -4,8 +4,8 @@ Bartholomew Agent-to-Agent (A2A) Cryptographic Telemetry Protocol (v2.3)
 Enables trustless, verifiable multi-agent swarms across process & cloud boundaries.
 
 Architecture:
-  [Agent A (Planner)] ────(Signed A2A Envelope)────> [Agent B (Executor)]
-           │                                                  │
+  [Agent A (Planner)] (Signed A2A Envelope)> [Agent B (Executor)]
+                                                             
   [Signs Task Payload]                              [Verifies Ed25519 Seal]
   [BTP Attestation]                                 [Executes with Invariant Guard]
 

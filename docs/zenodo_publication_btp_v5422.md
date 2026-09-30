@@ -28,33 +28,33 @@ The software industry is undergoing an unprecedented architectural inflection: h
 
 ```
        [ Human Principal / Enterprise ]
-                      │ (Delegates Task, Passports & Wallets)
-                      ▼
-            ┌───────────────────┐
-            │  Autonomous Agent │ <── [ Adversarial Web / Prompt Injection ]
-            │ (Claude / Grok)   │
-            └─────────┬─────────┘
-                      │ (Proposes Execution: Shell / SQL / Financial API)
-                      ▼
-   ┌─────────────────────────────────────────────────────────────┐
-   │         Bartholomew ARP v5.4.22 Security Hypervisor         │
-   │  ┌─────────────────────────┐   ┌─────────────────────────┐  │
-   │  │ Polyglot AST Hypervisor │   │ Keystone Passkey & KYC  │  │
-   │  │ (<20µs CFG Inspection)  │   │ (Budget, Scopes, Dual)  │  │
-   │  └───────────┬─────────────┘   └────────────┬────────────┘  │
-   │              ▼                              ▼               │
-   │     [ SHA-256 Digest ] ────────► [ Ed25519 Signature ]      │
-   │              │                              │               │
-   │              ▼                              ▼               │
-   │     [ Merkle Inclusion ] ──────► [ Attestation Voucher ]    │
-   │              │                   (Zero Balance-Sheet Risk)  │
-   │              ▼                              │               │
-   │   [ Universal Financial Joint: Stripe / Apple / Visa Pay ]  │
-   │         (Enforces 2.5% + $0.02 Automated Toll)              │
-   └──────────────────────────────┬──────────────────────────────┘
-                                  │
-                 ┌────────────────┴────────────────┐
-                 ▼                                 ▼
+                       (Delegates Task, Passports & Wallets)
+                      
+            
+              Autonomous Agent  < [ Adversarial Web / Prompt Injection ]
+             (Claude / Grok)   
+            
+                       (Proposes Execution: Shell / SQL / Financial API)
+                      
+   
+            Bartholomew ARP v5.4.22 Security Hypervisor         
+          
+      Polyglot AST Hypervisor     Keystone Passkey & KYC    
+      (<20µs CFG Inspection)      (Budget, Scopes, Dual)    
+          
+                                                              
+        [ SHA-256 Digest ]  [ Ed25519 Signature ]      
+                                                              
+                                                              
+        [ Merkle Inclusion ]  [ Attestation Voucher ]    
+                                    (Zero Balance-Sheet Risk)  
+                                                              
+      [ Universal Financial Joint: Stripe / Apple / Visa Pay ]  
+            (Enforces 2.5% + $0.02 Automated Toll)              
+   
+                                  
+                 
+                                                  
       [ Allow: Bare-Metal / Pay ]       [ Deny: 403 Veto / HITL ]
 ```
 
@@ -82,25 +82,25 @@ Rather than analyzing raw textual strings using brittle regular expressions or l
 
 ```
    Raw Agent Command: "os.system('rm -rf /')"
-              │
-              ▼ [ Lexical & Grammar Parser ]
-         ┌─────────┐
-         │ Module  │
-         └───┬─────┘
-             │
-         ┌───▼────┐
-         │  Expr  │
-         └───┬────┘
-             │
-         ┌───▼────┐
-         │  Call  │ ◄─── Invariant Trigger: Call.func == "system"
-         └───┬────┘
-      ┌──────┴────────────────┐
-      ▼                       ▼
- ┌─────────┐            ┌───────────┐
- │  Name   │            │ Constant  │
- │(system) │            │('rm -rf/')│ ◄── Invariant Trigger: Recursive Root Delete
- └─────────┘            └───────────┘
+              
+               [ Lexical & Grammar Parser ]
+         
+          Module  
+         
+             
+         
+           Expr  
+         
+             
+         
+           Call    Invariant Trigger: Call.func == "system"
+         
+      
+                             
+             
+   Name                Constant  
+ (system)             ('rm -rf/')  Invariant Trigger: Recursive Root Delete
+             
 ```
 
 Within the AST representation, an invariant breach is not a probabilistic sentiment—it is an unambiguous, binary topological feature:
@@ -151,21 +151,21 @@ As autonomous AI agents, personal assistants, and financial trading bots (includ
 
 ```
        [ Consumer Agent / Grok Bot ]
-                     │
-                     ▼ (1. Submits Financial Tool Call + $100.00 Charge)
-       ┌──────────────────────────────┐
-       │   Universal Payment Gateway  │
-       │   (Bartholomew ARP v5.4.22)  │
-       └──────────────┬───────────────┘
-                      │ (2. AST & Secret Vault Masker: PASS <10µs)
-                      │ (3. Ed25519 Capability & KYC Verification)
-                      ├──────────────────────────────────────────────┐
-                      ▼ (4. Automated 2.5% + $0.02 Fee: $2.52)       ▼ (Net: $97.48)
-            ┌───────────────────┐                          ┌───────────────────┐
-            │ Protocol Treasury │                          │ Merchant / Vendor │
-            │ (Stripe Connect / │                          │ (Apple / Google / │
-            │  L402 Lightning)  │                          │  Visa Direct)     │
-            └───────────────────┘                          └───────────────────┘
+                     
+                      (1. Submits Financial Tool Call + $100.00 Charge)
+       
+          Universal Payment Gateway  
+          (Bartholomew ARP v5.4.22)  
+       
+                       (2. AST & Secret Vault Masker: PASS <10µs)
+                       (3. Ed25519 Capability & KYC Verification)
+                      
+                       (4. Automated 2.5% + $0.02 Fee: $2.52)        (Net: $97.48)
+                                      
+             Protocol Treasury                            Merchant / Vendor 
+             (Stripe Connect /                            (Apple / Google / 
+              L402 Lightning)                              Visa Direct)     
+                                      
 ```
 
 ### 3.1 Multi-Rail Payment Orchestration

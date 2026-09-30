@@ -218,13 +218,13 @@
     if (urlParams.get('onboarding') === 'complete') {
       notification.innerHTML = `
         <div class="alert alert-success">
-          <span>✓ Onboarding return received for account: <strong>${urlParams.get('accountId')}</strong>. Verifying live capabilities...</span>
+          <span> Onboarding return received for account: <strong>${urlParams.get('accountId')}</strong>. Verifying live capabilities...</span>
         </div>
       `;
     } else if (urlParams.get('checkout') === 'success') {
       notification.innerHTML = `
         <div class="alert alert-success">
-          <span>✓ Checkout successful! Session: <strong>${urlParams.get('session_id')}</strong>. Funds disbursed with platform fee deducted.</span>
+          <span> Checkout successful! Session: <strong>${urlParams.get('session_id')}</strong>. Funds disbursed with platform fee deducted.</span>
         </div>
       `;
     }
@@ -329,9 +329,9 @@
 
         const pillContainer = document.getElementById(`status-pill-${accountId}`);
         if (data.readyToReceivePayments && data.onboardingComplete) {
-          pillContainer.innerHTML = '<span class="status-pill pill-active">✓ Ready for Payments</span>';
+          pillContainer.innerHTML = '<span class="status-pill pill-active"> Ready for Payments</span>';
         } else {
-          pillContainer.innerHTML = `<span class="status-pill pill-pending">⚠ ${data.requirementsStatus || 'Pending Onboarding'}</span>`;
+          pillContainer.innerHTML = `<span class="status-pill pill-pending"> ${data.requirementsStatus || 'Pending Onboarding'}</span>`;
         }
       } catch (err) {
         alert('Status Error: ' + err.message);

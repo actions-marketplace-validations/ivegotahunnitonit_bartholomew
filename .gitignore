@@ -188,3 +188,7 @@ vscode-extension/*.vsix
 # Runtime ledgers
 .*_ledger.json
 *.db
+
+# Local Pitch Decks & Proprietary Decks
+*PITCH_DECK*
+src/python_backend/PITCH_DECK.html

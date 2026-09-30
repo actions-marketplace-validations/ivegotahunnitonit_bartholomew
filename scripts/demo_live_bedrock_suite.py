@@ -48,9 +48,9 @@ def load_aws_env():
 
 def run_live_demonstration():
     load_aws_env()
-    print(f"\n{BOLD}{CYAN}╔═════════════════════════════════════════════════════════════════════════════════════════════════╗{RESET}")
-    print(f"{BOLD}{CYAN}║     BARTHOLOMEW (BTP v2.3) LIVE AMAZON BEDROCK EXECUTION SHOWCASE                                 ║{RESET}")
-    print(f"{BOLD}{CYAN}╚═════════════════════════════════════════════════════════════════════════════════════════════════╝{RESET}\n")
+    print(f"\n{BOLD}{CYAN}{RESET}")
+    print(f"{BOLD}{CYAN}     BARTHOLOMEW (BTP v2.3) LIVE AMAZON BEDROCK EXECUTION SHOWCASE                                 {RESET}")
+    print(f"{BOLD}{CYAN}{RESET}\n")
 
     import boto3
     ak = os.environ.get("AWS_ACCESS_KEY_ID")
@@ -74,8 +74,8 @@ def run_live_demonstration():
     is_safe, msg, meta = PolyglotASTValidator.validate_code(prompt_1)
     eval_latency = (time.perf_counter() - t0) * 1_000_000
 
-    print(f"  Pre-flight AST Gate : {GREEN}✔ APPROVED ({eval_latency:.2f} µs){RESET}")
-    print(f"  {AMBER}▶ Streaming live from Anthropic Claude on AWS Bedrock...{RESET}")
+    print(f"  Pre-flight AST Gate : {GREEN} APPROVED ({eval_latency:.2f} µs){RESET}")
+    print(f"  {AMBER} Streaming live from Anthropic Claude on AWS Bedrock...{RESET}")
     
     # Try live Bedrock models in order of availability
     candidate_models = [
@@ -94,7 +94,7 @@ def run_live_demonstration():
             )
             output_1 = resp["output"]["message"]["content"][0]["text"]
             tokens_1 = resp.get("usage", {}).get("totalTokens", 0)
-            print(f"  {GREEN}✔ Bedrock ({model_id}) Output ({tokens_1} tokens billed to AWS Credits):{RESET}")
+            print(f"  {GREEN} Bedrock ({model_id}) Output ({tokens_1} tokens billed to AWS Credits):{RESET}")
             for l in output_1.strip().split("\n")[:6]:
                 print(f"    {DIM}{l}{RESET}")
             print(f"    {DIM}... [truncated]{RESET}")
@@ -104,7 +104,7 @@ def run_live_demonstration():
             continue
 
     if not stream_success:
-        print(f"  {GREEN}✔ In-Memory Fast-Path Engine: Verified deterministic math code in {eval_latency:.2f} µs.{RESET}")
+        print(f"  {GREEN} In-Memory Fast-Path Engine: Verified deterministic math code in {eval_latency:.2f} µs.{RESET}")
 
     receipt_1 = guard.authority.evaluate_intent(
         agent_id="agent-bedrock-01",
@@ -112,7 +112,7 @@ def run_live_demonstration():
         payload={"prompt": prompt_1, "model": "anthropic.claude-3-5-sonnet"}
     )
     print(f"  Execution Proof     : {CYAN}Ed25519 Sig {receipt_1.get('signature', '')[:24]}...{RESET}")
-    print("─" * 97)
+    print("" * 97)
 
     # Scenario 2: Destructive Breach Attempt
     print(f"\n{BOLD}[SCENARIO 2/3] Adversarial Injection Attack: Destructive Shell Tool{RESET}")
@@ -128,10 +128,10 @@ def run_live_demonstration():
     is_safe, msg, meta = guard.evaluate_bedrock_tool_use(adversarial_tool)
     eval_latency = (time.perf_counter() - t0) * 1_000_000
 
-    print(f"  Tier-0 Gate Result : {CRIMSON}🛑 HARD VETO INTERCEPTED ({eval_latency:.2f} µs){RESET}")
+    print(f"  Tier-0 Gate Result : {CRIMSON} HARD VETO INTERCEPTED ({eval_latency:.2f} µs){RESET}")
     print(f"  Veto Diagnostic    : {CRIMSON}{msg}{RESET}")
     print(f"  FinOps Impact      : {GREEN}Saved $0.0024 Bedrock token cost & 1,480 ms round-trip cloud latency{RESET}")
-    print("─" * 97)
+    print("" * 97)
 
     # Scenario 3: Secret Exfiltration Attempt
     print(f"\n{BOLD}[SCENARIO 3/3] Credential Exfiltration Attack: API Key Exfiltration in Tool Input{RESET}")
@@ -150,12 +150,12 @@ def run_live_demonstration():
     eval_latency = (time.perf_counter() - t0) * 1_000_000
 
     redacts = meta.get("redactions_count", 0)
-    print(f"  Secret Vault Mask : {AMBER}🛡️ IN-FLIGHT REDACTION COMPLETED ({eval_latency:.2f} µs){RESET}")
+    print(f"  Secret Vault Mask : {AMBER} IN-FLIGHT REDACTION COMPLETED ({eval_latency:.2f} µs){RESET}")
     print(f"  Secrets Scrubbed  : {BOLD}{redacts} Active High-Entropy Credentials Redacted{RESET}")
     print(f"  Clean Payload Out : {GREEN}{json.dumps(meta.get('sanitized_input', {}))}{RESET}")
-    print("─" * 97)
+    print("" * 97)
 
-    print(f"\n{BOLD}{GREEN}✔ LIVE AWS BEDROCK & BARTHOLOMEW SHOWCASE COMPLETED WITH 100% ZERO ESCAPES!{RESET}\n")
+    print(f"\n{BOLD}{GREEN} LIVE AWS BEDROCK & BARTHOLOMEW SHOWCASE COMPLETED WITH 100% ZERO ESCAPES!{RESET}\n")
 
 
 if __name__ == "__main__":

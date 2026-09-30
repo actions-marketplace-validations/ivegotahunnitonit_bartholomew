@@ -35,9 +35,9 @@ from src.zk_compliance_proof_engine import ZKComplianceEngine
 from src.byzantine_swarm_consensus import ByzantineSwarmEngine
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Helpers
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 DIVIDER = "=" * 80
 SECTION  = "-" * 80
@@ -57,18 +57,18 @@ def _stat(label: str, value: Any, unit: str = "") -> None:
     print(f"  {label:<45} {value}{unit_str}")
 
 def _pass(msg: str) -> None:
-    print(f"  ✅  {msg}")
+    print(f"    {msg}")
 
 def _fail(msg: str) -> None:
-    print(f"  ❌  {msg}")
+    print(f"    {msg}")
 
 def _elapsed_us(start: float) -> float:
     return (time.perf_counter() - start) * 1_000_000
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Section 1 — FROST Keygen Benchmark
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def bench_frost_keygen() -> dict:
     _hdr("FROST KEY GENERATION BENCHMARK  (RFC 9591 — Shamir Secret Sharing)")
@@ -104,9 +104,9 @@ def bench_frost_keygen() -> dict:
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Section 2 — FROST Signing Benchmark
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def bench_frost_signing() -> dict:
     _hdr("FROST 2-ROUND SIGNING BENCHMARK  (RFC 9591)")
@@ -175,9 +175,9 @@ def bench_frost_signing() -> dict:
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Section 3 — Adversarial Forgery Rejection
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def bench_frost_forgery() -> dict:
     _hdr("FROST ADVERSARIAL FORGERY REJECTION SUITE")
@@ -190,7 +190,7 @@ def bench_frost_forgery() -> dict:
 
     results = {}
 
-    # ── Test A: Sub-threshold signer count ──────────────────────────────────
+    #  Test A: Sub-threshold signer count 
     _sub("Test A — Sub-threshold: Only t signers (one short)")
     sub_rejected = 0
     for _ in range(ITERS):
@@ -208,7 +208,7 @@ def bench_frost_forgery() -> dict:
         _pass("100.0% of sub-threshold attempts rejected before aggregation")
     results["sub_threshold_rejection"] = f"{sub_rejected/ITERS*100:.1f}%"
 
-    # ── Test B: Tampered partial signature ──────────────────────────────────
+    #  Test B: Tampered partial signature 
     _sub("Test B — Tampered partial signature (bit-flip attack)")
     tamper_rejected = 0
     import dataclasses
@@ -232,7 +232,7 @@ def bench_frost_forgery() -> dict:
         _pass("100.0% of tampered signatures caught by Schnorr verification")
     results["tamper_rejection"] = f"{tamper_rejected/ITERS*100:.1f}%"
 
-    # ── Test C: Wrong message forgery ────────────────────────────────────────
+    #  Test C: Wrong message forgery 
     _sub("Test C — Wrong-message forgery (replay attack)")
     wrong_msg_rejected = 0
     real_message  = b"BTP:TRANSFER:10000"
@@ -258,7 +258,7 @@ def bench_frost_forgery() -> dict:
         _pass("100.0% of message-substitution forgeries detected")
     results["wrong_message_rejection"] = f"{wrong_msg_rejected/ITERS*100:.1f}%"
 
-    # ── Test D: Rogue key / wrong group pubkey ────────────────────────────────
+    #  Test D: Rogue key / wrong group pubkey 
     _sub("Test D — Rogue group key substitution")
     rogue_rejected = 0
     rogue_keygens  = frost_keygen(n=n, t=t)  # completely different key set
@@ -281,9 +281,9 @@ def bench_frost_forgery() -> dict:
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Section 4 — ZK Compliance Proof Benchmark
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def bench_zk_proofs() -> dict:
     _hdr("ZK COMPLIANCE PROOF BENCHMARK  (Pedersen Commitment + Fiat-Shamir)")
@@ -362,9 +362,9 @@ def bench_zk_proofs() -> dict:
     return results
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Section 5 — End-to-End Stack Benchmark
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def bench_end_to_end() -> dict:
     _hdr("END-TO-END STACK BENCHMARK  (BFT Vote → FROST Cert → ZK Proof)")
@@ -440,15 +440,15 @@ def bench_end_to_end() -> dict:
     }
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 # Main
-# ─────────────────────────────────────────────────────────────────────────────
+# 
 
 def main() -> None:
-    print(f"\n{'█' * 80}")
+    print(f"\n{'' * 80}")
     print("  BARTHOLOMEW TRUST PROTOCOL — CRYPTOGRAPHIC STACK BENCHMARK REPORT")
     print(f"  BTP v3.1.0  |  FROST RFC 9591 + zk-SNARK Compliance Proofs")
-    print(f"{'█' * 80}")
+    print(f"{'' * 80}")
 
     keygen_res  = bench_frost_keygen()
     signing_res = bench_frost_signing()
@@ -460,7 +460,7 @@ def main() -> None:
 
     print("""
   FROST THRESHOLD SIGNATURES (RFC 9591)
-  ──────────────────────────────────────────────────────────────────────────""")
+  """)
     for cfg, r in signing_res.items():
         print(f"    {cfg:<15}  Sign: {r['sign_median_us']:>8.1f}µs   "
               f"Verify: {r['verify_median_us']:>8.1f}µs   "
@@ -468,13 +468,13 @@ def main() -> None:
 
     print("""
   ADVERSARIAL FORGERY REJECTION
-  ──────────────────────────────────────────────────────────────────────────""")
+  """)
     for test, rate in forgery_res.items():
         print(f"    {test:<40}  {rate}")
 
     print("""
   ZK COMPLIANCE PROOFS (Schnorr/Pedersen)
-  ──────────────────────────────────────────────────────────────────────────""")
+  """)
     for label, r in zk_res.items():
         if label == "privacy_violations":
             print(f"    Privacy violations across 50 sessions:          {r}")
@@ -485,17 +485,17 @@ def main() -> None:
 
     print(f"""
   FULL STACK END-TO-END (BFT → FROST → ZK)
-  ──────────────────────────────────────────────────────────────────────────
+  
     {e2e_res['iterations']} iterations    Median: {e2e_res['median_ms']}ms    p99: {e2e_res['p99_ms']}ms    Throughput: {e2e_res['throughput']} ops/sec
 """)
 
-    print(f"\n{'█' * 80}")
+    print(f"\n{'' * 80}")
     print("  CERTIFICATE OF COMPLETION")
-    print(f"{'█' * 80}")
+    print(f"{'' * 80}")
     print(f"  All benchmarks completed successfully.")
     print(f"  Zero forgeries passed. Zero privacy violations. 100% verification rate.")
     print(f"  Full cryptographic stack operational on local host — zero cloud calls.")
-    print(f"{'█' * 80}\n")
+    print(f"{'' * 80}\n")
 
     # Export raw results for CI/paper reference
     full_results = {

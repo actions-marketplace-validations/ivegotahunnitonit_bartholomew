@@ -21,7 +21,7 @@ import socket
 import urllib.request
 import pytest
 
-# ─── UNIVERSAL EXTENSION MESH ──────────────────────────────────────────────
+#  UNIVERSAL EXTENSION MESH 
 
 def test_mesh_detects_cursor_config(tmp_path):
     """Mesh must detect cursor.composer when .cursorrules exists."""
@@ -93,17 +93,14 @@ def test_mesh_no_emojis_in_registry():
     """Extension registry must be strictly emoji-free."""
     from src.universal_extension_mesh import KNOWN_EXTENSION_REGISTRY
     import re
-    emoji_re = re.compile(
-        r"[🌀-🧿🨀-🩯🩰-🫿"
-        r"☀-⛿✀-➿]"
-    )
+    emoji_re = re.compile(r"[\U0001F300-\U0001F9FF\U0001FA00-\U0001FAFF\u2600-\u26FF\u2700-\u27BF]")
     for ext in KNOWN_EXTENSION_REGISTRY:
         for key, val in ext.items():
             if isinstance(val, str):
                 assert not emoji_re.search(val), f"Emoji found in {key}: {val}"
 
 
-# ─── JIT SELF-REPAIR ENGINE ────────────────────────────────────────────────
+#  JIT SELF-REPAIR ENGINE 
 
 def test_jit_attribute_error_repair():
     """JIT must handle AttributeError with a safe repair (try/except, getattr, or guard)."""
@@ -190,7 +187,7 @@ def test_jit_repair_increments_incident_count():
     assert engine.repaired_incidents_count >= 0  # counter is non-negative
 
 
-# ─── ZK-MESH ATTESTATION ENGINE ───────────────────────────────────────────
+#  ZK-MESH ATTESTATION ENGINE 
 
 def test_zk_proof_id_uniqueness():
     """Every generated proof must have a unique proof_id."""
@@ -242,7 +239,7 @@ def test_zk_aggregate_empty_mesh():
     assert agg["total_proofs"] == 0
 
 
-# ─── SIEM RELAY ────────────────────────────────────────────────────────────
+#  SIEM RELAY 
 
 def test_siem_all_four_providers_output_keys(tmp_path):
     """All 4 SIEM providers must produce the mandatory schema keys."""
@@ -282,7 +279,7 @@ def test_siem_severity_mapping_critical(tmp_path):
     assert aws["Severity"]["Label"] in ("CRITICAL", "HIGH")
 
 
-# ─── RING-0 CONTROLLER ─────────────────────────────────────────────────────
+#  RING-0 CONTROLLER 
 
 def test_ring0_status_has_all_fields():
     """Ring-0 status must include kernel_level, active_hooks, and tamper_proof."""
@@ -311,7 +308,7 @@ def test_ring0_tamper_proof_is_true():
     assert ctrl.get_status()["tamper_proof"] is True
 
 
-# ─── MCP TOOL REGISTRY ─────────────────────────────────────────────────────
+#  MCP TOOL REGISTRY 
 
 def test_mcp_all_tools_have_required_schema_keys(tmp_path):
     """Every MCP tool schema must include name, description, inputSchema."""
@@ -377,7 +374,7 @@ def test_mcp_no_duplicate_tool_names(tmp_path):
     assert len(names) == len(set(names)), "Duplicate tool names detected"
 
 
-# ─── FLIGHT DECK SERVER ────────────────────────────────────────────────────
+#  FLIGHT DECK SERVER 
 
 def _find_free_port():
     s = socket.socket()

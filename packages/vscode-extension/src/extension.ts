@@ -133,6 +133,7 @@ export function activate(context: ExtensionContext) {
         retainContextWhenHidden: true
       }
     );
+    panel.iconPath = vscode.Uri.joinPath(context.extensionUri || vscode.Uri.file(__dirname), 'icon.png');
 
     const updatePanel = () => {
       const telemetry = loadTelemetry(rootPath);

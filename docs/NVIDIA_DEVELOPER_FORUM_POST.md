@@ -25,10 +25,10 @@ When running high-throughput NIM containers on TensorRT-LLM, your inference is b
 ### What is Bartholomew (BTP)?
 **Bartholomew (btp-guard)** is an open-source, in-process execution sentinel that performs **sub-35 microsecond (<0.035 ms)** deterministic AST invariant evaluation and secret scrubbing directly in Python/Node:
 
-- ⚡ **Sub-35µs Latency**: Evaluates commands in microseconds on CPU with zero GPU VRAM impact.
-- 🛡️ **Polyglot AST Invariants**: Deep syntax parsing for Bash, Python, and SQL to block catastrophic operations before they execute.
-- 🔑 **Keystone Passkeys & Spend Caps**: Enforces hard caps on tool spend and API calls.
-- 🔐 **Cryptographic Audit Receipts**: Generates tamper-proof Ed25519 Merkle receipts for enterprise SOC 2 and ISO 42001 compliance.
+-  **Sub-35µs Latency**: Evaluates commands in microseconds on CPU with zero GPU VRAM impact.
+-  **Polyglot AST Invariants**: Deep syntax parsing for Bash, Python, and SQL to block catastrophic operations before they execute.
+-  **Keystone Passkeys & Spend Caps**: Enforces hard caps on tool spend and API calls.
+-  **Cryptographic Audit Receipts**: Generates tamper-proof Ed25519 Merkle receipts for enterprise SOC 2 and ISO 42001 compliance.
 
 ### 30-Second Quickstart
 

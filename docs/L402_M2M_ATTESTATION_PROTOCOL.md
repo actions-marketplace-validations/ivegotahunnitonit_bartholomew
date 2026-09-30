@@ -1,4 +1,4 @@
-# ⚡ L402 Machine-to-Machine (M2M) Attestation Protocol
+#  L402 Machine-to-Machine (M2M) Attestation Protocol
 
 Bartholomew implements native **HTTP 402 Payment Required** and **L402 Lightning Network** attestation for autonomous AI agent swarms.
 
@@ -10,15 +10,15 @@ Instead of human subscription accounts or manual invoicing, autonomous agents pa
 
 ```
   [ Autonomous Agent Swarm ]                  [ Bartholomew Invariant Gate ]
-              │                                             │
-              ├─── 1. Proposed Tool Call (Payload) ────────►│
-              │                                             │ (Evaluates AST Invariants <35µs)
-              │◄── 2. HTTP 402 Challenge (L402 Macaroon) ──┤
-              │                                             │
-              ├─── 3. Lightning Preimage + Macaroon ───────►│ (Settles 10 sats)
-              │                                             │
-              │◄── 4. RFC 8785 Ed25519 Signed Receipt ──────┤ (Tamper-proof Attestation)
-              ▼                                             ▼
+                                                           
+               1. Proposed Tool Call (Payload) 
+                                                            (Evaluates AST Invariants <35µs)
+               2. HTTP 402 Challenge (L402 Macaroon) 
+                                                           
+               3. Lightning Preimage + Macaroon  (Settles 10 sats)
+                                                           
+               4. RFC 8785 Ed25519 Signed Receipt  (Tamper-proof Attestation)
+                                                           
 ```
 
 ### Protocol Specifications

@@ -57,33 +57,33 @@ completion status of each pillar, and the release checklist.
 ## Architecture Summary
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                 BARTHOLOMEW SOVEREIGN LAYER              │
-│                                                         │
-│  ┌──────────────┐  ┌─────────────────────────────────┐  │
-│  │ VS Code Ext  │  │  Keystone Extension (Passkeys)   │  │
-│  │ proof_prov.  │  │  keystone.openDashboard          │  │
-│  └──────┬───────┘  └───────────────┬─────────────────┘  │
-│         │                          │                     │
-│  ┌──────▼──────────────────────────▼──────────────────┐  │
-│  │              PYTHON CORE (src/)                    │  │
-│  │                                                    │  │
-│  │  trust_protocol  ◄──►  jit_self_repair             │  │
-│  │  keystone_passkey ◄──► zk_mesh_attestation         │  │
-│  │  prompt_injection_firewall                         │  │
-│  │  workspace_intel  ◄──► dependency_threat           │  │
-│  │  context_drift_detector                            │  │
-│  │  token_budget_governor_v2                          │  │
-│  │  universal_extension_mesh                          │  │
-│  │  siem_relay  ◄──►  ring0_controller                │  │
-│  └──────────────────────────┬──────────────────────── ┘  │
-│                             │                            │
-│  ┌──────────────────────────▼──────────────────────────┐  │
-│  │        MCP SERVER (32 tools)  /  CLI (btp-guard)    │  │
-│  │        Flight Deck (localhost:8787)                  │  │
-│  └─────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────┘
-        │            │            │             │
+
+                 BARTHOLOMEW SOVEREIGN LAYER              
+                                                         
+      
+   VS Code Ext      Keystone Extension (Passkeys)     
+   proof_prov.      keystone.openDashboard            
+      
+                                                        
+    
+                PYTHON CORE (src/)                      
+                                                        
+    trust_protocol    jit_self_repair               
+    keystone_passkey  zk_mesh_attestation           
+    prompt_injection_firewall                           
+    workspace_intel   dependency_threat             
+    context_drift_detector                              
+    token_budget_governor_v2                            
+    universal_extension_mesh                            
+    siem_relay    ring0_controller                  
+     
+                                                         
+    
+          MCP SERVER (32 tools)  /  CLI (btp-guard)      
+          Flight Deck (localhost:8787)                    
+    
+
+                                             
     Gemini        Claude        Cursor       Copilot
     Antigravity   (Cline/Roo)  Composer     Chat
 ```
