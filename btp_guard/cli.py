@@ -389,7 +389,7 @@ def cmd_protect(args):
             print(json.dumps(health, indent=2))
             return
         print("\n" + "=" * 70)
-        print("      BARTHOLOMEW WORKSPACE SECURITY AUDIT (BTP v5.4)")
+        print("      BARTHOLOMEW WORKSPACE SECURITY AUDIT (BTP v6.0.0)")
         print("=" * 70)
         print(f"  Security Score: {health['score']}/100 (Grade: {health['grade']})")
         print(f"  Status        : {health['status']}")
