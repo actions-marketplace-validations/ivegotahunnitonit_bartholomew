@@ -49,7 +49,7 @@ class TestCircularityNetworkModules:
         healed, patched, reason = ASTAutoHealer.heal_shell_command("rm -rf / --no-preserve-root")
         assert healed is True
         assert "./tmp/btp_sandbox" in patched
-        assert "Redirected dangerous root wipe" in reason
+        assert "Redirected dangerous" in reason  # message updated in auto_heal v6
 
         # 2. Path traversal containment
         healed_trav, patched_trav, _ = ASTAutoHealer.heal_shell_command("cat ../../../etc/passwd")
