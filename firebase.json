@@ -156,6 +156,28 @@
             }
           ]
         }
+      ],
+      "redirects": [
+        {
+          "source": "/pricing",
+          "destination": "/",
+          "type": 301
+        },
+        {
+          "source": "/pricing.html",
+          "destination": "/",
+          "type": 301
+        },
+        {
+          "source": "/pro",
+          "destination": "/",
+          "type": 301
+        },
+        {
+          "source": "/pro.html",
+          "destination": "/",
+          "type": 301
+        }
       ]
     },
     {

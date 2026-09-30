@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Bartholomew Trust Protocol (BTP v5.4) - Universal POSIX Installer
+# Bartholomew Trust Protocol (BTP v6.0) - Universal POSIX Installer
 # https://bartholomew.info
 #
 # Usage:
@@ -25,7 +25,7 @@ echo "  / __  / __ \`/ ___/ __/ __ \/ __ \/ / __ \/ __ \`__ \/ _ \/ / / /     "
 echo " / /_/ / /_/ / /  / /_/ / / / /_/ / / /_/ / / / / / /  __/ /_/ /      "
 echo "/_____/\__,_/_/   \__/_/ /_/\____/_/\____/_/ /_/ /_/\___/\__,__/       "
 echo -e "${RESET}"
-echo -e "${BOLD}Bartholomew Agentic Runtime Protection (ARP) -- BTP v5.4.20${RESET}"
+echo -e "${BOLD}Bartholomew Agentic Runtime Protection (ARP) -- BTP v6.0.0${RESET}"
 echo -e "${DIM}Sub-35us deterministic execution firewall for autonomous AI agents.${RESET}"
 echo ""
 

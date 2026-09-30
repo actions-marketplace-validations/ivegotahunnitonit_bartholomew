@@ -196,3 +196,7 @@ src/python_backend/PITCH_DECK.html
 # Local generated audit and marketplace packages
 dossier*.json
 marketplace_ready/
+
+# Keystone local capability passkeys
+.btp_keystone.json
+.btp/keystone.json

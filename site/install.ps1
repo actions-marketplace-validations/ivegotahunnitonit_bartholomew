@@ -1,5 +1,5 @@
 # ==============================================================================
-# Bartholomew Trust Protocol (BTP v5.4) - Windows PowerShell Installer
+# Bartholomew Trust Protocol (BTP v6.0) - Windows PowerShell Installer
 # https://bartholomew.info
 #
 # Usage:
@@ -15,7 +15,7 @@ Write-Host "  / __  / __ `/ ___/ __/ __ \/ __ \/ / __ \/ __ `__ \/ _ \/ / / /   
 Write-Host " / /_/ / /_/ / /  / /_/ / / / /_/ / / /_/ / / / / / /  __/ /_/ /      " -ForegroundColor Magenta
 Write-Host "/_____/\__,_/_/   \__/_/ /_/\____/_/\____/_/ /_/ /_/\___/\__,__/       " -ForegroundColor Magenta
 Write-Host ""
-Write-Host "Bartholomew Agentic Runtime Protection (ARP) -- BTP v5.4.20" -ForegroundColor White
+Write-Host "Bartholomew Agentic Runtime Protection (ARP) -- BTP v6.0.0" -ForegroundColor White
 Write-Host "Sub-35us deterministic execution firewall for autonomous AI agents." -ForegroundColor Gray
 Write-Host ""
 

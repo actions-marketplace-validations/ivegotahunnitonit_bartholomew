@@ -1,5 +1,5 @@
 """
-BTP v5.4.20 Real-Time Terminal Swarm Heads-Up Display (HUD)
+BTP v6.0.0 Real-Time Terminal Swarm Heads-Up Display (HUD)
 ==========================================================
 Interactive terminal monitor providing high-density telemetry streaming:
 - Active peer swarms and network topology
@@ -114,11 +114,11 @@ class SwarmHUD:
         mode_str = "M2M LIVE STREAM + CHAOS SIMULATOR" if simulate else "M2M UTILITY BARTER ACTIVE"
 
         print("\n" + "=" * 80)
-        print(f"  BARTHOLOMEW PROTOCOL (BTP v5.4.20) -- REAL-TIME SWARM HEADS-UP DISPLAY")
+        print(f"  BARTHOLOMEW PROTOCOL (BTP v6.0.0) -- REAL-TIME SWARM HEADS-UP DISPLAY")
         print(f"  Gateway: {self.gateway_url} | {ts}")
         print("=" * 80)
         print(f"  SENTINEL IDENTITY : Ed25519 [{short_key}]")
-        print(f"  PROTOCOL SPEC     : {manifest.get('protocol', 'BTP/5.4')} (Sub-35us AST Gating Engine)")
+        print(f"  PROTOCOL SPEC     : {manifest.get('protocol', 'BTP/6.0')} (Sub-35us AST Gating Engine)")
         print(f"  OPERATING STATUS  : 100% OPERATIONAL | {mode_str}")
         print("-" * 80)
 
@@ -144,7 +144,7 @@ class SwarmHUD:
         print(f"  [STRIPE AGENT GATEWAY & PROTOCOL COMPENSATION]")
         print(f"  * Protocol Take-Rate  : 2.50% + $0.02 Micro-Toll on Agent Settlements")
         print(f"  * Underwriting Model  : Zero Balance-Sheet Risk (Algorithmic Attestation Receipts)")
-        print(f"  * Commercial Status   : Metered ({persistent_evals:,} evals tracked, Pro: $49/mo)")
+        print(f"  * Commercial Status   : Sovereign Enterprise (Unrestricted AST Shield & SOC 2 Merkle Receipts)")
         print(f"  * Secret Scrubber     : In-flight Stripe Key Masking (Sub-10us Active)")
         print("-" * 80)
 

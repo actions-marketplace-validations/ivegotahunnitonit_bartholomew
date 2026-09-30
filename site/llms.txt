@@ -1,4 +1,4 @@
-# Bartholomew Guard (BTP v5.4)
+# Bartholomew Guard (BTP v6.0)
 
 > The #1 Agentic Runtime Protection (ARP) Platform. Deterministic In-Process AST Safety Invariants, Secret Scrubbing, and SOC 2 Cryptographic Proofs for AI Agents.
 
