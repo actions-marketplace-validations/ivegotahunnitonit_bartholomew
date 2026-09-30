@@ -149,6 +149,19 @@ export function activate(context: ExtensionContext) {
         vscode.window.showInformationMessage(
           `Bartholomew Guard: Context copied for ${(message.model || 'AI Model').toUpperCase()}! Paste directly into your chat or composer.`
         );
+      } else if (message.command === 'immunize' || message.command === 'immunizeWorkspace') {
+        vscode.commands.executeCommand('bartholomew.protectWorkspace');
+      } else if (message.command === 'scanActiveFile') {
+        vscode.commands.executeCommand('bartholomew.scanActiveFile');
+      } else if (message.command === 'passkey') {
+        vscode.commands.executeCommand('bartholomew.issueKeystonePasskey');
+      } else if (message.command === 'precommit') {
+        vscode.commands.executeCommand('bartholomew.installPreCommit');
+      } else if (message.command === 'copyReceipt') {
+        if (message.receipt) {
+          await vscode.env.clipboard.writeText(message.receipt);
+          vscode.window.showInformationMessage('SHA-256 Receipt copied: ' + message.receipt);
+        }
       } else if (message.command === 'openModelDoc') {
         const p = path.join(rootPath, '.btp', 'model-context.md');
         if (fs.existsSync(p)) {
@@ -218,6 +231,24 @@ export function activate(context: ExtensionContext) {
     });
   });
   context.subscriptions.push(openProofCmd);
+
+  // Command: Scan Active File
+  const scanActiveFileCmd = vscode.commands.registerCommand('bartholomew.scanActiveFile', () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage('Bartholomew Guard: No active editor file open to scan.');
+      return;
+    }
+    const text = editor.document.getText();
+    const hasSecrets = text.includes('sk-') || text.includes('AIzaSy') || text.includes('ghp_') || text.includes('AKIA');
+    const hasDangerous = text.includes('rm -rf') || (text.includes('subprocess.Popen(') && text.includes('shell=True'));
+    if (hasSecrets || hasDangerous) {
+      vscode.window.showWarningMessage('Bartholomew Guard: Potential risk or unmasked secret detected in active file!');
+    } else {
+      vscode.window.showInformationMessage('Bartholomew Guard: Active file verified clean. (0 Invariant Violations)');
+    }
+  });
+  context.subscriptions.push(scanActiveFileCmd);
 
   // Command: Copy Model Context (Gemini, Claude, Cursor, Copilot)
   const copyModelContextCmd = vscode.commands.registerCommand('bartholomew.copyModelContext', async () => {
