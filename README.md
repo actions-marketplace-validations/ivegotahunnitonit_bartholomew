@@ -47,6 +47,21 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 
 ---
 
+
+---
+
+## 💜 Back Open Source Development
+
+Bartholomew Trust Protocol is 100% free, community-backed open-source software under the MIT license. If Bartholomew safeguards your agent swarms, tool executions, or development environments, back our open-source development directly:
+
+[![Back Open Source Development](https://img.shields.io/badge/Back%20Open%20Source%20Development-Stripe%20Checkout-635BFF?style=for-the-badge&logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
+
+* **Direct Stripe Checkout**: [https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
+* **GitHub Sponsors / Fund**: Configured natively via `.github/FUNDING.yml` and `npm fund btp-guard`
+* **Official Verification & Telemetry**: [https://bartholomew.info](https://bartholomew.info)
+
+---
+
 ## Quickstart (Under 10 Seconds)
 
 ### 0. Instant Interactive Trial (Zero Install)
