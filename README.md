@@ -112,7 +112,7 @@ print(verdict)
 protected_agent = protect_agent(agent, spend_cap=50.0)
 ```
 
-#### Node.js / TypeScript (Vercel AI SDK, LangChain.js, Claude SDK):
+#### Node.js / TypeScript (Vercel Agent SDK, LangChain.js, Claude SDK):
 ```javascript
 import { evaluateIntent, protectAgent } from 'btp-guard';
 
@@ -133,7 +133,7 @@ const safeAgent = protectAgent(agent, { spendCap: 50.0 });
 ### 4. Continuous CI/CD PR Verification (GitHub Actions)
 Add zero-trust agentic safety to your repository in 2 lines:
 ```yaml
-- name: Bartholomew AI Agent Security Audit
+- name: Bartholomew Autonomous Agent Security Audit
   run: |
     pip install btp-guard
     btp-guard check --all
@@ -277,7 +277,7 @@ npx btp-guard claude
 ```
 View the complete [Claude Code Integration Guide](docs/CLAUDE_CODE_INTEGRATION_GUIDE.md).
 
-### 2. CI/CD GitHub Action for AI-Generated PRs
+### 2. CI/CD GitHub Action for Agent-Generated PRs
 Automatically audit Pull Requests proposed by autonomous coding agents (Devin, Copilot, SWE-bench bots) for secret leaks and destructive shell patterns in `.github/workflows/ai-guard.yml`:
 ```yaml
 - name: Bartholomew ARP Guard

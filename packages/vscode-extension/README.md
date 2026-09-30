@@ -2,10 +2,10 @@
   <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="96" height="96" alt="Bartholomew Shield Logo" />
 </p>
 
-# Bartholomew Guard - AI Agent Safety and Guardrails (Cursor, Claude, Copilot)
+# Bartholomew Guard - Autonomous Agent Safety and Guardrails (Cursor, Claude, Copilot)
 
 > **Zero-trust firewall and execution guardrails for autonomous agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
-> *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct AI Model Context Bridge.*
+> *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct Agent Context Bridge.*
 
 [![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/bartholomew.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
@@ -50,11 +50,11 @@ Interactive real-time threat simulator and four structured diagnostic panels. Te
 
 ---
 
-### 3. Direct AI Model Context Bridge Core
+### 3. Direct Agent Context Bridge Core
 One-click context injection buttons formatted specifically for Google Gemini / Antigravity, Anthropic Claude Code, Cursor Composer, and GitHub Copilot. Copy invariant rules directly into your prompt or composer.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/model_bridge_core.png" width="100%" alt="Bartholomew Direct AI Model Context Bridge" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/model_bridge_core.png" width="100%" alt="Bartholomew Direct Agent Context Bridge" />
 </p>
 
 ---
@@ -108,9 +108,9 @@ This generates `.btp/policy.yaml` and installs the Git AST pre-commit barrier to
 3. Choose a preset attack scenario (e.g. `Blocked Wipe (rm -rf /)` or `Secret Leak`).
 4. Click **Test Gate** to verify real-time sub-35us AST interception and review the generated SHA-256 cryptographic proof receipt.
 
-### Step 4: Bridge into AI Coding Companions
+### Step 4: Bridge into Autonomous Agent Coding Companions
 
-Select the **AI Companions** tab to get customized system instructions for:
+Select the **Agent Companions** tab to get customized system instructions for:
 - **Anthropic Claude Desktop**: Automatically injects MCP security invariants.
 - **Cursor IDE**: Direct `.cursorrules` enforcement snippet.
 - **Google Gemini / Antigravity**: Scoped context prompt with Keystone token verification.

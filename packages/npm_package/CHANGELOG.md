@@ -2,6 +2,14 @@
 
 All notable changes to `btp-guard` will be documented in this file.
 
+## [6.2.0] - 2026-09-30
+### Added
+- Local Hardware Benchmark: `npx btp-guard benchmark` measures real host CPU in-process AST gating throughput and latency (<1µs P50).
+- Cryptographic Audit Export: `npx btp-guard audit-export` generates auditor-ready SOC 2 Type II Merkle compliance packages.
+- Direct Open-Source Sponsorship: Integrated Stripe sponsorship rail (prod_VMBbPj7TvN0NpW).
+- Standardized Publisher: Standardized publisher and author identity across all registries to Bartholomew Security (`bartholomew`).
+- Agentic Terminology: Aligned all documentation and outputs from standalone 'AI' to 'Autonomous Agents'.
+
 ## [6.1.0] - 2026-09-30
 ### Added
 - Locked Single-Tenant Telemetry: `npx btp-guard telemetry` opens an authenticated private sentinel vault at bartholomew.info/telemetry with zero cross-tenant data leakage.

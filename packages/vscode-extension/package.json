@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew Agent Guard - Security and Guardrails (Cursor, Claude, Copilot)",
-  "description": "BTP v6.1.0 Zero-trust firewall, locked single-tenant telemetry vault, autonomous yield daemon, and execution guardrails for autonomous agents (Cursor, Claude, Copilot, Windsurf).",
-  "version": "6.1.0",
+  "description": "BTP v6.2.0 Zero-trust firewall, locked single-tenant telemetry vault, hardware benchmark, and execution guardrails for autonomous agents (Cursor, Claude, Copilot, Windsurf).",
+  "version": "6.2.1",
   "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "MIT",
@@ -66,7 +66,7 @@
       },
       {
         "command": "bartholomew.injectAiRules",
-        "title": "Bartholomew: Inject AI Model Rules (GEMINI.md, CLAUDE.md, .cursorrules)",
+        "title": "Bartholomew: Inject Autonomous Agent Rules (GEMINI.md, CLAUDE.md, .cursorrules)",
         "icon": "$(file-code)"
       },
       {
@@ -81,12 +81,12 @@
       },
       {
         "command": "bartholomew.copyModelContext",
-        "title": "Bartholomew: Copy AI Context (Gemini, Claude, Cursor)",
+        "title": "Bartholomew: Copy Agent Context (Gemini, Claude, Cursor)",
         "icon": "$(clippy)"
       },
       {
         "command": "bartholomew.openProofOfProtection",
-        "title": "Bartholomew: Open Proof of Protection & AI Bridge",
+        "title": "Bartholomew: Open Proof of Protection & Agent Bridge",
         "icon": "$(shield)"
       },
       {
@@ -167,7 +167,7 @@
         {
           "type": "webview",
           "id": "bartholomew.proofView",
-          "name": "Proof of Protection & AI Bridge"
+          "name": "Proof of Protection & Agent Bridge"
         }
       ]
     }

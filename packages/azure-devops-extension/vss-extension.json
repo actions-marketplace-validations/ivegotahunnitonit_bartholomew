@@ -9,7 +9,7 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "CI/CD security gate for autonomous AI agents. Deterministic AST invariant firewall, secret scrubbing, and Verified Bartholomew Seal attestation for Azure Pipelines.",
+  "description": "CI/CD security gate for autonomous agents. Deterministic AST invariant firewall, secret scrubbing, and Verified Bartholomew Seal attestation for Azure Pipelines.",
   "categories": [
     "Azure Pipelines"
   ],

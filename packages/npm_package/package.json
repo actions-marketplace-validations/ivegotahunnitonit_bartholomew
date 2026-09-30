@@ -1,7 +1,7 @@
 {
   "name": "btp-guard",
-  "version": "6.1.0",
-  "description": "BTP v6.1.0 Agentic Runtime Protection (ARP) Gateway - Sub-35us In-Process Tool Gating, Locked Telemetry Vault & Autonomous Yield Daemon",
+  "version": "6.2.1",
+  "description": "BTP v6.2.0 Agentic Runtime Protection (ARP) Gateway - Sub-35us In-Process Tool Gating, Hardware Benchmark, and Locked Telemetry Vault for Autonomous Agents",
   "main": "index.js",
   "types": "index.d.ts",
   "sideEffects": false,
@@ -21,10 +21,7 @@
   "engines": {
     "node": ">=18.0.0"
   },
-  "funding": {
-    "type": "stripe",
-    "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
-  },
+  "funding": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605",
   "scripts": {
     "test": "node test.js"
   },

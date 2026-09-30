@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/servers/main/schema.json",
   "name": "bartholomew-guard",
-  "displayName": "Bartholomew AI Agent Guard & Execution Sentinel",
+  "displayName": "Bartholomew Autonomous Agent Guard & Execution Sentinel",
   "description": "Deterministic sub-35\u00b5s in-process AST execution firewall, secret scrubbing, and cryptographic Keystone passkey verification for Claude Desktop, Cursor, Windsurf, and autonomous agent swarms.",
   "version": "6.0.0",
   "author": "bartholomew",

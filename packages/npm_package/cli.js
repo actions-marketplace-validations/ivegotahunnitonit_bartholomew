@@ -1157,6 +1157,7 @@ function runBenchmark(subargs = []) {
   console.log(`\n  ${BOLD}SPEEDUP FACTOR:${RESET} Bartholomew is ${BOLD}${GREEN}${Math.round(280000 / Math.max(1, parseFloat(p50Us))).toLocaleString()}x faster${RESET} than cloud API guardrails.`);
   console.log(`  * Cryptographic Merkle Seal  : 0x${merkleRoot.slice(0, 32)}...`);
   console.log('='.repeat(72) + '\n');
+  console.log(`  ${DIM}💜 Back open-source agent runtime security:${RESET} https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605\n`);
 }
 
 function runAuditExport(subargs = []) {
