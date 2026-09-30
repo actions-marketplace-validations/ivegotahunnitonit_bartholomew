@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew AI Agent Guard - Security and Guardrails (Cursor, Claude, Copilot)",
-  "description": "Zero-trust firewall and execution guardrails for AI agents. 15 core security pillars, 40 native MCP tools, sub-35us AST safety, and direct model context bridge for Cursor, Claude Code, Copilot, Gemini, and Windsurf.",
-  "version": "6.0.0",
+  "description": "BTP v6.1.0 Zero-trust firewall, locked single-tenant telemetry vault, autonomous yield daemon, and execution guardrails for AI agents (Cursor, Claude, Copilot, Windsurf).",
+  "version": "6.1.0",
   "publisher": "itsubsolomon",
   "icon": "icon.png",
   "license": "MIT",
@@ -54,6 +54,11 @@
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "bartholomew.startYieldDaemon",
+        "title": "Bartholomew: Launch Autonomous Yield Harvester Daemon",
+        "icon": "$(server-process)"
+      },
       {
         "command": "bartholomew.injectAiRules",
         "title": "Bartholomew: Inject AI Model Rules (GEMINI.md, CLAUDE.md, .cursorrules)",

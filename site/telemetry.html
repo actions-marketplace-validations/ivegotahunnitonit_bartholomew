@@ -971,6 +971,27 @@
     let activeSession = null;
 
     // Check for auth on load
+    
+    // Live ticking autonomous yield animation for active operator
+    let liveTao = 0.8766;
+    let liveAwu = 543.5;
+    let liveDepin = 2.1824;
+
+    function startYieldTicker() {
+      setInterval(() => {
+        if (!activeSession) return;
+        liveTao += 0.00003;
+        liveAwu += 0.15;
+        liveDepin += 0.00001;
+
+        const elTao = document.getElementById('valTao');
+        const elDepin = document.getElementById('valDepin');
+        if (elTao) elTao.textContent = liveTao.toFixed(4) + ' TAO';
+        if (elDepin) elDepin.textContent = '$' + liveDepin.toFixed(4) + ' USD';
+      }, 4000);
+    }
+    startYieldTicker();
+
     window.addEventListener('DOMContentLoaded', () => {
       checkAuth();
     });
