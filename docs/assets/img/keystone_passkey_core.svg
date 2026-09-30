@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGradK" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0f1026"/>
+      <stop offset="100%" stop-color="#060610"/>
+    </linearGradient>
+    <linearGradient id="kCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#16183a" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0c0d20" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="purpleGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="520" fill="url(#bgGradK)" rx="12"/>
+  <rect width="898" height="518" x="1" y="1" fill="none" stroke="#2e2b52" stroke-width="1.5" rx="11"/>
+
+  <!-- Top Bar -->
+  <g transform="translate(24, 24)">
+    <circle cx="20" cy="20" r="16" fill="url(#purpleGlow)"/>
+    <path d="M 16 14 C 18 12 22 12 24 14 C 26 16 26 20 24 22 L 28 26 L 25 29 L 22 26 L 19 29 L 16 26 C 14 24 14 16 16 14 Z" fill="#0b0c1c"/>
+    <text x="50" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto" font-size="16" font-weight="700">BARTHOLOMEW KEYSTONE</text>
+    <text x="50" y="38" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">CRYPTOGRAPHIC AGENT CAPABILITY PASSKEYS // SUB-15us CLEARANCE GATING</text>
+
+    <!-- Armed Status Pill -->
+    <rect x="670" y="8" width="180" height="28" rx="14" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+    <circle cx="686" cy="22" r="4" fill="#34d399"/>
+    <text x="698" y="26" fill="#34d399" font-family="Consolas, monospace" font-size="11" font-weight="700">[PASSKEY: ARMED]</text>
+  </g>
+
+  <!-- Passkey Overview Cards -->
+  <g transform="translate(24, 86)">
+    <!-- Passkey ID -->
+    <rect width="202" height="88" rx="8" fill="url(#kCardGrad)" stroke="#2e2b52"/>
+    <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">ACTIVE PASSKEY ID</text>
+    <text x="16" y="58" fill="#a5b4fc" font-family="Consolas, monospace" font-size="18" font-weight="700">pk_8f3a9e1b2c4d</text>
+    <text x="16" y="76" fill="#34d399" font-family="Consolas, monospace" font-size="10">HMAC-SHA256 verified</text>
+
+    <!-- Agent ID -->
+    <g transform="translate(216, 0)">
+      <rect width="202" height="88" rx="8" fill="url(#kCardGrad)" stroke="#2e2b52"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">BOUND AGENT ID</text>
+      <text x="16" y="58" fill="#38bdf8" font-family="Consolas, monospace" font-size="18" font-weight="700">agent-dev-01</text>
+      <text x="16" y="76" fill="#64748b" font-family="Consolas, monospace" font-size="10">Developer Sandbox preset</text>
+    </g>
+
+    <!-- Spend Ceiling -->
+    <g transform="translate(432, 0)">
+      <rect width="202" height="88" rx="8" fill="url(#kCardGrad)" stroke="#2e2b52"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">SESSION SPEND CEILING</text>
+      <text x="16" y="58" fill="#34d399" font-family="Consolas, monospace" font-size="20" font-weight="700">$25.00 <tspan font-size="12" fill="#64748b">USD</tspan></text>
+      <text x="16" y="76" fill="#64748b" font-family="Consolas, monospace" font-size="10">Single txn cap: $10.00</text>
+    </g>
+
+    <!-- TTL Remaining -->
+    <g transform="translate(648, 0)">
+      <rect width="204" height="88" rx="8" fill="url(#kCardGrad)" stroke="#2e2b52"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">EXPIRATION TTL</text>
+      <text x="16" y="58" fill="#f8fafc" font-family="Consolas, monospace" font-size="20" font-weight="700">1h 58m</text>
+      <text x="16" y="76" fill="#34d399" font-family="Consolas, monospace" font-size="10">Auto-revokes on expiry</text>
+    </g>
+  </g>
+
+  <!-- Scopes Deep Dive Matrix -->
+  <g transform="translate(24, 190)">
+    <rect width="852" height="305" rx="8" fill="url(#kCardGrad)" stroke="#2e2b52"/>
+    <text x="16" y="26" fill="#c084fc" font-family="Consolas, monospace" font-size="11" font-weight="700">CRYPTOGRAPHIC CLEARANCE BOUNDARIES (.btp_keystone.json)</text>
+    <line x1="16" y1="36" x2="836" y2="36" stroke="#2e2b52"/>
+
+    <!-- Filesystem Scope -->
+    <g transform="translate(16, 48)">
+      <text x="0" y="16" fill="#818cf8" font-family="Consolas, monospace" font-size="12" font-weight="700">[1] FILESYSTEM SCOPES</text>
+      <rect x="0" y="26" width="820" height="42" rx="4" fill="#090a18" stroke="#1f2142"/>
+      <text x="12" y="44" fill="#34d399" font-family="Consolas, monospace" font-size="10.5">ALLOW_WRITE : ["src/**", "tests/**", "docs/**"]</text>
+      <text x="12" y="60" fill="#f87171" font-family="Consolas, monospace" font-size="10.5">DENY_GLOBS  : [".env*", "secrets*", "id_rsa*", "id_ed25519*", ".git/hooks/**"]</text>
+    </g>
+
+    <!-- Command Scope -->
+    <g transform="translate(16, 126)">
+      <text x="0" y="16" fill="#818cf8" font-family="Consolas, monospace" font-size="12" font-weight="700">[2] COMMAND SANDBOXING SCOPES</text>
+      <rect x="0" y="26" width="820" height="42" rx="4" fill="#090a18" stroke="#1f2142"/>
+      <text x="12" y="44" fill="#34d399" font-family="Consolas, monospace" font-size="10.5">ALLOW_EXEC  : ["npm test", "pytest", "python -m unittest", "cargo check", "git status"]</text>
+      <text x="12" y="60" fill="#f87171" font-family="Consolas, monospace" font-size="10.5">DENY_EXEC   : ["rm", "sudo", "curl | sh", "wget", "chmod", "mkfs", "dd"] (Deny Shell Ops: ON)</text>
+    </g>
+
+    <!-- Network & Budget -->
+    <g transform="translate(16, 204)">
+      <text x="0" y="16" fill="#818cf8" font-family="Consolas, monospace" font-size="12" font-weight="700">[3] NETWORK &amp; VELOCITY BUDGET GOVERNOR</text>
+      <rect x="0" y="26" width="820" height="42" rx="4" fill="#090a18" stroke="#1f2142"/>
+      <text x="12" y="44" fill="#38bdf8" font-family="Consolas, monospace" font-size="10.5">ALLOW_DOMAINS : ["github.com", "npmjs.org", "pypi.org", "docs.python.org", "localhost"]</text>
+      <text x="12" y="60" fill="#fbbf24" font-family="Consolas, monospace" font-size="10.5">BUDGET CAPS   : Max Spend: $25.00 | Single Txn: $10.00 | Token Velocity: 250k tok/min</text>
+    </g>
+
+    <text x="16" y="292" fill="#64748b" font-family="Consolas, monospace" font-size="10">SUB-15us HMAC-SHA256 SIGNED CLEARANCE TOKEN // IMMUTABLE &amp; TAMPER-EVIDENT</text>
+  </g>
+</svg>
