@@ -4032,6 +4032,141 @@ def cmd_scope(args):
             print("=" * 70 + "\n")
 
 
+
+def cmd_arbitrage(args):
+    """Model Token & Inference Arbitrage Engine."""
+    try:
+        from src.model_arbitrage import ModelArbitrageEngine
+    except ImportError:
+        from btp_guard.model_arbitrage import ModelArbitrageEngine
+    engine = ModelArbitrageEngine()
+    prompt = getattr(args, "prompt", None)
+    if prompt:
+        res = engine.route_query(prompt)
+        if getattr(args, "json", False):
+            print(json.dumps(res, indent=2))
+        else:
+            print("\n==============================================================================")
+            print("  BARTHOLOMEW MODEL TOKEN & INFERENCE ARBITRAGE (BTP v6.0)")
+            print("==============================================================================")
+            print(f"  Target Model    : {res['target_model']}")
+            print(f"  Complexity Tier : {res['tier']} (Score: {res['complexity_score']}/100)")
+            print(f"  Retail Price    : ${res['retail_cost_usd']:.6f} USD")
+            print(f"  Wholesale Cost  : ${res['wholesale_cost_usd']:.6f} USD")
+            print(f"  Net Spread Profit: ${res['net_spread_usd']:.6f} USD ({res['margin_pct']}% Gross Margin)")
+            print(f"  Routing Latency : {res['routing_latency_us']} us")
+            print("==============================================================================\n")
+        return
+
+    # Default: run benchmark test simulation
+    sim_results = engine.run_benchmark_simulation(5)
+    summary = engine.get_summary()
+    if getattr(args, "json", False):
+        print(json.dumps({"summary": summary, "simulations": sim_results}, indent=2))
+    else:
+        print("\n==============================================================================")
+        print("  BARTHOLOMEW MODEL TOKEN & INFERENCE ARBITRAGE (BTP v6.0)")
+        print("==============================================================================")
+        print(f"  Total Queries   : {summary['total_queries']}")
+        print(f"  Total Tokens    : {summary['total_tokens']:,}")
+        print(f"  Retail Benchmark: ${summary['retail_benchmark_usd']:.4f} USD")
+        print(f"  Wholesale Cost  : ${summary['wholesale_cost_usd']:.4f} USD")
+        print(f"  Net Profit Captured: ${summary['net_spread_captured_usd']:.4f} USD ({summary['average_margin']} Margin)")
+        print("------------------------------------------------------------------------------")
+        print("  RECENT ROUTED QUERIES:")
+        for r in sim_results:
+            print(f"    - [{r['tier']}] {r['target_model']} | Profit: +${r['net_spread_usd']:.6f} ({r['margin_pct']}%) in {r['routing_latency_us']}us")
+        print("==============================================================================\n")
+
+
+def cmd_subnet(args):
+    """Autonomous Agent Crypto Validator Node & Network Emission Tracker."""
+    try:
+        from src.subnet_validator import SubnetValidatorNode
+    except ImportError:
+        from btp_guard.subnet_validator import SubnetValidatorNode
+    node = SubnetValidatorNode()
+    if getattr(args, "status", False):
+        st = node.get_status()
+        if getattr(args, "json", False):
+            print(json.dumps(st, indent=2))
+        else:
+            print("\n==============================================================================")
+            print("  BARTHOLOMEW AUTONOMOUS AGENT SUBNET VALIDATOR (BTP v6.0)")
+            print("==============================================================================")
+            print(f"  Subnet ID         : {st['subnet_id']}")
+            print(f"  Validator Hotkey  : {st['hotkey']}")
+            print(f"  Status            : {st['status']}")
+            print(f"  Consensus Score   : {st['consensus_score']}")
+            print(f"  Staked Balance    : {st['staked_tao']} TAO")
+            print(f"  Emission Balance  : {st['emission_balance_tao']} TAO (+{st['attested_work_units']} AWU)")
+            print(f"  Uptime            : {st['uptime']}")
+            print(f"  Total Evaluated   : {st['total_evaluated']:,} agent challenges")
+            print("==============================================================================\n")
+        return
+
+    # Run validation cycle
+    cycles = getattr(args, "cycle", 5) or 5
+    cycle_res = node.run_validation_cycle(cycles)
+    st = node.get_status()
+    if getattr(args, "json", False):
+        print(json.dumps({"status": st, "cycle": cycle_res}, indent=2))
+    else:
+        print("\n==============================================================================")
+        print("  BARTHOLOMEW SUBNET VALIDATOR -- EXECUTION CYCLE COMPLETED (BTP v6.0)")
+        print("==============================================================================")
+        print(f"  Validator Hotkey  : {st['hotkey']}")
+        print(f"  Consensus Score   : {st['consensus_score']} | Uptime: {st['uptime']}")
+        print(f"  Emission Balance  : {st['emission_balance_tao']} TAO (+{st['attested_work_units']} AWU)")
+        print("------------------------------------------------------------------------------")
+        print("  VERIFIED AGENT CHALLENGES:")
+        for c in cycle_res:
+            print(f"    [{c['timestamp']}] {c['agent_id'][:18]:<18} | {c['verdict']:<7} | Latency: {c['latency_us']}us | {c['awu']}")
+        print("==============================================================================\n")
+
+
+def cmd_depin(args):
+    """DePIN Idle Compute & Spot Arbitrage Worker."""
+    try:
+        from src.depin_worker import DePinComputeWorker
+    except ImportError:
+        from btp_guard.depin_worker import DePinComputeWorker
+    worker = DePinComputeWorker()
+    if getattr(args, "status", False):
+        st = worker.get_status()
+        if getattr(args, "json", False):
+            print(json.dumps(st, indent=2))
+        else:
+            print("\n==============================================================================")
+            print("  BARTHOLOMEW DePIN IDLE COMPUTE WORKER (BTP v6.0)")
+            print("==============================================================================")
+            print(f"  Worker ID         : {st['worker_id']}")
+            print(f"  Hardware Profile  : {st['hardware']}")
+            print(f"  Compute Tier      : {st['tier']}")
+            print(f"  Spot Compute Rate : {st['spot_rate']}")
+            print(f"  Total Tasks Done  : {st['total_tasks_completed']:,}")
+            print(f"  Total Yield Earned: ${st['total_earned_usd']:.4f} USD (+{st['total_awu_minted']} AWU)")
+            print(f"  Status            : {st['status']}")
+            print("==============================================================================\n")
+        return
+
+    # Execute harvest batch
+    batch_size = getattr(args, "harvest", 100) or 100
+    res = worker.execute_compute_batch(batch_size)
+    st = worker.get_status()
+    if getattr(args, "json", False):
+        print(json.dumps({"status": st, "batch": res}, indent=2))
+    else:
+        print("\n==============================================================================")
+        print("  BARTHOLOMEW DePIN COMPUTE HARVEST COMPLETED (BTP v6.0)")
+        print("==============================================================================")
+        print(f"  Batch Processed   : {res['batch_size']} tasks in {res['duration_ms']} ms ({res['throughput_evals_sec']:,} evals/sec)")
+        print(f"  Yield Credited    : +${res['earned_usd']:.5f} USD ({res['awu']})")
+        print(f"  Cumulative Yield  : ${st['total_earned_usd']:.4f} USD ({st['total_awu_minted']} AWU)")
+        print(f"  Spot Rate         : {st['spot_rate']}")
+        print("==============================================================================\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Bartholomew AI Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -4200,6 +4335,24 @@ def main():
     # onboard
     onboard_parser = subparsers.add_parser("onboard", help="Interactive 30-second developer fast-onboarding wizard for Cursor, Cloudflare, Gemini, Claude, AutoGen, OpenAI, and Escrows")
     
+    # arbitrage
+    arb_p = subparsers.add_parser("arbitrage", help="Model Token & Inference Arbitrage Engine (pockets 85-93% spread)")
+    arb_p.add_argument("--test", action="store_true", help="Run simulated query arbitrage benchmark")
+    arb_p.add_argument("--prompt", help="Evaluate prompt complexity and calculate net spread profit")
+    arb_p.add_argument("--json", action="store_true", help="Output JSON")
+
+    # subnet
+    sub_p = subparsers.add_parser("subnet", help="Autonomous Agent Crypto Validator Node & Network Emission Tracker")
+    sub_p.add_argument("--cycle", type=int, default=5, help="Run validation cycles across network challenges")
+    sub_p.add_argument("--status", action="store_true", help="Display validator wallet, stake, and emissions")
+    sub_p.add_argument("--json", action="store_true", help="Output JSON")
+
+    # depin
+    depin_p = subparsers.add_parser("depin", help="DePIN Idle Compute & Spot Arbitrage Worker (earns compute yields)")
+    depin_p.add_argument("--harvest", type=int, default=100, help="Execute batch of compute tasks and harvest yield")
+    depin_p.add_argument("--status", action="store_true", help="Display hardware profile and yield earnings")
+    depin_p.add_argument("--json", action="store_true", help="Output JSON")
+
     # BTP v6 Pillar Subparsers
     intel_p = subparsers.add_parser("intel", help="Workspace Intelligence Report — full stack, security, cost, and optimizations")
     intel_p.add_argument("--dir", default=".", help="Target workspace directory")
@@ -4991,6 +5144,12 @@ def main():
         cmd_export_telemetry(args)
     elif args.command == "export-compliance":
         cmd_export_compliance(args)
+    elif args.command == "arbitrage":
+        cmd_arbitrage(args)
+    elif args.command == "subnet":
+        cmd_subnet(args)
+    elif args.command == "depin":
+        cmd_depin(args)
     elif args.command == "intel":
         cmd_intel(args)
     elif args.command == "scan-deps":
@@ -5200,6 +5359,12 @@ def main():
         cmd_zk_prove(args)
     elif args.command == "zk-verify":
         cmd_zk_verify(args)
+    elif args.command == "arbitrage":
+        cmd_arbitrage(args)
+    elif args.command == "subnet":
+        cmd_subnet(args)
+    elif args.command == "depin":
+        cmd_depin(args)
     elif args.command == "intel":
         cmd_intel(args)
     elif args.command == "scan-deps":
