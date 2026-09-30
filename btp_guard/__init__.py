@@ -64,7 +64,7 @@ BondedAgentWarrantyFund = WarrantyFundManager
 MCPClearinghouse = MCPClearinghouseGateway
 RedTeamHarness = RedTeamScanner
 
-__version__ = "5.4.26"
+__version__ = "6.0.0"
 
 __all__ = [
     "Guard",
