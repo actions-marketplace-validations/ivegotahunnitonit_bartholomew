@@ -55,6 +55,11 @@
   "contributes": {
     "commands": [
       {
+        "command": "bartholomew.backOpenSource",
+        "title": "Bartholomew: Back Open Source Development (Stripe)",
+        "icon": "$(heart)"
+      },
+      {
         "command": "bartholomew.startYieldDaemon",
         "title": "Bartholomew: Launch Autonomous Yield Harvester Daemon",
         "icon": "$(server-process)"
@@ -194,5 +199,9 @@
       "href": "https://bartholomew.info",
       "description": "Sub-35us In-Process Latency"
     }
-  ]
+  ],
+  "funding": {
+    "type": "stripe",
+    "url": "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600"
+  }
 }

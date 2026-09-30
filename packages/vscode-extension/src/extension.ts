@@ -387,6 +387,11 @@ context.subscriptions.push(
   });
   context.subscriptions.push(upgradeProCmd);
 
+  const backOpenSourceCmd = vscode.commands.registerCommand('bartholomew.backOpenSource', () => {
+    vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600'));
+  });
+  context.subscriptions.push(backOpenSourceCmd);
+
   // 2. Poll local daemon or files for real-time telemetry
   const pollDaemon = () => {
     const passkey = getActiveKeystonePasskey();

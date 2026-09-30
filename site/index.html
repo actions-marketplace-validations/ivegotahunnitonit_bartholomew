@@ -2281,6 +2281,75 @@
       border-top: 1px solid rgba(45, 62, 80, 0.35);
     }
 
+  
+    .nav-sponsor-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, rgba(99, 91, 255, 0.16) 0%, rgba(16, 185, 129, 0.16) 100%);
+      border: 1px solid rgba(99, 91, 255, 0.45);
+      color: #c4b5fd;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .nav-sponsor-btn:hover {
+      background: linear-gradient(135deg, rgba(99, 91, 255, 0.32) 0%, rgba(16, 185, 129, 0.28) 100%);
+      border-color: #818cf8;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 18px rgba(99, 91, 255, 0.3);
+    }
+
+    .sponsor-card-box {
+      background: linear-gradient(135deg, rgba(13, 18, 31, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(99, 91, 255, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sponsor-card-box::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 250px;
+      height: 250px;
+      background: radial-gradient(circle, rgba(99, 91, 255, 0.2) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .btn-stripe-sponsor {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #635BFF 0%, #4338CA 100%);
+      color: #ffffff !important;
+      font-weight: 800;
+      font-size: 0.92rem;
+      padding: 13px 28px;
+      border-radius: var(--radius-full);
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 6px 24px rgba(99, 91, 255, 0.45);
+      transition: var(--transition);
+    }
+
+    .btn-stripe-sponsor:hover {
+      background: linear-gradient(135deg, #7A73FF 0%, #4F46E5 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(99, 91, 255, 0.6);
+      color: #ffffff !important;
+    }
+
   </style>
 </head>
 <body>
@@ -3119,116 +3188,95 @@
       </div>
     </section>
 
-    <!-- Clear Open-Core vs Monetization Expansion Funnel (Public Numbers Archived) -->
-    <section class="funnel-sec">
+    <!-- 100% Free & Open Source Community & Sponsorship Hub -->
+    <section class="funnel-sec" id="open-source" style="padding: 70px 0;">
       <div class="container">
-        <div class="section-head">
-          <div class="ecosystem-pill" style="margin-bottom:12px;">
-            <span>[ PRODUCT-LED EXPANSION ARCHITECTURE ]</span>
+        <div class="section-head" style="text-align:center; max-width:820px; margin:0 auto 40px;">
+          <div class="ecosystem-pill" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#10b981"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.2l7.6 3.8-7.6 3.8-7.6-3.8L12 4.2zm-8 4.6l7 3.5v7.5l-7-3.5V8.8zm9 11v-7.5l7-3.5v7.5l-7 3.5z"/></svg>
+            <span>[ 100% FREE &amp; OPEN-SOURCE FOR ALL DEVELOPERS ]</span>
           </div>
-          <h2 class="section-title">Open-Core Adoption to Enterprise Defense</h2>
-          <p class="section-sub">From seamless developer CI/CD integration to air-gapped VPCs with bonded execution warranties.</p>
+          <h2 class="section-title">Free Runtime Protection for Every Agent</h2>
+          <p class="section-sub">
+            Zero paywalls. Zero artificial limits. Zero cloud lock-in. Bartholomew is an open-source public good protecting autonomous AI agents with sub-35µs in-process execution safety.
+          </p>
         </div>
 
-        <div class="funnel-steps-grid">
-          <!-- Tier 1: Free Open Source CLI -->
-          <div class="funnel-card">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--gold-light);">Tier 1 • Open-Core</span>
-              <h3 class="funnel-card-title">Open-Source CLI</h3>
-              <div class="funnel-card-role">Bottom-Up Developer Adoption</div>
-              <p class="funnel-card-sub">Integrate in under 60 seconds via 3-line YAML or pip package for local in-process protection.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span><code>btp-guard</code> In-Process CLI</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Sub-35µs AST Invariant Gating</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Unlimited Local Evaluations</span>
-                </li>
-              </ul>
-            </div>
-            <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" class="btn-funnel btn-funnel-default">Install Free CLI</a>
+        <!-- Real Adoption Stats Grid -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:18px; margin-bottom:36px;">
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#38bdf8; font-family:var(--font-mono);">6,300+</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">Monthly Active Downloads (npm &amp; PyPI)</div>
           </div>
-
-          <!-- Tier 2: Developer API Tier -->
-          <div class="funnel-card">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--emerald);">Tier 2 • Self-Serve</span>
-              <h3 class="funnel-card-title">Developer API Tier</h3>
-              <div class="funnel-card-role">Prompt &amp; API Key Safeguards</div>
-              <p class="funnel-card-sub">For high-velocity agent builders needing automated secret scrubbing and step quota limits.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Automated Secret Scrubbing Proxy</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Step Limits &amp; Spend Caps</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Cloud Policy Synchronization</span>
-                </li>
-              </ul>
-            </div>
-            <button onclick="document.getElementById('sandbox').scrollIntoView({ behavior: 'smooth' })" class="btn-funnel btn-funnel-default">Launch In Sandbox</button>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#34d399; font-family:var(--font-mono);">&lt;19 µs</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">Median P50 Latency (Zero GPU VRAM)</div>
           </div>
-
-          <!-- Tier 3: Remediation & Compliance (Featured) -->
-          <div class="funnel-card featured">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--gold-light);">Tier 3 • Agency / Team</span>
-              <h3 class="funnel-card-title">Remediation &amp; Audit</h3>
-              <div class="funnel-card-role">Design Partners &amp; Delivery Teams</div>
-              <p class="funnel-card-sub">Full OWASP trajectory audit reports, verifiable SHA-256 evidence, and auto-generated patch fixes.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Comprehensive Trajectory Scan</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Signed Compliance Audit PDF</span>
-                </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Backoff Loop Breaker Patches</span>
-                </li>
-              </ul>
-            </div>
-            <button onclick="openTrialModal('Team Pro Audit Package')" class="btn-funnel btn-funnel-featured">Request Audit Package</button>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#fbbf24; font-family:var(--font-mono);">350K+</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">In-Process Evals / Sec Throughput</div>
           </div>
+          <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:20px; text-align:center;">
+            <div style="font-size:2rem; font-weight:900; color:#a78bfa; font-family:var(--font-mono);">100%</div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:4px; font-weight:600;">MIT Open-Source &amp; Free</div>
+          </div>
+        </div>
 
-          <!-- Tier 4: Custom Enterprise Tier -->
-          <div class="funnel-card">
-            <div>
-              <span class="funnel-tier-badge" style="color:var(--purple);">Tier 4 • Enterprise SLA</span>
-              <h3 class="funnel-card-title">Custom Enterprise</h3>
-              <div class="funnel-card-role">CISO &amp; Production Scale</div>
-              <p class="funnel-card-sub">Air-gapped VPC gateways, bonded warranties, and automated compliance evidence for regulated enterprises.</p>
-              <ul class="funnel-features">
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>$10,000 Bonded Execution Warranty</span>
+        <!-- Back Open Source Development (Stripe prod_VMBbPj7TvN0NpW) Card -->
+        <div class="sponsor-card-box">
+          <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:28px;">
+            <div style="flex:1; min-width:300px;">
+              <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                <span style="background:rgba(99,91,255,0.18); border:1px solid #635BFF; color:#c4b5fd; font-family:var(--font-mono); font-size:0.75rem; font-weight:800; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:6px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="#a78bfa"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  COMMUNITY FUNDED
+                </span>
+                <span style="font-family:var(--font-mono); font-size:0.75rem; color:#94a3b8;">
+                  Stripe Rail: <code>prod_VMBbPj7TvN0NpW</code>
+                </span>
+              </div>
+              <h3 style="font-size:1.6rem; font-weight:800; color:#ffffff; margin-bottom:12px; letter-spacing:-0.02em;">
+                Back Open Source Development
+              </h3>
+              <p style="color:#94a3b8; font-size:0.92rem; line-height:1.6; margin-bottom:18px;">
+                Bartholomew is funded by the community and developers who believe autonomous agent security should be deterministic, blindingly fast (&lt;35µs), and free to all. If your project, company, or agentic workflow benefits from our runtime protection, consider backing continuous open-source development and zero-dependency package maintenance.
+              </p>
+              <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+                <a href="https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600" target="_blank" class="btn-stripe-sponsor" id="btn-back-open-source">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                  <span>Back Open Source Development</span>
+                </a>
+                <span style="font-size:0.78rem; font-family:var(--font-mono); color:#64748b; display:inline-flex; align-items:center; gap:6px;">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#635BFF"><path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697.355 12.637.355 6.554.355 2.502 3.528 2.502 8.783c0 5.255 4.316 6.892 7.747 8.163 2.613.967 3.486 1.705 3.486 2.766 0 .991-.849 1.519-2.354 1.519-2.583 0-5.469-1.144-7.393-2.227L3 24.608c2.146 1.055 5.568 1.83 8.743 1.83 6.383 0 10.757-3.048 10.757-8.72 0-5.256-3.914-7.464-8.524-8.568z"/></svg>
+                  Direct Secure Stripe Rail
+                </span>
+              </div>
+            </div>
+
+            <!-- Perks Summary Box -->
+            <div style="background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:24px; min-width:280px;">
+              <div style="font-size:0.8rem; font-family:var(--font-mono); font-weight:700; color:#38bdf8; text-transform:uppercase; margin-bottom:12px;">
+                Where Contributions Go:
+              </div>
+              <ul style="list-style:none; display:flex; flex-direction:column; gap:10px; font-size:0.82rem; color:#cbd5e1;">
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Zero-Day AST Invariant Research</span>
                 </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Air-Gapped VPC &amp; Private Gateway</span>
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Zero-Dependency npm &amp; pip Maintenance</span>
                 </li>
-                <li class="funnel-feature-item">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                  <span>Continuous SOC 2 Evidence Streams</span>
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Cursor, Windsurf &amp; Claude Code Extensions</span>
+                </li>
+                <li style="display:flex; align-items:center; gap:8px;">
+                  <svg width="14" height="14" fill="none" stroke="#10b981" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>100% Transparent Public Roadmaps</span>
                 </li>
               </ul>
             </div>
-            <button onclick="openTrialModal('Custom Enterprise Pilot')" class="btn-funnel btn-funnel-default">Contact Enterprise Sales</button>
           </div>
         </div>
       </div>

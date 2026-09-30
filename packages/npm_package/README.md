@@ -1,4 +1,7 @@
-# btp-guard (Node.js & TypeScript)
+# btp-guard
+
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
+ (Node.js & TypeScript)
 
 > **Sub-35µs In-Process Execution Firewall & Deterministic AST Safety Gate for AI Agents**  
 > *Bartholomew Trust Protocol (BTP v5.4.24) — Zero External Dependencies*

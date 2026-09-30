@@ -22,8 +22,8 @@
     "node": ">=18.0.0"
   },
   "funding": {
-    "type": "individual",
-    "url": "https://bartholomew.info/store/"
+    "type": "stripe",
+    "url": "https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600"
   },
   "scripts": {
     "test": "node test.js"

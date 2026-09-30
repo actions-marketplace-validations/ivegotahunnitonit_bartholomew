@@ -7,6 +7,7 @@
 > **Zero-trust firewall and execution guardrails for autonomous AI agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
 > *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct AI Model Context Bridge.*
 
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
 [![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.34-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)

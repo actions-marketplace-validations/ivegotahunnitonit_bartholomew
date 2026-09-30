@@ -23,6 +23,7 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 [![Open VSX Downloads](https://img.shields.io/badge/Open%20VSX-6%2C096%2B%20Installs-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/npm/v/btp-guard?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
+[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/fZu28rbNz5TYcmAddK9R600)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/evals-100%2C000%2B%20vectors-brightgreen)](tests/)
 [![Hugging Face Space](https://img.shields.io/badge/Hugging%20Face-Simulator%20Space-yellow?logo=huggingface&logoColor=white)](https://huggingface.co/spaces/acnbartholomew/bartholomew-agent-guard)
