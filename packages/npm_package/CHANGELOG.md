@@ -2,6 +2,15 @@
 
 All notable changes to `btp-guard` will be documented in this file.
 
+## [6.1.0] - 2026-09-30
+### Added
+- Locked Single-Tenant Telemetry: `npx btp-guard telemetry` opens an authenticated private sentinel vault at bartholomew.info/telemetry with zero cross-tenant data leakage.
+- Autonomous Subnet Validator Node: `npx btp-guard subnet` validates multi-agent consensus challenges and earns TAO / AWU block emissions.
+- DePIN Compute Harvester: `npx btp-guard depin` monetizes idle CPU cycles with high-density security vector verification.
+- Unified Background Yield Daemon: `npx btp-guard daemon` orchestrates continuous background validation, compute harvesting, and token arbitrage.
+- Expanded AI Companion Rules: `npx btp-guard arm` now generates tailored rule sets for Windsurf (`.windsurfrules`), Cursor (`.cursorrules`), Claude Code (`CLAUDE.md`), and GitHub Copilot (`.github/copilot-instructions.md`).
+- Upgraded Operator HUD: Real-time terminal HUD with live yield counters, active node identity, and sub-35µs latency distributions.
+
 ## [5.4.10] - 2026-09-12
 ### Added
 - Standard modern `exports` map for dual ESM and TypeScript declarations.
