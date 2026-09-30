@@ -55,9 +55,11 @@ Write-Host ""
 Write-Host "[SUCCESS] Bartholomew installed and verified successfully!" -ForegroundColor Green
 Write-Host ""
 Write-Host "Quickstart Commands:" -ForegroundColor White
-Write-Host "  1. Test AST safety gate:   btp-guard try" -ForegroundColor Yellow
-Write-Host "  2. Protect any process:    btp-guard run -- <your-agent-cmd>" -ForegroundColor Yellow
-Write-Host "  3. Verify an MCP server:   btp-guard verify-mcp --url http://localhost:8000/sse" -ForegroundColor Yellow
-Write-Host "  4. Python 1-line wrapper:  from btp_guard import protect_agent" -ForegroundColor Yellow
+Write-Host "  1. Test AST safety gate:    btp-guard try" -ForegroundColor Yellow
+Write-Host "  2. Open Private Telemetry:  btp-guard telemetry" -ForegroundColor Yellow
+Write-Host "  3. Run Validator & Yield:   btp-guard daemon" -ForegroundColor Yellow
+Write-Host "  4. Protect active workspace: btp-guard arm" -ForegroundColor Yellow
+Write-Host "  5. Python 1-line wrapper:   from btp_guard import protect_agent" -ForegroundColor Yellow
 Write-Host ""
-Write-Host "Docs & Architecture: https://bartholomew.info" -ForegroundColor Gray
+Write-Host "Private Telemetry Vault: https://bartholomew.info/telemetry" -ForegroundColor Cyan
+Write-Host "Docs & Architecture:     https://bartholomew.info" -ForegroundColor Gray

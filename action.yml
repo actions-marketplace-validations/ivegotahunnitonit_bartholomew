@@ -1,9 +1,9 @@
 name: 'Bartholomew Agentic Runtime Protection (ARP)'
-description: 'BTP v5.4.23 Sub-35us deterministic AST execution gating, secret scrubbing, and Ed25519 Merkle receipts for AI agents & PRs.'
-author: 'Autonomous Circularity Labs / Itsub Alemayehu'
+description: 'BTP v6.0 Sub-35us deterministic AST execution gating, secret scrubbing, and Ed25519 Merkle receipts for AI agents & PRs.'
+author: 'Bartholomew AI Inc. / Itsub Alemayehu'
 branding:
   icon: 'shield'
-  color: 'purple'
+  color: 'green'
 
 inputs:
   fail-on-violation:

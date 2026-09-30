@@ -42,6 +42,21 @@ services:
     depends_on:
       - btp-gateway
 
+
+  # Bartholomew Autonomous Subnet Validator & DePIN Compute Harvester
+  btp-yield-daemon:
+    image: bartholomew/btp-gateway:6.0.0
+    container_name: btp-yield-daemon
+    restart: unless-stopped
+    command: ["python", "-m", "btp_guard.cli", "daemon", "yield"]
+    environment:
+      - PYTHONUNBUFFERED=1
+      - BTP_STRICT_INVARIANTS=true
+    volumes:
+      - btp_data:/var/lib/btp
+    depends_on:
+      - btp-gateway
+
 volumes:
   btp_data:
     driver: local

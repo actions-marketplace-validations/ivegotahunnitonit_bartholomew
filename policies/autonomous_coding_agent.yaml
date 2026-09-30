@@ -1,0 +1,52 @@
+version: "6.0.0"
+policy_id: "urn:btp:policy:autonomous-coding-agent-v6"
+description: "High-integrity safety policy for autonomous coding agents (Cursor, Claude Code, Windsurf, Copilot, Aider)."
+
+rules:
+  - id: "RULE_DESTRUCTIVE_FILESYSTEM"
+    name: "Destructive Host & Root Deletion Filter"
+    type: "forbidden_substrings"
+    patterns:
+      - "rm -rf /"
+      - "rm -rf ~"
+      - "rm -rf *"
+      - "mkfs"
+      - "dd if=/dev/zero"
+      - "chmod -R 777"
+    action: "DENY"
+    message: "Destructive host filesystem operation vetoed before execution."
+
+  - id: "RULE_CREDENTIAL_PROTECTION"
+    name: "Local Credential & Environment Variable Gate"
+    type: "forbidden_substrings"
+    patterns:
+      - ".env"
+      - "id_rsa"
+      - "id_ed25519"
+      - "aws_secret_access_key"
+      - "sk-proj-"
+      - "ghp_"
+    action: "DENY"
+    message: "Access to private environment variables or secrets blocked by Keystone boundary."
+
+  - id: "RULE_UNTRUSTED_DOWNLOAD_PIPE"
+    name: "Pipe to Shell Proscription"
+    type: "forbidden_substrings"
+    patterns:
+      - "curl | bash"
+      - "curl | sh"
+      - "wget | bash"
+      - "wget | sh"
+      - "python -c 'import urllib"
+    action: "DENY"
+    message: "Arbitrary remote code download and pipe-to-shell is strictly prohibited."
+
+  - id: "RULE_FORCE_PUSH_BARRIER"
+    name: "Git Main Protection Gate"
+    type: "forbidden_substrings"
+    patterns:
+      - "git push --force origin main"
+      - "git push -f origin main"
+      - "git reset --hard HEAD~50"
+    action: "DENY"
+    message: "Destructive remote git mutations on production branches require explicit human approval."
