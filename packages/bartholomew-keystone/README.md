@@ -7,7 +7,7 @@
 > **Issue tamper-evident, cryptographically signed permission slips for autonomous AI agents.**  
 > *Define deterministic boundaries for file modifications, command executions, external network calls, and financial spend in Cursor, Claude Desktop, Windsurf, and VS Code.*
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.33-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.34-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
 [![Works With](https://img.shields.io/badge/Works%20With-Bartholomew%20Guard-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
