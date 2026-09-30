@@ -1,10 +1,14 @@
-# Bartholomew Guard - AI Agent Safety & Guardrails (Cursor, Claude, Copilot)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="96" height="96" alt="Bartholomew Shield Logo" />
+</p>
 
-> **Zero-trust firewall & execution guardrails for autonomous AI agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
+# Bartholomew Guard - AI Agent Safety and Guardrails (Cursor, Claude, Copilot)
+
+> **Zero-trust firewall and execution guardrails for autonomous AI agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
 > *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct AI Model Context Bridge.*
 
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/itsubsolomon.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=itsubsolomon.bartholomew-guard-vscode)
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.32-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.33-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
@@ -18,7 +22,7 @@
 Bartholomew Guard operates in-process between autonomous AI coding assistants (Cursor Composer, Claude Code, GitHub Copilot, Gemini Antigravity, Windsurf, Roo Code, Cline) and your operating system. Every proposed command, file write, script execution, or network invocation is intercepted and verified against deterministic invariants in **under 35 microseconds** before execution:
 
 - **Destructive Command Interception**: Blocks destructive operations such as `rm -rf`, `mkfs`, raw block overwrites, and unauthorized branch deletions.
-- **In-Flight Secret & Credential Redaction**: Intercepts high-entropy API keys (`sk-*`, AWS keys, JWTs, OAuth tokens) and replaces them with cryptographically verified redaction masks before transmission.
+- **In-Flight Secret and Credential Redaction**: Intercepts high-entropy API keys (`sk-*`, AWS keys, JWTs, OAuth tokens) and replaces them with cryptographically verified redaction masks before transmission.
 - **Pipe-to-Shell Quarantine**: Halts and isolates unvetted remote scripts (`curl | bash`, `wget | sh`) before shell evaluation.
 - **Keystone Agent Capabilities**: Constrains agent writes to permitted paths, sandboxes system commands, and enforces hard session spend limits ($25.00 ceiling, $5.00 single-action cap).
 - **Universal Extension Mesh**: Automatically discovers installed agent toolchains (Cursor, Copilot, Claude Desktop, Cline, Python) and coordinates unified protection policies.
@@ -36,7 +40,7 @@ Real-time telemetry showing your workspace security score (100/100, Grade A+), a
 
 ---
 
-### 2. Live Threat Sandbox & Plain-English Analysis Core
+### 2. Live Threat Sandbox and Plain-English Analysis Core
 Interactive real-time threat simulator and four structured diagnostic panels. Test arbitrary shell commands, tool calls, and spend requests against the live AST barrier with zero-delay cryptographic receipts.
 
 <p align="center">
@@ -61,7 +65,7 @@ Whenever Bartholomew Guard audits your workspace or intercepts an agent operatio
 | Stage | Focus | Description |
 |---|---|---|
 | **1. Active Protection Status** | Current Execution Posture | Live status of the workspace, agent activity levels, active invariant monitors, and background telemetry. |
-| **2. Invariants & Integrity** | Identified Hazards | Concrete misconfigurations, unshielded pre-commit hooks, missing agent policy files, or high-risk tool calls. |
+| **2. Invariants and Integrity** | Identified Hazards | Concrete misconfigurations, unshielded pre-commit hooks, missing agent policy files, or high-risk tool calls. |
 | **3. Recommended Operation** | Clear Next Steps | Actionable remediations to achieve a perfect 100/100 (A+) security rating. |
 | **4. Core Active Capabilities** | Active Invariant Guardrails | Sub-35us AST gates, in-flight secret masking, pipe-to-shell blocking, and Keystone capability passkeys actively defending the system. |
 
@@ -117,7 +121,7 @@ Select the **AI Companions** tab to get customized system instructions for:
 
 Bartholomew Guard is open-source software under the **MIT License**.
 
-- Documentation & Live Telemetry: [https://bartholomew.info](https://bartholomew.info)
+- Documentation and Live Telemetry: [https://bartholomew.info](https://bartholomew.info)
 - Source Repository: [GitHub](https://github.com/ivegotahunnitonit/bartholomew)
 - Python Package: `pip install btp-guard`
 - NPM Package: `npm install btp-guard`

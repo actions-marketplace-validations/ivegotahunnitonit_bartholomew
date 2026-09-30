@@ -1,9 +1,13 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/keystone_logo.png" width="96" height="96" alt="Bartholomew Keystone Crest Logo" />
+</p>
+
 # Bartholomew Keystone - Cryptographic Agent Capability Passkeys
 
 > **Issue tamper-evident, cryptographically signed permission slips for autonomous AI agents.**  
 > *Define deterministic boundaries for file modifications, command executions, external network calls, and financial spend in Cursor, Claude Desktop, Windsurf, and VS Code.*
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.32-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.33-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
 [![Works With](https://img.shields.io/badge/Works%20With-Bartholomew%20Guard-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
@@ -26,7 +30,7 @@ System prompt instructions ("Please do not touch `.env`") are easily ignored or 
 
 ## Keystone Core Visual
 
-### Active Cryptographic Clearance & Scopes
+### Active Cryptographic Clearance and Scopes
 Visualizing active capability boundaries: $25.00 session spend ceiling, $5.00 max per transaction, filesystem write restrictions, command sandboxing whitelists, and network egress controls.
 
 <p align="center">
@@ -39,8 +43,8 @@ Visualizing active capability boundaries: $25.00 session spend ceiling, $5.00 ma
 
 | Layer | Bartholomew Guard | Bartholomew Keystone (This Extension) |
 |---|---|---|
-| **Primary Role** | Invariant & Leak Detection | Cryptographic Capability Scoping |
-| **How It Operates** | AST static analysis & runtime leak scanning | Issues and verifies signed capability passkeys |
+| **Primary Role** | Invariant and Leak Detection | Cryptographic Capability Scoping |
+| **How It Operates** | AST static analysis and runtime leak scanning | Issues and verifies signed capability passkeys |
 | **Protection Focus** | Zero-leak credential guard, prompt-injection AST gate | Defines exact file globs, commands, domains, and budget limits |
 | **Speed** | Sub-25 microseconds in-process verification | Sub-15 microseconds HMAC-SHA256 signature and scope check |
 | **Installation** | Companion extension (`Bartholomew.bartholomew-guard-vscode`) | You are here (`Bartholomew.bartholomew-keystone`) |
