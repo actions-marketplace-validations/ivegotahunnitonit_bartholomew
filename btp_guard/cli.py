@@ -3835,6 +3835,165 @@ def cmd_config_get_treasury(args):
     print("=" * 60 + "\n")
 
 
+
+def cmd_intel(args):
+    """Workspace Intelligence Report — full stack, security, cost, and optimization analysis."""
+    try:
+        from src.workspace_intel import WorkspaceIntelligence
+    except ImportError:
+        from btp_guard.workspace_intel import WorkspaceIntelligence
+    ws = getattr(args, "dir", ".") or "."
+    intel = WorkspaceIntelligence(workspace_root=ws)
+    report = intel.generate_report()
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print(intel.format_plaintext(report))
+
+
+def cmd_scan_deps(args):
+    """Dependency Threat Scanner — malicious packages, typosquats, CVEs."""
+    try:
+        from src.dependency_threat import DependencyThreatScanner
+    except ImportError:
+        from btp_guard.dependency_threat import DependencyThreatScanner
+    ws = getattr(args, "dir", ".") or "."
+    check_osv = getattr(args, "osv", False)
+    scanner = DependencyThreatScanner(workspace_root=ws)
+    report = scanner.scan_all(check_osv=check_osv)
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print(scanner.format_plaintext(report))
+    if not report.get("clean", True):
+        sys.exit(1)
+
+
+def cmd_firewall(args):
+    """Prompt Injection Firewall — scan text or stdin for injection attacks."""
+    try:
+        from src.prompt_injection_firewall import PromptInjectionFirewall
+    except ImportError:
+        from btp_guard.prompt_injection_firewall import PromptInjectionFirewall
+    fw = PromptInjectionFirewall(strict_mode=getattr(args, "strict", False))
+    payload = getattr(args, "payload", None) or ""
+    if not payload and not sys.stdin.isatty():
+        payload = sys.stdin.read()
+    if not payload:
+        print("[*] No payload provided. Pipe text or pass --payload.")
+        return
+    result = fw.scan(payload, source="cli")
+    explanation = fw.generate_plain_explanation(result)
+    if getattr(args, "json", False):
+        print(json.dumps(result, indent=2))
+    else:
+        status = "[BLOCK]" if result["blocked"] else "[ALLOW]"
+        print(f"  {status}  Risk: {result['risk_score']}/100  Latency: {result['latency_us']} us")
+        print(f"  {explanation}")
+        print(f"  Receipt: {result['receipt']}")
+    if result["blocked"]:
+        sys.exit(2)
+
+
+def cmd_fleet(args):
+    """Multi-workspace Fleet View."""
+    try:
+        from src.fleet_view import FleetView
+    except ImportError:
+        from btp_guard.fleet_view import FleetView
+    roots = getattr(args, "roots", None)
+    fleet = FleetView(workspace_roots=roots)
+    report = fleet.generate_fleet_report()
+    if getattr(args, "json", False):
+        print(json.dumps(report, indent=2))
+    else:
+        print(fleet.format_plaintext(report))
+
+
+def cmd_replay(args):
+    """Show Action Replay forensic summary for a log file or current session."""
+    try:
+        from src.action_replay_ledger import ActionReplayLedger
+    except ImportError:
+        from btp_guard.action_replay_ledger import ActionReplayLedger
+    log_file = getattr(args, "log", None)
+    ledger = ActionReplayLedger(log_path=log_file)
+    summary = ledger.get_summary()
+    verification = ledger.verify_chain()
+    if getattr(args, "json", False):
+        print(json.dumps({"summary": summary, "verification": verification}, indent=2))
+    else:
+        print("\n" + "=" * 70)
+        print("      BARTHOLOMEW ACTION REPLAY & FORENSICS LEDGER (BTP v6.0)")
+        print("=" * 70)
+        print(f"  Total Actions Recorded : {summary['total_actions']}")
+        print(f"  Blocked Actions        : {summary['blocked']}")
+        print(f"  Auto-Healed Actions    : {summary['healed']}")
+        print(f"  Chain Validity         : {'VALID (TAMPER-EVIDENT VERIFIED)' if verification['valid'] else 'INVALID'}")
+        print("=" * 70 + "\n")
+
+
+def cmd_mask(args):
+    """Mask secrets in a file or stdin before sending to AI context."""
+    try:
+        from src.secret_masker_v2 import SecretMaskerV2
+    except ImportError:
+        from btp_guard.secret_masker_v2 import SecretMaskerV2
+    sm = SecretMaskerV2()
+    text = ""
+    target_file = getattr(args, "file", None)
+    if target_file and os.path.exists(target_file):
+        with open(target_file, encoding="utf-8") as f:
+            text = f.read()
+    elif not sys.stdin.isatty():
+        text = sys.stdin.read()
+    if not text:
+        print("[*] No text to mask. Specify --file <path> or pipe into stdin.")
+        return
+    masked, findings = sm.mask(text)
+    print(masked)
+    if findings:
+        print(f"\n[BTP] Masked {len(findings)} secret(s):", file=sys.stderr)
+        for f in findings:
+            print(f"  [{f['type']}] {f['ref']} (len={f['original_length']})", file=sys.stderr)
+
+
+def cmd_scope(args):
+    """Agent Permission Scope Guard — check declared permissions manifest."""
+    try:
+        from src.permission_scope_guard import AgentPermissionScopeGuard
+    except ImportError:
+        from btp_guard.permission_scope_guard import AgentPermissionScopeGuard
+    manifest_file = getattr(args, "manifest", None)
+    guard = AgentPermissionScopeGuard(strict_mode=getattr(args, "strict", False))
+    if manifest_file and os.path.exists(manifest_file):
+        guard.load_manifest_file(manifest_file)
+    action = getattr(args, "action", None)
+    target = getattr(args, "target", "")
+    if action:
+        result = guard.check(action, target)
+        if getattr(args, "json", False):
+            print(json.dumps(result, indent=2))
+        else:
+            status = "[ALLOW]" if result["allowed"] else "[DENY]"
+            print(f"  {status} Action: {result.get('action_type', action)}  Target: {result.get('target', target)}")
+            print(f"  Reason: {result['reason']}")
+            if not result["allowed"]:
+                sys.exit(1)
+    else:
+        summary = guard.get_summary()
+        if getattr(args, "json", False):
+            print(json.dumps(summary, indent=2))
+        else:
+            print("\n" + "=" * 70)
+            print("      BARTHOLOMEW AGENT PERMISSION SCOPE GUARD (BTP v6.0)")
+            print("=" * 70)
+            print(f"  Total Checks      : {summary.get('total_checks', 0)}")
+            print(f"  Violations (Deny) : {summary.get('total_violations', 0)}")
+            print(f"  Violation Rate    : {summary.get('violation_rate_pct', 0.0)}%")
+            print("=" * 70 + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Bartholomew AI Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -3994,6 +4153,39 @@ def main():
 
     # onboard
     onboard_parser = subparsers.add_parser("onboard", help="Interactive 30-second developer fast-onboarding wizard for Cursor, Cloudflare, Gemini, Claude, AutoGen, OpenAI, and Escrows")
+    
+    # BTP v6 Pillar Subparsers
+    intel_p = subparsers.add_parser("intel", help="Workspace Intelligence Report — full stack, security, cost, and optimizations")
+    intel_p.add_argument("--dir", default=".", help="Target workspace directory")
+    intel_p.add_argument("--json", action="store_true", help="Output JSON")
+    
+    scan_p = subparsers.add_parser("scan-deps", help="Dependency Threat Scanner — malicious packages, typosquats, CVEs")
+    scan_p.add_argument("--dir", default=".", help="Target directory")
+    scan_p.add_argument("--osv", action="store_true", help="Check OSV.dev CVE database")
+    scan_p.add_argument("--json", action="store_true", help="Output JSON")
+    
+    fw_p = subparsers.add_parser("firewall", help="Prompt Injection Firewall — scan text for prompt injection attacks")
+    fw_p.add_argument("--payload", help="Payload string to scan")
+    fw_p.add_argument("--strict", action="store_true", help="Enable strict heuristic gating")
+    fw_p.add_argument("--json", action="store_true", help="Output JSON")
+    
+    fleet_p = subparsers.add_parser("fleet", help="Multi-workspace Fleet View — aggregate security & optimizations across repos")
+    fleet_p.add_argument("--roots", nargs="*", help="Repository roots to scan")
+    fleet_p.add_argument("--json", action="store_true", help="Output JSON")
+    
+    replay_p = subparsers.add_parser("replay", help="Action Replay & Forensics Ledger — audit session actions & SHA-256 chain")
+    replay_p.add_argument("--log", help="Path to replay ledger JSONL file")
+    replay_p.add_argument("--json", action="store_true", help="Output JSON")
+    
+    mask_p = subparsers.add_parser("mask", help="In-context Secret Masker — scan and mask secrets before sending to AI context")
+    mask_p.add_argument("--file", help="File to mask")
+    
+    scope_p = subparsers.add_parser("scope", help="Agent Permission Scope Guard — check declared permissions manifest")
+    scope_p.add_argument("--manifest", help="Path to permissions.json manifest")
+    scope_p.add_argument("--action", help="Action to check (e.g. file:read, shell:exec)")
+    scope_p.add_argument("--target", default="", help="Target resource")
+    scope_p.add_argument("--strict", action="store_true", help="Strict deny-by-default mode")
+    scope_p.add_argument("--json", action="store_true", help="Output JSON")
     onboard_parser.add_argument("--target", "-t", choices=["cursor", "windsurf", "vscode", "cloudflare", "gemini", "claude", "autogen", "openai", "langchain", "crewai", "escrow", "license"], help="Directly configure target setup")
 
     # daemon
@@ -4745,6 +4937,20 @@ def main():
         cmd_export_telemetry(args)
     elif args.command == "export-compliance":
         cmd_export_compliance(args)
+    elif args.command == "intel":
+        cmd_intel(args)
+    elif args.command == "scan-deps":
+        cmd_scan_deps(args)
+    elif args.command == "firewall":
+        cmd_firewall(args)
+    elif args.command == "fleet":
+        cmd_fleet(args)
+    elif args.command == "replay":
+        cmd_replay(args)
+    elif args.command == "mask":
+        cmd_mask(args)
+    elif args.command in ("scope", "permission"):
+        cmd_scope(args)
     elif args.command == "init":
         cmd_init(args)
     elif args.command == "gossip":
@@ -4940,6 +5146,20 @@ def main():
         cmd_zk_prove(args)
     elif args.command == "zk-verify":
         cmd_zk_verify(args)
+    elif args.command == "intel":
+        cmd_intel(args)
+    elif args.command == "scan-deps":
+        cmd_scan_deps(args)
+    elif args.command == "firewall":
+        cmd_firewall(args)
+    elif args.command == "fleet":
+        cmd_fleet(args)
+    elif args.command == "replay":
+        cmd_replay(args)
+    elif args.command == "mask":
+        cmd_mask(args)
+    elif args.command in ("scope", "permission"):
+        cmd_scope(args)
     elif args.command == "init":
         cmd_init(args)
     elif args.command == "onboard":
@@ -4990,103 +5210,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-def cmd_intel(args):
-    """Workspace Intelligence Report — full stack, security, cost, and optimization analysis."""
-    try:
-        from src.workspace_intel import WorkspaceIntelligence
-    except ImportError:
-        from btp_guard.workspace_intel import WorkspaceIntelligence
-    ws = getattr(args, "dir", ".") or "."
-    intel = WorkspaceIntelligence(workspace_root=ws)
-    report = intel.generate_report()
-    if getattr(args, "json", False):
-        print(json.dumps(report, indent=2))
-    else:
-        print(intel.format_plaintext(report))
-
-
-def cmd_scan_deps(args):
-    """Dependency Threat Scanner — malicious packages, typosquats, CVEs."""
-    try:
-        from src.dependency_threat import DependencyThreatScanner
-    except ImportError:
-        from btp_guard.dependency_threat import DependencyThreatScanner
-    ws = getattr(args, "dir", ".") or "."
-    check_osv = getattr(args, "osv", False)
-    scanner = DependencyThreatScanner(workspace_root=ws)
-    report = scanner.scan_all(check_osv=check_osv)
-    if getattr(args, "json", False):
-        print(json.dumps(report, indent=2))
-    else:
-        print(scanner.format_plaintext(report))
-    if not report["clean"]:
-        sys.exit(1)
-
-
-def cmd_firewall(args):
-    """Prompt Injection Firewall — scan text or stdin for injection attacks."""
-    try:
-        from src.prompt_injection_firewall import PromptInjectionFirewall
-    except ImportError:
-        from btp_guard.prompt_injection_firewall import PromptInjectionFirewall
-    fw = PromptInjectionFirewall(strict_mode=getattr(args, "strict", False))
-    payload = getattr(args, "payload", None) or ""
-    if not payload:
-        payload = sys.stdin.read()
-    if not payload:
-        print("[*] No payload provided. Pipe text or pass --payload.")
-        return
-    result = fw.scan(payload, source="cli")
-    explanation = fw.generate_plain_explanation(result)
-    if getattr(args, "json", False):
-        print(json.dumps(result, indent=2))
-    else:
-        status = "[BLOCK]" if result["blocked"] else "[ALLOW]"
-        print(f"  {status}  Risk: {result['risk_score']}/100  Latency: {result['latency_us']} us")
-        print(f"  {explanation}")
-        print(f"  Receipt: {result['receipt']}")
-    if result["blocked"]:
-        sys.exit(2)
-
-
-def cmd_fleet(args):
-    """Multi-workspace Fleet View."""
-    try:
-        from src.fleet_view import FleetView
-    except ImportError:
-        from btp_guard.fleet_view import FleetView
-    roots = args.roots if hasattr(args, "roots") and args.roots else None
-    fleet = FleetView(workspace_roots=roots)
-    report = fleet.generate_fleet_report()
-    print(fleet.format_plaintext(report))
-
-
-def cmd_replay(args):
-    """Show Action Replay forensic summary for a log file or current session."""
-    print("[BTP] Action Replay Ledger")
-    print("  Use btp_replay_record MCP tool to build a session replay.")
-    print("  Supports: record(), verify_chain(), export_jsonl(), generate_incident_report()")
-
-
-def cmd_mask(args):
-    """Mask secrets in a file or stdin before sending to AI context."""
-    import sys
-    try:
-        from src.secret_masker_v2 import SecretMaskerV2
-    except ImportError:
-        from btp_guard.secret_masker_v2 import SecretMaskerV2
-    sm = SecretMaskerV2()
-    if hasattr(args, "file") and args.file:
-        with open(args.file, encoding="utf-8") as f:
-            text = f.read()
-    else:
-        text = sys.stdin.read()
-    masked, findings = sm.mask(text)
-    print(masked)
-    if findings:
-        print(f"\n[BTP] Masked {len(findings)} secret(s):", file=sys.stderr)
-        for f in findings:
-            print(f"  [{f['type']}] {f['ref']} (len={f['original_length']})", file=sys.stderr)
-

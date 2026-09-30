@@ -9,10 +9,10 @@
 \1
 <!-- BTP v6 Status Badges -->
 [![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](docs/mcp_tool_registry_v6.json)
-[![Tests](https://img.shields.io/badge/Tests-30%2B%20Passing-brightgreen?style=flat-square)](tests/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-25%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
+[![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen-brightgreen?style=flat-square)](tests/)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
 [![Extensions](https://img.shields.io/badge/Extensions%20Protected-50%2C000%2B-blueviolet?style=flat-square)](src/universal_extension_mesh.py)
-[![Status](https://img.shields.io/badge/Status-v6.0--pre%20Hardening-orange?style=flat-square)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/Status-v6.0.0--rc1%20GA-brightgreen?style=flat-square)](CHANGELOG.md)
 
 
 **The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous AI Agent Swarms.**
@@ -27,7 +27,7 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/evals-100%2C000%2B%20vectors-brightgreen)](tests/)
 [![Hugging Face Space](https://img.shields.io/badge/Hugging%20Face-Simulator%20Space-yellow?logo=huggingface&logoColor=white)](https://huggingface.co/spaces/acnbartholomew/bartholomew-agent-guard)
-[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-105k%20Parquet%20Evals-yellow?logo=huggingface&logoColor=white)](https://huggingface.co/datasets/acnbartholomew/btp-agent-redteam-evals)
+[![Hugging Face](https://img.shields.io/badge/Hugging%20Face-105k%20Parquet%20Evals-yellow?logo=huggingface&logoColor=white)](https://huggingface.co/datasets/acnbartholomew/btp-agent-redteam-evals)
 [![Leaderboard](https://img.shields.io/badge/Leaderboard-Rank%201%20(%3C35%C2%B5s)-gold)](https://huggingface.co/spaces/acnbartholomew/agent-guardrails-leaderboard)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ivegotahunnitonit/bartholomew/blob/main/notebooks/Bartholomew_Quickstart_Test_Drive.ipynb)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub%20Sponsors-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/ivegotahunnitonit)
