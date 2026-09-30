@@ -31,6 +31,7 @@ def pack_package(pkg_dir, package_id, display_name, description):
   <Default Extension=".vsixmanifest" ContentType="text/xml"/>
   <Default Extension=".js" ContentType="application/javascript"/>
   <Default Extension=".png" ContentType="image/png"/>
+  <Default Extension=".svg" ContentType="image/svg+xml"/>
   <Default Extension=".md" ContentType="text/markdown"/>
   <Default Extension=".ts" ContentType="video/mp2t"/>
 </Types>"""

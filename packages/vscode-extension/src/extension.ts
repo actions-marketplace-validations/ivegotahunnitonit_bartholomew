@@ -137,7 +137,7 @@ export function activate(context: ExtensionContext) {
 
     const updatePanel = () => {
       const telemetry = loadTelemetry(rootPath);
-      panel.webview.html = getWebviewContent(telemetry, rootPath);
+      panel.webview.html = getWebviewContent(telemetry, rootPath, context.extensionUri?.fsPath);
     };
 
     updatePanel();
