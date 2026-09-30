@@ -1,0 +1,15 @@
+startCommand:
+  type: stdio
+  config:
+    command: python
+    args:
+      - "-m"
+      - "mcp_server.server"
+    env:
+      BTP_ENFORCE_RING0: "1"
+      BTP_VERSION: "6.0.0"
+description: "Deterministic sub-35µs in-process AST execution firewall, secret scrubbing, and cryptographic Keystone passkey verification for Claude Desktop and Cursor."
+name: "bartholomew-guard"
+version: "6.0.0"
+repository: "https://github.com/ivegotahunnitonit/bartholomew"
+homepage: "https://bartholomew.info"
