@@ -21,7 +21,7 @@ except Exception as e:
                     "license_tier": "OPEN_SOURCE",
                     "receipt": {
                         "attestation": {
-                            "authority": "Bartholomew-Trust-Engine-v2.2",
+                            "authority": "Bartholomew-ARP-Engine-v6.0",
                             "action_payload": payload,
                             "evaluation_latency_us": lat,
                             "verdict": "DENY"
@@ -37,7 +37,7 @@ except Exception as e:
                 "license_tier": "OPEN_SOURCE",
                 "receipt": {
                     "attestation": {
-                        "authority": "Bartholomew-Trust-Engine-v2.2",
+                        "authority": "Bartholomew-ARP-Engine-v6.0",
                         "action_payload": payload,
                         "evaluation_latency_us": lat,
                         "verdict": "ALLOW"
