@@ -2941,26 +2941,28 @@
     <!-- =====================================================================
          NEW SECTION: WHAT NO ONE ELSE BRINGS TO THE TABLE (4-PILLAR MOAT)
          ===================================================================== -->
-    <section id="unbeatable-moat" class="defensibility-sec" style="padding: 80px 0; background: radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.08) 0%, transparent 60%);">
+        <!-- =====================================================================
+         REFINED SECTION: THE DETERMINISTIC RUNTIME ADVANTAGE (4-PILLAR MOAT)
+         ===================================================================== -->
+    <section id="unbeatable-moat" class="defensibility-sec" style="padding: 70px 0; background: radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.05) 0%, transparent 60%);">
       <div class="container">
-        <div class="section-head" style="text-align:center; max-width:880px; margin: 0 auto 48px;">
-          <div class="ecosystem-pill" style="margin-bottom:12px; display:inline-flex;">
-            <span>[ THE UNTOUCHABLE ADVANTAGE ]</span>
-          </div>
-          <h2 class="section-title" style="font-size:clamp(1.8rem, 3.5vw, 2.6rem); color:#ffffff; font-weight:800; letter-spacing:-0.02em;">
+        <div class="section-head" style="text-align:center; max-width:880px; margin: 0 auto 40px;">
+          <h2 class="section-title" style="font-size:clamp(1.8rem, 3.5vw, 2.5rem); color:#ffffff; font-weight:800; letter-spacing:-0.02em;">
             What Bartholomew Brings That No One Else Can
           </h2>
-          <p class="section-sub" style="color:var(--text-muted); font-size:1rem; margin-top:8px;">
-            Why existing guardrails (NeMo, Llama Guard, Guardrails AI) fail modern autonomous agents—and the 4 architectural pillars that make Bartholomew the uncontested foundation for global agentic adoption.
+          <p class="section-sub" style="color:var(--text-muted); font-size:0.95rem; margin-top:8px;">
+            Why existing guardrails (NeMo, Llama Guard, Guardrails AI) fail modern autonomous agents—and the four architectural pillars that make Bartholomew the uncontested foundation for global agentic adoption.
           </p>
         </div>
 
-        <!-- The 4 Pillars Grid -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:50px;">
+        <!-- The 4 Pillars Grid (Sleek Minimal SVGs, Zero Emojis) -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px; margin-bottom:44px;">
           <!-- Pillar 1 -->
-          <div style="background:rgba(13, 20, 36, 0.75); border:1px solid rgba(56, 189, 248, 0.3); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:12px; right:14px; font-family:var(--font-mono); font-size:0.7rem; color:#38bdf8; font-weight:700;">PILLAR 01</div>
-            <div style="font-size:1.8rem; margin-bottom:12px;">⚡</div>
+          <div style="background:rgba(10, 16, 30, 0.8); border:1px solid rgba(56, 189, 248, 0.25); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:14px; right:16px; font-family:var(--font-mono); font-size:0.7rem; color:#38bdf8; font-weight:700;">PILLAR 01</div>
+            <div style="margin-bottom:14px; display:inline-flex; padding:10px; background:rgba(56, 189, 248, 0.1); border-radius:8px; border:1px solid rgba(56, 189, 248, 0.25);">
+              <svg width="22" height="22" fill="none" stroke="#38bdf8" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
             <h3 style="font-size:1.15rem; font-weight:700; color:#ffffff; margin-bottom:8px;">Sub-35&micro;s In-Process AST Firewall</h3>
             <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5;">
               Competitors burn 500ms–2,500ms calling secondary LLMs over HTTP. Bartholomew evaluates tool calls in caller memory in <strong>&lt; 35 microseconds</strong>. 1,000x faster, $0 in API costs, 0 MB GPU VRAM, and 100% immune to prompt injection tricks.
@@ -2968,9 +2970,11 @@
           </div>
 
           <!-- Pillar 2 -->
-          <div style="background:rgba(13, 20, 36, 0.75); border:1px solid rgba(16, 185, 129, 0.3); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:12px; right:14px; font-family:var(--font-mono); font-size:0.7rem; color:var(--emerald); font-weight:700;">PILLAR 02</div>
-            <div style="font-size:1.8rem; margin-bottom:12px;">🛡️</div>
+          <div style="background:rgba(10, 16, 30, 0.8); border:1px solid rgba(16, 185, 129, 0.25); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:14px; right:16px; font-family:var(--font-mono); font-size:0.7rem; color:var(--emerald); font-weight:700;">PILLAR 02</div>
+            <div style="margin-bottom:14px; display:inline-flex; padding:10px; background:rgba(16, 185, 129, 0.1); border-radius:8px; border:1px solid rgba(16, 185, 129, 0.25);">
+              <svg width="22" height="22" fill="none" stroke="#10b981" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
             <h3 style="font-size:1.15rem; font-weight:700; color:#ffffff; margin-bottom:8px;">Agent Self-Preservation Reflex</h3>
             <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5;">
               Standard systems kill the process or throw uncaught exceptions when an agent makes an illegal call. Bartholomew returns a <strong>Structured Remediation Envelope</strong> with safe alternative parameters. The agent heals, saves 94% of error tokens, and finishes its job.
@@ -2978,9 +2982,11 @@
           </div>
 
           <!-- Pillar 3 -->
-          <div style="background:rgba(13, 20, 36, 0.75); border:1px solid rgba(139, 92, 246, 0.3); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:12px; right:14px; font-family:var(--font-mono); font-size:0.7rem; color:#c084fc; font-weight:700;">PILLAR 03</div>
-            <div style="font-size:1.8rem; margin-bottom:12px;">🔬</div>
+          <div style="background:rgba(10, 16, 30, 0.8); border:1px solid rgba(139, 92, 246, 0.25); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:14px; right:16px; font-family:var(--font-mono); font-size:0.7rem; color:#c084fc; font-weight:700;">PILLAR 03</div>
+            <div style="margin-bottom:14px; display:inline-flex; padding:10px; background:rgba(139, 92, 246, 0.1); border-radius:8px; border:1px solid rgba(139, 92, 246, 0.25);">
+              <svg width="22" height="22" fill="none" stroke="#c084fc" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+            </div>
             <h3 style="font-size:1.15rem; font-weight:700; color:#ffffff; margin-bottom:8px;">Silicon Compute Provenance (v6.3)</h3>
             <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5;">
               The first runtime that introspects host accelerators (NVIDIA Hopper/Blackwell, Apple Neural Engine, TPU, AMD ROCm, Confidential Enclaves) and signs RFC 8785 Ed25519 Merkle receipts. Swarms dynamically tune VRAM budgets and concurrency limits.
@@ -2988,9 +2994,11 @@
           </div>
 
           <!-- Pillar 4 -->
-          <div style="background:rgba(13, 20, 36, 0.75); border:1px solid rgba(245, 158, 11, 0.3); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
-            <div style="position:absolute; top:12px; right:14px; font-family:var(--font-mono); font-size:0.7rem; color:var(--amber); font-weight:700;">PILLAR 04</div>
-            <div style="font-size:1.8rem; margin-bottom:12px;">💳</div>
+          <div style="background:rgba(10, 16, 30, 0.8); border:1px solid rgba(245, 158, 11, 0.25); border-radius:12px; padding:24px; position:relative; overflow:hidden;">
+            <div style="position:absolute; top:14px; right:16px; font-family:var(--font-mono); font-size:0.7rem; color:var(--amber); font-weight:700;">PILLAR 04</div>
+            <div style="margin-bottom:14px; display:inline-flex; padding:10px; background:rgba(245, 158, 11, 0.1); border-radius:8px; border:1px solid rgba(245, 158, 11, 0.25);">
+              <svg width="22" height="22" fill="none" stroke="#f59e0b" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
             <h3 style="font-size:1.15rem; font-weight:700; color:#ffffff; margin-bottom:8px;">Autonomous Financial Agency (Keystone)</h3>
             <p style="font-size:0.86rem; color:var(--text-muted); line-height:1.5;">
               Enables agents to pay micro-tolls for external MCP tools and paid APIs across Stripe Connect, Apple/Google Pay, and L402 Lightning with sub-10&micro;s PCI PAN scrubbing and deterministic human spend caps ($50-$500).
@@ -2999,10 +3007,10 @@
         </div>
 
         <!-- Side-by-Side Competitive Comparison Table -->
-        <div style="background:rgba(8, 14, 26, 0.9); border:1px solid var(--border-subtle); border-radius:14px; padding:24px; margin-bottom:50px; overflow-x:auto;">
-          <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
+        <div style="background:rgba(6, 11, 20, 0.95); border:1px solid var(--border-subtle); border-radius:14px; padding:24px; overflow-x:auto;">
+          <h3 style="font-size:1.1rem; font-weight:800; color:#ffffff; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
             <span>Architectural Superiority Matrix</span>
-            <span style="font-size:0.72rem; font-family:var(--font-mono); color:#38bdf8; background:rgba(56,189,248,0.1); padding:2px 8px; border-radius:4px;">VERIFIED 2026 BENCHMARK</span>
+            <span style="font-size:0.7rem; font-family:var(--font-mono); color:#38bdf8; background:rgba(56,189,248,0.1); padding:2px 8px; border-radius:4px;">VERIFIED 2026 BENCHMARK</span>
           </h3>
           <table style="width:100%; border-collapse:collapse; font-size:0.84rem; text-align:left;">
             <thead>
@@ -3059,44 +3067,6 @@
               </tr>
             </tbody>
           </table>
-        </div>
-
-        <!-- Universal Framework Adoption Generator -->
-        <div style="background:rgba(13, 20, 36, 0.85); border:1px solid rgba(56, 189, 248, 0.4); border-radius:14px; padding:28px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
-            <div>
-              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#38bdf8; letter-spacing:0.08em; text-transform:uppercase;">[ INSTANT ADOPTION TOOLKIT ]</div>
-              <h3 style="font-size:1.3rem; font-weight:800; color:#ffffff; margin-top:2px;">1-Line Integration for Every Leading Framework</h3>
-            </div>
-            <button onclick="copyAdoptionSnippet()" id="btn-copy-adoption" style="background:#38bdf8; color:#030712; font-family:var(--font-mono); font-size:0.8rem; font-weight:800; padding:8px 16px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
-              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              <span>COPY INTEGRATION SNIPPET</span>
-            </button>
-          </div>
-
-          <!-- Framework Tabs -->
-          <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
-            <button class="mode-tab-btn active" id="btn-fw-swarm" onclick="selectAdoptionFw('SWARM')" style="padding:6px 12px; font-size:0.78rem;">OpenAI Swarm</button>
-            <button class="mode-tab-btn" id="btn-fw-claude" onclick="selectAdoptionFw('CLAUDE')" style="padding:6px 12px; font-size:0.78rem;">Claude Code CLI</button>
-            <button class="mode-tab-btn" id="btn-fw-crewai" onclick="selectAdoptionFw('CREWAI')" style="padding:6px 12px; font-size:0.78rem;">CrewAI</button>
-            <button class="mode-tab-btn" id="btn-fw-langgraph" onclick="selectAdoptionFw('LANGGRAPH')" style="padding:6px 12px; font-size:0.78rem;">LangGraph</button>
-            <button class="mode-tab-btn" id="btn-fw-autogen" onclick="selectAdoptionFw('AUTOGEN')" style="padding:6px 12px; font-size:0.78rem;">Microsoft AutoGen</button>
-            <button class="mode-tab-btn" id="btn-fw-cursor" onclick="selectAdoptionFw('CURSOR')" style="padding:6px 12px; font-size:0.78rem;">Cursor / Windsurf</button>
-            <button class="mode-tab-btn" id="btn-fw-gemini" onclick="selectAdoptionFw('GEMINI')" style="padding:6px 12px; font-size:0.78rem;">Google Gemini / IDE</button>
-            <button class="mode-tab-btn" id="btn-fw-smol" onclick="selectAdoptionFw('SMOL')" style="padding:6px 12px; font-size:0.78rem;">HF Smolagents</button>
-          </div>
-
-          <!-- Code Display -->
-          <pre id="adoption-code-display" style="background:#020617; border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:16px; font-family:var(--font-mono); font-size:0.82rem; color:#f8fafc; overflow-x:auto; line-height:1.5;">from btp_guard.integrations.swarm import BtpSwarmGuard
-
-# 1. Initialize BTP Guard with spending cap and self-healing reflexes
-guard = BtpSwarmGuard(spend_cap=50.0)
-
-# 2. Protect any tool in 1 line:
-safe_tool = guard.protect_tool(execute_query)
-
-# 3. Intercept & validate agent handoffs with Ed25519 cryptographic receipts:
-guard.validate_handoff("TriageAgent", "EscrowSettlementAgent")</pre>
         </div>
       </div>
     </section>
@@ -3458,7 +3428,52 @@ guard.validate_handoff("TriageAgent", "EscrowSettlementAgent")</pre>
   <!-- Restored Rich Footers & Verification Seals from Previous Deployment -->
   <footer class="site-footer">
     <div class="container">
-<!-- Interactive NVIDIA NIM & Keystone Passkey Live Sandbox -->
+      <!-- Universal Framework Adoption Library (Footer Integration Hub) -->
+      <div style="background:rgba(8, 14, 28, 0.85); border:1px solid rgba(56, 189, 248, 0.25); border-radius:12px; padding:24px; margin-bottom:2rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <div style="font-family:var(--font-mono); font-size:0.72rem; color:#38bdf8; letter-spacing:0.08em; text-transform:uppercase;">
+              [ PROTOCOL ADOPTION &bull; UNIVERSAL FRAMEWORK INTEGRATIONS ]
+            </div>
+            <h3 style="font-size:1.15rem; font-weight:800; color:#ffffff; margin-top:2px;">
+              Multi-Agent Framework Integration Library
+            </h3>
+            <p style="font-size:0.78rem; color:var(--text-muted); margin-top:2px;">
+              One-line drop-in middleware with sub-35&micro;s in-process gating and autonomous self-preservation reflexes.
+            </p>
+          </div>
+          <button onclick="copyAdoptionSnippet()" id="btn-copy-adoption" style="background:#38bdf8; color:#030712; font-family:var(--font-mono); font-size:0.75rem; font-weight:800; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s;">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span>COPY SNIPPET</span>
+          </button>
+        </div>
+
+        <!-- Framework Buttons -->
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+          <button class="mode-tab-btn active" id="btn-fw-swarm" onclick="selectAdoptionFw('SWARM')" style="padding:6px 10px; font-size:0.74rem;">OpenAI Swarm</button>
+          <button class="mode-tab-btn" id="btn-fw-claude" onclick="selectAdoptionFw('CLAUDE')" style="padding:6px 10px; font-size:0.74rem;">Claude Code CLI</button>
+          <button class="mode-tab-btn" id="btn-fw-crewai" onclick="selectAdoptionFw('CREWAI')" style="padding:6px 10px; font-size:0.74rem;">CrewAI</button>
+          <button class="mode-tab-btn" id="btn-fw-langgraph" onclick="selectAdoptionFw('LANGGRAPH')" style="padding:6px 10px; font-size:0.74rem;">LangGraph</button>
+          <button class="mode-tab-btn" id="btn-fw-autogen" onclick="selectAdoptionFw('AUTOGEN')" style="padding:6px 10px; font-size:0.74rem;">Microsoft AutoGen</button>
+          <button class="mode-tab-btn" id="btn-fw-cursor" onclick="selectAdoptionFw('CURSOR')" style="padding:6px 10px; font-size:0.74rem;">Cursor / Windsurf</button>
+          <button class="mode-tab-btn" id="btn-fw-gemini" onclick="selectAdoptionFw('GEMINI')" style="padding:6px 10px; font-size:0.74rem;">Google Gemini / IDE</button>
+          <button class="mode-tab-btn" id="btn-fw-smol" onclick="selectAdoptionFw('SMOL')" style="padding:6px 10px; font-size:0.74rem;">HF Smolagents</button>
+        </div>
+
+        <!-- Code Area -->
+        <pre id="adoption-code-display" style="background:#020617; border:1px solid rgba(255,255,255,0.08); border-radius:8px; padding:14px; font-family:var(--font-mono); font-size:0.78rem; color:#f8fafc; overflow-x:auto; line-height:1.45; margin:0;">from btp_guard.integrations.swarm import BtpSwarmGuard
+
+# 1. Initialize BTP Guard with spending cap and self-healing reflexes
+guard = BtpSwarmGuard(spend_cap=50.0)
+
+# 2. Protect any tool in 1 line:
+safe_tool = guard.protect_tool(execute_query)
+
+# 3. Intercept & validate agent handoffs with Ed25519 cryptographic receipts:
+guard.validate_handoff("TriageAgent", "EscrowSettlementAgent")</pre>
+      </div>
+
+      <!-- Interactive NVIDIA NIM & Keystone Passkey Live Sandbox -->
       <div class="footer-nim-sandbox-box" style="margin-bottom: 2rem; background: rgba(13, 18, 31, 0.85); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
         <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:1rem; border-bottom:1px solid rgba(56,189,248,0.15); padding-bottom:0.75rem;">
           <div>
