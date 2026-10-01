@@ -1,0 +1,26 @@
+name: Bartholomew Agent Guard Audit
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - '.cursorrules'
+      - 'CLAUDE.md'
+      - 'GEMINI.md'
+      - '.agents/**'
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  agent-safety-audit:
+    name: Agent Directives & AST Invariant Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Bartholomew Agent Guard Action
+        uses: ./
+        with:
+          scan-paths: '.cursorrules, CLAUDE.md, GEMINI.md, copilot-instructions.md'
+          fail-on-exploit: true

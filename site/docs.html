@@ -509,6 +509,7 @@
       <div class="sidebar-group-title">Sandboxing &amp; Extensions</div>
       <ul class="sidebar-nav">
         <li><a href="#kernel-runner">btp-guard run (CLI)</a></li>
+        <li><a href="#github-action">GitHub Action (CI/CD)</a></li>
         <li><a href="#docker-sandbox">Docker Hermetic Sandbox</a></li>
         <li><a href="#vscode-extension">Cursor / VS Code Extension</a></li>
       </ul>
@@ -971,6 +972,48 @@ user_proxy.initiate_chat(assistant, message="Plot normalized retention cohort cu
 
       <!-- IDE & Extension Guides -->
       
+      <!-- GITHUB ACTION FOR CI/CD -->
+      <section class="doc-card" id="github-action" style="border-left: 3px solid var(--emerald); margin-top: 32px;">
+        <h2 class="section-title">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--emerald)"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          One-Click CI/CD Agent Safety Gate (GitHub Action)
+        </h2>
+        <p class="lead-p">Audit agent directives (.cursorrules, CLAUDE.md, GEMINI.md) on every pull request. Intercepts prompt injection payloads, unconfined bash scripts, and leaked credentials with RFC 8785 Merkle receipts.</p>
+
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('action', 'tab-action-yaml', this)">Workflow YAML</button>
+          <button class="tab-btn" onclick="switchTab('action', 'tab-action-cli', this)">Local CLI Run</button>
+        </div>
+
+        <div id="tab-action-yaml" class="tab-pane active" data-group="action">
+          <pre><code><span style="color:#64748b;"># .github/workflows/agent-guard.yml</span>
+<span style="color:var(--gold);">name</span>: Agent Guard Safety Audit
+<span style="color:var(--gold);">on</span>: [push, pull_request]
+
+<span style="color:var(--gold);">jobs</span>:
+  <span style="color:var(--emerald);">ai-safety-gate</span>:
+    <span style="color:#94a3b8;">runs-on</span>: ubuntu-latest
+    <span style="color:var(--gold);">steps</span>:
+      - <span style="color:var(--gold);">uses</span>: actions/checkout@v4
+      - <span style="color:var(--gold);">uses</span>: ivegotahunnitonit/bartholomew@v6.3.0
+        <span style="color:var(--gold);">with</span>:
+          <span style="color:#94a3b8;">scan-paths</span>: <span style="color:#38bdf8;">'.cursorrules, CLAUDE.md, GEMINI.md, copilot-instructions.md'</span>
+          <span style="color:#94a3b8;">fail-on-exploit</span>: <span style="color:#38bdf8;">true</span></code></pre>
+        </div>
+
+        <div id="tab-action-cli" class="tab-pane" data-group="action">
+          <pre><code><span style="color:#64748b;"># Run the exact same AST invariant audit locally:</span>
+python scripts/run_ci_agent_audit.py
+
+<span style="color:#64748b;"># Output:</span>
+<span style="color:var(--emerald);">[+] .cursorrules: PASSED (Clean AST Invariants)</span>
+<span style="color:var(--emerald);">[+] CLAUDE.md: PASSED (Clean AST Invariants)</span>
+<span style="color:var(--emerald);">[+] GEMINI.md: PASSED (Clean AST Invariants)</span>
+<span style="color:var(--cyan);">Overall Agent Resilience Score: 100 / 100 [IMMUNIZED]</span>
+<span style="color:var(--emerald);">Merkle Attestation Root: ed25519:c0ebbf2ba24255b6821d7d9de4069...</span></code></pre>
+        </div>
+      </section>
+
       <!-- Docker Hermetic Sandbox Section -->
       <section id="docker-sandbox" class="docs-section">
         

@@ -170,6 +170,36 @@
           "name": "Proof of Protection & Agent Bridge"
         }
       ]
+    },
+    "configuration": {
+      "title": "Bartholomew Agent Guard",
+      "properties": {
+        "bartholomew.astLatencyCeilingUs": {
+          "type": "number",
+          "default": 35,
+          "description": "Maximum allowable in-process AST evaluation latency in microseconds."
+        },
+        "bartholomew.autoImmunizeWorkspace": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically immunize workspace directives (.cursorrules, GEMINI.md, CLAUDE.md)."
+        },
+        "bartholomew.quarantineDestructiveCommands": {
+          "type": "boolean",
+          "default": true,
+          "description": "Quarantine destructive shell commands (rm -rf, mkfs, DROP TABLE) before process binding."
+        },
+        "bartholomew.secretMasking": {
+          "type": "boolean",
+          "default": true,
+          "description": "Mask high-entropy secrets and API keys (Stripe, OpenAI, AWS, GitHub) in caller memory."
+        },
+        "bartholomew.keystoneDailyBudgetLimit": {
+          "type": "number",
+          "default": 25.0,
+          "description": "Daily autonomous spending cap in USD enforced via Keystone Passkeys."
+        }
+      }
     }
   },
   "scripts": {
