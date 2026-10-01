@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
-import { scrubSensitiveCredentials, verifyTurnReceiptChaining, rfc8785Canonicalize, evaluateWorkspaceSecurity, getModelContextPrompt, immunizeProject } from './index.js';
+import { scrubSensitiveCredentials, verifyTurnReceiptChaining, rfc8785Canonicalize, evaluateWorkspaceSecurity, getModelContextPrompt, immunizeProject, harmonizeUniversalSchema, validateToolPayload, exportToolSchema, detectSchemaFormat, generateAuditPack, verifyAuditPack } from './index.js';
 import crypto from 'crypto';
 import { exec } from 'child_process';
 
@@ -1241,6 +1241,110 @@ This cryptographic compliance dossier certifies that all autonomous agent operat
   console.log(`  -> Status      : VERIFIED & AUDITOR-READY\n`);
 }
 
+
+function runSchemaCli(subArgs) {
+  const sub = subArgs[0] || 'catalog';
+  if (sub === 'harmonize') {
+    const file = subArgs[1];
+    if (!file || !fs.existsSync(file)) {
+      console.log(`${RED}Error: Provide a valid schema file (JSON).${RESET}`);
+      process.exit(1);
+    }
+    const raw = JSON.parse(fs.readFileSync(file, 'utf-8'));
+    const harmonized = harmonizeUniversalSchema(raw);
+    console.log(`${GREEN}Harmonized to BTP Universal Tool Contract:${RESET}`);
+    console.log(JSON.stringify(harmonized, null, 2));
+  } else if (sub === 'validate') {
+    const sFile = subArgs[1];
+    const pFile = subArgs[2];
+    if (!sFile || !pFile || !fs.existsSync(sFile) || !fs.existsSync(pFile)) {
+      console.log(`${RED}Error: Provide valid <schema.json> and <payload.json> files.${RESET}`);
+      process.exit(1);
+    }
+    const s = JSON.parse(fs.readFileSync(sFile, 'utf-8'));
+    const p = JSON.parse(fs.readFileSync(pFile, 'utf-8'));
+    const res = validateToolPayload(s, p);
+    if (res.valid) {
+      console.log(`${GREEN}[PASS] Valid payload in ${res.latency_us} µs${RESET}`);
+    } else {
+      console.log(`${RED}[VETO] AST / Invariant Violation (${res.latency_us} µs): ${res.reason}${RESET}`);
+    }
+    console.log(JSON.stringify(res, null, 2));
+  } else if (sub === 'catalog') {
+    const fmt = subArgs.includes('--format') ? subArgs[subArgs.indexOf('--format') + 1] : 'mcp';
+    console.log(`${BOLD}${CYAN}Bartholomew Universal MCP Security Catalog (v6.3.0)${RESET}`);
+    console.log(`40 Native In-Process Gating Tools | Format: ${BOLD}${fmt}${RESET}
+`);
+    const catalogPath = path.join(__dirname, '..', '..', 'site', 'mcp-catalog.json');
+    if (fs.existsSync(catalogPath)) {
+      const cat = JSON.parse(fs.readFileSync(catalogPath, 'utf-8'));
+      for (const t of cat.tools) {
+        const exported = exportToolSchema(t, fmt);
+        console.log(`  * ${BOLD}${t.name}${RESET} (${t.category}) - ${t.desc} [${t.latency_us}µs]`);
+      }
+    }
+  } else {
+    console.log(`Usage: npx btp-guard schema [harmonize <file> | validate <schema> <payload> | catalog]`);
+  }
+}
+
+function runDistributeCli(subArgs) {
+  printBanner();
+  console.log(`${BOLD}${CYAN}Cross-IDE Unified Marketplace & Direct Distribution${RESET}
+`);
+  console.log(`${BOLD}1. Cursor IDE:${RESET}`);
+  console.log(`   ${CYAN}cursor --install-extension Bartholomew.bartholomew-guard-vscode${RESET}`);
+  console.log(`   Direct .cursorrules & .cursor/rules/btp-guard.mdc in-process guard
+`);
+  console.log(`${BOLD}2. Windsurf Cascade:${RESET}`);
+  console.log(`   ${CYAN}windsurf --install-extension Bartholomew.bartholomew-guard-vscode${RESET}`);
+  console.log(`   Direct .windsurfrules execution guard
+`);
+  console.log(`${BOLD}3. Claude Code / Anthropic:${RESET}`);
+  console.log(`   ${CYAN}claude mcp add btp-guard npx -y btp-guard mcp-serve${RESET}`);
+  console.log(`   Direct CLAUDE.md companion AST enforcement
+`);
+  console.log(`${BOLD}4. VS Code / Open VSX:${RESET}`);
+  console.log(`   ${CYAN}code --install-extension Bartholomew.bartholomew-guard-vscode${RESET}`);
+  console.log(`   Live Open VSX: https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode
+`);
+}
+
+function runAuditCli(subArgs) {
+  const sub = subArgs[0] || 'export';
+  if (sub === 'export') {
+    const outIdx = subArgs.indexOf('--out');
+    const outFile = outIdx !== -1 ? subArgs[outIdx + 1] : path.join(process.cwd(), 'BARTHOLOMEW_SOC2_DOSSIER.json');
+    const pack = generateAuditPack();
+    fs.writeFileSync(outFile, JSON.stringify(pack, null, 2), 'utf-8');
+    console.log(`${GREEN}Cryptographic Audit Dossier Exported:${RESET} ${outFile}`);
+    console.log(`  Report ID:       ${pack.audit_certificate_id}`);
+    console.log(`  Merkle Root:     ${pack.merkle_tree_proof.merkle_root}`);
+    console.log(`  Ed25519 Sig:     ${pack.cryptographic_signature.slice(0, 32)}...`);
+    console.log(`  SHA-256 Digest:  ${pack.content_digest_sha256}`);
+    console.log(`  Score:           ${pack.compliance_score} (${pack.compliance_grade})`);
+  } else if (sub === 'verify') {
+    const file = subArgs[1] || path.join(process.cwd(), 'BARTHOLOMEW_SOC2_DOSSIER.json');
+    if (!fs.existsSync(file)) {
+      console.log(`${RED}Error: Dossier file '${file}' not found.${RESET}`);
+      process.exit(1);
+    }
+    const pack = JSON.parse(fs.readFileSync(file, 'utf-8'));
+    const res = verifyAuditPack(pack);
+    if (res.ok) {
+      console.log(`${GREEN}[PASS] Cryptographic Audit Dossier Verified (100% Intact)${RESET}`);
+      console.log(`  Controls Verified: ${res.controls_verified}/9`);
+      console.log(`  Merkle Root:       ${res.merkle_root}`);
+      console.log(`  Compliance Score:  ${res.score} (${res.grade})`);
+    } else {
+      console.log(`${RED}[FAIL] Dossier Verification Failed: ${res.error}${RESET}`);
+      process.exit(1);
+    }
+  } else {
+    console.log(`Usage: npx btp-guard audit [export [--out=file.json] | verify <file.json>]`);
+  }
+}
+
 switch (command) {
   case 'benchmark':
     runBenchmark(args.slice(1));
@@ -1406,6 +1510,16 @@ switch (command) {
   case 'mcp':
     runMcp(args.slice(1));
     break;
+  case 'schema':
+    runSchemaCli(args.slice(1));
+    break;
+  case 'distribute':
+    runDistributeCli(args.slice(1));
+    break;
+  case 'audit':
+    runAuditCli(args.slice(1));
+    break;
+
   case 'scrub':
     runScrub(args[1]);
     break;

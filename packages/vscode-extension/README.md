@@ -8,7 +8,8 @@
 > *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct Agent Context Bridge.*
 
 [![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/bartholomew.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.3.0-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Cursor & Windsurf](https://img.shields.io/badge/Cursor%20%26%20Windsurf-Verified-brightgreen?logo=visualstudiocode)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.3.0-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.3.0-blue)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.3.0-cb3837)](https://www.npmjs.com/package/btp-guard)
