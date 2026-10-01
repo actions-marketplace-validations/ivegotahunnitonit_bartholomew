@@ -60,6 +60,8 @@ from .compute_provenance import (
     AutoTargetingSwarmProtector,
     inspect_compute_environment,
     get_swarm_protector,
+    detect_compute_environment,
+    evaluate_and_help,
 )
 from .project_immunizer import (
     immunize_project,
@@ -72,7 +74,7 @@ BondedAgentWarrantyFund = WarrantyFundManager
 MCPClearinghouse = MCPClearinghouseGateway
 RedTeamHarness = RedTeamScanner
 
-__version__ = "6.0.0"
+__version__ = "6.3.0"
 
 __all__ = [
     "Guard",
@@ -131,5 +133,7 @@ __all__ = [
     "AutoTargetingSwarmProtector",
     "inspect_compute_environment",
     "get_swarm_protector",
+    "detect_compute_environment",
+    "evaluate_and_help",
     "__version__",
 ]
