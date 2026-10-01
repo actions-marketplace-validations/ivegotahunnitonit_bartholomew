@@ -52,48 +52,63 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(7, 10, 15, 0.88);
-      backdrop-filter: blur(14px);
+      background: rgba(7, 10, 15, 0.94);
+      backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border-subtle);
-      padding: 14px 28px;
+      padding: 12px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .nav-brand {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
       color: var(--text-main);
       font-weight: 700;
       font-size: 1.05rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .nav-brand img { width: 30px; height: 30px; border-radius: 6px; }
     .nav-tag {
       font-size: 0.72rem;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 9999px;
       background: var(--purple-dim);
       color: #c084fc;
       border: 1px solid rgba(168, 85, 247, 0.35);
       font-family: var(--font-mono);
       font-weight: 600;
+      letter-spacing: 0.02em;
     }
 
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 16px;
       list-style: none;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+    .nav-links li {
+      display: inline-flex;
+      align-items: center;
     }
     .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
       transition: color 0.15s ease;
+      padding: 4px 6px;
     }
     .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
     .btn-github {
@@ -333,22 +348,23 @@
 
   <!-- Header -->
   <header class="site-header">
-    <a href="/index.html" class="nav-brand">
+    <a href="/" class="nav-brand">
       <img src="/logo.png" alt="Bartholomew Sentinel Logo" />
       <span>Bartholomew</span>
-      <span class="nav-tag">BTP v6.0.0</span>
+      <span class="nav-tag">BTP v6.2.1</span>
     </a>
     <ul class="nav-links">
-      <li><a href="/index.html">Overview</a></li>
+      <li><a href="/">Overview</a></li>
       <li><a href="/docs.html" class="active">Docs</a></li>
-      <li><a href="/sim-lab.html">
-      <a href="/leaderboard.html" class="nav-link" style="color:var(--emerald-bright); font-weight:700;">Leaderboard</a>>Simulator Lab</a></li>
+      <li><a href="/sim-lab.html">Simulator Lab</a></li>
+      <li><a href="/leaderboard.html" style="color:var(--emerald); font-weight:700;">Leaderboard</a></li>
       <li><a href="/control-plane.html">Control Plane</a></li>
       <li><a href="/investors.html">Investors</a></li>
+      <li><a href="/telemetry.html">Telemetry</a></li>
       <li>
         <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" class="btn-github">
           <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-          GitHub
+          <span>GitHub</span>
         </a>
       </li>
     </ul>
@@ -393,7 +409,7 @@
       
       <div class="docs-hero">
         <h1 class="docs-title">Bartholomew Developer Documentation</h1>
-        <p class="docs-sub">Deterministic sub-35µs AST invariant verification, credential scrubbing, and eBPF kernel process sandboxing for autonomous AI agent swarms.</p>
+        <p class="docs-sub">Deterministic sub-35µs AST invariant verification, credential scrubbing, and eBPF kernel process sandboxing for autonomous agent swarms.</p>
       </div>
 
       <!-- Quickstart Section -->
@@ -900,7 +916,7 @@ res = guard.check(<span style="color:#38bdf8;">"rm -rf / --no-preserve-root"</sp
         <div class="section-badge">COMMERCIAL GUARANTEE • SOC 2 &amp; AGENT INDEMNITY</div>
         <h2 class="section-title">Bonded Agent Warranty Fund ($100,000 Pool)</h2>
         <p class="section-desc">
-          Bartholomew operates an algorithmic $100,000 USD reserve pool that underwrites autonomous AI agent execution. 
+          Bartholomew operates an algorithmic $100,000 USD reserve pool that underwrites autonomous agent execution. 
           Enterprise teams can issue bonded policies guaranteeing sub-35µs gating SLAs and zero uncontained data exfiltration.
         </p>
 
