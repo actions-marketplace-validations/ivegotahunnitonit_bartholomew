@@ -3221,7 +3221,7 @@
           <div class="ext-card">
             <div class="ext-card-header">
               <div class="ext-badge-group">
-                <span class="ext-badge ext-badge-emerald">v6.2.0 LIVE</span>
+                <span class="ext-badge ext-badge-emerald">v6.3.0 LIVE</span>
                 <span class="ext-badge ext-badge-gold">Open VSX &amp; Marketplace</span>
               </div>
               <div class="ext-logo-title-row">
@@ -3240,15 +3240,28 @@
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Sub-35µs In-Process AST Evaluation Latency</li>
               <li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Real-Time Telemetry &amp; Invariant Audit Scorecard</li>
             </ul>
-            <div class="ext-btn-row">
-              <a href="https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode" target="_blank" class="ext-btn ext-btn-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L2 6v12l10 5 10-5V6L12 1zm0 2.24l7.6 3.8-3.4 1.7-7.6-3.8 3.4-1.7zm-8 4.23l7 3.5v7.57l-7-3.5V7.47zm9 11.07v-7.57l7-3.5v7.57l-7 3.5z"/></svg>
-                Install via Open VSX
+            <!-- 1-Click Editor Deep-Links & Marketplace -->
+            <div class="ext-btn-row" style="margin-bottom:12px;">
+              <a href="cursor:extension/Bartholomew.bartholomew-guard-vscode" class="ext-btn ext-btn-primary" style="background:linear-gradient(135deg, #0284c7, #0ea5e9); border-color:#38bdf8;" title="1-Click Direct Install inside Cursor IDE">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                1-Click Cursor Install
               </a>
-              <a href="/bartholomew-guard-vscode.vsix" class="ext-btn ext-btn-secondary" download>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .VSIX (v6.2.0)
+              <a href="vscode:extension/Bartholomew.bartholomew-guard-vscode" class="ext-btn" style="background:#007acc; color:#ffffff; border:1px solid #38bdf8;" title="1-Click Direct Install inside VS Code">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.58 2.05a1.5 1.5 0 0 0-1.58.28L8.12 8.78 4.2 5.76a1.2 1.2 0 0 0-1.5.07L1.24 7.02a1.2 1.2 0 0 0-.08 1.76l4.28 3.96-4.28 3.96a1.2 1.2 0 0 0 .08 1.76l1.46 1.19c.43.35 1.05.32 1.5-.07l3.92-3.02 7.88 6.45c.46.38 1.07.49 1.58.28.52-.2.86-.7.86-1.26V3.31c0-.56-.34-1.06-.86-1.26z"/></svg>
+                1-Click VS Code Install
               </a>
+              <a href="https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode" target="_blank" class="ext-btn ext-btn-secondary" title="View extension on Open VSX Registry">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L2 6v12l10 5 10-5V6L12 1zm0 2.24l7.6 3.8-3.4 1.7-7.6-3.8 3.4-1.7zm-8 4.23l7 3.5v7.57l-7-3.5V7.47zm9 11.07v-7.57l7-3.5v7.57l-7 3.5z"/></svg>
+                Open VSX
+              </a>
+              <a href="/bartholomew-guard-vscode-6.3.0.vsix" class="ext-btn ext-btn-secondary" download title="Download raw VSIX package">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                .VSIX (v6.3.0)
+              </a>
+            </div>
+            <!-- Terminal CLI One-Liners -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap; font-family:var(--font-mono); font-size:0.72rem; color:var(--text-dim);">
+              <span style="background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); padding:4px 8px; border-radius:4px;">cursor --install-extension Bartholomew.bartholomew-guard-vscode</span>
             </div>
           </div>
 
@@ -3256,7 +3269,7 @@
           <div class="ext-card">
             <div class="ext-card-header">
               <div class="ext-badge-group">
-                <span class="ext-badge ext-badge-purple">v6.2.0 LIVE</span>
+                <span class="ext-badge ext-badge-purple">v6.3.0 LIVE</span>
                 <span class="ext-badge ext-badge-cyan">Capability Passkeys</span>
               </div>
               <div class="ext-logo-title-row">
@@ -3282,7 +3295,7 @@
               </a>
               <a href="/bartholomew-keystone.vsix" class="ext-btn ext-btn-secondary" download>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .VSIX (v6.2.0)
+                Download .VSIX (v6.3.0)
               </a>
             </div>
           </div>
