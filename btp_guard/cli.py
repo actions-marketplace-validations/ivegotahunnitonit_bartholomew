@@ -4305,9 +4305,45 @@ def cmd_telemetry(args):
             pass
 
 
+
+def cmd_provenance(args):
+    try:
+        from btp_guard.compute_provenance import inspect_compute_environment
+    except ImportError:
+        from src.compute_provenance import inspect_compute_environment
+    env = inspect_compute_environment()
+    as_json = getattr(args, "json", False)
+    if as_json:
+        print(json.dumps(env, indent=2))
+        return
+
+    print("\n" + "=" * 76)
+    print("   BARTHOLOMEW COMPUTE PROVENANCE & SWARM AUTO-TARGETING (BTP v6.3.0)")
+    print("   Autonomous Circularity Labs · Deterministic Hardware Attestation")
+    print("=" * 76)
+    hw = env["hardware_chip"]
+    sb = env["compute_sandbox"]
+    svc = env["service_origin"]
+    print(f"  [HARDWARE SILICON]       : {hw['accelerator_model']}")
+    print(f"  [ARCH FAMILY]           : {hw['accelerator_arch_family']}")
+    print(f"  [HOST CPU ARCH]         : {hw['cpu_arch']} ({hw['cpu_count']} Cores)")
+    print(f"  [COMPUTE ENVIRONMENT]   : {sb['execution_environment']}")
+    print(f"  [ISOLATION BOUNDARY]    : {sb['isolation_level']}")
+    enclave_str = f"ACTIVE ({sb['confidential_enclave_vendor']})" if sb['confidential_enclave_active'] else "OFF (Standard Ring 3)"
+    print(f"  [CONFIDENTIAL ENCLAVE]  : {enclave_str}")
+    print(f"  [AUTO-TARGETED SWARM]   : {env['active_framework']}")
+    print(f"  [INFERENCE SERVICE]     : {svc['service_identifier']} ({svc['provider_organization']})")
+    print(f"  [DETERMINISTIC GATING]  : {sb['deterministic_boundary']} (< 35µs SLA)")
+    print("=" * 76 + "\n")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Bartholomew Autonomous Agent Guardrail CLI")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # provenance
+    prov_p = subparsers.add_parser("provenance", help="Introspect hardware silicon, compute sandbox, and auto-target active swarms")
+    prov_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
 
     # inject
     inj_p = subparsers.add_parser("inject", help="Inject AST invariants and token compression into .cursorrules, CLAUDE.md, and AGENTS.md")
@@ -5245,6 +5281,8 @@ def main():
         cmd_protect(args)
     elif args.command == "model-context":
         cmd_model_context(args)
+    elif args.command == "provenance":
+        cmd_provenance(args)
     elif args.command == "inject":
         cmd_inject(args)
     elif args.command == "exec":

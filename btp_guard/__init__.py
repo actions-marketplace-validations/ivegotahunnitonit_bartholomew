@@ -53,6 +53,14 @@ from .agent_passport import AgentPassport, AgentPassportAuthority
 from .hitl_gate import HITLApprovalGate, HITLEscalationRequiredException
 from .integrations.m2m_toll import BtpM2MMicroToll
 from . import integrations
+from .compute_provenance import (
+    HardwareChipProfiler,
+    ComputeSandboxProfiler,
+    ModelServiceOriginProfiler,
+    AutoTargetingSwarmProtector,
+    inspect_compute_environment,
+    get_swarm_protector,
+)
 from .project_immunizer import (
     immunize_project,
     evaluate_workspace_security,
@@ -117,5 +125,11 @@ __all__ = [
     "immunize_project",
     "evaluate_workspace_security",
     "get_model_context_prompt",
+        "HardwareChipProfiler",
+    "ComputeSandboxProfiler",
+    "ModelServiceOriginProfiler",
+    "AutoTargetingSwarmProtector",
+    "inspect_compute_environment",
+    "get_swarm_protector",
     "__version__",
 ]
