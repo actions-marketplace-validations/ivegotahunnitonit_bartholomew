@@ -376,12 +376,56 @@ export function activate(context: ExtensionContext) {
 
   // 1. Dual Status Bar Indicator (BTP AST Gate + Keystone Passkey)
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-  statusBarItem.command = 'bartholomew.openProofOfProtection';
-  const usedCalls = getMcpUsageCount();
-  const isPro = isProLicensed();
-  statusBarItem.text = isPro ? `$(shield) BTP: PRO (UNMETERED)` : `$(shield) BTP: ARMED (${usedCalls}/50 Free)`;
-  statusBarItem.tooltip = isPro ? `Bartholomew Pro (Unmetered Developer Seat Active)` : `Bartholomew Free Tier: ${usedCalls}/50 evaluations used. Click to upgrade to Pro ($49/mo)`;
-  statusBarItem.tooltip = `Bartholomew Autonomous Agent Guard (BTP v6.0 Sovereign Enterprise) - Sub-25µs AST & Keystone Active`;
+  statusBarItem.command = 'bartholomew.showSecurityMenu';
+  statusBarItem.text = `$(shield) BTP Guard: Armed (<35µs)`;
+  statusBarItem.tooltip = `Bartholomew Agent Guard (v6.3.0) — Sub-35µs In-Process AST Firewall & Keystone Passkeys. Click for Security Menu.`;
+  statusBarItem.show();
+  context.subscriptions.push(statusBarItem);
+
+  // Command: Quick Security Menu
+  const showSecurityMenuCmd = vscode.commands.registerCommand('bartholomew.showSecurityMenu', async () => {
+    const items = [
+      { label: '$(shield) View Security Telemetry & HUD', description: 'Open live AST firewall logs and invariant scorecard', action: 'bartholomew.openProofOfProtection' },
+      { label: '$(beaker) Run Red-Team Agent Fuzzer', description: 'Run 10-vector in-process adversarial benchmark (<10s)', action: 'bartholomew.runRedTeamBenchmark' },
+      { label: '$(verified) Immunize Workspace (1-Click)', description: 'Arm .cursorrules, .windsurfrules, and CLAUDE.md', action: 'bartholomew.protectWorkspace' },
+      { label: '$(file-code) Export SOC 2 & EU AI Act Dossier', description: 'Generate machine-signed audit dossier with Merkle proofs', action: 'bartholomew.exportAuditDossier' },
+      { label: '$(key) Issue Keystone Capability Passkey', description: 'Generate Ed25519 passkey with $25 daily autonomous spend limit', action: 'bartholomew.issueKeystonePasskey' },
+      { label: '$(clippy) Copy Agent Context Rules', description: 'Copy system prompts for Cursor, Windsurf, Claude Code, Gemini', action: 'bartholomew.copyModelContext' }
+    ];
+    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.3.0)' });
+    if (picked && picked.action) {
+      vscode.commands.executeCommand(picked.action);
+    }
+  });
+  context.subscriptions.push(showSecurityMenuCmd);
+
+  // Command: Run Red-Team Agent Fuzzing Benchmark
+  const runRedTeamCmd = vscode.commands.registerCommand('bartholomew.runRedTeamBenchmark', () => {
+    const terminal = vscode.window.createTerminal('Bartholomew Red-Team');
+    terminal.show();
+    terminal.sendText('npx --yes btp-guard try');
+    vscode.window.showInformationMessage('Bartholomew: Running 10-vector in-process adversarial fuzzer benchmark...');
+  });
+  context.subscriptions.push(runRedTeamCmd);
+
+  // 2. Auto-Workspace Immunization Check (Zero Friction Onboarding)
+  const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  if (rootPath) {
+    const cursorRule = path.join(rootPath, '.cursorrules');
+    const claudeRule = path.join(rootPath, 'CLAUDE.md');
+    const windsurfRule = path.join(rootPath, '.windsurfrules');
+    if (!fs.existsSync(cursorRule) && !fs.existsSync(claudeRule) && !fs.existsSync(windsurfRule)) {
+      vscode.window.showInformationMessage(
+        '🛡️ Bartholomew Guard: Autonomous agent safety gates are not armed in this workspace. Immunize now?',
+        '⚡ Immunize Workspace (1-Click)',
+        'Later'
+      ).then((choice: any) => {
+        if (choice === '⚡ Immunize Workspace (1-Click)') {
+          vscode.commands.executeCommand('bartholomew.protectWorkspace');
+        }
+      });
+    }
+  }
   
   // 15. Command: Run in Bartholomew Kernel Sandbox
   const runInSandboxCmd = vscode.commands.registerCommand('bartholomew.runInSandbox', async () => {
