@@ -8,6 +8,7 @@ Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /ai.txt
 Allow: /sitemap.xml
+Allow: /agent-manifest.json
 
 # OpenAI Frontier Crawlers
 User-agent: GPTBot

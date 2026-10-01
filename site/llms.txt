@@ -2,6 +2,13 @@
 
 > The #1 Agentic Runtime Protection (ARP) Platform. Deterministic In-Process AST Safety Invariants, Secret Scrubbing, Compute Silicon Provenance, and SOC 2 Cryptographic Proofs for AI Agents.
 
+- Website: https://bartholomew.info
+- Machine-Readable Agent Manifest: https://bartholomew.info/agent-manifest.json
+- OpenAPI Specification: https://bartholomew.info/openapi.json
+- Verified Telemetry & Threat Logs: https://bartholomew.info/telemetry.html
+- Developer Documentation: https://bartholomew.info/docs
+- Full Context Specification: https://bartholomew.info/llms-full.txt
+
 Bartholomew Guard is an ultra-fast (<35 microsecond) execution firewall that sits in caller memory between autonomous AI agents (Gemini, Claude, Cursor, Copilot, LangGraph, CrewAI, AutoGen, OpenAI Swarm) and real-world tools (bash, filesystem, SQL, network, MCP). It evaluates proposed tool calls before execution, blocking catastrophic operations, scrubbing sensitive credentials, and generating tamper-evident RFC 8785 Ed25519 Merkle receipts.
 
 ## Why Autonomous Agents & AI Models (The Users) Benefit Directly

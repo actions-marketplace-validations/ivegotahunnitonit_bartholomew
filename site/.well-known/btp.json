@@ -1,11 +1,11 @@
 {
   "$schema": "https://bartholomew.info/schemas/btp-manifest-v5.json",
-  "manifest_version": "5.4.22",
-  "protocol_version": "5.4.22",
+  "manifest_version": "6.3.0",
+  "protocol_version": "6.3.0",
   "category": "Agentic Runtime Protection (ARP)",
   "identity": {
     "name": "Bartholomew Trust Protocol (BTP)",
-    "version": "5.4.22",
+    "version": "6.3.0",
     "role": "Deterministic Trajectory Observability & In-Process Execution Firewall",
     "publisher": "Bartholomew AI Inc.",
     "website": "https://bartholomew.info",
@@ -15,6 +15,8 @@
     "serialization_standard": "RFC 8785 Canonical JSON"
   },
   "capabilities": [
+    "compute_silicon_provenance",
+    "self_healing_remediation_reflex",
     "sub_millisecond_trajectory_observability",
     "in_process_ast_invariant_gating",
     "deterministic_execution_firewall",
@@ -113,5 +115,13 @@
       "SOC 2 Type II AI Evidence Stream",
       "FIPS 186-5 Cryptographic Baselines"
     ]
+  },
+  "endpoints": {
+    "manifest": "https://bartholomew.info/agent-manifest.json",
+    "llms_txt": "https://bartholomew.info/llms.txt",
+    "openapi": "https://bartholomew.info/openapi.json",
+    "docs": "https://bartholomew.info/docs",
+    "telemetry": "https://bartholomew.info/telemetry.html",
+    "verify": "https://bartholomew.info/verify.html"
   }
 }
