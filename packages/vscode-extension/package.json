@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew Agent Guard - Security and Guardrails (Cursor, Claude, Copilot)",
-  "description": "BTP v6.2.0 Zero-trust firewall, locked single-tenant telemetry vault, hardware benchmark, and execution guardrails for autonomous agents (Cursor, Claude, Copilot, Windsurf).",
-  "version": "6.2.1",
+  "description": "BTP v6.3.0 Zero-trust firewall, compute silicon provenance, locked single-tenant telemetry vault, hardware benchmark, and execution guardrails for autonomous agents (Cursor, Claude, Copilot, Windsurf).",
+  "version": "6.3.0",
   "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "MIT",

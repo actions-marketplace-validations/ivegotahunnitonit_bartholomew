@@ -1,0 +1,36 @@
+{
+  "bartholomew.info:agent-guard": {
+    "added": "2026-09-30",
+    "preferred": "6.2.1",
+    "versions": {
+      "6.2.1": {
+        "added": "2026-09-30",
+        "info": {
+          "title": "Bartholomew Autonomous Agent Guard API",
+          "description": "Sub-microsecond deterministic AST invariant verification, in-flight credential secret scrubbing, and execution guardrails for autonomous agents (Cursor, Claude Code, Devin, AutoGen, CrewAI).",
+          "version": "6.2.1",
+          "termsOfService": "https://bartholomew.info",
+          "contact": {
+            "name": "Bartholomew Security",
+            "url": "https://bartholomew.info",
+            "email": "security@bartholomew.info"
+          },
+          "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+          },
+          "x-apisguru-categories": [
+            "security",
+            "developer_tools",
+            "artificial_intelligence"
+          ],
+          "x-logo": {
+            "url": "https://bartholomew.info/logo.png"
+          }
+        },
+        "swaggerUrl": "https://bartholomew.info/openapi.json",
+        "swaggerYamlUrl": "https://bartholomew.info/openapi.yaml"
+      }
+    }
+  }
+}

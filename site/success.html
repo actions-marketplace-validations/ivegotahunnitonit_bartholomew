@@ -270,7 +270,15 @@
       font-size: 0.85rem;
       margin-top: auto;
     }
-  </style>
+  
+    /* Modern Sleek Custom Scrollbars */
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #04070d; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) #04070d; }
+</style>
 </head>
 <body>
 
@@ -382,7 +390,7 @@ print("Allowed:", verdict["allowed"])</div>
 
   <footer>
     <div class="container">
-      &copy; 2026 Bartholomew Trust Protocol Inc. &bull; Sovereign Agentic Runtime Protection (ARP) &bull; <a href="/" style="color:var(--cyan); text-decoration:none;">bartholomew.info</a>
+      &copy; 2026 Autonomous Circularity Labs &bull; Sovereign Agentic Runtime Protection (ARP) &bull; <a href="/" style="color:var(--cyan); text-decoration:none;">bartholomew.info</a>
     </div>
   </footer>
 

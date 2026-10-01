@@ -1,0 +1,262 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Bartholomew Autonomous Agent Guard API",
+    "description": "Sub-microsecond deterministic AST invariant verification, in-flight credential secret scrubbing, and execution guardrails for autonomous agents (Cursor, Claude Code, Devin, AutoGen, CrewAI).",
+    "version": "6.2.1",
+    "termsOfService": "https://bartholomew.info",
+    "contact": {
+      "name": "Bartholomew Security",
+      "url": "https://bartholomew.info",
+      "email": "security@bartholomew.info"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    },
+    "x-apisguru-categories": [
+      "security",
+      "developer_tools",
+      "artificial_intelligence"
+    ],
+    "x-logo": {
+      "url": "https://bartholomew.info/logo.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://bartholomew.info/api/v1",
+      "description": "Production Primary Edge Gateway"
+    },
+    {
+      "url": "https://acn-26670.web.app/api/v1",
+      "description": "Production Global Failover Edge"
+    }
+  ],
+  "paths": {
+    "/sanitize": {
+      "post": {
+        "summary": "In-flight Secret & Credential Redaction",
+        "description": "Redacts API keys (OpenAI, Anthropic, AWS, GitHub, HuggingFace) and customer credentials from prompt context before model ingestion.",
+        "operationId": "sanitizePromptContext",
+        "security": [
+          {
+            "RapidAPIKey": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "payload"
+                ],
+                "properties": {
+                  "payload": {
+                    "type": "string",
+                    "description": "Raw text, prompt, code snippet, or JSON payload to scan and scrub."
+                  },
+                  "strict": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Enable strict regex masking across all 12 credential pattern families."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully scrubbed payload with cryptographic telemetry.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "clean"
+                    },
+                    "sanitized": {
+                      "type": "string",
+                      "example": "curl -H 'Authorization: Bearer [REDACTED_OPENAI_KEY_BTP]' https://api.openai.com"
+                    },
+                    "redactions_count": {
+                      "type": "integer",
+                      "example": 1
+                    },
+                    "redacted_keys": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "OPENAI_API_KEY"
+                      ]
+                    },
+                    "latency_us": {
+                      "type": "number",
+                      "example": 14.8
+                    },
+                    "engine_version": {
+                      "type": "string",
+                      "example": "6.2.1"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/validate": {
+      "post": {
+        "summary": "Sub-35us Deterministic AST Invariant Gating",
+        "description": "Evaluates bash commands or code payloads against 15 enterprise security invariant pillars before execution by autonomous agents.",
+        "operationId": "validateExecutionPayload",
+        "security": [
+          {
+            "RapidAPIKey": []
+          },
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "command"
+                ],
+                "properties": {
+                  "command": {
+                    "type": "string",
+                    "description": "The shell command or tool call payload to evaluate."
+                  },
+                  "runtime": {
+                    "type": "string",
+                    "enum": [
+                      "bash",
+                      "python",
+                      "node",
+                      "docker"
+                    ],
+                    "default": "bash"
+                  },
+                  "agent_id": {
+                    "type": "string",
+                    "example": "claude-code-worker-01"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Deterministic safety decision with Merkle receipt.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "allowed": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "threat_detected": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "invariants_checked": {
+                      "type": "integer",
+                      "example": 15
+                    },
+                    "threat_type": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "eval_latency_us": {
+                      "type": "number",
+                      "example": 0.4
+                    },
+                    "merkle_seal": {
+                      "type": "string",
+                      "example": "0xa76e9271df60bd6f3e40561a8e0c7d08..."
+                    },
+                    "soc2_compliant": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Engine Health & Performance Telemetry",
+        "description": "Returns operational status, P50 evaluation latency, and active engine version.",
+        "operationId": "getEngineHealth",
+        "responses": {
+          "200": {
+            "description": "Service is healthy and meeting sub-35us SLA.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "healthy"
+                    },
+                    "engine_version": {
+                      "type": "string",
+                      "example": "6.2.1"
+                    },
+                    "p50_latency_us": {
+                      "type": "number",
+                      "example": 0.4
+                    },
+                    "invariants_active": {
+                      "type": "integer",
+                      "example": 15
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "RapidAPIKey": {
+        "type": "apiKey",
+        "name": "X-RapidAPI-Key",
+        "in": "header",
+        "description": "Your RapidAPI subscription key."
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

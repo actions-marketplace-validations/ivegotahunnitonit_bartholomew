@@ -1,0 +1,56 @@
+{
+  "name": "Bartholomew Autonomous Agent Guard",
+  "slug": "bartholomew-agent-guard",
+  "category": "Security & AI",
+  "description": "Sub-microsecond AST policy invariant firewall, credential redaction, and execution guardrails for autonomous agents (Cursor, Claude Code, Devin, AutoGen).",
+  "target_url": "https://bartholomew.info/api/v1",
+  "openapi_source": "https://bartholomew.info/openapi.json",
+  "plans": [
+    {
+      "name": "Basic (Free Tier)",
+      "price_usd": 0.0,
+      "quota_monthly": 1000,
+      "overage_price_per_request": 0.005,
+      "features": [
+        "1,000 requests/mo",
+        "Sub-35us AST validation",
+        "Full secret redaction"
+      ]
+    },
+    {
+      "name": "Pro Developer",
+      "price_usd": 29.0,
+      "quota_monthly": 25000,
+      "overage_price_per_request": 0.002,
+      "features": [
+        "25,000 requests/mo",
+        "Priority Edge Gateway",
+        "Ed25519 Merkle Receipts",
+        "Dedicated SLA"
+      ]
+    },
+    {
+      "name": "Ultra Swarm",
+      "price_usd": 99.0,
+      "quota_monthly": 150000,
+      "overage_price_per_request": 0.001,
+      "features": [
+        "150,000 requests/mo",
+        "Unlimited agent instances",
+        "SOC-2 Compliance Dossiers",
+        "24/7 Priority Support"
+      ]
+    },
+    {
+      "name": "Mega Enterprise",
+      "price_usd": 299.0,
+      "quota_monthly": 1000000,
+      "overage_price_per_request": 0.0005,
+      "features": [
+        "1,000,000 requests/mo",
+        "Custom invariant rules",
+        "Zero data retention guarantee"
+      ]
+    }
+  ]
+}
