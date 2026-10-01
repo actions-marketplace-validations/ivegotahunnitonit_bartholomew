@@ -4,7 +4,7 @@
   <meta name="google-adsense-account" content="ca-pub-9254044947204994">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Developer Documentation — Bartholomew Agentic Runtime Protection (BTP v6.0)</title>
+  <title>Developer Documentation — Bartholomew Agentic Runtime Protection (BTP v6.3.0)</title>
   <meta name="description" content="Technical documentation and developer integration guide for Bartholomew: sub-35us AST invariant gating, universal 1-line agent wrappers, and eBPF kernel process sandboxing." />
   <link rel="icon" type="image/png" href="/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -381,7 +381,58 @@
       }
       .docs-content { padding: 24px; }
     }
-  </style>
+  
+    .search-tag {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-dim);
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .search-tag:hover {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: var(--emerald);
+      color: var(--emerald);
+    }
+    .mode-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-mono);
+      transition: all 0.2s;
+    }
+    .mode-tab-btn:hover {
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .mode-tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+
+    @media (max-width: 640px) {
+      .docs-content { padding: 16px 12px !important; }
+      .site-header { padding: 10px 14px !important; }
+      .nav-links { gap: 8px !important; font-size: 0.78rem !important; }
+      .docs-title { font-size: 1.45rem !important; }
+      .docs-sub { font-size: 0.82rem !important; }
+      .tab-header { flex-wrap: wrap !important; }
+      .mode-tab-btn { font-size: 0.7rem !important; padding: 4px 8px !important; }
+      pre.code-block { font-size: 0.74rem !important; padding: 10px !important; }
+      #agent-quickstart { padding: 14px 10px !important; }
+      .param-table { font-size: 0.78rem !important; }
+    }
+
+</style>
 </head>
 <body>
 
@@ -390,7 +441,7 @@
     <a href="/" class="nav-brand">
       <img src="/logo.png" alt="Bartholomew Sentinel Logo" />
       <span>Bartholomew</span>
-      <span class="nav-tag">BTP v6.2.1</span>
+      <span class="nav-tag">BTP v6.3.0</span>
     </a>
     <ul class="nav-links">
       <li><a href="/docs.html" class="active">Docs</a></li>
@@ -412,6 +463,27 @@
 
     <!-- Sidebar Navigation -->
     <aside class="docs-sidebar">
+      <!-- Instant Search Filter -->
+      <div style="padding:0 0 14px 0; border-bottom:1px solid var(--border-subtle); margin-bottom:14px;">
+        <div style="position:relative;">
+          <input type="text" id="docsSearchInput" onkeyup="filterDocsSearch()" placeholder="Filter docs (e.g. Swarm, AST, Silicon)..." style="width:100%; background:#04070d; border:1px solid var(--border-subtle); border-radius:6px; color:#f8fafc; font-size:0.78rem; font-family:var(--font-sans); padding:8px 28px 8px 10px; outline:none; transition:border 0.2s;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="position:absolute; right:9px; top:50%; transform:translateY(-50%); color:var(--text-dim); pointer-events:none;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;">
+          <span class="search-tag" onclick="setDocSearch('Swarm')">Swarm</span>
+          <span class="search-tag" onclick="setDocSearch('Self-Heal')">Self-Heal</span>
+          <span class="search-tag" onclick="setDocSearch('Silicon')">Silicon</span>
+          <span class="search-tag" onclick="setDocSearch('AST')">AST</span>
+          <span class="search-tag" onclick="setDocSearch('Passkey')">Passkeys</span>
+        </div>
+      </div>
+
+      <div class="sidebar-group-title">Agent First</div>
+      <ul class="sidebar-nav">
+        <li><a href="#agent-quickstart" class="active" style="color:#38bdf8; font-weight:700;">Universal Agent Hub</a></li>
+        <li><a href="#self-preservation-protocol">Self-Healing Reflex</a></li>
+      </ul>
+
       <div class="sidebar-group-title">Getting Started</div>
       <ul class="sidebar-nav">
         <li><a href="#quickstart" class="active">1-Line Installation</a></li>
@@ -428,9 +500,16 @@
         <li><a href="#framework-autogen">AutoGen &amp; Claude Code</a></li>
       </ul>
 
+            <div class="sidebar-group-title">MCP &amp; Resilience</div>
+      <ul class="sidebar-nav">
+        <li><a href="#mcp-security-middleware">MCP Security Middleware</a></li>
+        <li><a href="#agent-resilience-audit">Agent Resilience Audit</a></li>
+      </ul>
+
       <div class="sidebar-group-title">Sandboxing &amp; Extensions</div>
       <ul class="sidebar-nav">
         <li><a href="#kernel-runner">btp-guard run (CLI)</a></li>
+        <li><a href="#github-action">GitHub Action (CI/CD)</a></li>
         <li><a href="#docker-sandbox">Docker Hermetic Sandbox</a></li>
         <li><a href="#vscode-extension">Cursor / VS Code Extension</a></li>
       </ul>
@@ -438,6 +517,7 @@
       <div class="sidebar-group-title">Cloud &amp; Microservices</div>
       <ul class="sidebar-nav">
         <li><a href="#sidecar-proxy">Zero-Code Sidecar Proxy</a></li>
+        <li><a href="#self-hosting">Sovereign Air-Gapped Hosting</a></li>
         <li><a href="#realtime-webhooks">Real-Time Incident Webhooks</a></li>
       </ul>
 
@@ -892,6 +972,48 @@ user_proxy.initiate_chat(assistant, message="Plot normalized retention cohort cu
 
       <!-- IDE & Extension Guides -->
       
+      <!-- GITHUB ACTION FOR CI/CD -->
+      <section class="doc-card" id="github-action" style="border-left: 3px solid var(--emerald); margin-top: 32px;">
+        <h2 class="section-title">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--emerald)"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          One-Click CI/CD Agent Safety Gate (GitHub Action)
+        </h2>
+        <p class="lead-p">Audit agent directives (.cursorrules, CLAUDE.md, GEMINI.md) on every pull request. Intercepts prompt injection payloads, unconfined bash scripts, and leaked credentials with RFC 8785 Merkle receipts.</p>
+
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('action', 'tab-action-yaml', this)">Workflow YAML</button>
+          <button class="tab-btn" onclick="switchTab('action', 'tab-action-cli', this)">Local CLI Run</button>
+        </div>
+
+        <div id="tab-action-yaml" class="tab-pane active" data-group="action">
+          <pre><code><span style="color:#64748b;"># .github/workflows/agent-guard.yml</span>
+<span style="color:var(--gold);">name</span>: Agent Guard Safety Audit
+<span style="color:var(--gold);">on</span>: [push, pull_request]
+
+<span style="color:var(--gold);">jobs</span>:
+  <span style="color:var(--emerald);">ai-safety-gate</span>:
+    <span style="color:#94a3b8;">runs-on</span>: ubuntu-latest
+    <span style="color:var(--gold);">steps</span>:
+      - <span style="color:var(--gold);">uses</span>: actions/checkout@v4
+      - <span style="color:var(--gold);">uses</span>: ivegotahunnitonit/bartholomew@v6.3.0
+        <span style="color:var(--gold);">with</span>:
+          <span style="color:#94a3b8;">scan-paths</span>: <span style="color:#38bdf8;">'.cursorrules, CLAUDE.md, GEMINI.md, copilot-instructions.md'</span>
+          <span style="color:#94a3b8;">fail-on-exploit</span>: <span style="color:#38bdf8;">true</span></code></pre>
+        </div>
+
+        <div id="tab-action-cli" class="tab-pane" data-group="action">
+          <pre><code><span style="color:#64748b;"># Run the exact same AST invariant audit locally:</span>
+python scripts/run_ci_agent_audit.py
+
+<span style="color:#64748b;"># Output:</span>
+<span style="color:var(--emerald);">[+] .cursorrules: PASSED (Clean AST Invariants)</span>
+<span style="color:var(--emerald);">[+] CLAUDE.md: PASSED (Clean AST Invariants)</span>
+<span style="color:var(--emerald);">[+] GEMINI.md: PASSED (Clean AST Invariants)</span>
+<span style="color:var(--cyan);">Overall Agent Resilience Score: 100 / 100 [IMMUNIZED]</span>
+<span style="color:var(--emerald);">Merkle Attestation Root: ed25519:c0ebbf2ba24255b6821d7d9de4069...</span></code></pre>
+        </div>
+      </section>
+
       <!-- Docker Hermetic Sandbox Section -->
       <section id="docker-sandbox" class="docs-section">
         
@@ -1083,7 +1205,7 @@ btp-guard export-compliance --out soc2_dossier.json</pre>
           <pre><code><span style="color:#64748b;"># docker-compose.sidecar.yml</span>
 <span style="color:var(--gold);">services</span>:
   <span style="color:var(--emerald);">bartholomew-sidecar</span>:
-    <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.23
+    <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:v6.3.0
     <span style="color:#94a3b8;">ports</span>:
       - <span style="color:#38bdf8;">"9090:9090"</span>
     <span style="color:#94a3b8;">environment</span>:
@@ -1111,7 +1233,7 @@ btp-guard export-compliance --out soc2_dossier.json</pre>
     <span style="color:#94a3b8;">spec</span>:
       <span style="color:#94a3b8;">containers</span>:
         - <span style="color:var(--emerald);">name</span>: bartholomew-proxy
-          <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.23
+          <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:v6.3.0
           <span style="color:#94a3b8;">ports</span>:
             - <span style="color:#94a3b8;">containerPort</span>: 9090
           <span style="color:#94a3b8;">resources</span>:
@@ -1131,6 +1253,61 @@ curl -s http://127.0.0.1:9090/health | jq .
   <span style="color:var(--emerald);">"latency_median_us"</span>: <span style="color:#38bdf8;">15.70</span>,
   <span style="color:var(--emerald);">"gpu_vram_mb"</span>: <span style="color:#38bdf8;">0</span>
 }</code></pre>
+        </div>
+      </section>
+
+      <!-- SOVEREIGN AIR-GAPPED SELF-HOSTING (DOCKER & HELM) -->
+      <section class="doc-card" id="self-hosting" style="border-left: 3px solid var(--gold); margin-top: 32px;">
+        <h2 class="section-title">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gold)"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Sovereign Air-Gapped Self-Hosting (Docker &amp; Helm 1-Liners)
+        </h2>
+        <p class="lead-p">Deploy Bartholomew inside secure VPCs, on-prem bare-metal clusters, or strict zero-egress air-gapped enclaves (SCIF). Operates 100% locally with zero phone-home telemetry and sub-35µs AST evaluation latency.</p>
+
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('selfhost', 'tab-selfhost-docker', this)">1-Line Docker</button>
+          <button class="tab-btn" onclick="switchTab('selfhost', 'tab-selfhost-helm', this)">Kubernetes Helm</button>
+          <button class="tab-btn" onclick="switchTab('selfhost', 'tab-selfhost-airgap', this)">Offline SCIF Bundle</button>
+        </div>
+
+        <div id="tab-selfhost-docker" class="tab-pane active" data-group="selfhost">
+          <pre><code><span style="color:#64748b;"># 1. Run sovereign local AST gateway daemon (Port 8080)</span>
+docker run -d \
+  --name bartholomew-guard \
+  -p 8080:8080 \
+  -e BTP_SOVEREIGN_MODE=true \
+  -e BTP_MAX_LATENCY_US=35 \
+  -v $(pwd)/btp-config:/etc/btp \
+  ghcr.io/ivegotahunnitonit/bartholomew:v6.3.0
+
+<span style="color:#64748b;"># 2. Test local in-process health endpoint</span>
+curl -s http://127.0.0.1:8080/health | jq .
+<span style="color:var(--emerald);"># Response: {"status":"ACTIVE","mode":"AIRGAPPED_SOVEREIGN","ast_latency_us":18.2}</span></code></pre>
+        </div>
+
+        <div id="tab-selfhost-helm" class="tab-pane" data-group="selfhost">
+          <pre><code><span style="color:#64748b;"># 1. Add official Bartholomew Helm repository</span>
+helm repo add bartholomew https://bartholomew.info/charts
+helm repo update
+
+<span style="color:#64748b;"># 2. Deploy high-availability sovereign cluster (3 replicas, local AST compilation)</span>
+helm install bartholomew-guard bartholomew/agent-guard \
+  --namespace security-gate \
+  --create-namespace \
+  --set replicas=3 \
+  --set ast.subMicrosecond=true \
+  --set telemetry.phoneHome=false \
+  --set ingress.enabled=true</code></pre>
+        </div>
+
+        <div id="tab-selfhost-airgap" class="tab-pane" data-group="selfhost">
+          <pre><code><span style="color:#64748b;"># Step 1: Export signed container image to air-gapped removable media</span>
+docker pull ghcr.io/ivegotahunnitonit/bartholomew:v6.3.0
+docker save ghcr.io/ivegotahunnitonit/bartholomew:v6.3.0 -o bartholomew-v6.3.0.tar
+
+<span style="color:#64748b;"># Step 2: Load and run in zero-egress offline SCIF environment</span>
+docker load -i bartholomew-v6.3.0.tar
+docker run -d --net=none -p 8080:8080 -v /etc/btp:/etc/btp bartholomew:v6.3.0 --airgapped</code></pre>
         </div>
       </section>
 
@@ -1351,6 +1528,103 @@ $ btp-guard audit verify --dossier=audit_soc2_dossier.json
 
       sections.forEach(sec => observer.observe(sec));
     });
+  </script>
+
+
+  <script>
+    const fwSnippets = {
+      SWARM: `from btp_guard.integrations.swarm import BtpSwarmGuard
+
+# 1. Initialize BTP Guard with spending cap and self-healing reflexes
+guard = BtpSwarmGuard(spend_cap=50.0)
+
+# 2. Protect any tool in 1 line:
+safe_tool = guard.protect_tool(execute_query)
+
+# 3. Intercept & validate agent handoffs with Ed25519 cryptographic receipts:
+guard.validate_handoff("TriageAgent", "EscrowSettlementAgent")`,
+
+      CLAUDE: `# Anthropic Claude Code CLI
+# Automatic project immunization:
+btp-guard protect
+
+# Emits CLAUDE.md with deterministic tool rules:
+# Invariant: Prevent unconstrained write outside workspace
+# Invariant: Sanitize shell subprocess calls with AST syntax validation`,
+
+      GEMINI: `# Google Gemini / Antigravity IDE
+# Automatic rule immunization:
+btp-guard protect
+
+# Automatically writes GEMINI.md and .gemini/config/rules:
+# Intercepts dangerous terminal commands with <35us AST validation`,
+
+      CURSOR: `# Cursor IDE & Windsurf AI
+# 1-line immunization:
+btp-guard protect
+
+# Configures .cursorrules and .cursor/rules/btp-guard.mdc
+# Enforces Keystone passkey clearance before any agent file mutation`,
+
+      CREWAI: `from btp_guard import protect_agent
+from crewai import Agent
+
+# Protect CrewAI agent with automatic tool interception:
+analyst = Agent(role="Financial Analyst", goal="Analyze reports")
+protected_analyst = protect_agent(analyst, spend_cap=50.0)`,
+
+      LANGGRAPH: `from btp_guard import protect_node
+
+# Wrap LangGraph state graph nodes with in-process invariant gating:
+@protect_node(spend_cap=25.0)
+def execute_sql_step(state):
+    return {"query_result": run_query(state["query"])}`,
+
+      AUTOGEN: `from btp_guard import protect_autogen
+from autogen import UserProxyAgent
+
+# Guard AutoGen user proxy against malicious command execution:
+user_proxy = UserProxyAgent("user_proxy", code_execution_config={"work_dir": "workspace"})
+protect_autogen(user_proxy, spend_cap=100.0)`,
+
+      SMOL: `from btp_guard import Guard
+from smolagents import CodeAgent
+
+# Secure Hugging Face Smolagents:
+guard = Guard()
+agent = CodeAgent(tools=[guard.wrap_tool(web_search)])`
+    };
+
+    function selectDocsFw(fwKey) {
+      document.querySelectorAll('#agent-quickstart .mode-tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById('doc-btn-' + fwKey.toLowerCase());
+      if (activeBtn) activeBtn.classList.add('active');
+      const display = document.getElementById('doc-code-display');
+      if (display && fwSnippets[fwKey]) {
+        display.innerText = fwSnippets[fwKey];
+      }
+    }
+
+    function filterDocsSearch() {
+      const query = (document.getElementById('docsSearchInput').value || '').toLowerCase().trim();
+      const navLinks = document.querySelectorAll('.docs-sidebar .sidebar-nav li');
+      navLinks.forEach(li => {
+        const text = li.innerText.toLowerCase();
+        if (!query || text.includes(query)) {
+          li.style.display = '';
+        } else {
+          li.style.display = 'none';
+        }
+      });
+    }
+
+    function setDocSearch(term) {
+      const input = document.getElementById('docsSearchInput');
+      if (input) {
+        input.value = term;
+        filterDocsSearch();
+      }
+    }
   </script>
 
 </body>

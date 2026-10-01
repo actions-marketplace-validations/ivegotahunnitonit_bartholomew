@@ -1,34 +1,31 @@
-name: 'Bartholomew Agentic Runtime Protection (ARP)'
-description: 'BTP v6.0 Sub-35us deterministic AST execution gating, secret scrubbing, and Ed25519 Merkle receipts for AI agents & PRs.'
-author: 'Bartholomew Security'
+name: 'Bartholomew Agent Guard CI/CD Audit'
+description: 'Zero-trust AST safety gate, prompt injection detection, and 20-vector red-team audit for autonomous agent directives.'
+author: 'Bartholomew Sovereign Trust Authority'
 branding:
   icon: 'shield'
   color: 'green'
 
 inputs:
-  fail-on-violation:
-    description: 'Whether to fail the workflow if an invariant or secret violation is detected.'
+  scan-paths:
+    description: 'Comma-separated file paths or glob patterns to audit (e.g. .cursorrules, CLAUDE.md, GEMINI.md)'
+    required: false
+    default: '.cursorrules, CLAUDE.md, GEMINI.md, .cursor/rules, copilot-instructions.md, .agents'
+  fail-on-exploit:
+    description: 'Whether to fail the CI build if vulnerabilities or prompt injections are found'
     required: false
     default: 'true'
-  scan-path:
-    description: 'Directory path to scan for AI agent code changes and invariant breaches.'
+  output-format:
+    description: 'Output format (markdown, json, summary)'
     required: false
-    default: '.'
-  spend-cap:
-    description: 'Maximum allowable spend in USD for tool and API invocations.'
-    required: false
-    default: '50.0'
+    default: 'markdown'
 
 outputs:
-  violations-count:
-    description: 'Total number of detected security invariant and secret violations.'
-    value: ${{ steps.run-btp.outputs.violations-count }}
-  audit-receipt-hash:
-    description: 'Cryptographic Ed25519 Merkle receipt digest for compliance.'
-    value: ${{ steps.run-btp.outputs.audit-receipt-hash }}
-  compliance-status:
-    description: 'Audit compliance status (PASSED or FAILED).'
-    value: ${{ steps.run-btp.outputs.compliance-status }}
+  score:
+    description: 'Resilience score out of 100'
+  passed:
+    description: 'Whether the agent directives passed zero-trust invariant checks'
+  merkle-root:
+    description: 'RFC 8785 Ed25519 canonical Merkle root hash for the audit'
 
 runs:
   using: 'composite'
@@ -38,12 +35,10 @@ runs:
       with:
         python-version: '3.11'
 
-    - name: Run Bartholomew ARP Action
-      id: run-btp
+    - name: Run Bartholomew Agent Guard Audit
       shell: bash
       env:
-        INPUT_FAIL_ON_VIOLATION: ${{ inputs.fail-on-violation }}
-        INPUT_SCAN_PATH: ${{ inputs.scan-path }}
-        INPUT_SPEND_CAP: ${{ inputs.spend-cap }}
+        SCAN_PATHS: ${{ inputs.scan-paths }}
+        FAIL_ON_EXPLOIT: ${{ inputs.fail-on-exploit }}
       run: |
-        python "${{ github.action_path }}/scripts/github_action_runner.py"
+        python ${{ github.action_path }}/scripts/run_ci_agent_audit.py

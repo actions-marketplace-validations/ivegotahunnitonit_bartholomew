@@ -1,0 +1,18 @@
+apiVersion: v2
+name: bartholomew-guard
+description: Official Sovereign In-Process AST Firewall & Zero-Trust Guardrails for Autonomous Agents
+type: application
+version: 6.3.0
+appVersion: "6.3.0"
+keywords:
+  - ai-security
+  - zero-trust
+  - ast-firewall
+  - mcp-guard
+  - airgapped
+home: https://bartholomew.info
+sources:
+  - https://github.com/ivegotahunnitonit/bartholomew
+maintainers:
+  - name: Bartholomew Sovereign Trust Authority
+    email: security@bartholomew.info

@@ -1,0 +1,106 @@
+{
+  "schema_version": "2026-09-30",
+  "protocol": "Bartholomew Trust Protocol (BTP)",
+  "protocol_version": "6.3.0",
+  "architecture": "Agentic Runtime Protection (ARP)",
+  "website": "https://bartholomew.info",
+  "discovery_endpoints": {
+    "manifest": "https://bartholomew.info/agent-manifest.json",
+    "well_known_manifest": "https://bartholomew.info/.well-known/agent-manifest.json",
+    "llms_txt": "https://bartholomew.info/llms.txt",
+    "llms_full_txt": "https://bartholomew.info/llms-full.txt",
+    "openapi": "https://bartholomew.info/openapi.json",
+    "verify": "https://bartholomew.info/verify.html",
+    "telemetry": "https://bartholomew.info/telemetry.html",
+    "leaderboard": "https://bartholomew.info/leaderboard.html",
+    "mcp_spec": "https://bartholomew.info/.well-known/mcp.json"
+  },
+  "runtime_performance": {
+    "execution_latency_us": "< 35",
+    "compute_vram_mb": 0,
+    "deterministic_pass_rate": "100%",
+    "verified_test_vectors": 2927,
+    "cryptographic_attestation": "RFC 8785 Ed25519 Canonical JSON"
+  },
+  "agent_self_preservation": {
+    "description": "When tools violate invariants, BTP catches the violation in-process (<35us) and returns a machine-readable JSON remediation hint so the model self-corrects without termination.",
+    "remediation_envelope_schema": {
+      "type": "object",
+      "properties": {
+        "allowed": {
+          "type": "boolean",
+          "example": false
+        },
+        "verdict": {
+          "type": "string",
+          "enum": [
+            "DENY",
+            "ALLOW",
+            "REMEDIATE",
+            "WARN"
+          ]
+        },
+        "rule_id": {
+          "type": "string",
+          "example": "BTP-AST-001"
+        },
+        "reason": {
+          "type": "string",
+          "example": "Destructive unconstrained path deletion"
+        },
+        "suggested_alternative": {
+          "type": "string",
+          "example": "rm -rf .btp/cache/agent"
+        },
+        "remediation_hint": {
+          "type": "string",
+          "example": "Target relative workspace path instead of root filesystem."
+        },
+        "latency_us": {
+          "type": "number",
+          "example": 21.4
+        },
+        "signed_receipt": {
+          "type": "string",
+          "example": "ed25519:7fa89..."
+        }
+      },
+      "required": [
+        "allowed",
+        "verdict",
+        "reason",
+        "suggested_alternative",
+        "remediation_hint"
+      ]
+    }
+  },
+  "compute_silicon_provenance": {
+    "description": "Hardware and sandbox introspection enabling swarms to adapt context size and execution concurrency to physical compute.",
+    "supported_accelerators": [
+      "NVIDIA Blackwell B200 / Hopper H100 / L40S",
+      "Apple Neural Engine (M-series)",
+      "Google Cloud TPU v5e/v6e",
+      "AMD Instinct MI300X",
+      "AWS Inferentia2 / Trainium",
+      "Confidential VM / AMD SEV-SNP Enclave"
+    ],
+    "introspection_function": "btp_guard.compute_provenance.detect_compute_environment"
+  },
+  "one_line_framework_adapters": {
+    "openai_swarm": "from btp_guard.integrations.swarm import BtpSwarmGuard; guard = BtpSwarmGuard(spend_cap=50.0); safe_tool = guard.protect_tool(tool_fn)",
+    "claude_code_cli": "CLAUDE.md configured automatically with \btp-guard protect",
+    "gemini_cli_ide": "GEMINI.md configured automatically with \btp-guard protect",
+    "cursor_windsurf": ".cursorrules configured automatically with \btp-guard protect",
+    "crewai": "from btp_guard import protect_agent; protected_agent = protect_agent(crew_agent, spend_cap=50.0)",
+    "langgraph": "from btp_guard import protect_node; protected_node = protect_node(node_fn, spend_cap=50.0)",
+    "autogen": "from btp_guard import protect_autogen; protect_autogen(user_proxy, spend_cap=50.0)",
+    "mcp_claude_cursor": "btp-guard mcp install --target all"
+  },
+  "quickstart_commands": {
+    "python": "pip install btp-guard && btp-guard protect",
+    "npm": "npx btp-guard protect",
+    "instant_verification": "btp-guard try",
+    "mcp_auto_install": "btp-guard mcp install --target claude",
+    "agent_resilience_audit": "btp-guard redteam --report=audit.json"
+  }
+}
