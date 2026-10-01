@@ -2262,11 +2262,45 @@
       border-radius: var(--radius-md);
       overflow: hidden;
       transition: all 0.25s ease;
+      cursor: zoom-in;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
     }
     .gallery-item:hover {
-      border-color: rgba(16, 185, 129, 0.4);
-      transform: scale(1.015);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      border-color: rgba(16, 185, 129, 0.6);
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.2);
+    }
+    .gallery-zoom-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(4, 7, 13, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #f8fafc;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      opacity: 0.85;
+      transition: all 0.2s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .gallery-item:hover .gallery-zoom-badge {
+      opacity: 1;
+      border-color: var(--emerald);
+      color: var(--emerald);
+      background: rgba(4, 15, 20, 0.95);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
     }
     .gallery-item img {
       width: 100%;
@@ -3108,26 +3142,48 @@
         <!-- Screenshots Showcase Gallery -->
         <div class="ext-gallery">
           <div class="gallery-head">
-            <h4 class="gallery-title">Live IDE Extension Telemetry &amp; Gating Views</h4>
-            <span class="gallery-sub">Interactive AST verification in Cursor, Windsurf, and VS Code</span>
+            <div>
+              <h4 class="gallery-title">Live IDE Extension Telemetry &amp; Gating Views</h4>
+              <span class="gallery-sub">Interactive AST verification in Cursor, Windsurf, and VS Code</span>
+            </div>
+            <span style="font-size:0.75rem; color:var(--emerald); background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:999px; font-weight:700; font-family:var(--font-mono); display:inline-flex; align-items:center; gap:6px;">
+              <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+              CLICK ANY VIEW TO ENLARGE
+            </span>
           </div>
           <div class="gallery-grid">
-            <div class="gallery-item">
+            <a href="/assets/dashboard_core.png" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/dashboard_core.png', 'Bartholomew Guard Live Dashboard', '100/100 Security Score &bull; Active Activity Bar Telemetry in VS Code &amp; Cursor')" title="Click to enlarge view" aria-label="Enlarge Bartholomew Guard Live Dashboard">
+              <div class="gallery-zoom-badge">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                Click to Enlarge
+              </div>
               <img src="/assets/dashboard_core.png" alt="Bartholomew Guard Live Dashboard" loading="lazy">
               <div class="gallery-caption">100/100 Security Score &bull; Active Activity Bar Telemetry</div>
-            </div>
-            <div class="gallery-item">
+            </a>
+            <a href="/assets/breakdown_core.png" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/breakdown_core.png', 'AST Invariant Engine Breakdown', '15 Invariant Checkpoints &bull; Sub-35 &micro;s Latency Logs')" title="Click to enlarge view" aria-label="Enlarge AST Invariant Engine Breakdown">
+              <div class="gallery-zoom-badge">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                Click to Enlarge
+              </div>
               <img src="/assets/breakdown_core.png" alt="AST Invariant Engine Breakdown" loading="lazy">
-              <div class="gallery-caption">15 Invariant Checkpoints &bull; Sub-35µs Latency Logs</div>
-            </div>
-            <div class="gallery-item">
+              <div class="gallery-caption">15 Invariant Checkpoints &bull; Sub-35 &micro;s Latency Logs</div>
+            </a>
+            <a href="/assets/keystone_passkey_core.png" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/keystone_passkey_core.png', 'Keystone Passkey Clearance View', 'Keystone Passkey Clearance &bull; Bounded Action Scopes')" title="Click to enlarge view" aria-label="Enlarge Keystone Passkey Clearance View">
+              <div class="gallery-zoom-badge">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                Click to Enlarge
+              </div>
               <img src="/assets/keystone_passkey_core.png" alt="Keystone Passkey Clearance View" loading="lazy">
               <div class="gallery-caption">Keystone Passkey Clearance &bull; Bounded Action Scopes</div>
-            </div>
-            <div class="gallery-item">
+            </a>
+            <a href="/assets/model_bridge_core.png" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/model_bridge_core.png', 'Model Context Bridge View', 'Model Context Bridge &bull; Cursor, Claude, Copilot, Gemini')" title="Click to enlarge view" aria-label="Enlarge Model Context Bridge View">
+              <div class="gallery-zoom-badge">
+                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                Click to Enlarge
+              </div>
               <img src="/assets/model_bridge_core.png" alt="Model Context Bridge View" loading="lazy">
               <div class="gallery-caption">Model Context Bridge &bull; Cursor, Claude, Copilot, Gemini</div>
-            </div>
+            </a>
           </div>
         </div>
       </div>
@@ -3628,7 +3684,27 @@
   </div>
 
   <!-- Instant Enterprise Trial & Compliance Dossier Modal -->
-  <div class="modal-overlay" id="trialModal" onclick="handleTrialModalBackdrop(event)">
+    <!-- Image Lightbox Modal for Telemetry & Gating Views -->
+  <div class="modal-overlay" id="imageLightboxModal" onclick="handleImageLightboxBackdrop(event)">
+    <div class="modal-card" style="max-width: 1040px; width: 95vw; max-height: 94vh; padding: 20px; background: #070b14; border-color: rgba(16, 185, 129, 0.45); display: flex; flex-direction: column; align-items: center; box-shadow: 0 30px 90px rgba(0,0,0,0.95);">
+      <button class="modal-close-x" onclick="closeImageLightbox()">&times;</button>
+      <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-right: 36px; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <div id="lightboxTitle" style="font-weight: 800; font-size: 1.15rem; color: #f8fafc;"></div>
+          <div id="lightboxDesc" style="font-size: 0.82rem; color: var(--text-muted); font-family: var(--font-mono);"></div>
+        </div>
+        <a id="lightboxNewTabLink" href="#" target="_blank" rel="noreferrer" class="btn-action-small" style="font-size: 0.78rem; text-decoration: none; padding: 6px 14px; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.4); color: var(--emerald); border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; font-weight: 700;">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Open Full Resolution
+        </a>
+      </div>
+      <div style="width: 100%; max-height: calc(88vh - 80px); overflow: auto; display: flex; justify-content: center; align-items: center; background: #03060d; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.08); padding: 8px;">
+        <img id="lightboxImg" src="" alt="Enlarged View" style="max-width: 100%; height: auto; max-height: calc(88vh - 110px); object-fit: contain; border-radius: 6px; cursor: zoom-out;" onclick="closeImageLightbox()" title="Click image to close">
+      </div>
+    </div>
+  </div>
+
+<div class="modal-overlay" id="trialModal" onclick="handleTrialModalBackdrop(event)">
     <div class="modal-card" style="max-width:580px;">
       <button class="modal-close-x" onclick="closeTrialModal()">&times;</button>
       <div class="modal-header-tag" style="background:var(--emerald-dim); color:var(--emerald); border-color:rgba(16,185,129,0.35);">
@@ -3943,6 +4019,34 @@
     }
   
     // Trial Modal Controls
+    
+    // Image Lightbox Controls
+    function openImageLightbox(e, src, title, desc) {
+      if (e) e.preventDefault();
+      const modal = document.getElementById('imageLightboxModal');
+      const img = document.getElementById('lightboxImg');
+      const titleEl = document.getElementById('lightboxTitle');
+      const descEl = document.getElementById('lightboxDesc');
+      const newTabLink = document.getElementById('lightboxNewTabLink');
+      if (modal && img) {
+        img.src = src;
+        if (titleEl) titleEl.innerHTML = title;
+        if (descEl) descEl.innerHTML = desc;
+        if (newTabLink) newTabLink.href = src;
+        modal.classList.add('active');
+      }
+    }
+    function closeImageLightbox() {
+      const modal = document.getElementById('imageLightboxModal');
+      if (modal) modal.classList.remove('active');
+    }
+    function handleImageLightboxBackdrop(e) {
+      if (e.target.id === 'imageLightboxModal') closeImageLightbox();
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeImageLightbox();
+    });
+
     function openTrialModal(tierName) {
       const modal = document.getElementById('trialModal');
       if (modal) {
