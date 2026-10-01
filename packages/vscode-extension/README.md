@@ -9,9 +9,9 @@
 
 [![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 [![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/bartholomew.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.34-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
-[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.3.0-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.3.0-blue)](https://pypi.org/project/btp-guard/)
+[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.3.0-cb3837)](https://www.npmjs.com/package/btp-guard)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Audit Score](https://img.shields.io/badge/Audit%20Score-100%2F100%20(A%2B)-success)](https://bartholomew.info)
 [![Security Gates](https://img.shields.io/badge/Security%20Invariants-15%20Pillars%20Active-brightgreen)](https://bartholomew.info)

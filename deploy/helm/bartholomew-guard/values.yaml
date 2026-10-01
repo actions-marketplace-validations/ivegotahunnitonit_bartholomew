@@ -1,0 +1,35 @@
+replicaCount: 3
+
+image:
+  repository: ghcr.io/ivegotahunnitonit/bartholomew
+  pullPolicy: IfNotPresent
+  tag: "v6.3.0"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ast:
+  subMicrosecond: true
+  maxLatencyUs: 35
+  zeroPhoneHome: true
+  strictInvariants: true
+
+telemetry:
+  egress: false
+  format: rfc8785-canonical-json
+  signature: ed25519
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+securityContext:
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 10001
+  allowPrivilegeEscalation: false
