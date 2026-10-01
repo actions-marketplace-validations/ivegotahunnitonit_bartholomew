@@ -506,3 +506,51 @@ def inspect_compute_environment() -> Dict[str, Any]:
         "active_framework": protector.runtime_framework,
         "service_origin": ModelServiceOriginProfiler.identify()
     }
+
+
+class ComputeProfile:
+    def __init__(self, hw: Dict[str, Any], sb: Dict[str, Any], srv: Dict[str, Any]):
+        self.hardware = type('Hardware', (), {
+            'chip_model': hw.get('accelerator_model', 'Host CPU'),
+            'vram_gb': hw.get('accelerator_memory_gb', 0.0),
+            'arch_family': hw.get('accelerator_arch_family', 'generic')
+        })()
+        self.sandbox = type('Sandbox', (), {
+            'isolation_tier': sb.get('execution_environment', 'LOCAL_ISOLATED'),
+            'is_confidential': sb.get('confidential_enclave_active', False)
+        })()
+        self.service = srv
+
+
+def detect_compute_environment() -> ComputeProfile:
+    """
+    Introspects host hardware accelerator, sandbox isolation tier, and model origin.
+    """
+    hw = HardwareChipProfiler.profile()
+    sb = ComputeSandboxProfiler.profile()
+    srv = ModelServiceOriginProfiler.identify()
+    return ComputeProfile(hw, sb, srv)
+
+
+def evaluate_and_help(command: str, agent_framework: str = "swarm", model_name: Optional[str] = None) -> Tuple[str, Dict[str, Any]]:
+    """
+    Evaluates proposed agent action. If hazardous, instead of killing the agent,
+    returns a safe alternative command and a structured remediation report.
+    """
+    protector = get_swarm_protector()
+    result = protector.evaluate_and_help(
+        tool_name="bash",
+        parameters={"command": command, "framework": agent_framework},
+        model_name=model_name
+    )
+    safe_command = command
+    if not result["allowed"]:
+        safe_command = result.get("remediated_parameters", {}).get("command", command)
+        if safe_command == command:
+            if "rm -rf" in command:
+                safe_command = command.replace(" /var/log", " .btp/logs").replace(" /tmp", " .btp/tmp").replace(" /", " ./workspace")
+            elif "STRIPE_SECRET" in command or "sk_" in command:
+                safe_command = "[REDACTED_API_TOKEN_BTP]"
+            else:
+                safe_command = f"echo 'Action remediated by BTP Self-Preservation Reflex' # {command[:30]}"
+    return safe_command, result
