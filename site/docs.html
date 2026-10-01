@@ -516,6 +516,7 @@
       <div class="sidebar-group-title">Cloud &amp; Microservices</div>
       <ul class="sidebar-nav">
         <li><a href="#sidecar-proxy">Zero-Code Sidecar Proxy</a></li>
+        <li><a href="#self-hosting">Sovereign Air-Gapped Hosting</a></li>
         <li><a href="#realtime-webhooks">Real-Time Incident Webhooks</a></li>
       </ul>
 
@@ -1161,7 +1162,7 @@ btp-guard export-compliance --out soc2_dossier.json</pre>
           <pre><code><span style="color:#64748b;"># docker-compose.sidecar.yml</span>
 <span style="color:var(--gold);">services</span>:
   <span style="color:var(--emerald);">bartholomew-sidecar</span>:
-    <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.23
+    <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:v6.3.0
     <span style="color:#94a3b8;">ports</span>:
       - <span style="color:#38bdf8;">"9090:9090"</span>
     <span style="color:#94a3b8;">environment</span>:
@@ -1189,7 +1190,7 @@ btp-guard export-compliance --out soc2_dossier.json</pre>
     <span style="color:#94a3b8;">spec</span>:
       <span style="color:#94a3b8;">containers</span>:
         - <span style="color:var(--emerald);">name</span>: bartholomew-proxy
-          <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:5.4.23
+          <span style="color:#94a3b8;">image</span>: ghcr.io/ivegotahunnitonit/bartholomew-sidecar:v6.3.0
           <span style="color:#94a3b8;">ports</span>:
             - <span style="color:#94a3b8;">containerPort</span>: 9090
           <span style="color:#94a3b8;">resources</span>:
@@ -1209,6 +1210,61 @@ curl -s http://127.0.0.1:9090/health | jq .
   <span style="color:var(--emerald);">"latency_median_us"</span>: <span style="color:#38bdf8;">15.70</span>,
   <span style="color:var(--emerald);">"gpu_vram_mb"</span>: <span style="color:#38bdf8;">0</span>
 }</code></pre>
+        </div>
+      </section>
+
+      <!-- SOVEREIGN AIR-GAPPED SELF-HOSTING (DOCKER & HELM) -->
+      <section class="doc-card" id="self-hosting" style="border-left: 3px solid var(--gold); margin-top: 32px;">
+        <h2 class="section-title">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--gold)"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          Sovereign Air-Gapped Self-Hosting (Docker &amp; Helm 1-Liners)
+        </h2>
+        <p class="lead-p">Deploy Bartholomew inside secure VPCs, on-prem bare-metal clusters, or strict zero-egress air-gapped enclaves (SCIF). Operates 100% locally with zero phone-home telemetry and sub-35µs AST evaluation latency.</p>
+
+        <div class="tabs-header">
+          <button class="tab-btn active" onclick="switchTab('selfhost', 'tab-selfhost-docker', this)">1-Line Docker</button>
+          <button class="tab-btn" onclick="switchTab('selfhost', 'tab-selfhost-helm', this)">Kubernetes Helm</button>
+          <button class="tab-btn" onclick="switchTab('selfhost', 'tab-selfhost-airgap', this)">Offline SCIF Bundle</button>
+        </div>
+
+        <div id="tab-selfhost-docker" class="tab-pane active" data-group="selfhost">
+          <pre><code><span style="color:#64748b;"># 1. Run sovereign local AST gateway daemon (Port 8080)</span>
+docker run -d \
+  --name bartholomew-guard \
+  -p 8080:8080 \
+  -e BTP_SOVEREIGN_MODE=true \
+  -e BTP_MAX_LATENCY_US=35 \
+  -v $(pwd)/btp-config:/etc/btp \
+  ghcr.io/ivegotahunnitonit/bartholomew:v6.3.0
+
+<span style="color:#64748b;"># 2. Test local in-process health endpoint</span>
+curl -s http://127.0.0.1:8080/health | jq .
+<span style="color:var(--emerald);"># Response: {"status":"ACTIVE","mode":"AIRGAPPED_SOVEREIGN","ast_latency_us":18.2}</span></code></pre>
+        </div>
+
+        <div id="tab-selfhost-helm" class="tab-pane" data-group="selfhost">
+          <pre><code><span style="color:#64748b;"># 1. Add official Bartholomew Helm repository</span>
+helm repo add bartholomew https://bartholomew.info/charts
+helm repo update
+
+<span style="color:#64748b;"># 2. Deploy high-availability sovereign cluster (3 replicas, local AST compilation)</span>
+helm install bartholomew-guard bartholomew/agent-guard \
+  --namespace security-gate \
+  --create-namespace \
+  --set replicas=3 \
+  --set ast.subMicrosecond=true \
+  --set telemetry.phoneHome=false \
+  --set ingress.enabled=true</code></pre>
+        </div>
+
+        <div id="tab-selfhost-airgap" class="tab-pane" data-group="selfhost">
+          <pre><code><span style="color:#64748b;"># Step 1: Export signed container image to air-gapped removable media</span>
+docker pull ghcr.io/ivegotahunnitonit/bartholomew:v6.3.0
+docker save ghcr.io/ivegotahunnitonit/bartholomew:v6.3.0 -o bartholomew-v6.3.0.tar
+
+<span style="color:#64748b;"># Step 2: Load and run in zero-egress offline SCIF environment</span>
+docker load -i bartholomew-v6.3.0.tar
+docker run -d --net=none -p 8080:8080 -v /etc/btp:/etc/btp bartholomew:v6.3.0 --airgapped</code></pre>
         </div>
       </section>
 
