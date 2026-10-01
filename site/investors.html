@@ -4,8 +4,8 @@
   <meta name="google-adsense-account" content="ca-pub-9254044947204994">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bartholomew (BTP v6.0.0) — Institutional Investor & Diligence Portal</title>
-  <meta name="description" content="Institutional due diligence room, verified seed pitch deck, one-pager, and live traction metrics for Bartholomew — The Agentic Runtime Protection (ARP) Platform.">
+  <title>Bartholomew (BTP v6.0.0) &mdash; Institutional Investor & Diligence Portal</title>
+  <meta name="description" content="Institutional due diligence room, verified seed pitch deck, one-pager, and live traction metrics for Bartholomew &mdash; The Agentic Runtime Protection (ARP) Platform.">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -152,24 +152,79 @@
     }
     .btn-outline:hover { background: rgba(255,255,255,0.1); }
 
-    /* Traction Banner */
+    /* Traction Banner - Ultra Gloss & Polish */
     .traction-strip {
-      background: rgba(13, 17, 26, 0.6);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      position: relative;
+      background: radial-gradient(120% 120% at 50% 0%, rgba(16, 185, 129, 0.12) 0%, rgba(13, 22, 38, 0.85) 45%, rgba(6, 10, 18, 0.98) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 14px;
       padding: 28px;
       margin-bottom: 48px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(16, 185, 129, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.22), inset 0 0 20px rgba(16, 185, 129, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      overflow: hidden;
+    }
+    .traction-strip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 8%;
+      right: 8%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(52, 211, 153, 0.9), rgba(56, 189, 248, 0.9), transparent);
+      filter: blur(0.5px);
+    }
+    .traction-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     }
     .traction-title {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      color: var(--emerald);
+      color: #34d399;
       text-transform: uppercase;
-      margin-bottom: 18px;
+      letter-spacing: 0.06em;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      text-shadow: 0 0 16px rgba(16, 185, 129, 0.55);
+    }
+    .live-pulse-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981, 0 0 20px #10b981;
+      animation: traction-pulse 2s infinite ease-in-out;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+    @keyframes traction-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #10b981, 0 0 20px rgba(16, 185, 129, 0.8); }
+      50% { opacity: 0.55; transform: scale(0.85); box-shadow: 0 0 4px #10b981, 0 0 10px rgba(16, 185, 129, 0.3); }
+    }
+    .traction-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 20px;
+      padding: 4px 12px;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
     }
     .traction-grid {
       display: grid;
@@ -177,14 +232,70 @@
       gap: 16px;
     }
     .stat-box {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      padding: 18px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.06) 0%, rgba(15, 23, 42, 0.72) 40%, rgba(8, 14, 26, 0.88) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 10px;
+      padding: 20px 18px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 24px rgba(0, 0, 0, 0.5);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
-    .stat-val { font-size: 1.7rem; font-weight: 800; color: #fff; margin-top: 4px; }
-    .stat-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; }
-    .stat-sub { font-size: 0.75rem; color: var(--emerald); margin-top: 4px; font-weight: 600; }
+    .stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+    }
+    .stat-box:hover {
+      transform: translateY(-3px);
+      border-color: rgba(16, 185, 129, 0.5);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 16px 36px rgba(0, 0, 0, 0.65), 0 0 25px rgba(16, 185, 129, 0.25);
+    }
+    .stat-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-top: 4px;
+      letter-spacing: -0.02em;
+    }
+    .stat-val.val-emerald {
+      color: #34d399;
+      text-shadow: 0 0 20px rgba(52, 211, 153, 0.55), 0 0 35px rgba(16, 185, 129, 0.25);
+    }
+    .stat-val.val-cyan {
+      color: #38bdf8;
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.55), 0 0 35px rgba(14, 165, 233, 0.25);
+    }
+    .stat-val.val-purple {
+      color: #c084fc;
+      text-shadow: 0 0 20px rgba(192, 132, 252, 0.55), 0 0 35px rgba(168, 85, 247, 0.25);
+    }
+    .stat-sub {
+      font-size: 0.76rem;
+      color: #94a3b8;
+      margin-top: 6px;
+      font-weight: 500;
+      line-height: 1.35;
+    }
+    .stat-sub-highlight {
+      color: #6ee7b7;
+      font-weight: 600;
+      text-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+    }
 
     /* Section Headings */
     .section-head { font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: -0.02em; }
@@ -265,7 +376,7 @@
       <div class="hero-pre">[ STRATEGIC DUE DILIGENCE &amp; SEED STAGE DOSSIER ]</div>
       <h1 class="hero-title">Bartholomew Trust Protocol<br>Capital &amp; Scale Portal</h1>
       <p class="hero-desc">
-        Defining <strong>Agentic Runtime Protection (ARP)</strong>: the deterministic execution gate, non-human identity attestation, and sub-35µs AST safety layer for autonomous multi-agent swarms.
+        Defining <strong>Agentic Runtime Protection (ARP)</strong>: the deterministic execution gate, non-human identity attestation, and sub-35 &micro;s AST safety layer for autonomous multi-agent swarms.
       </p>
     </div>
   </header>
@@ -273,34 +384,43 @@
   <main class="container">
     <!-- Live Traction Strip -->
     <section class="traction-strip">
-      <div class="traction-title">
-        <span style="width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></span>
-        Verified Traction &amp; Performance Telemetry (Week of Sept 20, 2026)
+      <div class="traction-header">
+        <div class="traction-title">
+          <span class="live-pulse-dot"></span>
+          <span>Verified Traction &amp; Performance Telemetry (Week of Sept 20, 2026)</span>
+        </div>
+        <div class="traction-badge">
+          <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; box-shadow:0 0 6px #10b981;"></span>
+          REAL-TIME TELEMETRY &bull; RFC 8785 VERIFIED
+        </div>
       </div>
       <div class="traction-grid">
         <div class="stat-box">
           <div class="stat-lbl">Organic Installs</div>
-          <div class="stat-val">18,500+</div>
-          <div class="stat-sub">$0 Ad Spend (VS Code, VSX, npm)</div>
+          <div class="stat-val val-emerald">18,500+</div>
+          <div class="stat-sub"><span class="stat-sub-highlight">$0 Ad Spend</span> &bull; VS Code, VSX, npm</div>
         </div>
         <div class="stat-box">
           <div class="stat-lbl">Fleet Latency SLA</div>
-          <div class="stat-val" style="color:var(--cyan);">&lt; 35.0 µs</div>
+          <div class="stat-val val-cyan">&lt; 35.0 &micro;s</div>
           <div class="stat-sub">0 MB GPU VRAM / In-Process AST</div>
         </div>
         <div class="stat-box">
           <div class="stat-lbl">Marketplaces</div>
-          <div class="stat-val" style="color:var(--emerald);">Live v6.0.0 (40 MCP Tools)</div>
-          <div class="stat-sub" style="display:flex; align-items:center; justify-content:center; gap:6px;"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="vertical-align:middle; display:inline-block;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg><span>Open VSX, Azure DevOps</span></div>
+          <div class="stat-val val-emerald" style="font-size:1.35rem;">Live v6.0.0 <span style="font-size:0.75rem; opacity:0.85; font-weight:600; display:block; margin-top:2px;">(40 MCP Tools)</span></div>
+          <div class="stat-sub" style="display:flex; align-items:center; gap:6px;">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24" style="vertical-align:middle; display:inline-block; flex-shrink:0;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>Open VSX, Azure DevOps</span>
+          </div>
         </div>
         <div class="stat-box">
           <div class="stat-lbl">Red-Team Benchmark</div>
-          <div class="stat-val" style="color:var(--emerald);">105,000+</div>
+          <div class="stat-val val-emerald">105,000+</div>
           <div class="stat-sub">Live on Hugging Face (Parquet)</div>
         </div>
         <div class="stat-box">
           <div class="stat-lbl">Partner Status</div>
-          <div class="stat-val" style="font-size:1.15rem; color:var(--purple); margin-top:8px;">NVIDIA Inception</div>
+          <div class="stat-val val-purple" style="font-size:1.25rem;">NVIDIA Inception</div>
           <div class="stat-sub">NIM Container Safety Verified</div>
         </div>
       </div>
@@ -404,10 +524,10 @@
 
   <footer>
     <div class="container">
-      <div>© 2026 Bartholomew Trust Protocol Inc. · Confidential Institutional Overview · BTP v6.0.0</div>
+      <div>&copy; 2026 Bartholomew Trust Protocol Inc. &middot; Confidential Institutional Overview &middot; BTP v6.0.0</div>
       <div style="margin-top:8px;">
-        <a href="/control-plane.html" style="color:var(--text-muted); text-decoration:none;">Live Control Plane</a> • 
-        <a href="/leaderboard.html" style="color:var(--text-muted); text-decoration:none;">Guardrails Leaderboard</a> • 
+        <a href="/control-plane.html" style="color:var(--text-muted); text-decoration:none;">Live Control Plane</a> &bull; 
+        <a href="/leaderboard.html" style="color:var(--text-muted); text-decoration:none;">Guardrails Leaderboard</a> &bull; 
         <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" rel="noreferrer" title="GitHub" aria-label="GitHub" style="color:var(--text-muted); text-decoration:none; display:inline-flex; align-items:center;"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24" style="vertical-align:middle; display:inline-block;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg></a>
       </div>
     </div>
