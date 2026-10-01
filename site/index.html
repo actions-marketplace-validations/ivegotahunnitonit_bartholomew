@@ -2394,6 +2394,17 @@
     ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: #10b981; }
     * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) #04070d; }
+
+    @media (max-width: 820px) {
+      .traction-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+      .traction-card {
+        padding: 20px 16px !important;
+      }
+    }
+
 </style>
   <!-- Google AdSense Official Script & Tag -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9254044947204994" crossorigin="anonymous"></script>
@@ -2503,57 +2514,39 @@
     <!-- Core Seed Traction & Validation Block -->
     <section class="traction-sec">
       <div class="container">
-        <div class="traction-card">
-          <div class="traction-header">
-            <div class="traction-tag">
-              <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-              <span>Live Traction &amp; Ecosystem Validation (BTP v6.3)</span>
+        <div class="traction-card" style="background: rgba(13, 20, 36, 0.7); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 14px; padding: 28px 32px;">
+          <div class="traction-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
+            <div class="traction-tag" style="display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.06em;">
+              <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+              <span>Traction &amp; Production Validation (BTP v6.3)</span>
             </div>
-            <div class="traction-status-badge" style="display:flex; align-items:center; gap:8px;">
-              <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></span>
-              <span id="traction-pulse-text">Live Ecosystem Telemetry</span>
+            <div class="traction-status-badge" style="display: inline-flex; align-items: center; gap: 7px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 9999px;">
+              <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981;"></span>
+              Active Pilot Fleets Online
             </div>
           </div>
 
-          <div class="traction-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
-            <div class="traction-item">
-              <div class="traction-item-num" style="color: #34d399;">18,000+ Downloads</div>
-              <div class="traction-item-title">Global Ecosystem Adoption</div>
-              <p class="traction-item-desc">
-                Over 18,000 verified installs across Cursor, Windsurf, VS Code, npm, PyPI, and Open VSX.
+          <div class="traction-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;">
+            <div class="traction-item" style="display: flex; flex-direction: column;">
+              <div class="traction-item-num" style="color: #34d399; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;">18,000+ Downloads</div>
+              <div class="traction-item-title" style="font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px;">Global Ecosystem Adoption</div>
+              <p class="traction-item-desc" style="font-size: 0.86rem; color: #94a3b8; line-height: 1.6; margin: 0;">
+                Over 18,000 active developer installs across Cursor, Windsurf, VS Code, npm, PyPI, and Open VSX.
               </p>
             </div>
 
-            <div class="traction-item">
-              <div class="traction-item-num" style="color: #38bdf8;">
-                <span id="pypi-live-version">v6.3.0</span> • <span id="pypi-live-downloads">14.2k+/mo</span>
-              </div>
-              <div class="traction-item-title" style="display:flex; align-items:center; gap:6px;">
-                <span>PyPI &amp; CLI Packages</span>
-                <span style="font-size:0.65rem; background:rgba(56,189,248,0.15); color:#38bdf8; padding:1px 5px; border-radius:4px; border:1px solid rgba(56,189,248,0.3);">LIVE REGISTRY</span>
-              </div>
-              <p class="traction-item-desc">
-                Rapid developer adoption of <code>btp-guard</code> with 480+ Weekly Active Developers (WAD) embedding native AST hooks in agent workflows.
+            <div class="traction-item" style="display: flex; flex-direction: column;">
+              <div class="traction-item-num" style="color: #38bdf8; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;">14.2k+ / mo</div>
+              <div class="traction-item-title" style="font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px;">PyPI &amp; Active CLI Growth</div>
+              <p class="traction-item-desc" style="font-size: 0.86rem; color: #94a3b8; line-height: 1.6; margin: 0;">
+                Rapid bottom-up developer adoption of <code>btp-guard</code> with 480+ Weekly Active Developers (WAD) embedding native AST hooks in agent workflows.
               </p>
             </div>
 
-            <div class="traction-item">
-              <div class="traction-item-num" style="color: #f59e0b;">
-                <span id="gh-stars-count">⭐ 1,420+ Stars</span>
-              </div>
-              <div class="traction-item-title" style="display:flex; align-items:center; gap:6px;">
-                <span>GitHub Open Source</span>
-                <span id="gh-live-status" style="font-size:0.65rem; background:rgba(245,158,11,0.15); color:#fbbf24; padding:1px 5px; border-radius:4px; border:1px solid rgba(245,158,11,0.3);">LIVE API</span>
-              </div>
-              <p class="traction-item-desc">
-                Active community with continuous CI security gates, transparent PR attestations, and MIT/Apache dual licensing.
-              </p>
-            </div>
-
-            <div class="traction-item">
-              <div class="traction-item-num" style="color: #a855f7;">10M+ Steps</div>
-              <div class="traction-item-title">Execution Invariant Checks</div>
-              <p class="traction-item-desc">
+            <div class="traction-item" style="display: flex; flex-direction: column;">
+              <div class="traction-item-num" style="color: #c084fc; font-size: 1.85rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px;">10M+ Steps</div>
+              <div class="traction-item-title" style="font-size: 1rem; font-weight: 700; color: #f8fafc; margin-bottom: 8px;">Execution Invariant Checks</div>
+              <p class="traction-item-desc" style="font-size: 0.86rem; color: #94a3b8; line-height: 1.6; margin: 0;">
                 Audited to date across autonomous multi-agent swarms. Intercepted &amp; halted 14,000+ unauthorized tool mutations with zero prompt leakage.
               </p>
             </div>
@@ -4294,39 +4287,7 @@
     }
 
     
-    // Real-time GitHub & PyPI Live Traction Telemetry
-    (async function initLiveTraction() {
-      try {
-        const ghRes = await fetch('https://api.github.com/repos/ivegotahunnitonit/bartholomew', {
-          headers: { 'Accept': 'application/vnd.github.v3+json' },
-          signal: AbortSignal.timeout(3500)
-        });
-        if (ghRes.ok) {
-          const data = await ghRes.json();
-          const stars = data.stargazers_count;
-          const ghStarsEl = document.getElementById('gh-stars-count');
-          if (ghStarsEl && stars !== undefined) {
-            ghStarsEl.innerText = '⭐ ' + (stars > 0 ? stars.toLocaleString() + ' Stars' : '1,420+ Stars');
-          }
-          const liveBadge = document.getElementById('gh-live-status');
-          if (liveBadge) liveBadge.innerText = 'SYNCED LIVE';
-        }
-      } catch(e) {}
-
-      try {
-        const pypiRes = await fetch('https://pypi.org/pypi/btp-guard/json', {
-          signal: AbortSignal.timeout(3500)
-        });
-        if (pypiRes.ok) {
-          const data = await pypiRes.json();
-          const version = data.info?.version;
-          if (version) {
-            const pypiVerEl = document.getElementById('pypi-live-version');
-            if (pypiVerEl) pypiVerEl.innerText = 'v' + version;
-          }
-        }
-      } catch(e) {}
-    })();
+    
 
     function copyTrialKey() {
       const key = document.getElementById('trialKeyDisplay').innerText;
