@@ -137,3 +137,5 @@ __all__ = [
     "evaluate_and_help",
     "__version__",
 ]
+
+from .universal_schema_adapter import UniversalSchemaAdapter

@@ -319,6 +319,46 @@ export function activate(context: ExtensionContext) {
   });
   context.subscriptions.push(injectAiRulesCmd);
 
+  // Command: Export Machine-Signed SOC 2 & EU AI Act Audit Dossier
+  const exportAuditDossierCmd = vscode.commands.registerCommand('bartholomew.exportAuditDossier', async () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const outDossier = path.join(rootPath, 'BARTHOLOMEW_SOC2_DOSSIER.json');
+    const terminal = vscode.window.createTerminal('Bartholomew Audit');
+    terminal.show();
+    terminal.sendText('npx --yes btp-guard audit export --out BARTHOLOMEW_SOC2_DOSSIER.json');
+    vscode.window.showInformationMessage(
+      'Bartholomew: Machine-signed SOC 2 & EU AI Act audit dossier exported with SHA-256 Merkle proofs!',
+      'Open Dossier'
+    ).then((selection: any) => {
+      if (selection === 'Open Dossier') {
+        const docUri = vscode.Uri.file(outDossier);
+        vscode.workspace.openTextDocument(docUri).then((doc: any) => vscode.window.showTextDocument(doc));
+      }
+    });
+  });
+  context.subscriptions.push(exportAuditDossierCmd);
+
+  // Command: Harmonize Tool Schema
+  const harmonizeToolSchemaCmd = vscode.commands.registerCommand('bartholomew.harmonizeToolSchema', async () => {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showWarningMessage('Bartholomew: Open a JSON schema file to harmonize.');
+      return;
+    }
+    const text = editor.document.getText();
+    try {
+      const parsed = JSON.parse(text);
+      const terminal = vscode.window.createTerminal('Bartholomew Schema');
+      terminal.show();
+      terminal.sendText(`npx --yes btp-guard schema harmonize "${editor.document.fileName}"`);
+      vscode.window.showInformationMessage('Bartholomew: Harmonizing tool schema across Claude, OpenAI, Gemini, and MCP...');
+    } catch (e: any) {
+      vscode.window.showErrorMessage(`Invalid JSON schema: ${e.message}`);
+    }
+  });
+  context.subscriptions.push(harmonizeToolSchemaCmd);
+
+
   function getKeystonePasskeyPath(): string {
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
     return path.join(rootPath, '.btp_keystone.json');

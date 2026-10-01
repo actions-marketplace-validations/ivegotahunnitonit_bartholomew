@@ -369,3 +369,5 @@ __all__ = [
 ]
 
 from .agent_protector import protect_agent
+
+from .universal_schema_adapter import UniversalSchemaAdapter
