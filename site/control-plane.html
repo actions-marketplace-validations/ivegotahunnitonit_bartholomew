@@ -263,7 +263,15 @@
       color: var(--gold-light);
       border: 1px solid var(--gold);
     }
-  </style>
+  
+    /* Modern Sleek Custom Scrollbars */
+    html { scroll-behavior: smooth; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #04070d; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.15) #04070d; }
+</style>
 </head>
 <body>
   <div class="container">

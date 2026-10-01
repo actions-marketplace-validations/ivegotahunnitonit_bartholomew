@@ -47,6 +47,45 @@
       overflow-x: hidden;
     }
 
+    /* Modern Sleek Custom Scrollbars (Eliminate Ugly OS Scrollbars) */
+    html {
+      scroll-behavior: smooth;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #04070d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--emerald);
+    }
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.15) #04070d;
+    }
+
+    /* Sidebar Scrollbar: nearly invisible until hover */
+    .docs-sidebar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .docs-sidebar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .docs-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 4px;
+    }
+    .docs-sidebar:hover::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+
     /* Top Nav */
     header.site-header {
       position: sticky;
@@ -140,14 +179,14 @@
 
     /* Sidebar */
     .docs-sidebar {
-      width: 280px;
+      width: 250px;
       flex-shrink: 0;
       position: sticky;
-      top: 65px;
-      height: calc(100vh - 65px);
+      top: 60px;
+      height: calc(100vh - 60px);
       overflow-y: auto;
       border-right: 1px solid var(--border-subtle);
-      padding: 28px 20px;
+      padding: 16px 12px;
     }
     .sidebar-group-title {
       font-size: 0.75rem;
@@ -155,17 +194,17 @@
       letter-spacing: 0.08em;
       color: var(--text-dim);
       font-weight: 700;
-      margin: 20px 0 8px 8px;
+      margin: 12px 0 4px 6px; font-size: 0.7rem;
     }
     .sidebar-group-title:first-child { margin-top: 0; }
     .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 3px; }
     .sidebar-nav a {
       display: block;
-      padding: 7px 12px;
-      border-radius: 6px;
+      padding: 5px 10px;
+      border-radius: 5px;
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 500;
       transition: all 0.15s ease;
     }
@@ -182,25 +221,25 @@
     /* Content Area */
     .docs-content {
       flex: 1;
-      padding: 40px 48px;
+      padding: 20px 32px;
       max-width: 960px;
     }
 
     .docs-hero {
-      margin-bottom: 40px;
+      margin-bottom: 16px;
       border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 30px;
+      padding-bottom: 12px;
     }
     .docs-title {
-      font-size: 2.2rem;
+      font-size: 1.55rem;
       font-weight: 800;
       letter-spacing: -0.02em;
-      margin-bottom: 10px;
+      margin-bottom: 4px;
     }
     .docs-sub {
       color: var(--text-muted);
-      font-size: 1.05rem;
-      max-width: 720px;
+      font-size: 0.88rem;
+      max-width: 700px; line-height: 1.45;
     }
 
     .section-title {
@@ -424,121 +463,126 @@
       </div>
 
       <!-- Quickstart Section -->
-      <section id="quickstart">
-        <h2 class="section-title">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--emerald)"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          1-Line Installation &amp; Setup
-        </h2>
-        <p class="lead-p">Install Bartholomew across any environment in seconds with zero configuration required:</p>
+      <section id="quickstart" style="margin-bottom: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+          <h2 class="section-title" style="margin:0; font-size:1.2rem; gap:8px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--emerald)"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            1-Line Installation &amp; Setup
+          </h2>
+          <span style="font-size:0.72rem; color:var(--emerald); background:var(--emerald-dim); border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:999px; font-weight:700;">ZERO CONFIG</span>
+        </div>
+        <p class="lead-p" style="font-size:0.84rem; margin-bottom:8px;">Install Bartholomew across your development stack with one command:</p>
 
-        <div class="tab-container">
-          <div class="tab-header">
-            <button class="tab-btn active" onclick="switchTab(this, 'tab-install-posix')">curl (Linux / macOS)</button>
-            <button class="tab-btn" onclick="switchTab(this, 'tab-install-ps1')">PowerShell (Windows)</button>
-            <button class="tab-btn" onclick="switchTab(this, 'tab-install-pip')">Python (PyPI)</button>
-            <button class="tab-btn" onclick="switchTab(this, 'tab-install-npm')">Node.js (npm)</button>
-            <button class="tab-btn" onclick="switchTab(this, 'tab-install-brew')">Homebrew</button>
+        <div class="tab-container" style="margin:8px 0 10px 0; border-radius:8px;">
+          <div class="tab-header" style="padding:2px 8px 0 8px; gap:4px;">
+            <button class="tab-btn active" onclick="switchTab(this, 'tab-install-posix')" style="padding:5px 10px; font-size:0.78rem;">curl (Linux / macOS)</button>
+            <button class="tab-btn" onclick="switchTab(this, 'tab-install-ps1')" style="padding:5px 10px; font-size:0.78rem;">PowerShell (Windows)</button>
+            <button class="tab-btn" onclick="switchTab(this, 'tab-install-pip')" style="padding:5px 10px; font-size:0.78rem;">Python (PyPI)</button>
+            <button class="tab-btn" onclick="switchTab(this, 'tab-install-npm')" style="padding:5px 10px; font-size:0.78rem;">Node.js (npm)</button>
+            <button class="tab-btn" onclick="switchTab(this, 'tab-install-brew')" style="padding:5px 10px; font-size:0.78rem;">Homebrew</button>
           </div>
-          <div class="tab-pane active" id="tab-install-posix">
-            <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
-            <pre class="code-block">curl -fsSL https://bartholomew.info/install.sh | bash</pre>
+          <div class="tab-pane active" id="tab-install-posix" style="padding:10px 14px;">
+            <button class="copy-btn" onclick="copySnippet(this)" style="top:8px; right:10px; padding:3px 8px; font-size:0.72rem;">Copy</button>
+            <pre class="code-block" style="padding:0; margin:0; font-size:0.82rem; background:transparent;">curl -fsSL https://bartholomew.info/install.sh | bash</pre>
           </div>
-          <div class="tab-pane" id="tab-install-ps1">
-            <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
-            <pre class="code-block">irm https://bartholomew.info/install.ps1 | iex</pre>
+          <div class="tab-pane" id="tab-install-ps1" style="padding:10px 14px;">
+            <button class="copy-btn" onclick="copySnippet(this)" style="top:8px; right:10px; padding:3px 8px; font-size:0.72rem;">Copy</button>
+            <pre class="code-block" style="padding:0; margin:0; font-size:0.82rem; background:transparent;">irm https://bartholomew.info/install.ps1 | iex</pre>
           </div>
-          <div class="tab-pane" id="tab-install-pip">
-            <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
-            <pre class="code-block">pip install --upgrade btp-guard</pre>
+          <div class="tab-pane" id="tab-install-pip" style="padding:10px 14px;">
+            <button class="copy-btn" onclick="copySnippet(this)" style="top:8px; right:10px; padding:3px 8px; font-size:0.72rem;">Copy</button>
+            <pre class="code-block" style="padding:0; margin:0; font-size:0.82rem; background:transparent;">pip install --upgrade btp-guard</pre>
           </div>
-          <div class="tab-pane" id="tab-install-npm">
-            <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
-            <pre class="code-block">npm install btp-guard</pre>
+          <div class="tab-pane" id="tab-install-npm" style="padding:10px 14px;">
+            <button class="copy-btn" onclick="copySnippet(this)" style="top:8px; right:10px; padding:3px 8px; font-size:0.72rem;">Copy</button>
+            <pre class="code-block" style="padding:0; margin:0; font-size:0.82rem; background:transparent;">npm install btp-guard</pre>
           </div>
-          <div class="tab-pane" id="tab-install-brew">
-            <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
-            <pre class="code-block">brew tap ivegotahunnitonit/bartholomew && brew install btp-guard</pre>
+          <div class="tab-pane" id="tab-install-brew" style="padding:10px 14px;">
+            <button class="copy-btn" onclick="copySnippet(this)" style="top:8px; right:10px; padding:3px 8px; font-size:0.72rem;">Copy</button>
+            <pre class="code-block" style="padding:0; margin:0; font-size:0.82rem; background:transparent;">brew tap ivegotahunnitonit/bartholomew && brew install btp-guard</pre>
           </div>
         </div>
 
-        <div class="badge-callout">
-          <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="color:var(--emerald); flex-shrink:0;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-          <div><strong>Instant Verification:</strong> After installing, test your local invariant gate with <code>btp-guard try</code>. It runs a live AST safety simulation in under 3 seconds.</div>
+        <div class="badge-callout" style="padding:8px 14px; font-size:0.8rem; margin:6px 0 0 0; border-radius:6px; gap:8px;">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20" style="color:var(--emerald); flex-shrink:0;"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+          <div><strong>Instant Verification:</strong> After installing, run <code>btp-guard try</code> for an immediate AST safety verification in &lt; 3 seconds.</div>
         </div>
       </section>
 
       <!-- Core Architecture & Benchmarks Section -->
-      <section id="core-architecture" class="docs-section">
-        <div class="section-badge" style="background:rgba(16,185,129,0.12); color:var(--emerald); border-color:rgba(16,185,129,0.3);">
-          DETERMINISTIC INVARIANTS &bull; 18,000+ DOWNLOADS
+      <section id="core-architecture" class="docs-section" style="margin-top: 14px; margin-bottom: 20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:6px;">
+          <h2 class="section-title" style="margin:0; font-size:1.2rem; gap:8px;">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--emerald)"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            Architecture &amp; Performance Benchmarks
+          </h2>
+          <div class="section-badge" style="margin:0; background:rgba(16,185,129,0.12); color:var(--emerald); border-color:rgba(16,185,129,0.3); font-size:0.7rem; padding:2px 8px;">
+            DETERMINISTIC INVARIANTS &bull; 18,000+ DOWNLOADS
+          </div>
         </div>
-        <h2 class="section-title">
-          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:var(--emerald)"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          Architecture &amp; Performance Benchmarks
-        </h2>
-        <p class="lead-p">
-          Bartholomew provides compiled, zero-overhead <strong>Agentic Runtime Protection (ARP)</strong>. Unlike probabilistic LLM guardrails that introduce 200ms&ndash;1,500ms network round-trip overhead, Bartholomew operates strictly in-process with sub-35 &micro;s execution latency.
+        <p class="lead-p" style="font-size:0.84rem; margin-bottom:10px;">
+          Compiled zero-overhead <strong>Agentic Runtime Protection (ARP)</strong>. Operates strictly in-process with sub-35 &micro;s execution latency, eliminating 200ms&ndash;1,500ms network round-trip bottlenecks.
         </p>
 
         <!-- KPI Grid -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:14px; margin:20px 0 28px 0;">
-          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">In-Process Latency</div>
-            <div style="font-size:1.6rem; font-weight:800; color:var(--emerald); margin:4px 0;">&lt; 35 &micro;s</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">Compiled zero-overhead native gate</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:10px; margin:8px 0 14px 0;">
+          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:8px; padding:10px 14px;">
+            <div style="font-size:0.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">In-Process Latency</div>
+            <div style="font-size:1.25rem; font-weight:800; color:var(--emerald); margin:2px 0;">&lt; 35 &micro;s</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Compiled zero-overhead gate</div>
           </div>
-          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">Deterministic Pass</div>
-            <div style="font-size:1.6rem; font-weight:800; color:#38bdf8; margin:4px 0;">100% Verified</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">2,927 Test Vectors Passing</div>
+          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:8px; padding:10px 14px;">
+            <div style="font-size:0.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">Deterministic Pass</div>
+            <div style="font-size:1.25rem; font-weight:800; color:#38bdf8; margin:2px 0;">100% Verified</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">2,927 Test Vectors Passing</div>
           </div>
-          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">Identity Model</div>
-            <div style="font-size:1.6rem; font-weight:800; color:#f59e0b; margin:4px 0;">NHI Passport</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">FIPS 186-5 Ed25519 signing</div>
+          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:8px; padding:10px 14px;">
+            <div style="font-size:0.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">Identity Model</div>
+            <div style="font-size:1.25rem; font-weight:800; color:#f59e0b; margin:2px 0;">NHI Passport</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">FIPS 186-5 Ed25519 signing</div>
           </div>
-          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:10px; padding:18px;">
-            <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">Adoption Scale</div>
-            <div style="font-size:1.6rem; font-weight:800; color:#a855f7; margin:4px 0;">18,000+</div>
-            <div style="font-size:0.8rem; color:var(--text-muted);">Total registry &amp; extension downloads</div>
+          <div style="background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:8px; padding:10px 14px;">
+            <div style="font-size:0.68rem; text-transform:uppercase; color:var(--text-dim); font-weight:700; letter-spacing:0.06em;">Adoption Scale</div>
+            <div style="font-size:1.25rem; font-weight:800; color:#a855f7; margin:2px 0;">18,000+</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Global downloads &amp; installs</div>
           </div>
         </div>
 
         <!-- Benchmark Comparison Table -->
-        <div style="overflow-x:auto; margin-bottom:28px; border:1px solid var(--border-subtle); border-radius:10px; background:var(--bg-card);">
-          <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.88rem;">
+        <div style="overflow-x:auto; margin-bottom:14px; border:1px solid var(--border-subtle); border-radius:8px; background:var(--bg-card);">
+          <table style="width:100%; border-collapse:collapse; text-align:left; font-size:0.8rem;">
             <thead>
               <tr style="border-bottom:1px solid var(--border-subtle); background:rgba(255,255,255,0.02);">
-                <th style="padding:14px 16px; color:var(--text-dim); font-weight:700;">GUARDRAIL PLATFORM</th>
-                <th style="padding:14px 16px; color:var(--text-dim); font-weight:700;">EVALUATION LATENCY</th>
-                <th style="padding:14px 16px; color:var(--text-dim); font-weight:700;">INSPECTION METHOD</th>
-                <th style="padding:14px 16px; color:var(--text-dim); font-weight:700;">EXECUTION GUARANTEE</th>
+                <th style="padding:8px 12px; color:var(--text-dim); font-weight:700;">GUARDRAIL PLATFORM</th>
+                <th style="padding:8px 12px; color:var(--text-dim); font-weight:700;">EVALUATION LATENCY</th>
+                <th style="padding:8px 12px; color:var(--text-dim); font-weight:700;">INSPECTION METHOD</th>
+                <th style="padding:8px 12px; color:var(--text-dim); font-weight:700;">EXECUTION GUARANTEE</th>
               </tr>
             </thead>
             <tbody>
               <tr style="border-bottom:1px solid var(--border-subtle); background:rgba(16,185,129,0.04);">
-                <td style="padding:14px 16px; font-weight:700; color:var(--emerald);">Bartholomew (BTP v6.2)</td>
-                <td style="padding:14px 16px; font-family:'JetBrains Mono',monospace; color:var(--emerald);">&lt; 35 &micro;s (compiled)</td>
-                <td style="padding:14px 16px;">Deterministic AST &amp; eBPF Invariants</td>
-                <td style="padding:14px 16px;"><span style="color:var(--emerald); font-weight:700;">&check; 100% Deterministic (Zero Drift)</span></td>
+                <td style="padding:8px 12px; font-weight:700; color:var(--emerald);">Bartholomew (BTP v6.2)</td>
+                <td style="padding:8px 12px; font-family:'JetBrains Mono',monospace; color:var(--emerald);">&lt; 35 &micro;s (compiled)</td>
+                <td style="padding:8px 12px;">Deterministic AST &amp; eBPF Invariants</td>
+                <td style="padding:8px 12px;"><span style="color:var(--emerald); font-weight:700;">&check; 100% Deterministic (Zero Drift)</span></td>
               </tr>
               <tr style="border-bottom:1px solid var(--border-subtle);">
-                <td style="padding:14px 16px; font-weight:600; color:var(--text-main);">Meta Llama Guard 3</td>
-                <td style="padding:14px 16px; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">250ms &ndash; 650ms</td>
-                <td style="padding:14px 16px;">Secondary LLM Prompt Classifier</td>
-                <td style="padding:14px 16px; color:#f87171;">&cross; Probabilistic (Jailbreak Susceptible)</td>
+                <td style="padding:8px 12px; font-weight:600; color:var(--text-main);">Meta Llama Guard 3</td>
+                <td style="padding:8px 12px; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">250ms &ndash; 650ms</td>
+                <td style="padding:8px 12px;">Secondary LLM Prompt Classifier</td>
+                <td style="padding:8px 12px; color:#f87171;">&cross; Probabilistic (Jailbreak Susceptible)</td>
               </tr>
               <tr style="border-bottom:1px solid var(--border-subtle);">
-                <td style="padding:14px 16px; font-weight:600; color:var(--text-main);">NVIDIA NeMo Guardrails</td>
-                <td style="padding:14px 16px; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">180ms &ndash; 420ms</td>
-                <td style="padding:14px 16px;">Colang Flows &amp; Vector Embeddings</td>
-                <td style="padding:14px 16px; color:#f87171;">&cross; Semantic Drift Risk</td>
+                <td style="padding:8px 12px; font-weight:600; color:var(--text-main);">NVIDIA NeMo Guardrails</td>
+                <td style="padding:8px 12px; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">180ms &ndash; 420ms</td>
+                <td style="padding:8px 12px;">Colang Flows &amp; Vector Embeddings</td>
+                <td style="padding:8px 12px; color:#f87171;">&cross; Semantic Drift Risk</td>
               </tr>
               <tr>
-                <td style="padding:14px 16px; font-weight:600; color:var(--text-main);">Guardrails AI</td>
-                <td style="padding:14px 16px; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">95ms &ndash; 300ms</td>
-                <td style="padding:14px 16px;">Regex &amp; Remote API Validators</td>
-                <td style="padding:14px 16px; color:#f87171;">&cross; Vulnerable to Obfuscation</td>
+                <td style="padding:8px 12px; font-weight:600; color:var(--text-main);">Guardrails AI</td>
+                <td style="padding:8px 12px; font-family:'JetBrains Mono',monospace; color:var(--text-muted);">95ms &ndash; 300ms</td>
+                <td style="padding:8px 12px;">Regex &amp; Remote API Validators</td>
+                <td style="padding:8px 12px; color:#f87171;">&cross; Vulnerable to Obfuscation</td>
               </tr>
             </tbody>
           </table>
