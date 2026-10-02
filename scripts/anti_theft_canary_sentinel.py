@@ -18,10 +18,10 @@ from pathlib import Path
 # Proprietary Architectural Canary Constants
 BTP_CANARY_FINGERPRINT = "urn:btp:canary:f4e82b7c91a03d6e5a4b8c2f1e0d9b8a"
 BTP_PATENT_PRIORITY_DATE = "2026-08-24T00:00:00Z"
-BTP_PATENT_SPEC_FILE = "legal/US_PROVISIONAL_PATENT_SPECIFICATION.md"
+BTP_PATENT_SPEC_FILE = "docs/legal/US_PROVISIONAL_PATENT_SPECIFICATION.md"
 BTP_AUTHOR = "Itsub Alemayehu"
 BTP_ORGANIZATION = "Bartholomew Autonomous Systems"
-BTP_OFFICIAL_REPO = "https://github.com/bartholomew-ai/bartholomew"
+BTP_OFFICIAL_REPO = "https://github.com/ivegotahunnitonit/bartholomew"
 
 DIST_DIR = Path("dist")
 DOSSIER_FILE = DIST_DIR / "AUTOMATED_DMCA_TAKEDOWN_DOSSIER.json"
@@ -53,12 +53,16 @@ def scan_local_workspace() -> dict:
     findings = []
     
     files_to_check = [
+        "btp_guard/agent_core.py",
+        "packages/npm_package/agent_core.js",
         "src/btp_guard.py",
         "src/audit_merkle_tree.py",
         "src/container_sandbox.py",
         "src/hermetic_sandbox.py",
-        "legal/US_PROVISIONAL_PATENT_SPECIFICATION.md",
-        "INTELLECTUAL_PROPERTY_PROTECTION_PLAN.md"
+        "PATENTS.md",
+        "TRADEMARK.md",
+        "docs/legal/US_PROVISIONAL_PATENT_SPECIFICATION.md",
+        "docs/legal/Founder_IP_and_Nondisclosure_Agreement.md"
     ]
 
     for f in files_to_check:
