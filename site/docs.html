@@ -531,7 +531,9 @@
       <ul class="sidebar-nav">
         <li><a href="#mcp-security">MCP Verification Seal</a></li>
         <li><a href="#offline-verification">Ed25519 Receipts</a></li>
-        <li><a href="#compliance-dossier">SOC 2 &amp; EU AI Act Export</a></li>
+        <li><a href="#universal-schema-engine" class="sidebar-link">Universal Schema Engine</a>
+      <a href="#cross-ide-distribution" class="sidebar-link">Cross-IDE Distribution</a>
+      <a href="#compliance-dossier">SOC 2 &amp; EU AI Act Export</a></li>
       </ul>
     </aside>
 
@@ -1428,6 +1430,64 @@ $ btp-guard mcp-settle \
 
 
     
+      
+      <!-- Universal Schema Harmonizer & Dynamic Validation -->
+      <section id="universal-schema-engine" class="docs-section">
+        <h2 class="section-title">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#38bdf8;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Universal Dynamic Schema Engine &amp; AST Gating
+        </h2>
+        <p class="lead-p">
+          Seamlessly ingest, harmonize, and validate any tool schema across Anthropic Claude, OpenAI, Google Gemini, OpenAPI 3.x, and JSON Schema 2020-12 with zero manual adapter boilerplate. Executes in-process type validation, secret redaction, and destructive command interception in <strong>3.2 µs</strong>.
+        </p>
+
+        <div class="code-block-header">
+          <span class="code-lang">CLI Commands</span>
+          <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+        </div>
+        <pre class="code-block"><code># 1. Harmonize any arbitrary schema (Claude, OpenAI, Gemini, OpenAPI) to BTP Universal Contract:
+$ npx btp-guard schema harmonize ./my_tool_spec.json
+
+# 2. In-process sub-35µs dynamic schema &amp; AST invariant validation:
+$ npx btp-guard schema validate ./schema.json ./payload.json
+[PASS] Invariant Verified (&lt; 3.2 µs) - 0 vulnerabilities, secrets scrubbed in-flight
+
+# 3. Browse all 40 registered universal security tools in chosen format:
+$ npx btp-guard schema catalog --format=claude
+$ npx btp-guard schema catalog --format=openai
+$ npx btp-guard schema catalog --format=gemini</code></pre>
+      </section>
+
+      <!-- Cross-IDE Unified Distribution -->
+      <section id="cross-ide-distribution" class="docs-section">
+        <h2 class="section-title">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#a855f7;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Cross-IDE Unified Marketplace Distribution
+        </h2>
+        <p class="lead-p">
+          Single-command deployment and workspace immunization across Cursor, Windsurf, Claude Code, and VS Code.
+        </p>
+
+        <div class="code-block-header">
+          <span class="code-lang">1-Click Install Commands</span>
+          <button class="copy-btn" onclick="copySnippet(this)">Copy</button>
+        </div>
+        <pre class="code-block"><code># Cursor IDE:
+$ cursor --install-extension Bartholomew.bartholomew-guard-vscode
+
+# Windsurf Cascade:
+$ windsurf --install-extension Bartholomew.bartholomew-guard-vscode
+
+# Claude Code / Anthropic MCP:
+$ claude mcp add btp-guard npx -y btp-guard mcp-serve
+
+# VS Code / Open VSX:
+$ code --install-extension Bartholomew.bartholomew-guard-vscode
+
+# 1-Click Workspace Immunization (.cursorrules, CLAUDE.md, .windsurfrules):
+$ npx btp-guard arm</code></pre>
+      </section>
+
       <!-- Compliance & SOC 2 Section -->
       <section id="compliance-dossier" class="docs-section">
         

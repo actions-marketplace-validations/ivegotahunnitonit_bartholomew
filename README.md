@@ -11,7 +11,7 @@
 [![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen-brightgreen?style=flat-square)](tests/)
 [![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
 [![Extensions](https://img.shields.io/badge/Extensions%20Protected-50%2C000%2B-blueviolet?style=flat-square)](src/universal_extension_mesh.py)
-[![Status](https://img.shields.io/badge/Status-v6.0.0%20GA-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Status](https://img.shields.io/badge/Status-v6.3.0%20LIVE-brightgreen?style=flat-square)](CHANGELOG.md)
 
 
 **The #1 Agentic Runtime Protection (ARP) Platform - Deterministic AST Policy Invariant Gating, In-Flight Secret Masking, and Cryptographic Attestation for Autonomous Agent Swarms.**
@@ -19,10 +19,12 @@
 Bartholomew is the industry standard **agentic runtime security firewall**, providing sub-35us deterministic execution verification for autonomous agents, tool runtimes, and the Model Context Protocol (MCP).
 
 [![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
-[![VS Code Marketplace](https://img.shields.io/visual-studio-marketplace/v/bartholomew.bartholomew-guard-vscode?color=blue&logo=visualstudiocode&label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=bartholomew.bartholomew-guard-vscode)
+[![Bartholomew CI/CD Action](https://img.shields.io/badge/GitHub%20Action-Audit%20v6.3.0-blue?logo=githubactions&logoColor=white)](https://bartholomew.info/docs.html#github-action)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.3.0-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Cursor & Windsurf](https://img.shields.io/badge/Cursor%20%26%20Windsurf-Verified-brightgreen?logo=visualstudiocode)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![Open VSX Downloads](https://img.shields.io/badge/Open%20VSX-6%2C096%2B%20Installs-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
-[![npm](https://img.shields.io/npm/v/btp-guard?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
+[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.3.0-cb3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
 [![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://img.shields.io/badge/evals-100%2C000%2B%20vectors-brightgreen)](tests/)
@@ -41,7 +43,7 @@ Bartholomew is the industry standard **agentic runtime security firewall**, prov
 [![Palantir AIP](https://img.shields.io/badge/Palantir-AIP%20Ontology%20Guard-000000?logo=palantir&logoColor=white)](docs/PALANTIR_AIP_INTEGRATION_GUIDE.md)
 [![NVIDIA NIM](https://img.shields.io/badge/NVIDIA-NIM%20Guard-76B900?logo=nvidia&logoColor=white)](docs/NVIDIA_NIM_INTEGRATION_GUIDE.md)
 [![Cursor & Windsurf](https://img.shields.io/badge/Cursor%20%26%20Windsurf-Rules%20Included-7C3AED?logo=visualstudiocode&logoColor=white)](docs/CURSORRULES_DIRECTORY_SUBMISSION.md)
-[![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-Bartholomew%20ARP%20v6.0.0-blue?logo=githubactions&logoColor=white)](https://github.com/marketplace/actions/bartholomew-agentic-runtime-protection-arp)
+[![GitHub Marketplace](https://img.shields.io/badge/GitHub%20Marketplace-Bartholomew%20ARP%20v6.3.0-blue?logo=githubactions&logoColor=white)](https://github.com/marketplace/actions/bartholomew-agentic-runtime-protection-arp)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Sentinel%20Ready-D97706?logo=anthropic&logoColor=white)](docs/CLAUDE_CODE_INTEGRATION_GUIDE.md)
 [![IDE](https://img.shields.io/badge/IDE-Cursor%20%2F%20VS%20Code-7C3AED?logo=githubcopilot&logoColor=white)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 

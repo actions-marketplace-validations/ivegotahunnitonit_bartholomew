@@ -69,6 +69,15 @@ from .project_immunizer import (
     get_model_context_prompt,
 )
 
+from .agent_core import (
+    evaluate_and_remediate,
+    RemediationEnvelope,
+    create_agent_delegation_passport,
+    verify_agent_delegation_passport,
+    guard_mcp_tool_execution,
+    sanitize_agent_context,
+)
+
 # Aliases for convenience
 BondedAgentWarrantyFund = WarrantyFundManager
 MCPClearinghouse = MCPClearinghouseGateway
@@ -77,6 +86,12 @@ RedTeamHarness = RedTeamScanner
 __version__ = "6.3.0"
 
 __all__ = [
+    "evaluate_and_remediate",
+    "RemediationEnvelope",
+    "create_agent_delegation_passport",
+    "verify_agent_delegation_passport",
+    "guard_mcp_tool_execution",
+    "sanitize_agent_context",
     "Guard",
     "WarrantyFundManager",
     "BondedAgentWarrantyFund",
@@ -137,3 +152,5 @@ __all__ = [
     "evaluate_and_help",
     "__version__",
 ]
+
+from .universal_schema_adapter import UniversalSchemaAdapter

@@ -151,6 +151,26 @@
         "command": "bartholomew.runInSandbox",
         "title": "Bartholomew: Run in Kernel Sandbox",
         "category": "Bartholomew"
+      },
+      {
+        "command": "bartholomew.exportAuditDossier",
+        "title": "Bartholomew: Export Machine-Signed SOC 2 & EU AI Act Audit Dossier",
+        "icon": "$(verified-filled)"
+      },
+      {
+        "command": "bartholomew.harmonizeToolSchema",
+        "title": "Bartholomew: Harmonize Active Tool Schema (Claude, OpenAI, Gemini, MCP)",
+        "icon": "$(symbol-interface)"
+      },
+      {
+        "command": "bartholomew.showSecurityMenu",
+        "title": "Bartholomew: Open Security Control Plane & Actions Menu",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "bartholomew.runRedTeamBenchmark",
+        "title": "Bartholomew: Run Red-Team Agent Fuzzing Benchmark",
+        "icon": "$(beaker)"
       }
     ],
     "viewsContainers": {

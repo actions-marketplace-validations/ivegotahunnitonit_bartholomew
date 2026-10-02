@@ -2,7 +2,7 @@
   "name": "bartholomew-keystone",
   "displayName": "Bartholomew Keystone - Agent Capabilities and Passkeys (Cursor, Claude)",
   "description": "Cryptographically signed clearance tokens granting autonomous agents fine-grained access across files, commands, network, and spend budgets in Cursor, Claude Desktop, and VS Code.",
-  "version": "5.4.35",
+  "version": "6.3.0",
   "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "MIT",

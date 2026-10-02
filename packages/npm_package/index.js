@@ -719,3 +719,31 @@ jobs:
     grade: health.grade
   };
 }
+
+
+// Export Dynamic Universal Schema Engine
+export {
+  SUPPORTED_SCHEMA_FORMATS,
+  detectSchemaFormat,
+  harmonizeUniversalSchema,
+  harmonizeOpenApiSpec,
+  exportToolSchema,
+  validateToolPayload
+} from './schema_engine.js';
+
+
+// Export Enterprise Audit Vault & Compliance Evidence Engine
+export {
+  computeMerkleRoot,
+  generateAuditPack,
+  verifyAuditPack
+} from './audit_vault.js';
+
+// Export Agent-Centric Core Engine (BTP v6.3.0)
+export {
+  evaluateAndRemediate,
+  createAgentDelegationPassport,
+  verifyAgentDelegationPassport,
+  guardMcpToolExecution,
+  sanitizeAgentContext
+} from './agent_core.js';

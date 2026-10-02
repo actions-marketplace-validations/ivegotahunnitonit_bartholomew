@@ -1,0 +1,68 @@
+{
+  "report_id": "UR-07943BA383CE",
+  "timestamp_utc": "2026-10-02T21:27:14.704825+00:00",
+  "monetization_readiness_status": "PHASE_1_USER_BASE_EXPANSION_AND_IP_LOCKDOWN",
+  "summary": {
+    "total_verified_distributions": 16551,
+    "estimated_monthly_active_users_mau": 10660,
+    "weekly_developer_run_velocity": 3378,
+    "monetization_threshold_target": 25000,
+    "progress_to_monetization_target_pct": 66.2,
+    "recommendation": "Protect intellectual property and accelerate distribution. Do not place hard paywalls until user base reaches 25,000+ verified active developers."
+  },
+  "breakdown_by_channel": {
+    "open_vsx_marketplace": {
+      "channel": "Open VSX Marketplace (VS Code / VSCodium / Cursor / Theia / Gitpod)",
+      "extensions": {
+        "bartholomew-guard-vscode": {
+          "status": "ONLINE",
+          "version": "5.4.36",
+          "downloads": 5217,
+          "last_updated": "2026-09-30T16:49:16.405491Z",
+          "url": "https://open-vsx.org/extension/bartholomew/bartholomew-guard-vscode"
+        },
+        "bartholomew-keystone": {
+          "status": "ONLINE",
+          "version": "5.4.35",
+          "downloads": 2690,
+          "last_updated": "2026-09-30T16:49:20.453006Z",
+          "url": "https://open-vsx.org/extension/bartholomew/bartholomew-keystone"
+        }
+      },
+      "total_downloads": 7907
+    },
+    "npm_registry": {
+      "channel": "Node.js npm Registry (btp-guard)",
+      "package": "btp-guard",
+      "weekly_downloads": 1437,
+      "monthly_active_downloads": 4364,
+      "ytd_total_downloads": 4511,
+      "registry_url": "https://www.npmjs.com/package/btp-guard"
+    },
+    "pypi_repository": {
+      "channel": "Python PyPI Index (btp-guard)",
+      "package": "btp-guard",
+      "daily_downloads": 49,
+      "weekly_downloads": 993,
+      "monthly_active_downloads": 2738,
+      "pypi_url": "https://pypi.org/project/btp-guard/"
+    },
+    "github_ecosystem": {
+      "channel": "GitHub Community (ivegotahunnitonit/bartholomew)",
+      "stars": 1,
+      "forks": 0,
+      "open_issues": 0,
+      "total_tagged_releases": 24,
+      "direct_release_asset_downloads": 26
+    }
+  },
+  "intellectual_property_status": {
+    "uspto_patent_pending": true,
+    "patent_priority_date": "2026-08-24",
+    "patent_spec_file": "docs/legal/US_PROVISIONAL_PATENT_SPECIFICATION.md",
+    "patents_notice": "PATENTS.md",
+    "trademark_notice": "TRADEMARK.md",
+    "dmca_canary_sentinel": "scripts/anti_theft_canary_sentinel.py",
+    "license_reservation_clause": "ACTIVE_IN_LICENSE"
+  }
+}

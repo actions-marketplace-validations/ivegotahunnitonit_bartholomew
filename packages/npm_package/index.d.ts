@@ -171,3 +171,69 @@ export function getModelContextPrompt(workspaceRoot?: string, modelTarget?: stri
  * and policy files for active workspace.
  */
 export function immunizeProject(workspaceRoot?: string, options?: { force?: boolean }): ImmunizeResult;
+
+
+export interface UniversalToolContract {
+  name: string;
+  category: "ast_firewall" | "secret_vault" | "keystone" | "universal_schema" | "compliance";
+  desc: string;
+  latency_us: number;
+  scope: string;
+  inputSchema: Record<string, any>;
+  sourceFormat: string;
+}
+
+export interface PayloadValidationResult {
+  valid: boolean;
+  allowed: boolean;
+  astVeto: boolean;
+  reason: string;
+  errors: string[];
+  latency_us: number;
+  redactionCount: number;
+  sanitizedPayload: Record<string, any>;
+}
+
+export interface AuditDossier {
+  "@context": string;
+  type: string;
+  protocol_version: string;
+  audit_certificate_id: string;
+  timestamp_utc: string;
+  compliance_score: number;
+  compliance_grade: string;
+  auditor_authority: string;
+  public_key_hex: string;
+  frameworks: string[];
+  controls_matrix: any[];
+  benchmark_evidence: any;
+  evidence_ledger: any[];
+  merkle_tree_proof: {
+    leaves_count: number;
+    merkle_root: string;
+    hash_algorithm: string;
+    canonicalization: string;
+  };
+  content_digest_sha256: string;
+  cryptographic_signature: string;
+}
+
+export interface AuditVerificationResult {
+  ok: boolean;
+  score?: number;
+  grade?: string;
+  protocol?: string;
+  controls_verified?: number;
+  merkle_root?: string;
+  error?: string;
+}
+
+export function detectSchemaFormat(raw: any): string;
+export function harmonizeUniversalSchema(raw: any, options?: any): UniversalToolContract;
+export function harmonizeOpenApiSpec(spec: any, options?: any): UniversalToolContract[];
+export function exportToolSchema(tool: any, targetFormat?: string): any;
+export function validateToolPayload(toolOrSchema: any, payload?: any, options?: any): PayloadValidationResult;
+
+export function computeMerkleRoot(leaves: any[]): string;
+export function generateAuditPack(options?: any): AuditDossier;
+export function verifyAuditPack(dossier: any): AuditVerificationResult;

@@ -116,6 +116,14 @@
           "destination": "/telemetry.html"
         },
         {
+          "source": "/whitepaper",
+          "destination": "/whitepaper.html"
+        },
+        {
+          "source": "/whitepaper.html",
+          "destination": "/whitepaper.html"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
@@ -296,6 +304,14 @@
         {
           "source": "/leaderboard.html",
           "destination": "/leaderboard.html"
+        },
+        {
+          "source": "/whitepaper",
+          "destination": "/whitepaper.html"
+        },
+        {
+          "source": "/whitepaper.html",
+          "destination": "/whitepaper.html"
         },
         {
           "source": "**",
