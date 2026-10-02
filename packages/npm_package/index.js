@@ -738,3 +738,12 @@ export {
   generateAuditPack,
   verifyAuditPack
 } from './audit_vault.js';
+
+// Export Agent-Centric Core Engine (BTP v6.3.0)
+export {
+  evaluateAndRemediate,
+  createAgentDelegationPassport,
+  verifyAgentDelegationPassport,
+  guardMcpToolExecution,
+  sanitizeAgentContext
+} from './agent_core.js';
