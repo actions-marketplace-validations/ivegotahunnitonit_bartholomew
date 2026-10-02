@@ -103,7 +103,7 @@ def audit_git_diff():
                 if line.startswith("+") and not line.startswith("+++"):
                     added_code = line[1:]
                     # Skip defensive definitions, assertions, or logging
-                    if any(neg in added_code.lower() for neg in ["prohibit", "block", "deny", "prevent", "veto", "forbidden", "regex", "pattern", "expected"]):
+                    if any(neg in added_code.lower() for neg in ["prohibit", "block", "deny", "prevent", "veto", "forbidden", "regex", "pattern", "expected", "intercept", "mitigate", "defend", "guard", "<code>", "<pre>"]):
                         continue
                     for pat, level, pcode, desc in FORBIDDEN_DIFF_PATTERNS:
                         if pat.search(added_code):

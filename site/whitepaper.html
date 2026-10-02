@@ -472,6 +472,98 @@
       </div>
     </section>
 
+    
+    <!-- Enterprise Pilot Request & License Key Generator -->
+    <section id="pilot-license-generator" style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 24px; margin-top: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <span class="meta-tag" style="margin-bottom: 4px;">Instant Activation</span>
+          <h2 style="font-size: 1.5rem; margin-top: 0; border: none; padding: 0;">6. Enterprise Pilot Evaluation &amp; License Generator</h2>
+        </div>
+        <span style="font-family: var(--font-mono); font-size: 0.75rem; background: rgba(16, 185, 129, 0.15); color: var(--emerald); border: 1px solid rgba(16, 185, 129, 0.4); padding: 4px 10px; border-radius: 9999px;">
+          ● 30-Day Air-Gapped Evaluation
+        </span>
+      </div>
+
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+        Issue a cryptographically attested, single-tenant 30-day trial license token for your internal security team to test sub-35µs AST protection against autonomous coding agents.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <div>
+          <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:6px;">ORGANIZATION NAME</label>
+          <input id="pilotOrg" type="text" placeholder="Acme Financial Corp" value="Acme Financial Corp" style="width:100%; background:#020617; border:1px solid var(--border); border-radius:6px; color:#fff; padding:10px 12px; font-family:var(--font-sans); font-size:0.9rem;">
+        </div>
+        <div>
+          <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:6px;">SECURITY CONTACT EMAIL</label>
+          <input id="pilotEmail" type="email" placeholder="ciso@acmefinancial.com" value="ciso@acmefinancial.com" style="width:100%; background:#020617; border:1px solid var(--border); border-radius:6px; color:#fff; padding:10px 12px; font-family:var(--font-sans); font-size:0.9rem;">
+        </div>
+        <div>
+          <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:6px;">TARGET IDE / RUNTIME</label>
+          <select id="pilotIDE" style="width:100%; background:#020617; border:1px solid var(--border); border-radius:6px; color:#fff; padding:10px 12px; font-family:var(--font-sans); font-size:0.9rem;">
+            <option value="Cursor & Windsurf IDEs">Cursor &amp; Windsurf IDEs</option>
+            <option value="Claude Code / Desktop">Claude Code / Claude Desktop</option>
+            <option value="VS Code & Copilot">VS Code &amp; GitHub Copilot</option>
+            <option value="LangChain & CrewAI Swarms">LangChain &amp; CrewAI Swarms</option>
+            <option value="Self-Hosted Air-Gapped SCIF">Self-Hosted Air-Gapped SCIF</option>
+          </select>
+        </div>
+        <div>
+          <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:6px;">EVALUATION SEATS</label>
+          <select id="pilotSeats" style="width:100%; background:#020617; border:1px solid var(--border); border-radius:6px; color:#fff; padding:10px 12px; font-family:var(--font-sans); font-size:0.9rem;">
+            <option value="10">10 Developer Seats</option>
+            <option value="25" selected>25 Developer Seats</option>
+            <option value="100">100 Enterprise Seats</option>
+            <option value="Unlimited">Enterprise Site License</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:24px;">
+        <button onclick="generatePilotLicense()" class="btn btn-primary" style="padding:10px 20px;">
+          ⚡ Generate 30-Day Evaluation License
+        </button>
+        <button onclick="dispatchPilotInquiry()" class="btn btn-secondary" style="padding:10px 20px;">
+          ✉️ Request CISO Concierge Onboarding
+        </button>
+      </div>
+
+      <!-- Generated License Output Container -->
+      <div id="licenseResultBox" style="display:none; background:#020617; border:1px solid rgba(16, 185, 129, 0.4); border-radius:8px; padding:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <span style="font-family:var(--font-mono); font-size:0.8rem; color:var(--emerald); font-weight:700;">
+            ✓ EVALUATION LICENSE ACTIVATION TOKEN GENERATED
+          </span>
+          <button onclick="copyPilotToken()" class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;">
+            📋 Copy Token
+          </button>
+        </div>
+
+        <div style="background:rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:12px; font-family:var(--font-mono); font-size:0.75rem; color:#38bdf8; word-break:break-all; margin-bottom:16px;" id="licenseTokenDisplay">
+          btp_live_eval_...
+        </div>
+
+        <div style="margin-top:16px;">
+          <label style="display:block; font-size:0.75rem; font-family:var(--font-mono); color:var(--text-muted); margin-bottom:6px;">
+            1-LINE WORKSPACE ACTIVATION COMMAND (.env / terminal)
+          </label>
+          <div style="position:relative;">
+            <pre id="licenseActivationCmd" style="background:#090d16; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:12px; font-family:var(--font-mono); font-size:0.75rem; color:#a7f3d0; overflow-x:auto;">export BARTHOLOMEW_ENTERPRISE_KEY="btp_live_eval_..."</pre>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:16px; flex-wrap:wrap;">
+          <button onclick="downloadSignedCertificate()" class="btn btn-primary" style="font-size:0.75rem; padding:6px 14px;">
+            📥 Download Signed Evaluation Certificate (.json)
+          </button>
+          <button onclick="copyDirectivesSnippet()" class="btn btn-secondary" style="font-size:0.75rem; padding:6px 14px;">
+            📋 Copy Agent Directives (.cursorrules / CLAUDE.md)
+          </button>
+        </div>
+      </div>
+    </section>
+
+
     <!-- Conclusion & Contact -->
     <section style="margin-top:40px; padding-top:24px; border-top:1px solid var(--border);">
       <p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">

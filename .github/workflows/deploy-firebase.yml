@@ -55,6 +55,7 @@ jobs:
           test -f site/sim-lab.html || { echo 'Missing site/sim-lab.html'; exit 1; }
           test -f site/telemetry.html || { echo 'Missing site/telemetry.html'; exit 1; }
           test -f site/verify.html || { echo 'Missing site/verify.html'; exit 1; }
+          test -f site/whitepaper.html || { echo 'Missing site/whitepaper.html'; exit 1; }
           test -f site/llms.txt || { echo 'Missing site/llms.txt'; exit 1; }
           test -f site/llms-full.txt || { echo 'Missing site/llms-full.txt'; exit 1; }
           test -f site/robots.txt || { echo 'Missing site/robots.txt'; exit 1; }
