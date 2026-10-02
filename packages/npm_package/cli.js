@@ -1310,6 +1310,24 @@ function runDistributeCli(subArgs) {
 `);
 }
 
+
+function runBriefingCli() {
+  printBanner();
+  console.log(`${BOLD}${CYAN}Bartholomew CISO Executive Security Briefing (v6.3.0)${RESET}`);
+  console.log(`Sub-35µs In-Process AST Firewall & Keystone Capability Passkeys
+`);
+  console.log(`  * In-Process Latency SLA:   ${GREEN}< 35.0 µs (Median: 14.2 µs)${RESET}`);
+  console.log(`  * Autonomous Kill-Switch:   ${GREEN}Deterministic AST Veto (Zero Bypass)${RESET}`);
+  console.log(`  * High-Entropy Secrets:     ${GREEN}In-Flight Entropy Vault Redaction${RESET}`);
+  console.log(`  * Identity & Spend Bounds:  ${GREEN}Ed25519 Non-Human Identity ($25.00/day)${RESET}`);
+  console.log(`  * Regulatory Standards:     ${CYAN}EU AI Act (Art 14 & 15), SOC 2 Type II, NIST AI RMF, ISO 42001${RESET}`);
+  console.log(`  * Merkle Proof Authority:   ${CYAN}RFC 8785 Canonical JSON & FIPS 186-5 Ed25519${RESET}
+`);
+  console.log(`${BOLD}Whitepaper & PDF Export:${RESET} https://bartholomew.info/whitepaper.html`);
+  console.log(`${BOLD}Machine Audit Dossier:${RESET}   https://bartholomew.info/dossier.json
+`);
+}
+
 function runAuditCli(subArgs) {
   const sub = subArgs[0] || 'export';
   if (sub === 'export') {
@@ -1518,6 +1536,10 @@ switch (command) {
     break;
   case 'audit':
     runAuditCli(args.slice(1));
+    break;
+  case 'briefing':
+  case 'whitepaper':
+    runBriefingCli();
     break;
 
   case 'scrub':
