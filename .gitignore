@@ -200,3 +200,5 @@ marketplace_ready/
 # Keystone local capability passkeys
 .btp_keystone.json
 .btp/keystone.json
+
+bartholomew_pr_audit.json
