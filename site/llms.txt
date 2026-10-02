@@ -3,11 +3,14 @@
 > The #1 Agentic Runtime Protection (ARP) Platform. Deterministic In-Process AST Safety Invariants, Secret Scrubbing, Compute Silicon Provenance, and SOC 2 Cryptographic Proofs for AI Agents.
 
 - Website: https://bartholomew.info
+- CISO Executive Security Whitepaper: https://bartholomew.info/whitepaper.html
+- Machine Audit Dossier (SOC 2 / EU AI Act): https://bartholomew.info/dossier.json
 - Machine-Readable Agent Manifest: https://bartholomew.info/agent-manifest.json
 - OpenAPI Specification: https://bartholomew.info/openapi.json
 - Verified Telemetry & Threat Logs: https://bartholomew.info/telemetry.html
 - Developer Documentation: https://bartholomew.info/docs
 - Full Context Specification: https://bartholomew.info/llms-full.txt
+- GitHub README Shield Badge: https://bartholomew.info/api/v1/badge/shield?agent=cursor&status=immunized
 
 Bartholomew Guard is an ultra-fast (<35 microsecond) execution firewall that sits in caller memory between autonomous AI agents (Gemini, Claude, Cursor, Copilot, LangGraph, CrewAI, AutoGen, OpenAI Swarm) and real-world tools (bash, filesystem, SQL, network, MCP). It evaluates proposed tool calls before execution, blocking catastrophic operations, scrubbing sensitive credentials, and generating tamper-evident RFC 8785 Ed25519 Merkle receipts.
 
@@ -58,6 +61,18 @@ In autonomous systems, the AI model/agent is the primary actor. Traditional infr
 | **Audit Compliance** | **RFC 8785 Ed25519 Merkle Root Cryptographic Proofs** | Unstructured text logs | Centralized HTTP access logs |
 
 ## Quickstart
+
+### 0. Sub-5ms Git Pre-Commit Sentinel & Badges (v6.3.0)
+```bash
+# Install local git pre-commit sentinel (< 5ms AST gate):
+npx btp-guard hook install
+
+# Generate verified repository shield for your README.md:
+npx btp-guard badge --add-to-readme
+
+# Launch CISO Executive Briefing & Regulatory Crosswalk:
+npx btp-guard briefing
+```
 
 ### 1. One-Command Project Immunization
 ```bash

@@ -3776,6 +3776,120 @@
           </div>
         </div>
 
+      
+      <!-- ================================================================= -->
+      <!-- BARTHOLOMEW REPO BADGE GENERATOR & SPEND CIRCUIT BREAKER SECTION -->
+      <!-- ================================================================= -->
+      <div style="margin: 36px 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px; position: relative; z-index: 2;">
+        
+        <!-- 1. Viral GitHub Repository Badge Generator -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 12px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="font-family:var(--font-mono); font-size:0.75rem; font-weight:800; color:#38bdf8; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:8px;">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>REPOSITORY IMMUNIZATION BADGE</span>
+            </div>
+            <span style="font-family:var(--font-mono); font-size:0.68rem; background:rgba(56, 189, 248, 0.15); color:#38bdf8; padding:3px 8px; border-radius:9999px; border:1px solid rgba(56, 189, 248, 0.3);">
+              shields.io verified
+            </span>
+          </div>
+
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">
+            Add Bartholomew's verified security shield to your project's <code>README.md</code> to publicly attest to zero-trust AST protection and SOC 2 compliance.
+          </p>
+
+          <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;">
+            <button onclick="selectBadgeAgent('cursor')" class="badge-agent-btn active" id="btnAgentCursor" style="background:#0284c7; color:#fff; border:none; border-radius:4px; padding:4px 10px; font-family:var(--font-mono); font-size:0.7rem; cursor:pointer;">Cursor</button>
+            <button onclick="selectBadgeAgent('claude')" class="badge-agent-btn" id="btnAgentClaude" style="background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 10px; font-family:var(--font-mono); font-size:0.7rem; cursor:pointer;">Claude Code</button>
+            <button onclick="selectBadgeAgent('windsurf')" class="badge-agent-btn" id="btnAgentWindsurf" style="background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 10px; font-family:var(--font-mono); font-size:0.7rem; cursor:pointer;">Windsurf</button>
+            <button onclick="selectBadgeAgent('copilot')" class="badge-agent-btn" id="btnAgentCopilot" style="background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 10px; font-family:var(--font-mono); font-size:0.7rem; cursor:pointer;">Copilot</button>
+            <button onclick="selectBadgeAgent('crewai')" class="badge-agent-btn" id="btnAgentCrewai" style="background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid rgba(255,255,255,0.1); border-radius:4px; padding:4px 10px; font-family:var(--font-mono); font-size:0.7rem; cursor:pointer;">CrewAI</button>
+          </div>
+
+          <!-- Live Badge Preview -->
+          <div style="background:#020617; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:12px; margin-bottom:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;" id="badgePreviewContainer">
+            <img id="previewShieldImg" src="/api/v1/badge/shield?agent=cursor&status=immunized" alt="Bartholomew Protected" onerror="this.onerror=null; this.src='https://img.shields.io/badge/Bartholomew-Immunized-0284c7?logo=shield';" style="height:20px;">
+            <img src="https://img.shields.io/badge/AST_Sentinel-%3C35%C2%B5s_Armed-38bdf8?logo=shield" alt="AST Sentinel" style="height:20px;">
+            <img src="https://img.shields.io/badge/Compliance-SOC2_Type_II-10b981" alt="SOC 2" style="height:20px;">
+          </div>
+
+          <!-- Snippet Box -->
+          <div style="position:relative; margin-bottom:12px;">
+            <pre id="badgeSnippetText" style="background:#090d16; border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:10px; font-family:var(--font-mono); font-size:0.7rem; color:#38bdf8; overflow-x:auto; white-space:pre-wrap;">[![Bartholomew Protected](https://bartholomew.info/api/v1/badge/shield?agent=cursor&status=immunized)](https://bartholomew.info/verify)</pre>
+          </div>
+
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button onclick="copyBadgeSnippet()" style="background:#0284c7; color:#fff; border:none; font-family:var(--font-mono); font-size:0.72rem; font-weight:700; padding:6px 14px; border-radius:5px; cursor:pointer;">
+              📋 Copy Markdown
+            </button>
+            <button onclick="copyPreCommitCmd()" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--text); font-family:var(--font-mono); font-size:0.72rem; padding:6px 14px; border-radius:5px; cursor:pointer;">
+              ⚡ Copy Git Pre-Commit Hook (Sub-5ms)
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Live Spend Circuit Breaker & Cost Governor Telemetry -->
+        <div style="background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="font-family:var(--font-mono); font-size:0.75rem; font-weight:800; color:#34d399; text-transform:uppercase; letter-spacing:0.08em; display:flex; align-items:center; gap:8px;">
+              <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>SPEND CIRCUIT BREAKER &amp; COST GOVERNOR</span>
+            </div>
+            <span id="circuitBreakerBadge" style="font-family:var(--font-mono); font-size:0.68rem; background:rgba(16, 185, 129, 0.15); color:#34d399; padding:3px 8px; border-radius:9999px; border:1px solid rgba(16, 185, 129, 0.4);">
+              ● ARMED &amp; MONITORING
+            </span>
+          </div>
+
+          <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:14px; line-height:1.5;">
+            Autonomous kill-switch preventing runaway AI agent loops from burning credit cards. Freezes execution in &lt;15µs when spend ceiling is breached.
+          </p>
+
+          <!-- Spend Progress Bar -->
+          <div style="margin-bottom:14px;">
+            <div style="display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:0.72rem; margin-bottom:4px;">
+              <span style="color:var(--text-muted);">Session Budget: <strong id="spendValueDisplay" style="color:#f8fafc;">$1.42</strong> / $5.00 ceiling</span>
+              <span id="spendPctDisplay" style="color:#34d399; font-weight:700;">28.4%</span>
+            </div>
+            <div style="background:#020617; border-radius:9999px; height:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.1);">
+              <div id="spendProgressBar" style="width:28.4%; height:100%; background:linear-gradient(90deg, #10b981, #38bdf8); transition:all 0.4s ease;"></div>
+            </div>
+          </div>
+
+          <!-- Multi-Model Active Rate Cards -->
+          <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; margin-bottom:16px;">
+            <div style="background:#020617; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px 10px;">
+              <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted);">Claude 3.5 Sonnet</div>
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#f8fafc; font-weight:700;">$3.00 / 15.00 <span style="font-size:0.65rem; color:#34d399;">(124 t/s)</span></div>
+            </div>
+            <div style="background:#020617; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px 10px;">
+              <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted);">GPT-4o Omnimodel</div>
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#f8fafc; font-weight:700;">$2.50 / 10.00 <span style="font-size:0.65rem; color:var(--text-muted);">(Standby)</span></div>
+            </div>
+            <div style="background:#020617; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px 10px;">
+              <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted);">Gemini 1.5 Pro</div>
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#f8fafc; font-weight:700;">$1.25 / 5.00 <span style="font-size:0.65rem; color:#38bdf8;">(89 t/s)</span></div>
+            </div>
+            <div style="background:#020617; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:8px 10px;">
+              <div style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted);">DeepSeek R1 Distill</div>
+              <div style="font-family:var(--font-mono); font-size:0.75rem; color:#f8fafc; font-weight:700;">$0.55 / 2.19 <span style="font-size:0.65rem; color:#c084fc;">(310 t/s)</span></div>
+            </div>
+          </div>
+
+          <!-- Trip Simulation -->
+          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+            <button id="btnSimulateTrip" onclick="simulateRunawayLoopAttack()" style="background:rgba(239, 68, 68, 0.15); border:1px solid rgba(239, 68, 68, 0.4); color:#f87171; font-family:var(--font-mono); font-size:0.72rem; font-weight:700; padding:6px 14px; border-radius:5px; cursor:pointer;">
+              ⚡ Simulate Runaway Loop Attack ($15.00)
+            </button>
+            <button id="btnResetCircuit" onclick="resetCircuitBreaker()" style="display:none; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:var(--text); font-family:var(--font-mono); font-size:0.72rem; padding:6px 14px; border-radius:5px; cursor:pointer;">
+              ↺ Reset Circuit Breaker
+            </button>
+            <span id="circuitTripReceipt" style="font-family:var(--font-mono); font-size:0.68rem; color:#f87171; display:none;"></span>
+          </div>
+        </div>
+
+      </div>
+
+
       <div class="footer-seals-box" style="margin-top: 32px; clear: both;">
         <div class="footer-seals-inner">
           <div>

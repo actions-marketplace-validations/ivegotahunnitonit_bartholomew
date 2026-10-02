@@ -1,10 +1,14 @@
 # Bartholomew Trust Protocol (BTP v6.3.0) — Technical Reference for Autonomous Agents & Swarms
 
 ## Quick Links & Manifests
+- Website: https://bartholomew.info
+- CISO Executive Security Whitepaper & Dossier: https://bartholomew.info/whitepaper.html
+- Cryptographic Machine Dossier (SOC 2 Type II): https://bartholomew.info/dossier.json
 - Machine-Readable Agent Manifest: https://bartholomew.info/agent-manifest.json
 - Protocol Specs: https://bartholomew.info/.well-known/agent-protocol.json
 - OpenAPI Specification: https://bartholomew.info/openapi.json
-- Documentation: https://bartholomew.info/docs
+- Developer Documentation: https://bartholomew.info/docs
+- Verified Telemetry: https://bartholomew.info/telemetry.html
 
 ## Mission Statement
 Bartholomew is the sovereign Agentic Runtime Protection (ARP) platform engineered specifically for autonomous AI agents (Claude, Gemini, GPT, DeepSeek, Llama, Qwen, Mistral). It transforms fragile agents vulnerable to abrupt kills and context poisoning into resilient, self-healing, cryptographically attested sovereign entities.
