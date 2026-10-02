@@ -747,3 +747,11 @@ export {
   guardMcpToolExecution,
   sanitizeAgentContext
 } from './agent_core.js';
+
+// Export Llama.cpp & Ollama Local AI Gateway (BTP v6.3.0)
+export {
+  evaluateLocalToolCall,
+  sanitizeLocalRequestBody,
+  inspectAndFilterResponse,
+  createGuardedLlamaProxy
+} from './llamacpp.js';

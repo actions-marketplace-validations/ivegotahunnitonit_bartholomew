@@ -1,5 +1,37 @@
 #!/usr/bin/env node
 
+function runLlamaWrapCli(subArgs) {
+  let upstream = 'http://127.0.0.1:8080';
+  let port = 8081;
+  let host = '127.0.0.1';
+
+  for (let i = 0; i < subArgs.length; i++) {
+    if (subArgs[i] === '--upstream' && subArgs[i + 1]) upstream = subArgs[++i];
+    if (subArgs[i] === '--port' && subArgs[i + 1]) port = parseInt(subArgs[++i], 10);
+    if (subArgs[i] === '--host' && subArgs[i + 1]) host = subArgs[++i];
+  }
+
+  import('./llamacpp.js').then(({ createGuardedLlamaProxy }) => {
+    console.log(`\n======================================================================`);
+    console.log(`  ${BOLD}${GREEN}BARTHOLOMEW LLAMA.CPP & OLLAMA LOCAL GATEWAY (BTP v6.3.0)${RESET}`);
+    console.log(`======================================================================`);
+    console.log(`  Upstream Runtime  : ${CYAN}${upstream}${RESET}`);
+    console.log(`  Guarded Endpoint  : ${BOLD}http://${host}:${port}/v1${RESET}`);
+    console.log(`  AST Evaluation    : ${GREEN}<35 microseconds (In-Process)${RESET}`);
+    console.log(`  Air-Gapped        : ${MAGENTA}100% Offline (Zero Cloud Dependency)${RESET}`);
+    console.log(`  Remediation       : ${YELLOW}Structured JSON Recovery Envelopes${RESET}`);
+    console.log(`======================================================================\n`);
+
+    const proxy = createGuardedLlamaProxy({ upstreamUrl: upstream, listenPort: port, host });
+    proxy.start(() => {
+      console.log(`[*] [BTP] Gated proxy listening on http://${host}:${port}`);
+      console.log(`[*] Point Continue.dev, Open WebUI, Cursor, or AutoGen to this endpoint.`);
+      console.log(`[*] Press Ctrl+C to terminate gateway.`);
+    });
+  });
+}
+
+
 import fs from 'fs';
 import path from 'path';
 import os from 'os';
@@ -1708,6 +1740,11 @@ switch (command) {
   case 'hook':
     runHookCli(args.slice(1));
     break;
+  case 'wrap':
+  case 'llamacpp':
+  case 'ollama':
+    runLlamaWrapCli(args.slice(1));
+    break;
   case 'badge':
     runBadgeCli(args.slice(1));
     break;
@@ -1730,6 +1767,7 @@ switch (command) {
   case '-h':
     printBanner();
     console.log(`Usage:
+    ${BOLD}npx btp-guard wrap [--upstream url] [--port 8081]${RESET} Wrap llama.cpp/Ollama in <35µs AST Guard
   ${BOLD}npx btp-guard subnet${RESET}                Run autonomous agent crypto subnet validator node\n  ${BOLD}npx btp-guard depin${RESET}                 Harvest DePIN idle compute & security proof yield\n  ${BOLD}npx btp-guard telemetry${RESET}             Open authenticated node-isolated threat telemetry vault\n  ${BOLD}npx btp-guard intel${RESET}                 Workspace Security Audit & AST Posture Report
   ${BOLD}npx btp-guard arm${RESET}                   Immunize workspace, arm pre-commit & AI model rules
   ${BOLD}npx btp-guard protect${RESET}               Alias for arm
