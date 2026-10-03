@@ -11,7 +11,6 @@ import hashlib
 import time
 from typing import Dict, Any, List, Optional
 from src.audit_merkle_tree import AuditMerkleTree
-from src.hawking_information_preservation_engine import HolographicEventHorizonPreserver
 
 
 class ComplianceReportGenerator:
