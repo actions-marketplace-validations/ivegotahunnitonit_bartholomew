@@ -4642,6 +4642,8 @@ def main():
 
     td_p = subparsers.add_parser("trust-demo", help="Run reproducible demonstration of allowed, blocked, and non-covered actions")
     pipe_p = subparsers.add_parser("pipeline", help="Display customer discovery interviews and paid pilot pipeline")
+    bc_p = subparsers.add_parser("broadcast", help="Display developer community outreach and broadcast templates")
+    bc_p.add_argument("--channel", default="all", choices=["all", "hn", "reddit", "discord", "x"], help="Target broadcast channel")
 
     a2a_p = subparsers.add_parser("a2a-outreach", help="Autonomous Agent-to-Agent pilot campaign dispatch")
 
@@ -5483,6 +5485,9 @@ def main():
     elif args.command == "pipeline":
         from btp_guard.interview_pipeline import render_pipeline_table
         render_pipeline_table()
+    elif args.command == "broadcast":
+        from btp_guard.community_broadcast import render_broadcasts
+        render_broadcasts(getattr(args, "channel", "all"))
     elif args.command == "a2a-outreach":
         from btp_guard.a2a_pilot_agent import render_a2a_campaign_status
         render_a2a_campaign_status()
