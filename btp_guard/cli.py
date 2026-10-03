@@ -4655,6 +4655,8 @@ def main():
     pilot_p.add_argument("--info", action="store_true", help="Display pilot terms and pricing")
     pilot_p.add_argument("--enroll", action="store_true", help="Initiate team pilot enrollment")
 
+    a2a_p = subparsers.add_parser("a2a-outreach", help="Autonomous Agent-to-Agent pilot campaign dispatch")
+
     cp_p = subparsers.add_parser("control-plane", help="Unified Fleet Control Plane, Global Reach, & Service Ledger")
     
     gw_p = subparsers.add_parser("gateway", help="Bartholomew Universal Agent Gateway (:8081)")
@@ -5487,6 +5489,9 @@ def main():
         render_funnel_report()
     elif args.command == "pilot":
         cmd_pilot(args)
+    elif args.command == "a2a-outreach":
+        from btp_guard.a2a_pilot_agent import render_a2a_campaign_status
+        render_a2a_campaign_status()
     elif args.command in ("control-plane", "dashboard"):
         from btp_guard.fleet_control_plane import render_control_plane
         render_control_plane()
