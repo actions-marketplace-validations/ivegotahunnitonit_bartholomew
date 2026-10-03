@@ -126,6 +126,81 @@ class BartholomewMCPServer:
         
         self.tools_schema = [
             {
+                "name": "btp_compress_context",
+                "description": "Compress workspace context using AST skeletons.",
+                "inputSchema": {"type": "object", "properties": {"path": {"type": "string"}}}
+            },
+            {
+                "name": "btp_auto_heal",
+                "description": "Auto-heal a proposed dangerous command.",
+                "inputSchema": {"type": "object", "properties": {"payload": {"type": "string"}}, "required": ["payload"]}
+            },
+            {
+                "name": "btp_profile_session",
+                "description": "Profile AI agent calls.",
+                "inputSchema": {"type": "object", "properties": {}}
+            },
+            {
+                "name": "btp_get_manifest",
+                "description": "Retrieve cryptographic system manifest.",
+                "inputSchema": {"type": "object", "properties": {}}
+            },
+            {
+                "name": "btp_execute_command",
+                "description": "Execute shell command within sandbox after verifying AST invariants.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "command": {"type": "string", "description": "Shell command to execute"},
+                        "cwd": {"type": "string", "description": "Working directory (relative to workspace root)"}
+                    },
+                    "required": ["command"]
+                }
+            },
+            {
+                "name": "btp_write_file",
+                "description": "Write file to workspace after verifying path traversal and content safety.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "path": {"type": "string", "description": "Target relative file path"},
+                        "content": {"type": "string", "description": "File text content to write"}
+                    },
+                    "required": ["path", "content"]
+                }
+            },
+            {
+                "name": "btp_read_file",
+                "description": "Read file from workspace after verifying path traversal invariants.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "path": {"type": "string", "description": "Target relative file path to read"}
+                    },
+                    "required": ["path"]
+                }
+            },
+            {
+                "name": "btp_evaluate_intent",
+                "description": "Cryptographically evaluate proposed action intent against security invariants.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "action_type": {"type": "string", "description": "Type of action"},
+                        "payload": {"type": "object", "description": "Action payload details"}
+                    },
+                    "required": ["action_type"]
+                }
+            },
+            {
+                "name": "btp_get_security_status",
+                "description": "Get workspace security status, active invariants, and passkey state.",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {}
+                }
+            },
+            {
                         "name": "btp_protect",
                         "description": "Evaluate a shell command or file operation against all AST invariants. Returns verdict, rule_id, latency, and Merkle receipt.",
                         "annotations": {
