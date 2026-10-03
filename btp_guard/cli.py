@@ -1,5 +1,25 @@
 
 
+
+def cmd_pilot(args):
+    print("\n" + "=" * 74)
+    print("   BARTHOLOMEW PROTOCOL — 30-DAY HANDS-ON TEAM PILOT")
+    print("   Verifiable Workspace Guardrails for Teams Adopting AI Coding Agents")
+    print("=" * 74)
+    print("  * Target Buyer    : Engineering Leads & Platform Teams (up to 10 devs)")
+    print("  * Pilot Investment: $950 one-time (or $199/month on ongoing basis)")
+    print("  * Core Guarantee  : 100% money back if an unauthorized action isn't caught")
+    print("  * Key Outcomes    :")
+    print("      1. Sub-35us deterministic execution firewall on coding agent terminal actions.")
+    print("      2. Shared team policy (.btp/policy.yaml) across Cursor, Windsurf, VS Code.")
+    print("      3. Fail-closed git pre-commit hooks to block bad commits before push.")
+    print("      4. CISO/SOC2 cryptographic audit dossier detailing all agent activity.")
+    print("-" * 74)
+    print("  [+] Enroll or Schedule Kickoff:")
+    print("      URL   : https://bartholomew.info/pilot")
+    print("      Email : founders@bartholomew.info")
+    print("=" * 74 + "\n")
+
 def cmd_gateway(args):
     import json
     sub = getattr(args, "gateway_cmd", "start")
@@ -4625,6 +4645,16 @@ def main():
     fw_p.add_argument("--json", action="store_true", help="Output JSON")
     
     # Control Plane & Universal Gateway
+    # Sprint Validation Subparsers
+    prove_p = subparsers.add_parser("prove", help="60-Second Zero-to-Proof: verify active workspace protections and execute live probe")
+    prove_p.add_argument("--dir", default=".", help="Target workspace directory")
+
+    funnel_p = subparsers.add_parser("funnel", help="Audit conversion funnel health (Downloads -> Installs -> Proofs -> Paid Pilots)")
+
+    pilot_p = subparsers.add_parser("pilot", help="30-Day Hands-On Team Pilot details and enrollment")
+    pilot_p.add_argument("--info", action="store_true", help="Display pilot terms and pricing")
+    pilot_p.add_argument("--enroll", action="store_true", help="Initiate team pilot enrollment")
+
     cp_p = subparsers.add_parser("control-plane", help="Unified Fleet Control Plane, Global Reach, & Service Ledger")
     
     gw_p = subparsers.add_parser("gateway", help="Bartholomew Universal Agent Gateway (:8081)")
@@ -5449,6 +5479,14 @@ def main():
         cmd_firewall(args)
     elif args.command in ("wrap", "llamacpp", "ollama"):
         cmd_wrap(args)
+    elif args.command in ("prove", "verify-workspace"):
+        from btp_guard.activation_verifier import render_activation_proof
+        render_activation_proof(getattr(args, "dir", "."))
+    elif args.command == "funnel":
+        from btp_guard.funnel_tracker import render_funnel_report
+        render_funnel_report()
+    elif args.command == "pilot":
+        cmd_pilot(args)
     elif args.command in ("control-plane", "dashboard"):
         from btp_guard.fleet_control_plane import render_control_plane
         render_control_plane()
