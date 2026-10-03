@@ -1,111 +1,76 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/keystone_logo.png" width="96" height="96" alt="Bartholomew Keystone Crest Logo" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/keystone_logo_1024.png" width="80" height="80" alt="Bartholomew Keystone Logo" />
 </p>
 
-# Bartholomew Keystone - Cryptographic Agent Capability Passkeys
+# Bartholomew Keystone — Cryptographic Agent Passkeys & Spend Governor
 
-> **Issue tamper-evident, cryptographically signed permission slips for autonomous AI agents.**  
-> *Define deterministic boundaries for file modifications, command executions, external network calls, and financial spend in Cursor, Claude Desktop, Windsurf, and VS Code.*
+> **Issue deterministic, signed capability passkeys for autonomous AI coding agents in Cursor, Claude Code, Windsurf, and VS Code.**  
+> Restricts file writes, system commands, and financial spend to explicit policy bounds in **under 15 microseconds**.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v5.4.34-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
-[![Works With](https://img.shields.io/badge/Works%20With-Bartholomew%20Guard-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.0.0-blue)](https://pypi.org/project/btp-guard/)
-[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.0.0-cb3837)](https://www.npmjs.com/package/btp-guard)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.0-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Guard-brightgreen)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://bartholomew.info/#pricing)
 
 ---
 
-## The Problem Keystone Solves
+## The One Job Keystone Does
 
-Autonomous AI coding agents (such as Cursor Agent, Claude Code, Cline, Windsurf, Devin, GitHub Copilot Workspace, and MCP tool runners) operate with broad system privileges. If an agent receives instructions containing an indirect prompt injection, or hallucinates during an automated refactoring loop, it can:
+Prompt instructions like *"Please do not modify files outside `src/`"* are routinely bypassed by prompt injection or model hallucination.
 
-1. **Destroy files or git history** (`rm -rf`, destructive resets, overwriting production configs).
-2. **Exfiltrate secrets and credentials** (reading `.env`, `.ssh/id_rsa`, AWS/GCP keys and transmitting via `curl`).
-3. **Run out-of-scope system commands** (modifying permissions, installing malware, spawning unauthorized processes).
-4. **Trigger unchecked financial costs** (calling billable APIs or Cloud services without budget boundaries).
-
-System prompt instructions ("Please do not touch `.env`") are easily ignored or circumvented by prompt injections. **Bartholomew Keystone** enforces hard, deterministic cryptographic clearance boundaries at the tool execution seam.
+**Keystone solves this with local cryptographic capability passkeys**:
+Before an agent writes a file, executes a terminal command, or triggers a billable tool call, Keystone evaluates the action against a cryptographically signed capability passkey in **<15 microseconds**.
 
 ---
 
-## Keystone Core Visual
+## What Keystone Protects
 
-### Active Cryptographic Clearance and Scopes
-Visualizing active capability boundaries: $25.00 session spend ceiling, $5.00 max per transaction, filesystem write restrictions, command sandboxing whitelists, and network egress controls.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/keystone_passkey_core.png" width="100%" alt="Bartholomew Keystone Passkey Core" />
-</p>
+1. **Filesystem Boundaries**: Whitelists write paths (e.g. `src/**`, `tests/**`) while blocking modifications to production configs, `.env` files, or `.git/hooks`.
+2. **Command Whitelisting**: Whitelists build/test commands (`npm test`, `pytest`, `cargo check`) while denying destructive actions (`rm`, `sudo`, `mkfs`, `format C:`).
+3. **Spend & Micro-Billing Ceilings**: Enforces hard budget ceilings ($25 session cap, $10 single transaction ceiling) to stop rogue recursive API loops.
+4. **Verifiable Audit Receipts**: Generates signed HMAC-SHA256 Merkle receipts for every clearance evaluation.
 
 ---
 
-## Guard vs. Keystone - How They Work Together
+## What Keystone Does NOT Protect (Explicit Scope Boundary)
 
-| Layer | Bartholomew Guard | Bartholomew Keystone (This Extension) |
-|---|---|---|
-| **Primary Role** | Invariant and Leak Detection | Cryptographic Capability Scoping |
-| **How It Operates** | AST static analysis and runtime leak scanning | Issues and verifies signed capability passkeys |
-| **Protection Focus** | Zero-leak credential guard, prompt-injection AST gate | Defines exact file globs, commands, domains, and budget limits |
-| **Speed** | Sub-25 microseconds in-process verification | Sub-15 microseconds HMAC-SHA256 signature and scope check |
-| **Installation** | Companion extension (`Bartholomew.bartholomew-guard-vscode`) | You are here (`Bartholomew.bartholomew-keystone`) |
+- ❌ **Code Quality**: Keystone does not evaluate whether code written inside allowed paths is optimal or bug-free.
+- ❌ **Prompt Accuracy**: Keystone does not police general conversation text.
+- ❌ **Manual Human Actions**: Keystone enforces bounds on autonomous agents operating through IDE tools or MCP protocols.
 
 ---
 
-## Core Clearance Scopes
+## How to Verify It Is Active (In 5 Seconds)
 
-When a Keystone Passkey is issued, the agent receives an ephemeral `.btp_keystone.json` token signed by the local authority. Every proposed action is evaluated against these scopes:
-
-### 1. Filesystem Containment (`files`)
-- **`allow_read`**: Globs the agent may inspect (e.g. `["src/**", "tests/**", "docs/**"]`).
-- **`allow_write`**: Globs the agent is authorized to modify. Any write outside these paths is rejected instantly.
-- **`deny`**: Blacklisted patterns strictly blocked from reading or writing (e.g. `.env*`, `secrets*`, `id_rsa*`, `.git/hooks/**`).
-- **`max_file_size_kb`**: Maximum permissible file write payload to prevent repository bloat or disk exhaustion.
-
-### 2. Command Sandboxing (`commands`)
-- **`allow`**: Safe command whitelists allowed to execute without human intervention (e.g. `npm test`, `git status`, `pytest`).
-- **`deny`**: Hard forbidden commands (e.g. `rm -rf`, `git push --force`, `curl | sh`, `chmod 777`).
-
-### 3. Financial Spend Budget (`budget`)
-- **`max_total_spend_usd`**: Cumulative session ceiling (default: `$25.00`). If autonomous loops exceed this limit, all further tool calls halt immediately.
-- **`max_per_txn_usd`**: Per-action cost ceiling (default: `$5.00`) preventing runaway API or model inference spikes.
+1. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
+2. Run: **`Keystone: Open Passkey Dashboard & Capability Monitor`**.
+3. In the interactive probe box, test any command (`rm -rf /`, `cat .env`, `npm test`) and see the sub-15µs verdict and receipt hash.
 
 ---
 
-## How-To Guide: Step-by-Step Instructions
+## Pricing: Free for Developers, Built for Teams
 
-### Step 1: Issue an Autonomous Agent Passkey
+| Tier | Price | What You Get |
+| :--- | :--- | :--- |
+| **Developer Edition** | **Free Forever** (MIT) | Local capability passkeys, interactive dashboard, spend capping, tamper-evident logs. |
+| **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized passkey policy sync, multi-seat key rings, weekly CISO/SOC2 compliance dossier, 30-min onboarding kickoff, 100% money-back guarantee. |
 
-Open your command palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and choose:
-```text
-Keystone: Issue Agent Capability Passkey
+👉 **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
+
+---
+
+## Quickstart
+
+```bash
+# 1. Install companion CLI
+pip install btp-guard
+
+# 2. Issue a Developer Sandbox passkey in your workspace
+btp-guard keystone issue --preset developer
+
+# 3. Verify active passkey
+btp-guard keystone verify
 ```
-Select a clearance profile:
-- **Autonomous Dev Agent** (Standard workspace write access, $25 spend cap)
-- **Read-Only Auditor** (File inspection only, zero writes, zero shell execution)
-- **High-Trust Lead** (Extended permissions with per-transaction receipts)
 
-### Step 2: Inspect Clearance Status
-
-Run:
-```text
-Keystone: Inspect Active Agent Clearance
-```
-Or view the interactive Keystone status card in your sidebar.
-
-### Step 3: Instant Revocation
-
-If an agent exhibits erratic behavior:
-1. Open the command palette.
-2. Run **`Keystone: Revoke Current Agent Passkey`**.
-3. The cryptographic passkey is permanently destroyed, disarming agent write and execution capabilities instantly.
-
----
-
-## Open Source and Compliance
-
-Bartholomew Keystone is **MIT licensed** and engineered for zero-trust agentic enterprise architectures.
-
-- Documentation: [https://bartholomew.info](https://bartholomew.info)
-- Guard Extension: [Open VSX Registry](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-- Python Package: `pip install btp-guard`
-- NPM Package: `npm install btp-guard`
+Website: [https://bartholomew.info](https://bartholomew.info)  
+Full Guide: [Reproducible Trust Boundary Demo](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/REPRODUCIBLE_DEMO.md)

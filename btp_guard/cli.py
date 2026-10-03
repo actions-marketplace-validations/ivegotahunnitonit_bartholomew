@@ -4655,6 +4655,8 @@ def main():
     pilot_p.add_argument("--info", action="store_true", help="Display pilot terms and pricing")
     pilot_p.add_argument("--enroll", action="store_true", help="Initiate team pilot enrollment")
 
+    td_p = subparsers.add_parser("trust-demo", help="Run reproducible demonstration of allowed, blocked, and non-covered actions")
+
     a2a_p = subparsers.add_parser("a2a-outreach", help="Autonomous Agent-to-Agent pilot campaign dispatch")
 
     cp_p = subparsers.add_parser("control-plane", help="Unified Fleet Control Plane, Global Reach, & Service Ledger")
@@ -5489,6 +5491,9 @@ def main():
         render_funnel_report()
     elif args.command == "pilot":
         cmd_pilot(args)
+    elif args.command in ("trust-demo", "demo-trust-boundary"):
+        from btp_guard.demo_trust_boundary import run_demo
+        run_demo()
     elif args.command == "a2a-outreach":
         from btp_guard.a2a_pilot_agent import render_a2a_campaign_status
         render_a2a_campaign_status()
