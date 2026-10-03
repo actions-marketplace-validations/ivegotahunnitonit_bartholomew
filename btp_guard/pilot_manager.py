@@ -80,7 +80,7 @@ runtimes:
 
     # 3. Create persistent enrollment record
     record = {
-        "status": "ENROLLED_ACTIVE",
+        "status": "AWAITING_PAYMENT",
         "team_name": team_name,
         "lead_email": email,
         "seats": seats,
@@ -100,7 +100,7 @@ runtimes:
     # 4. Record to funnel metrics
     try:
         from btp_guard.funnel_tracker import record_funnel_step
-        record_funnel_step("team_pilot_inquiries", {"team": team_name, "email": email})
+        record_funnel_step("pilot_enrollment_starts")
     except Exception:
         pass
 
@@ -162,13 +162,14 @@ def run_pilot_cli(args=None):
     res = enroll_team(team_name=team_name, email=email, seats=seats, billing=billing)
 
     print("\n" + "-" * 74)
-    print("   [+] 30-DAY TEAM PILOT ENROLLMENT COMPLETE")
+    print("   [+] 30-DAY TEAM PILOT ENROLLMENT REQUEST RECORDED")
     print("-" * 74)
     print(f"  * Team Name           : {res['team_name']}")
     print(f"  * Lead Email          : {res['lead_email']}")
     print(f"  * Authorized Seats    : {res['seats']} Engineers")
-    print(f"  * Evaluation Passkey  : {res['passkey_id']} (Valid for 30 Days)")
-    print(f"  * Policy Configured   : .btp/policy.yaml (Fail-closed armed)")
+    print(f"  * Evaluation Passkey  : {res['passkey_id']} (Provisioned pending payment confirmation)")
+    print(f"  * Enrollment Status   : {res['status']}")
+    print(f"  * Policy Configured   : .btp/policy.yaml (local policy draft)")
     print(f"  * Pilot Investment    : ${res['pilot_fee_usd']:,.2f} ({res['billing']})")
     print("-" * 74)
     print("  [+] Complete Payment via Stripe:")

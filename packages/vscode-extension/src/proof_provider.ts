@@ -39,7 +39,7 @@ export interface BreakdownData {
 }
 
 export interface ProofTelemetry {
-  status: 'ARMED' | 'UNPROTECTED';
+  status: 'ARMED' | 'PARTIALLY_ARMED' | 'DISCONNECTED';
   astLatencyUs: number;
   totalAudited: number;
   totalBlocked: number;
@@ -83,7 +83,7 @@ export function loadTelemetry(rootPath: string): ProofTelemetry {
             verdict: (ev.verdict === 'BLOCKED' || ev.verdict === 'DENY') ? 'BLOCKED' : (ev.verdict === 'SANITIZED' ? 'SANITIZED' : 'ALLOWED'),
             rule_id: ev.rule_id || (ev.verdict === 'BLOCKED' ? 'BTP-AST-001' : 'BTP-PASS-000'),
             reason: ev.reason || 'Verified by in-process AST gate',
-            latency_us: ev.latency_us || 18.2,
+            latency_us: typeof ev.latency_us === 'number' ? ev.latency_us : 0,
             receipt_sha256: ev.receipt_sha256 || (ev.receipt ? String(ev.receipt).slice(0, 16) : undefined)
           });
         } catch {}
@@ -123,15 +123,24 @@ export function loadTelemetry(rootPath: string): ProofTelemetry {
 
   const hasPolicy = fs.existsSync(path.join(btpDir, 'policy.yaml')) || fs.existsSync(path.join(rootPath, 'policy.yaml'));
   const hasPreCommit = fs.existsSync(path.join(rootPath, '.git', 'hooks', 'pre-commit'));
-  const hasGit = fs.existsSync(path.join(rootPath, '.git'));
+  const hasBtpDir = fs.existsSync(btpDir);
+
+  // Compute real average latency if events exist
+  let avgLatency = 0;
+  if (recentEvents.length > 0) {
+    const validLats = recentEvents.map(e => e.latency_us).filter(l => typeof l === 'number' && l > 0);
+    if (validLats.length > 0) {
+      avgLatency = Number((validLats.reduce((a, b) => a + b, 0) / validLats.length).toFixed(1));
+    }
+  }
 
   const checks: SecurityCheckItem[] = [
-    { id: 'gate', name: 'In-Process AST Invariant Gate', passed: true, pts: 25 },
-    { id: 'secret', name: 'In-Flight API Secret Scrubber', passed: true, pts: 20 },
-    { id: 'pipe', name: 'Pipe-to-Shell Quarantine Barrier', passed: true, pts: 15 },
+    { id: 'gate', name: 'In-Process AST Invariant Gate', passed: hasBtpDir || hasPolicy, pts: 25 },
+    { id: 'secret', name: 'In-Flight API Secret Scrubber', passed: hasPolicy, pts: 20 },
+    { id: 'pipe', name: 'Pipe-to-Shell Quarantine Barrier', passed: hasPolicy, pts: 15 },
     { id: 'policy', name: 'Sovereign Workspace Policy (.btp/policy.yaml)', passed: hasPolicy, pts: 15 },
     { id: 'keystone', name: 'Cryptographic Keystone Passkey Clearance', passed: keystoneArmed, pts: 15 },
-    { id: 'hook', name: 'Pre-Commit Zero-Leak AST Barrier', passed: hasPreCommit || !hasGit, pts: 10 }
+    { id: 'hook', name: 'Pre-Commit Zero-Leak AST Barrier', passed: hasPreCommit, pts: 10 }
   ];
 
   let score = 0;
@@ -145,11 +154,19 @@ export function loadTelemetry(rootPath: string): ProofTelemetry {
   else if (score >= 70) grade = 'B';
   else if (score >= 50) grade = 'C';
 
+  // Determine truthful status
+  let status: 'ARMED' | 'PARTIALLY_ARMED' | 'DISCONNECTED' = 'DISCONNECTED';
+  if (hasPolicy && (hasPreCommit || keystoneArmed)) {
+    status = 'ARMED';
+  } else if (hasPolicy || hasPreCommit || keystoneArmed) {
+    status = 'PARTIALLY_ARMED';
+  }
+
   return {
-    status: 'ARMED',
-    astLatencyUs: 18.2,
-    totalAudited: Math.max(totalAudited, 1248),
-    totalBlocked: totalBlocked,
+    status,
+    astLatencyUs: avgLatency,
+    totalAudited, // Truthful count, no minimum floor
+    totalBlocked,
     securityScore: score,
     grade,
     keystone: {
@@ -164,22 +181,18 @@ export function loadTelemetry(rootPath: string): ProofTelemetry {
       deniedCommands
     },
     breakdown: {
-      goingOn: 'All autonomous agent tool invocations, shell executions, and file modifications are evaluated in-process before execution.',
-      wrongs: ['0 active invariant violations detected across workspace AST tree.'],
-      fixings: ['Maintain Git pre-commit barrier and keep active Keystone passkey valid.'],
+      goingOn: hasPolicy
+        ? 'Autonomous agent tool invocations, shell executions, and file modifications are evaluated against workspace policy.'
+        : 'Workspace policy is not configured. Run btp-guard protect to configure.',
+      wrongs: totalBlocked > 0
+        ? [`${totalBlocked} invariant violations intercepted and blocked.`]
+        : ['0 active invariant violations detected across workspace.'],
+      fixings: hasPreCommit
+        ? ['Maintain Git pre-commit barrier and keep active Keystone passkey valid.']
+        : ['Install Git pre-commit barrier to ensure fail-closed commit gating.'],
       helpings: ['Sub-35us deterministic AST evaluation', 'Secret exfiltration scrubbing', 'Agent spend ceiling caps']
     },
-    recentEvents: recentEvents.length > 0 ? recentEvents : [
-      {
-        timestamp: new Date().toLocaleTimeString(),
-        action: 'in_process:ast_guard_init',
-        verdict: 'ALLOWED',
-        rule_id: 'BTP-PASS-000',
-        reason: 'Sovereign AST invariant engine armed and monitoring',
-        latency_us: 14.2,
-        receipt_sha256: '9f8e7d6c5b4a3210'
-      }
-    ],
+    recentEvents, // Truthful event list, empty if none
     checks
   };
 }
@@ -189,7 +202,7 @@ export function generateModelContextSnippet(rootPath: string, model: string): st
   const workspaceName = path.basename(rootPath);
 
   return `<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
-# Agent Companion Security & Invariant Briefing (Bartholomew Keystone v6.0)
+# Agent Companion Security & Invariant Briefing (Bartholomew Keystone v6.4.0)
 Target Agent Companion: ${model.toUpperCase()} | Workspace: ${workspaceName}
 
 You are collaborating on this codebase under the active protection of **Bartholomew Guard**.
@@ -384,6 +397,26 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       font-weight: 700;
       letter-spacing: 0.03em;
       box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);
+    }
+    .status-beacon.partial {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fbbf24;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+    }
+    .status-beacon.partial .beacon-dot {
+      background: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b;
+    }
+    .status-beacon.disconnected {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #f87171;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.2);
+    }
+    .status-beacon.disconnected .beacon-dot {
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
     }
     .beacon-dot {
       width: 8px;
@@ -892,9 +925,9 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
         <div class="brand-sub">Agentic Runtime Protection &bull; In-Process Invariant Boundary</div>
       </div>
     </div>
-    <div class="status-beacon">
+    <div class="status-beacon ${telemetry.status === 'ARMED' ? '' : (telemetry.status === 'PARTIALLY_ARMED' ? 'partial' : 'disconnected')}">
       <div class="beacon-dot"></div>
-      <span>WORKSPACE ARMED</span>
+      <span>${telemetry.status === 'ARMED' ? 'WORKSPACE ARMED' : (telemetry.status === 'PARTIALLY_ARMED' ? 'LOCAL HOOK ONLY' : 'DISCONNECTED / UNARMED')}</span>
     </div>
   </div>
 
@@ -911,8 +944,8 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       </div>
       <div class="hero-metrics">
         <div class="metric-box">
-          <span class="metric-value">${telemetry.astLatencyUs || 28.4} &mu;s</span>
-          <span class="metric-label">AST Latency</span>
+          <span class="metric-value">${telemetry.astLatencyUs > 0 ? telemetry.astLatencyUs + " &mu;s" : "N/A"}</span>
+          <span class="metric-label">${telemetry.astLatencyUs > 0 ? "AST Latency" : "Run Live Probe"}</span>
         </div>
         <div class="metric-box">
           <span class="metric-value">${telemetry.totalBlocked || 0}</span>

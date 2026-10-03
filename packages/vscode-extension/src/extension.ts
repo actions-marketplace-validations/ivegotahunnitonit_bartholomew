@@ -35,31 +35,62 @@ export interface ExtensionContext {
   extensionUri?: any;
 }
 
+const UNIFIED_PRE_COMMIT_HOOK = `#!/bin/sh
+# Bartholomew Keystone Pre-Commit Hook (BTP v6.4)
+# Fail-closed execution gate: blocks commits if checks fail or if security checkers are missing/erroring.
+
+# 1. Execute preserved chained pre-commit hook if present
+PRE_BTP_HOOK="$(dirname "$0")/pre-commit.pre-btp"
+if [ -f "$PRE_BTP_HOOK" ]; then
+    if [ -x "$PRE_BTP_HOOK" ]; then
+        "$PRE_BTP_HOOK" "$@" || exit $?
+    else
+        sh "$PRE_BTP_HOOK" "$@" || exit $?
+    fi
+fi
+
+# 2. Execute Bartholomew security verification (fail-closed)
+if command -v btp-guard >/dev/null 2>&1; then
+    btp-guard check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run 'btp-guard check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif command -v python3 >/dev/null 2>&1; then
+    python3 -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run 'python3 -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif command -v python >/dev/null 2>&1; then
+    python -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run 'python -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+else
+    echo "[!] Bartholomew Guard (FAIL-CLOSED): Neither 'btp-guard' nor Python is available in PATH to verify commit safety." >&2
+    echo "    Commit aborted to protect repository integrity. Install btp-guard or Python to proceed." >&2
+    exit 1
+fi
+
+exit 0
+`;
 function runGuardAction(rootPath: string, command: string, callback: (error: any, result?: any) => void): void {
-  const isWindows = process.platform === 'win32';
-  const shell = isWindows ? 'powershell.exe' : 'bash';
-  const args = isWindows
-    ? ['-NoProfile', '-Command', `python -m btp_guard.cli check "${command}" --json`]
-    : ['-c', `python -m btp_guard.cli check "${command}" --json`];
+  // Directly spawn python without a shell wrapper to eliminate shell injection vulnerabilities
+  const pythonCmd = process.platform === 'win32' ? 'python' : 'python3';
+  const args = ['-m', 'btp_guard.cli', 'check', command, '--json'];
 
   let child: any;
   try {
-    child = spawn(shell, args, { cwd: rootPath });
-  } catch {
-    child = null;
+    child = spawn(pythonCmd, args, { cwd: rootPath, shell: false });
+  } catch (err: any) {
+    callback(err || new Error('Failed to spawn Python process for security check'));
+    return;
   }
 
   if (!child) {
-    // Pure TypeScript fallback evaluation
-    const lower = command.toLowerCase();
-    const isDangerous = lower.includes('rm -rf') || lower.includes('drop table') || (lower.includes('curl') && lower.includes('| sh'));
-    callback(null, {
-      allowed: !isDangerous,
-      verdict: isDangerous ? 'DENY' : 'ALLOW',
-      rule_id: isDangerous ? 'BTP-AST-001' : 'BTP-PASS-000',
-      reason: isDangerous ? 'Destructive command blocked by in-process AST gate' : 'Action verified by built-in Sovereign Engine',
-      latency_ms: 0.02
-    });
+    callback(new Error('Process creation failed for security verification'));
     return;
   }
 
@@ -73,30 +104,15 @@ function runGuardAction(rootPath: string, command: string, callback: (error: any
     try {
       const parsed = JSON.parse(stdout.trim());
       callback(null, parsed);
-    } catch {
-      // Invariant fallback
-      const lower = command.toLowerCase();
-      const isDangerous = lower.includes('rm -rf') || lower.includes('drop table') || (lower.includes('curl') && lower.includes('| sh'));
-      callback(null, {
-        allowed: !isDangerous,
-        verdict: isDangerous ? 'DENY' : 'ALLOW',
-        rule_id: isDangerous ? 'BTP-AST-001' : 'BTP-PASS-000',
-        reason: isDangerous ? 'Destructive command blocked by in-process AST gate' : 'Action verified by built-in Sovereign Engine',
-        latency_ms: 0.03
-      });
+    } catch (parseErr) {
+      // Treat parse/check failures as errors, not heuristic approvals
+      const errMsg = stderr.trim() || stdout.trim() || `Security check exited with code ${code}`;
+      callback(new Error(`Failed to parse security check output: ${errMsg}`));
     }
   });
 
-  child.on('error', () => {
-    const lower = command.toLowerCase();
-    const isDangerous = lower.includes('rm -rf') || lower.includes('drop table');
-    callback(null, {
-      allowed: !isDangerous,
-      verdict: isDangerous ? 'DENY' : 'ALLOW',
-      rule_id: isDangerous ? 'BTP-AST-001' : 'BTP-PASS-000',
-      reason: isDangerous ? 'Destructive command blocked by in-process AST gate' : 'Action verified by built-in Sovereign Engine',
-      latency_ms: 0.01
-    });
+  child.on('error', (err: any) => {
+    callback(err || new Error('Error executing security check process'));
   });
 }
 
@@ -290,17 +306,40 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(protectWorkspaceCmd);
 
   // Command: Install Git Pre-Commit Hook
-  const installPreCommitCmd = vscode.commands.registerCommand('bartholomew.installPreCommit', () => {
+  const installPreCommitCmd = vscode.commands.registerCommand('bartholomew.installPreCommit', async () => {
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
     const gitHooks = path.join(rootPath, '.git', 'hooks');
     if (!fs.existsSync(gitHooks)) {
       try { fs.mkdirSync(gitHooks, { recursive: true }); } catch {}
     }
     const hookFile = path.join(gitHooks, 'pre-commit');
-    const hookContent = `#!/bin/sh\n# Bartholomew Keystone Pre-Commit Hook (BTP v6.0)\npython -m btp_guard.cli check --staged || exit 1\n`;
+    const backupFile = path.join(gitHooks, 'pre-commit.pre-btp');
+
+    if (fs.existsSync(hookFile)) {
+      try {
+        const existing = fs.readFileSync(hookFile, 'utf-8');
+        if (!existing.includes('Bartholomew')) {
+          const action = await vscode.window.showWarningMessage(
+            'A pre-commit hook already exists. Preserve existing hook and chain with Bartholomew?',
+            'Preserve and Chain',
+            'Cancel'
+          );
+          if (action !== 'Preserve and Chain') {
+            return;
+          }
+          fs.writeFileSync(backupFile, existing, 'utf-8');
+          try { fs.chmodSync(backupFile, 0o755); } catch {}
+        }
+      } catch (err: any) {
+        vscode.window.showErrorMessage(`Error checking existing hook: ${err.message}`);
+        return;
+      }
+    }
+
     try {
-      fs.writeFileSync(hookFile, hookContent, 'utf-8');
-      vscode.window.showInformationMessage('Bartholomew: Git pre-commit AST safety hook installed successfully!');
+      fs.writeFileSync(hookFile, UNIFIED_PRE_COMMIT_HOOK, 'utf-8');
+      try { fs.chmodSync(hookFile, 0o755); } catch {}
+      vscode.window.showInformationMessage('Bartholomew: Git pre-commit AST safety hook installed successfully (fail-closed, chained)!');
       proofProvider.refresh();
     } catch (e: any) {
       vscode.window.showErrorMessage(`Failed to install pre-commit hook: ${e.message}`);
@@ -379,8 +418,9 @@ export function activate(context: ExtensionContext) {
   // 1. Dual Status Bar Indicator (BTP AST Gate + Keystone Passkey)
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'bartholomew.showSecurityMenu';
-  statusBarItem.text = `$(shield) BTP Guard: Armed (<35µs)`;
-  statusBarItem.tooltip = `Bartholomew Agent Guard (v6.3.0) — Sub-35µs In-Process AST Firewall & Keystone Passkeys. Click for Security Menu.`;
+  statusBarItem.text = `$(shield) BTP Guard: Checking...`;
+  statusBarItem.tooltip = `Bartholomew Agent Guard (v6.4.0) — Checking live security status. Click for Security Menu.`;
+  statusBarItem.color = '#94a3b8';
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
@@ -394,7 +434,7 @@ export function activate(context: ExtensionContext) {
       { label: '$(key) Issue Keystone Capability Passkey', description: 'Generate Ed25519 passkey with $25 daily autonomous spend limit', action: 'bartholomew.issueKeystonePasskey' },
       { label: '$(clippy) Copy Agent Context Rules', description: 'Copy system prompts for Cursor, Windsurf, Claude Code, Gemini', action: 'bartholomew.copyModelContext' }
     ];
-    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.3.0)' });
+    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.4.0)' });
     if (picked && picked.action) {
       vscode.commands.executeCommand(picked.action);
     }
@@ -491,31 +531,58 @@ context.subscriptions.push(
   const pollDaemon = () => {
     const passkey = getActiveKeystonePasskey();
     const passkeyLabel = passkey ? `KEYSTONE: ${passkey.agent_id}` : 'KEYSTONE: READY';
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const gitHooks = path.join(rootPath, '.git', 'hooks', 'pre-commit');
+    const hasPreCommit = fs.existsSync(gitHooks);
+    const hasPolicy = fs.existsSync(path.join(rootPath, '.btp', 'policy.yaml')) || fs.existsSync(path.join(rootPath, 'policy.yaml'));
 
-    const req = http.get('http://127.0.0.1:8080/v1/status', (res: any) => {
-      if (res.statusCode === 200) {
-        let rawData = '';
-        res.on('data', (chunk: any) => { rawData += chunk; });
-        res.on('end', () => {
-          try {
-            const data = JSON.parse(rawData);
-            const blocked = data.total_blocked || 0;
-            const avgLat = data.average_latency_us || 24.8;
-            if (blocked > 0) {
-              statusBarItem.text = `$(shield) BTP: ${blocked} BLOCKED | $(key) ${passkeyLabel}`;
-              statusBarItem.color = '#ef4444';
-              statusBarItem.tooltip = `BTP Sovereign: ${blocked} threats blocked (${avgLat}µs). Click to view Cloud Vault.`;
-            } else {
-              statusBarItem.text = `$(shield) BTP: ACTIVE (${avgLat}µs) | $(key) ${passkeyLabel}`;
-              statusBarItem.color = '#10b981';
+    const checkPort = (port: number, onFail: () => void) => {
+      const req = http.get(`http://127.0.0.1:${port}/v1/status`, (res: any) => {
+        if (res.statusCode === 200) {
+          let rawData = '';
+          res.on('data', (chunk: any) => { rawData += chunk; });
+          res.on('end', () => {
+            try {
+              const data = JSON.parse(rawData);
+              const blocked = data.total_blocked || 0;
+              const avgLat = data.average_latency_us || 24.8;
+              if (blocked > 0) {
+                statusBarItem.text = `$(shield) BTP: ${blocked} BLOCKED | $(key) ${passkeyLabel}`;
+                statusBarItem.color = '#ef4444';
+                statusBarItem.tooltip = `BTP Active: ${blocked} threats blocked (${avgLat}µs). Click to view details.`;
+              } else {
+                statusBarItem.text = `$(shield) BTP: ACTIVE (${avgLat}µs) | $(key) ${passkeyLabel}`;
+                statusBarItem.color = '#10b981';
+                statusBarItem.tooltip = `BTP Guard active and monitoring on port ${port}.`;
+              }
+            } catch {
+              onFail();
             }
-          } catch {}
-        });
-      }
-    });
-    req.on('error', () => {
-      statusBarItem.text = `$(shield) BTP: SOVEREIGN | $(key) ${passkeyLabel}`;
-      statusBarItem.color = '#10b981';
+          });
+        } else {
+          onFail();
+        }
+      });
+      req.on('error', onFail);
+      req.setTimeout(1500, () => {
+        try { req.abort(); } catch {}
+        onFail();
+      });
+    };
+
+    checkPort(8081, () => {
+      checkPort(8080, () => {
+        // Both daemon ports unavailable — report truthful status based on local configuration
+        if (hasPreCommit && (hasPolicy || passkey)) {
+          statusBarItem.text = `$(shield) BTP: LOCAL HOOK ONLY | $(key) ${passkeyLabel}`;
+          statusBarItem.color = '#f59e0b';
+          statusBarItem.tooltip = 'BTP Daemon not running; local pre-commit hook is active.';
+        } else {
+          statusBarItem.text = `$(shield) BTP: DISCONNECTED`;
+          statusBarItem.color = '#ef4444';
+          statusBarItem.tooltip = 'Bartholomew Guard is not running and workspace is not armed. Click to configure.';
+        }
+      });
     });
   };
 
@@ -815,12 +882,12 @@ context.subscriptions.push(
   // 15. Command: Run in Bartholomew Kernel Sandbox
     // Return Public Collaboration API for other extensions and agents
   const publicApi = {
-    version: '5.4.25',
+    version: '6.4.0',
     isCommandSafe: (command: string) => {
       return new Promise((resolve) => {
         const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
         runGuardAction(rootPath, command, (err: any, res: any) => {
-          resolve(res || { allowed: true, verdict: 'ALLOW', rule_id: 'BTP-PASS-000' });
+          resolve(err || !res ? { allowed: false, verdict: 'DENY', rule_id: 'BTP-CHECK-ERROR', reason: err ? err.message : 'Check failed' } : res);
         });
       });
     },

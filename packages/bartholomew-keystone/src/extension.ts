@@ -20,10 +20,24 @@ export function activate(context: ExtensionContext) {
   // 1. Status Bar Item
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 105);
   statusBarItem.command = 'keystone.openDashboard';
-  statusBarItem.text = `$(key) KEYSTONE: ARMED`;
-  statusBarItem.tooltip = `Bartholomew Keystone -- Agent Capability Passkey Active | Click to open Dashboard`;
+  statusBarItem.text = `$(key) KEYSTONE: STANDBY`;
+  statusBarItem.tooltip = `Bartholomew Keystone -- No Active Passkey | Click to Issue Capability Passkey`;
+  statusBarItem.color = '#94a3b8';
   context.subscriptions.push(statusBarItem);
   statusBarItem.show();
+
+  function updateStatusBar() {
+    const pk = getActivePasskey();
+    if (pk) {
+      statusBarItem.text = `$(key) KEYSTONE: ${pk.agent_id} ARMED`;
+      statusBarItem.tooltip = `Bartholomew Keystone -- Active Passkey (${pk.agent_id}) | Click to open Dashboard`;
+      statusBarItem.color = '#10b981';
+    } else {
+      statusBarItem.text = `$(key) KEYSTONE: STANDBY`;
+      statusBarItem.tooltip = `Bartholomew Keystone -- No Active Passkey | Click to Issue Capability Passkey`;
+      statusBarItem.color = '#94a3b8';
+    }
+  }
 
   function getPasskeyPath(): string {
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
@@ -41,6 +55,8 @@ export function activate(context: ExtensionContext) {
     } catch {}
     return null;
   }
+
+  updateStatusBar();
 
   // 2. Command: Issue Agent Capability Passkey
   const issueCmd = vscode.commands.registerCommand('keystone.issuePasskey', async () => {
