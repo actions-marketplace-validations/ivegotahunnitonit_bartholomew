@@ -2,23 +2,8 @@
 
 
 def cmd_pilot(args):
-    print("\n" + "=" * 74)
-    print("   BARTHOLOMEW PROTOCOL — 30-DAY HANDS-ON TEAM PILOT")
-    print("   Verifiable Workspace Guardrails for Teams Adopting AI Coding Agents")
-    print("=" * 74)
-    print("  * Target Buyer    : Engineering Leads & Platform Teams (up to 10 devs)")
-    print("  * Pilot Investment: $950 one-time (or $199/month on ongoing basis)")
-    print("  * Core Guarantee  : 100% money back if an unauthorized action isn't caught")
-    print("  * Key Outcomes    :")
-    print("      1. Sub-35us deterministic execution firewall on coding agent terminal actions.")
-    print("      2. Shared team policy (.btp/policy.yaml) across Cursor, Windsurf, VS Code.")
-    print("      3. Fail-closed git pre-commit hooks to block bad commits before push.")
-    print("      4. CISO/SOC2 cryptographic audit dossier detailing all agent activity.")
-    print("-" * 74)
-    print("  [+] Enroll or Schedule Kickoff:")
-    print("      URL   : https://bartholomew.info/pilot")
-    print("      Email : founders@bartholomew.info")
-    print("=" * 74 + "\n")
+    from btp_guard.pilot_manager import run_pilot_cli
+    run_pilot_cli(args)
 
 def cmd_gateway(args):
     import json
