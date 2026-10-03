@@ -281,7 +281,8 @@ export function activate(context: ExtensionContext) {
   const protectWorkspaceCmd = vscode.commands.registerCommand('bartholomew.protectWorkspace', () => {
     const terminal = vscode.window.createTerminal('Bartholomew Protect');
     terminal.show();
-    terminal.sendText('python -m btp_guard.cli protect');
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || ".";
+    terminal.sendText(`python -m btp_guard.cli protect --dir "${rootPath}"`);
     setTimeout(() => {
       proofProvider.refresh();
     }, 2500);
@@ -296,7 +297,7 @@ export function activate(context: ExtensionContext) {
       try { fs.mkdirSync(gitHooks, { recursive: true }); } catch {}
     }
     const hookFile = path.join(gitHooks, 'pre-commit');
-    const hookContent = `#!/bin/sh\n# Bartholomew Keystone Pre-Commit Hook (BTP v6.0)\npython -m btp_guard.cli check --staged 2>/dev/null || exit 0\n`;
+    const hookContent = `#!/bin/sh\n# Bartholomew Keystone Pre-Commit Hook (BTP v6.0)\npython -m btp_guard.cli check --staged || exit 1\n`;
     try {
       fs.writeFileSync(hookFile, hookContent, 'utf-8');
       vscode.window.showInformationMessage('Bartholomew: Git pre-commit AST safety hook installed successfully!');
@@ -309,9 +310,10 @@ export function activate(context: ExtensionContext) {
 
   // Command: Inject Agent Rules (GEMINI.md, CLAUDE.md, .cursorrules)
   const injectAiRulesCmd = vscode.commands.registerCommand('bartholomew.injectAiRules', async () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
     const terminal = vscode.window.createTerminal('Bartholomew Agent Rules');
     terminal.show();
-    terminal.sendText('python -m btp_guard.cli protect');
+    terminal.sendText(`python -m btp_guard.cli protect --dir "${rootPath}"`);
     vscode.window.showInformationMessage('Bartholomew: Injected GEMINI.md, CLAUDE.md, and .cursorrules into workspace!');
     setTimeout(() => {
       proofProvider.refresh();
