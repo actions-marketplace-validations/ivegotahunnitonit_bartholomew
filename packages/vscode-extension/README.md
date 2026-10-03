@@ -1,129 +1,99 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="96" height="96" alt="Bartholomew Shield Logo" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="80" height="80" alt="Bartholomew Logo" />
 </p>
 
-# Bartholomew Guard - Autonomous Agent Safety and Guardrails (Cursor, Claude, Copilot)
+# Bartholomew Guard — Agentic Runtime Protection (Cursor, Claude Code, Windsurf, VS Code)
 
-> **Zero-trust firewall and execution guardrails for autonomous agents in Cursor, Claude Desktop, Windsurf, and VS Code.**  
-> *Sub-35us In-Process AST Safety, 15 Enterprise Invariant Pillars, 40 Native MCP Tools, Tamper-Evident Action Forensics, and Direct Agent Context Bridge.*
+> **The in-process execution firewall for autonomous coding agents.**  
+> Intercepts destructive commands, prevents API key leaks, and caps agent spend in **under 35 microseconds** before code touches your operating system.
 
-[![Back Open Source](https://img.shields.io/badge/Stripe-Back%20Open%20Source-635BFF?logo=stripe&logoColor=white)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.3.0-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![Cursor & Windsurf](https://img.shields.io/badge/Cursor%20%26%20Windsurf-Verified-brightgreen?logo=visualstudiocode)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.3.0-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.3.0-blue)](https://pypi.org/project/btp-guard/)
-[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.3.0-cb3837)](https://www.npmjs.com/package/btp-guard)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.0-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.0-blue)](https://pypi.org/project/btp-guard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Audit Score](https://img.shields.io/badge/Audit%20Score-100%2F100%20(A%2B)-success)](https://bartholomew.info)
-[![Security Gates](https://img.shields.io/badge/Security%20Invariants-15%20Pillars%20Active-brightgreen)](https://bartholomew.info)
+[![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://bartholomew.info/#pricing)
 
 ---
 
-## Extension Overview
+## The One Job Bartholomew Does
 
-Bartholomew Guard operates in-process between autonomous coding assistants (Cursor Composer, Claude Code, GitHub Copilot, Gemini Antigravity, Windsurf, Roo Code, Cline) and your operating system. Every proposed command, file write, script execution, or network invocation is intercepted and verified against deterministic invariants in **under 35 microseconds** before execution:
+When autonomous agents (Cursor Composer, Claude Code, Windsurf, Cline, Copilot) suggest terminal commands, file writes, or API tool calls, Bartholomew acts as a **local, deterministic execution gate**.
 
-- **Destructive Command Interception**: Blocks destructive operations such as `rm -rf`, `mkfs`, raw block overwrites, and unauthorized branch deletions.
-- **In-Flight Secret and Credential Redaction**: Intercepts high-entropy API keys (`sk-*`, AWS keys, JWTs, OAuth tokens) and replaces them with cryptographically verified redaction masks before transmission.
-- **Pipe-to-Shell Quarantine**: Halts and isolates unvetted remote scripts (`curl | bash`, `wget | sh`) before shell evaluation.
-- **Keystone Agent Capabilities**: Constrains agent writes to permitted paths, sandboxes system commands, and enforces hard session spend limits ($25.00 ceiling, $5.00 single-action cap).
-- **Universal Extension Mesh**: Automatically discovers installed agent toolchains (Cursor, Copilot, Claude Desktop, Cline, Python) and coordinates unified protection policies.
+Every action is verified against policy in **<35 microseconds**. If an agent attempts an unauthorized or destructive action, it is blocked fail-closed before execution, and an immutable cryptographic receipt is generated.
 
 ---
 
-## Important Extension Cores (Visual Walkthrough)
+## What Bartholomew Protects
 
-### 1. Proof of Protection Dashboard Core
-Real-time telemetry showing your workspace security score (100/100, Grade A+), active invariant status, evaluation latency (<24.8us), and the live action forensics ledger.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/dashboard_core.png" width="100%" alt="Bartholomew Guard Telemetry Dashboard" />
-</p>
+1. **Destructive Terminal Operations**: Blocks `rm -rf`, disk wipes (`format C:`, `del /s`), raw partition writes (`dd`, `mkfs`), and pipe-to-shell payloads (`curl | bash`).
+2. **In-Flight API Secret Leaks**: Intercepts high-entropy credentials (`.env`, `sk-*`, AWS keys, bearer tokens) and replaces them with redaction masks before external transmission.
+3. **Agent Spend & Budget Ceilings**: Enforces hard caps on agentic transactions ($25 session ceiling, $5 single-transaction cap) to prevent accidental infinite loops and runaway API billing.
+4. **Git Pre-Commit Protection**: Enforces pre-commit invariants so no toxic commands or raw secrets enter your team's repository branches.
 
 ---
 
-### 2. Live Threat Sandbox and Plain-English Analysis Core
-Interactive real-time threat simulator and four structured diagnostic panels. Test arbitrary shell commands, tool calls, and spend requests against the live AST barrier with zero-delay cryptographic receipts.
+## What Bartholomew Does NOT Protect (Explicit Scope Boundary)
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/breakdown_core.png" width="100%" alt="Bartholomew Plain-English Breakdown Core" />
-</p>
+To build genuine trust, we state clearly what is **out of scope**:
 
----
-
-### 3. Direct Agent Context Bridge Core
-One-click context injection buttons formatted specifically for Google Gemini / Antigravity, Anthropic Claude Code, Cursor Composer, and GitHub Copilot. Copy invariant rules directly into your prompt or composer.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/model_bridge_core.png" width="100%" alt="Bartholomew Direct Agent Context Bridge" />
-</p>
+- ❌ **Semantic Code Quality**: Bartholomew does not judge whether the agent wrote good algorithms or poor $O(N^3)$ loops. Use your standard test suite (`npm test`, `pytest`).
+- ❌ **Prompt Hallucinations / Factual Errors**: Bartholomew does not filter chat text that does not touch files, terminal commands, or network sockets.
+- ❌ **Manual Human Actions**: Bartholomew inspects agentic tool proposals, not manual terminal actions initiated directly by human developers.
 
 ---
 
-## Plain-English Analysis Breakdown
+## How to Verify It Is Active (In 5 Seconds)
 
-Whenever Bartholomew Guard audits your workspace or intercepts an agent operation, it surfaces a transparent four-stage breakdown:
+### Option A: From VS Code / Cursor Sidebar
+1. Click the **Bartholomew Shield** icon in your activity bar.
+2. Click **`[⚡ Run 60-Second Live Security Probe]`**.
+3. Watch the animated in-process probe test safe vs. blocked execution in <35µs with SHA-256 receipts.
 
-| Stage | Focus | Description |
-|---|---|---|
-| **1. Active Protection Status** | Current Execution Posture | Live status of the workspace, agent activity levels, active invariant monitors, and background telemetry. |
-| **2. Invariants and Integrity** | Identified Hazards | Concrete misconfigurations, unshielded pre-commit hooks, missing agent policy files, or high-risk tool calls. |
-| **3. Recommended Operation** | Clear Next Steps | Actionable remediations to achieve a perfect 100/100 (A+) security rating. |
-| **4. Core Active Capabilities** | Active Invariant Guardrails | Sub-35us AST gates, in-flight secret masking, pipe-to-shell blocking, and Keystone capability passkeys actively defending the system. |
-
----
-
-## How-To Guide: Step-by-Step Instructions
-
-### Step 1: Installation
-
-#### In VS Code, Cursor, or Windsurf
-1. Open the Extensions pane (`Ctrl+Shift+X` or `Cmd+Shift+X`).
-2. Search for **`Bartholomew Agent Guard`**.
-3. Click **Install**.
-
-#### Via Extensions CLI
+### Option B: From Any Terminal
 ```bash
-# In VS Code:
-code --install-extension bartholomew.bartholomew-guard-vscode
-
-# In Cursor:
-cursor --install-extension Bartholomew.bartholomew-guard-vscode
-
-# Via Open VSX Registry:
-# https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode
+python -m btp_guard.cli prove
+# Or run the trust boundary demo:
+python -m btp_guard.demo_trust_boundary
 ```
-
-### Step 2: Initialize Workspace Invariants
-
-Open your command palette (`Ctrl+Shift+P` / `Cmd+Shift+P`) and execute:
-```text
-Bartholomew: 1-Click Immunize Workspace
-```
-This generates `.btp/policy.yaml` and installs the Git AST pre-commit barrier to ensure no raw secrets or toxic commands ever exit your workstation.
-
-### Step 3: Test Interactive Threat Sandbox
-
-1. Click the **Bartholomew Shield icon** in your activity bar.
-2. Select the **Threat Sandbox** tab.
-3. Choose a preset attack scenario (e.g. `Blocked Wipe (rm -rf /)` or `Secret Leak`).
-4. Click **Test Gate** to verify real-time sub-35us AST interception and review the generated SHA-256 cryptographic proof receipt.
-
-### Step 4: Bridge into Autonomous Agent Coding Companions
-
-Select the **Agent Companions** tab to get customized system instructions for:
-- **Anthropic Claude Desktop**: Automatically injects MCP security invariants.
-- **Cursor IDE**: Direct `.cursorrules` enforcement snippet.
-- **Google Gemini / Antigravity**: Scoped context prompt with Keystone token verification.
-- **GitHub Copilot**: Real-time workspace guardrail instructions.
 
 ---
 
-## Open Source and Enterprise Verification
+## Pricing: Free for Developers, Built for Teams
 
-Bartholomew Guard is open-source software under the **MIT License**.
+| Tier | Price | What You Get |
+| :--- | :--- | :--- |
+| **Developer Edition** | **Free Forever** (MIT) | Personal AST invariant gate, secret scrubber, local tamper-evident ledger, VS Code / Cursor sidebar. |
+| **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized repository policy sync (`.btp/policy.yaml`), team-wide pre-commit hooks, CISO/SOC2-ready PDF compliance dossier, 30-min setup call, 100% money-back guarantee. |
 
-- Documentation and Live Telemetry: [https://bartholomew.info](https://bartholomew.info)
-- Source Repository: [GitHub](https://github.com/ivegotahunnitonit/bartholomew)
-- Python Package: `pip install btp-guard`
-- NPM Package: `npm install btp-guard`
+👉 **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
+
+---
+
+## Supported Autonomous Runtimes
+
+- **Cursor**
+- **Claude Code**
+- **Windsurf**
+- **Cline**
+- **Aider**
+- **OpenHands**
+- **Smolagents**
+- **CrewAI & AutoGen**
+- **Ollama / vLLM local harnesses**
+
+---
+
+## Quickstart
+
+```bash
+# 1. Install CLI
+pip install btp-guard
+
+# 2. Immunize your workspace (creates .btp/policy.yaml and git hook)
+btp-guard immunize
+
+# 3. Verify protection
+btp-guard prove
+```
+
+Website: [https://bartholomew.info](https://bartholomew.info)  
+Documentation: [Reproducible Trust Boundary Demo](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/REPRODUCIBLE_DEMO.md)
