@@ -1,6 +1,6 @@
 {
   "report_id": "UR-74047194FBCB",
-  "timestamp_utc": "2026-10-03T04:39:46.641232+00:00",
+  "timestamp_utc": "2026-10-03T05:15:00.000000+00:00",
   "monetization_readiness_status": "PHASE_1_USER_BASE_EXPANSION_AND_IP_LOCKDOWN",
   "summary": {
     "total_verified_distributions": 17035,
@@ -8,7 +8,7 @@
     "weekly_developer_run_velocity": 3457,
     "monetization_threshold_target": 25000,
     "progress_to_monetization_target_pct": 68.1,
-    "recommendation": "Protect intellectual property and accelerate distribution. Do not place hard paywalls until user base reaches 25,000+ verified active developers."
+    "recommendation": "Protect intellectual property and accelerate distribution worldwide. Free tier up to 5 concurrent agents; commercial evaluation keys active for enterprise fleet scaling."
   },
   "breakdown_by_channel": {
     "open_vsx_marketplace": {
@@ -54,6 +54,43 @@
       "open_issues": 0,
       "total_tagged_releases": 24,
       "direct_release_asset_downloads": 26
+    }
+  },
+  "international_ecosystem_reach": {
+    "status": "EXPANDED_GLOBAL_COVERAGE",
+    "gateway_proxy": {
+      "endpoint": "http://127.0.0.1:8081/v1",
+      "latency": "sub-35us",
+      "compatibility": "OpenAI-compatible /v1/chat/completions"
+    },
+    "regional_framework_coverage": {
+      "APAC_Greater_China": [
+        "MetaGPT (DeepWisdom)",
+        "Dify.AI",
+        "Qwen-Agent (Alibaba Cloud)",
+        "ChatDev (OpenBMB / Tsinghua)"
+      ],
+      "Europe_EMEA": [
+        "Smolagents (Hugging Face / France)",
+        "Haystack (deepset / Germany)",
+        "Mistral Tool Calling"
+      ],
+      "Americas_and_Global": [
+        "CrewAI",
+        "LangGraph & LangChain",
+        "AutoGen (Microsoft)",
+        "LlamaIndex",
+        "CAMEL-AI",
+        "OpenDevin / OpenHands",
+        "OpenAI Swarm",
+        "PydanticAI"
+      ],
+      "Local_Offline_Runtimes": [
+        "llama.cpp",
+        "Ollama",
+        "LM Studio",
+        "LocalAI"
+      ]
     }
   },
   "intellectual_property_status": {

@@ -1,8 +1,9 @@
 """
-Bartholomew Trust Protocol (BTP v5.4.19) - Framework Integrations
+Bartholomew Trust Protocol (BTP v6.4.0) - Framework Integrations
 ================================================================
 First-class adapters for LangChain, LangGraph, CrewAI, AutoGen, LlamaIndex,
-PydanticAI, Smolagents, and OpenAI Swarm.
+PydanticAI, Smolagents, OpenAI Swarm, MetaGPT, Dify, Qwen-Agent, ChatDev,
+Haystack, CAMEL-AI, and OpenDevin / OpenHands.
 """
 
 from .crewai import BtpCrewAIGuard
@@ -15,6 +16,14 @@ from .autogen import AutoGenBTPInterceptor, btp_autogen_guard
 from .llamaindex import LlamaIndexBTPToolGuard, btp_llamaindex_tool
 from .nvidia_nim import BartholomewNIMGuard
 
+from .metagpt import BtpMetaGPTGuard
+from .dify import BtpDifyGuard
+from .qwen_agent import BtpQwenAgentGuard
+from .chatdev import BtpChatDevGuard
+from .haystack import BtpHaystackGuard
+from .camel import BtpCamelGuard
+from .opendevin import BtpOpenDevinGuard
+
 from . import crewai
 from . import langchain
 from . import langgraph
@@ -24,9 +33,25 @@ from . import nvidia_nim
 from . import pydanticai
 from . import smolagents
 from . import swarm
+from . import metagpt
+from . import dify
+from . import qwen_agent
+from . import chatdev
+from . import haystack
+from . import camel
+from . import opendevin
 
 from .stripe_agent import BtpStripeAgentGuard, StripeSecurityVetoException, BtpStripeLicenseRequiredException, wrap_stripe
 from . import stripe_agent
+
+from .universal_pay import BtpUniversalPayGuard, PaymentProvider, UniversalSecurityVetoException, wrap_payment
+from . import universal_pay
+
+from .grok import BtpGrokGuard, GrokSecurityVetoException, wrap_grok
+from . import grok
+
+from .m2m_toll import BtpM2MMicroToll
+from . import m2m_toll
 
 __all__ = [
     "BtpStripeAgentGuard",
@@ -45,6 +70,13 @@ __all__ = [
     "LlamaIndexBTPToolGuard",
     "BartholomewNIMGuard",
     "btp_llamaindex_tool",
+    "BtpMetaGPTGuard",
+    "BtpDifyGuard",
+    "BtpQwenAgentGuard",
+    "BtpChatDevGuard",
+    "BtpHaystackGuard",
+    "BtpCamelGuard",
+    "BtpOpenDevinGuard",
     "crewai",
     "langchain",
     "langgraph",
@@ -54,13 +86,20 @@ __all__ = [
     "pydanticai",
     "smolagents",
     "swarm",
+    "metagpt",
+    "dify",
+    "qwen_agent",
+    "chatdev",
+    "haystack",
+    "camel",
+    "opendevin",
+    "BtpUniversalPayGuard",
+    "PaymentProvider",
+    "UniversalSecurityVetoException",
+    "wrap_payment",
+    "BtpGrokGuard",
+    "GrokSecurityVetoException",
+    "wrap_grok",
+    "BtpM2MMicroToll",
+    "m2m_toll",
 ]
-
-from .universal_pay import BtpUniversalPayGuard, PaymentProvider, UniversalSecurityVetoException, wrap_payment
-from . import universal_pay
-
-from .grok import BtpGrokGuard, GrokSecurityVetoException, wrap_grok
-from . import grok
-
-from .m2m_toll import BtpM2MMicroToll
-from . import m2m_toll

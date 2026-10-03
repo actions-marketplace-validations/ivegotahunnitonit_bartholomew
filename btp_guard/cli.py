@@ -1,4 +1,33 @@
 
+
+def cmd_gateway(args):
+    import json
+    sub = getattr(args, "gateway_cmd", "start")
+    if sub == "status":
+        import urllib.request, json
+        try:
+            req = urllib.request.urlopen("http://127.0.0.1:8081/health", timeout=3)
+            data = json.loads(req.read().decode())
+            print("\n[*] Bartholomew Universal Agent Gateway Status: ONLINE")
+            print(json.dumps(data, indent=2))
+        except Exception as e:
+            print(f"\n[!] Bartholomew Gateway offline or unreachable: {e}")
+    elif sub == "license":
+        company = getattr(args, "company", "Enterprise Partner") or "Enterprise Partner"
+        days = getattr(args, "days", 30) or 30
+        from btp_guard.universal_gateway import generate_evaluation_license
+        lic = generate_evaluation_license(company, duration_days=days)
+        print("\n" + "=" * 74)
+        print("   BARTHOLOMEW ENTERPRISE COMMERCIAL EVALUATION LICENSE")
+        print("=" * 74)
+        print(json.dumps(lic, indent=2))
+        print("=" * 74 + "\n")
+    else:
+        port = getattr(args, "port", 8081) or 8081
+        host = getattr(args, "host", "127.0.0.1") or "127.0.0.1"
+        from btp_guard.universal_gateway import run_gateway_server
+        run_gateway_server(host=host, port=port, blocking=True)
+
 def cmd_wrap(args):
     from btp_guard.llamacpp_adapter import GuardedLlamaProxy
     upstream = getattr(args, "upstream", "http://localhost:8080") or "http://localhost:8080"
@@ -4595,6 +4624,19 @@ def main():
     fw_p.add_argument("--strict", action="store_true", help="Enable strict heuristic gating")
     fw_p.add_argument("--json", action="store_true", help="Output JSON")
     
+    # Control Plane & Universal Gateway
+    cp_p = subparsers.add_parser("control-plane", help="Unified Fleet Control Plane, Global Reach, & Service Ledger")
+    
+    gw_p = subparsers.add_parser("gateway", help="Bartholomew Universal Agent Gateway (:8081)")
+    gw_sub = gw_p.add_subparsers(dest="gateway_cmd")
+    gw_start = gw_sub.add_parser("start", help="Start Universal Agent Gateway")
+    gw_start.add_argument("--port", type=int, default=8081, help="Proxy port (default: 8081)")
+    gw_start.add_argument("--host", default="127.0.0.1", help="Host address (default: 127.0.0.1)")
+    gw_status = gw_sub.add_parser("status", help="Query Gateway health and active agent count")
+    gw_lic = gw_sub.add_parser("license", help="Generate or verify BTP-EVAL commercial enterprise license")
+    gw_lic.add_argument("--company", default="Enterprise Partner", help="Licensee company name")
+    gw_lic.add_argument("--days", type=int, default=30, help="Evaluation duration in days")
+
     fleet_p = subparsers.add_parser("fleet", help="Multi-workspace Fleet View — aggregate security & optimizations across repos")
     fleet_p.add_argument("--roots", nargs="*", help="Repository roots to scan")
     fleet_p.add_argument("--json", action="store_true", help="Output JSON")
@@ -4763,6 +4805,7 @@ def main():
     # check
     chk_p = subparsers.add_parser("check", help="Statically verify policy for contradictions and invariant coverage")
     chk_p.add_argument("--file", "-f", default=".btp/policy.yaml", help="Path to policy YAML file")
+    chk_p.add_argument("--staged", action="store_true", help="Audit git staged files before commit")
 
     # sync
     sync_p = subparsers.add_parser("sync", help="Push verified policy to live agent workers via hot reload")
@@ -5406,6 +5449,11 @@ def main():
         cmd_firewall(args)
     elif args.command in ("wrap", "llamacpp", "ollama"):
         cmd_wrap(args)
+    elif args.command in ("control-plane", "dashboard"):
+        from btp_guard.fleet_control_plane import render_control_plane
+        render_control_plane()
+    elif args.command == "gateway":
+        cmd_gateway(args)
     elif args.command == "fleet":
         cmd_fleet(args)
     elif args.command == "replay":
