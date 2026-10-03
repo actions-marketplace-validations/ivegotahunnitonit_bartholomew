@@ -238,77 +238,6 @@ class Guard:
         )
         return interceptor.protect(func)
 
-    def escrow_collateral(
-        self,
-        amount_usd: float = 100.0,
-        action_type: str = "DEFAULT_ACTION",
-        settlement_rail: str = "L402_LIGHTNING",
-        agent_id: str = "agent-worker",
-        passport=None,
-        pool=None
-    ):
-        """
-        Decorator that locks autonomous micro-escrow collateral before function execution.
-        If the function executes cleanly and passes AST verification, escrow is released.
-        If an invariant violation occurs, an automated regression proof is stamped
-        and collateral is liquidated to the claimant payee.
-        """
-        import hashlib
-        from src.settlement.autonomous_escrow import AutonomousEscrowPool
-        escrow_pool = pool or AutonomousEscrowPool()
-
-        def decorator(func):
-            def wrapper(*args, **kwargs):
-                # 1. Lock micro-escrow collateral
-                deposit = escrow_pool.lock_escrow(
-                    agent_id=agent_id,
-                    action_type=action_type,
-                    amount_usd=amount_usd,
-                    passport=passport,
-                    settlement_rail=settlement_rail
-                )
-                try:
-                    # 2. Pre-execution AST / argument check
-                    first_arg = str(args[0]) if args else str(kwargs)
-                    res = self.check(first_arg, amount_usd=amount_usd, agent_id=agent_id)
-                    if not res["allowed"]:
-                        proof = {
-                            "type": "BTP_REGRESSION_PROOF",
-                            "violated_invariant": res.get("reason", "INVARIANT_VETO"),
-                            "proof_signature": f"0x{hashlib.sha256(first_arg.encode()).hexdigest()}",
-                            "target_action": action_type
-                        }
-                        escrow_pool.claim_and_slash(
-                            escrow_id=deposit.escrow_id,
-                            regression_proof=proof,
-                            payee_destination=kwargs.get("claimant_payee", "0x000000000000000000000000000000000000dead"),
-                            agent_passport=passport
-                        )
-                        raise PermissionError(f"[Bartholomew Micro-Escrow Slashed] {res['reason']}")
-
-                    result = func(*args, **kwargs)
-                    # 3. Clean release
-                    escrow_pool.release_escrow(deposit.escrow_id, agent_passport=passport)
-                    return result
-                except Exception as exc:
-                    if deposit.status == "LOCKED":
-                        proof = {
-                            "type": "BTP_REGRESSION_PROOF",
-                            "violated_invariant": str(exc),
-                            "proof_signature": f"0x{hashlib.sha256(str(exc).encode()).hexdigest()}",
-                            "target_action": action_type
-                        }
-                        escrow_pool.claim_and_slash(
-                            escrow_id=deposit.escrow_id,
-                            regression_proof=proof,
-                            payee_destination=kwargs.get("claimant_payee", "0x000000000000000000000000000000000000dead"),
-                            agent_passport=passport
-                        )
-                    raise exc
-            wrapper.escrow_pool = escrow_pool
-            wrapper.deposit = lambda: next(reversed(list(escrow_pool.active_escrows.values())), None)
-            return wrapper
-        return decorator
 
 
 def wrap_client(client, spend_cap: float = 100.0, guard: Guard = None):
@@ -331,14 +260,6 @@ def wrap_client(client, spend_cap: float = 100.0, guard: Guard = None):
     return WrappedClient(client, active_guard)
 
 
-from src.settlement.swarm_arbitration import (
-    ZKFaultProofEngine,
-    ZKFaultProof,
-    SwarmDisputeArbitrator,
-    ArbitrationResolutionCertificate
-)
-from src.settlement.lightning_gateway import LightningGateway, LightningInvoice
-from src.settlement.evm_escrow import EVMEscrowGateway, EscrowSlashingClaim
 
 
 from src.dispatch_seam import (
@@ -358,15 +279,7 @@ __all__ = [
     "extract_evaluated_payloads",
     "BartholomewTrustAuthority",
     "IndependentTrustVerifier",
-    "ZKFaultProofEngine",
-    "ZKFaultProof",
-    "SwarmDisputeArbitrator",
-    "ArbitrationResolutionCertificate",
-    "LightningGateway",
-    "LightningInvoice",
-    "EVMEscrowGateway",
-    "EscrowSlashingClaim"
-]
+                                ]
 
 from .agent_protector import protect_agent
 
