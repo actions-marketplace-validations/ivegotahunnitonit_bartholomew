@@ -202,3 +202,6 @@ marketplace_ready/
 .btp/keystone.json
 
 bartholomew_pr_audit.json
+
+BARTHOLOMEW_*.json
+*.jsonl

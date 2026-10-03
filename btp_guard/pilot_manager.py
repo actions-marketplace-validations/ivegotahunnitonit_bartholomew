@@ -1,3 +1,7 @@
+import sys
+if hasattr(sys.stdout, 'reconfigure'):
+    try: sys.stdout.reconfigure(encoding='utf-8')
+    except Exception: pass
 #!/usr/bin/env python3
 """
 Bartholomew Protocol - Team Pilot Enrollment & Manager (v6.4.0)
@@ -45,7 +49,7 @@ def enroll_team(
 
     # 2. Write customized policy.yaml if not present
     if not POLICY_FILE.exists():
-        policy_content = f"""# Bartholomew Team Pilot Policy — {team_name}
+        policy_content = f"""# Bartholomew Team Pilot Policy -- {team_name}
 # Evaluated in-process (<35us) across Cursor, Claude Code, Windsurf
 version: "6.4.0"
 team:
@@ -108,7 +112,7 @@ def run_pilot_cli(args=None):
 
     if not is_enroll:
         print("\n" + "=" * 74)
-        print("   BARTHOLOMEW PROTOCOL — 30-DAY HANDS-ON TEAM PILOT")
+        print("   BARTHOLOMEW PROTOCOL -- 30-DAY HANDS-ON TEAM PILOT")
         print("   Verifiable Workspace Guardrails for Teams Adopting AI Coding Agents")
         print("=" * 74)
         print("  * Target Buyer    : Engineering Leads & Platform Teams (up to 10 devs)")
@@ -130,7 +134,7 @@ def run_pilot_cli(args=None):
 
     # Interactive or Automated Enrollment
     print("\n" + "=" * 74)
-    print("   BARTHOLOMEW 30-DAY TEAM PILOT — WORKSPACE ENROLLMENT")
+    print("   BARTHOLOMEW 30-DAY TEAM PILOT -- WORKSPACE ENROLLMENT")
     print("=" * 74)
 
     team_name = getattr(args, "team", None) if args else None
@@ -158,7 +162,7 @@ def run_pilot_cli(args=None):
     res = enroll_team(team_name=team_name, email=email, seats=seats, billing=billing)
 
     print("\n" + "-" * 74)
-    print("   [✓] 30-DAY TEAM PILOT ENROLLMENT COMPLETE")
+    print("   [+] 30-DAY TEAM PILOT ENROLLMENT COMPLETE")
     print("-" * 74)
     print(f"  * Team Name           : {res['team_name']}")
     print(f"  * Lead Email          : {res['lead_email']}")

@@ -4639,6 +4639,10 @@ def main():
     pilot_p = subparsers.add_parser("pilot", help="30-Day Hands-On Team Pilot details and enrollment")
     pilot_p.add_argument("--info", action="store_true", help="Display pilot terms and pricing")
     pilot_p.add_argument("--enroll", action="store_true", help="Initiate team pilot enrollment")
+    pilot_p.add_argument("--team", type=str, default=None, help="Team or organization name")
+    pilot_p.add_argument("--email", type=str, default=None, help="Lead engineer or admin email")
+    pilot_p.add_argument("--seats", type=int, default=10, help="Number of authorized seats (default: 10)")
+    pilot_p.add_argument("--billing", type=str, choices=["monthly", "setup"], default="monthly", help="Billing option: monthly ($199/mo) or setup ($950 one-time)")
 
     td_p = subparsers.add_parser("trust-demo", help="Run reproducible demonstration of allowed, blocked, and non-covered actions")
     pipe_p = subparsers.add_parser("pipeline", help="Display customer discovery interviews and paid pilot pipeline")
