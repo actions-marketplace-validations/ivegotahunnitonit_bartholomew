@@ -34,7 +34,7 @@ class ASTAutoHealer:
         re.IGNORECASE
     )
     GIT_FORCE_PUSH = re.compile(
-        r"git\s+push\s+.*--force\b(?!\-with\-lease)",
+        r"git\s+push\s+.*--force(?:\s+(?!-with-lease)|$)",
         re.IGNORECASE
     )
     SECRET_CAT_ENV = re.compile(

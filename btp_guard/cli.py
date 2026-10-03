@@ -1649,6 +1649,30 @@ def cmd_mcp_registry(args):
     print("=" * 74)
 
 
+
+def cmd_policy_template(args):
+    from btp_guard.industry_templates import get_template, list_templates
+    industry = getattr(args, "industry", "fintech").lower()
+    tmpl = get_template(industry)
+    out_file = getattr(args, "output", None) or f".btp/{tmpl['filename']}"
+    
+    os.makedirs(os.path.dirname(os.path.abspath(out_file)), exist_ok=True)
+    with open(out_file, "w", encoding="utf-8") as f:
+        f.write(tmpl["yaml"])
+    
+    print("\n" + "=" * 74)
+    print(f"   BARTHOLOMEW ENTERPRISE POLICY TEMPLATE -- {tmpl['name'].upper()}")
+    print("=" * 74)
+    print(f"  * Description : {tmpl['description']}")
+    print(f"  * Written To  : {out_file}")
+    print("-" * 74)
+    print("  [+] Next Step : Run 'python -m btp_guard.cli policy validate --file " + out_file + "'")
+    print("=" * 74 + "\n")
+
+def cmd_doctor(args):
+    from btp_guard.doctor import run_doctor
+    run_doctor()
+
 def cmd_policy_validate(args):
     file_path = args.file or "policies/default_security_policy.yaml"
     if not os.path.isabs(file_path):
@@ -4636,6 +4660,7 @@ def main():
 
     funnel_p = subparsers.add_parser("funnel", help="Audit conversion funnel health (Downloads -> Installs -> Proofs -> Paid Pilots)")
 
+    doctor_p = subparsers.add_parser("doctor", help="Smart workspace security doctor & diagnostic health check")
     pilot_p = subparsers.add_parser("pilot", help="30-Day Hands-On Team Pilot details and enrollment")
     pilot_p.add_argument("--info", action="store_true", help="Display pilot terms and pricing")
     pilot_p.add_argument("--enroll", action="store_true", help="Initiate team pilot enrollment")
@@ -4745,6 +4770,10 @@ def main():
 
     syn_p = policy_sub.add_parser("synthesize", help="Auto-synthesize least-privilege policy from traces")
     syn_p.add_argument("--output", "-o", type=str, default="policies/synthesized_policy.yaml", help="Output YAML file path")
+
+    tpl_p = policy_sub.add_parser("template", help="Generate pre-configured industry policy template (fintech, healthcare, legaltech, devshop)")
+    tpl_p.add_argument("--industry", "-i", choices=["fintech", "healthcare", "legaltech", "devshop"], default="fintech", help="Target industry (default: fintech)")
+    tpl_p.add_argument("--output", "-o", type=str, default=None, help="Output file path")
 
     # demo
     demo_p = subparsers.add_parser("demo", help="Run high-impact interactive real-time invariant showcase")
@@ -5486,6 +5515,10 @@ def main():
     elif args.command in ("trust-demo", "demo-trust-boundary"):
         from btp_guard.demo_trust_boundary import run_demo
         run_demo()
+    elif args.command == "doctor":
+        cmd_doctor(args)
+    elif args.command == "policy" and getattr(args, "policy_cmd", None) == "template":
+        cmd_policy_template(args)
     elif args.command == "pipeline":
         from btp_guard.interview_pipeline import render_pipeline_table
         render_pipeline_table()
