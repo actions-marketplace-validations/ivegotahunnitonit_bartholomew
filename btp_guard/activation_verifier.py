@@ -1,3 +1,9 @@
+import sys
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
 #!/usr/bin/env python3
 """
 Bartholomew Protocol - Workspace Activation Verifier (v6.4.0)
@@ -88,7 +94,7 @@ def render_activation_proof(target_dir: str = "."):
     probe_info = run_live_security_probe()
 
     print("\n" + "=" * 76)
-    print("      BARTHOLOMEW WORKSPACE SECURITY ACTIVATION — VERIFIABLE PROOF")
+    print("      BARTHOLOMEW WORKSPACE SECURITY ACTIVATION -- VERIFIABLE PROOF")
     print("=" * 76)
     
     print("\n[1] WORKSPACE INSPECTION (What Is In This Repository)")
