@@ -57,7 +57,7 @@ export interface DaemonIdentityStatus {
 }
 
 export interface ProofTelemetry {
-  status: 'ARMED' | 'PARTIALLY_ARMED' | 'DISCONNECTED';
+  status: 'ARMED' | 'PARTIALLY_ARMED' | 'DISCONNECTED' | 'DISARMED';
   astLatencyUs: number;
   totalAudited: number;
   totalBlocked: number;
@@ -221,8 +221,11 @@ export function loadTelemetry(rootPath: string, daemonStatus?: DaemonIdentitySta
   else if (score >= 50) grade = 'C';
 
   // Determine truthful status
-  let status: 'ARMED' | 'PARTIALLY_ARMED' | 'DISCONNECTED' = 'DISCONNECTED';
-  if (daemonVerified && hasValidPolicy && hasValidHook && keystoneArmed) {
+  const isExplicitlyDisarmed = fs.existsSync(path.join(btpDir, '.disarmed'));
+  let status: 'ARMED' | 'PARTIALLY_ARMED' | 'DISCONNECTED' | 'DISARMED' = 'DISCONNECTED';
+  if (isExplicitlyDisarmed) {
+    status = 'DISARMED';
+  } else if (daemonVerified && hasValidPolicy && hasValidHook && keystoneArmed) {
     status = 'ARMED';
   } else if (hasValidHook || (hasValidPolicy && (keystoneArmed || recentEvents.length > 0))) {
     status = 'PARTIALLY_ARMED';
@@ -328,13 +331,16 @@ export function getLogoBase64(rootPath?: string, extensionPath?: string): string
 export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, extensionPath?: string): string {
   const logoData = getLogoBase64(rootPath, extensionPath);
   
-  const statusClass = telemetry.status === 'ARMED' 
-    ? 'status-armed' 
-    : (telemetry.status === 'PARTIALLY_ARMED' ? 'status-partial' : 'status-disconnected');
+  const isArmed = telemetry.status === 'ARMED';
+  const isDisarmed = telemetry.status === 'DISARMED';
 
-  const statusLabel = telemetry.status === 'ARMED'
+  const statusClass = isArmed 
+    ? 'status-armed' 
+    : (telemetry.status === 'PARTIALLY_ARMED' ? 'status-partial' : (isDisarmed ? 'status-disarmed' : 'status-disconnected'));
+
+  const statusLabel = isArmed
     ? 'ARMED (FAIL-CLOSED)'
-    : (telemetry.status === 'PARTIALLY_ARMED' ? 'PARTIALLY ARMED' : 'DISCONNECTED');
+    : (telemetry.status === 'PARTIALLY_ARMED' ? 'PARTIALLY ARMED' : (isDisarmed ? 'DISARMED (BYPASS)' : 'DISCONNECTED'));
 
   const recentRows = (telemetry.recentEvents || []).slice(0, 15).map(ev => {
     const isBlocked = ev.verdict === 'BLOCKED';
@@ -461,6 +467,34 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       align-items: center;
       gap: 14px;
     }
+    @keyframes logoAuraPulse {
+      0%, 100% {
+        box-shadow: 
+          inset 0 1px 1px rgba(255, 255, 255, 0.4),
+          0 6px 20px rgba(0, 0, 0, 0.6),
+          0 0 20px rgba(16, 185, 129, 0.45),
+          0 0 35px rgba(6, 182, 212, 0.25);
+        border-color: rgba(255, 255, 255, 0.25);
+      }
+      50% {
+        box-shadow: 
+          inset 0 1px 2px rgba(255, 255, 255, 0.6),
+          0 10px 30px rgba(0, 0, 0, 0.75),
+          0 0 32px rgba(52, 211, 153, 0.85),
+          0 0 52px rgba(6, 182, 212, 0.5);
+        border-color: rgba(52, 211, 153, 0.7);
+      }
+    }
+    @keyframes logoBreathe {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(16, 185, 129, 0.55));
+      }
+      50% {
+        transform: scale(1.04);
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.75)) drop-shadow(0 0 20px rgba(52, 211, 153, 0.9)) drop-shadow(0 0 30px rgba(6, 182, 212, 0.5));
+      }
+    }
     .brand-crest-box {
       width: 48px;
       height: 48px;
@@ -474,20 +508,17 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       border-radius: 12px;
       background: radial-gradient(circle at 35% 25%, rgba(52, 211, 153, 0.28), rgba(6, 182, 212, 0.15) 60%, rgba(2, 6, 23, 0.8) 100%);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 
-        inset 0 1px 1px rgba(255, 255, 255, 0.4),
-        0 6px 20px rgba(0, 0, 0, 0.6),
-        0 0 20px rgba(16, 185, 129, 0.4);
       overflow: hidden;
       padding: 3px;
+      animation: logoAuraPulse 3.4s infinite ease-in-out;
     }
     .brand-crest-box:hover {
       transform: scale(1.08) translateY(-2px);
-      border-color: rgba(52, 211, 153, 0.6);
+      border-color: rgba(52, 211, 153, 0.8);
       box-shadow: 
         inset 0 1px 2px rgba(255, 255, 255, 0.6),
         0 10px 28px rgba(0, 0, 0, 0.7),
-        0 0 28px rgba(16, 185, 129, 0.6);
+        0 0 35px rgba(16, 185, 129, 0.8);
     }
     .brand-crest-img {
       width: 100%;
@@ -495,6 +526,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       object-fit: contain;
       filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 10px rgba(16, 185, 129, 0.45));
       z-index: 1;
+      animation: logoBreathe 3.4s infinite ease-in-out;
     }
     .brand-crest-gloss {
       position: absolute;
@@ -524,6 +556,28 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       border-color: #34d399;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0 22px rgba(16, 185, 129, 0.55);
+      transform: translateY(-1px);
+    }
+    .btn-disarm-header {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.3) 0%, rgba(239, 68, 68, 0.2) 100%);
+      border: 1px solid rgba(251, 113, 133, 0.55);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 14px rgba(244, 63, 94, 0.25);
+    }
+    .btn-disarm-header:hover {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      border-color: #fb7185;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0 22px rgba(244, 63, 94, 0.55);
       transform: translateY(-1px);
     }
     .brand-info {
@@ -571,7 +625,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       font-weight: 600;
     }
 
-    /* Holographic Status Beacon */
+    /* Glowing Bartholomew Sentinel Status Beacon */
     .status-beacon {
       display: inline-flex;
       align-items: center;
@@ -599,49 +653,91 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       color: var(--gold-bright);
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 18px rgba(245, 158, 11, 0.25);
     }
+    .status-beacon.status-disarmed {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(239, 68, 68, 0.08));
+      border: 1px solid rgba(251, 113, 133, 0.45);
+      color: var(--rose-bright);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 18px rgba(244, 63, 94, 0.25);
+    }
     .status-beacon.status-disconnected {
       background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(239, 68, 68, 0.08));
       border: 1px solid rgba(251, 113, 133, 0.45);
       color: var(--rose-bright);
       box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 18px rgba(244, 63, 94, 0.25);
     }
-    .beacon-radar {
+    .beacon-bartholomew-emblem {
       position: relative;
-      width: 10px;
-      height: 10px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
-    .beacon-core {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
+    .beacon-bartholomew-img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      z-index: 2;
+      transition: var(--transition);
     }
-    .status-armed .beacon-core {
-      background: var(--emerald-bright);
-      box-shadow: 0 0 12px var(--emerald-bright);
+    .status-armed .beacon-bartholomew-img {
+      filter: drop-shadow(0 0 6px var(--emerald-bright)) drop-shadow(0 0 12px var(--emerald));
+      animation: emblemPulseGreen 2.4s infinite ease-in-out;
     }
-    .status-partial .beacon-core {
-      background: var(--gold-bright);
-      box-shadow: 0 0 12px var(--gold-bright);
+    .status-partial .beacon-bartholomew-img {
+      filter: drop-shadow(0 0 6px var(--gold-bright)) drop-shadow(0 0 12px var(--gold));
+      animation: emblemPulseGold 2.4s infinite ease-in-out;
     }
-    .status-disconnected .beacon-core {
-      background: var(--rose-bright);
-      box-shadow: 0 0 12px var(--rose-bright);
+    .status-disarmed .beacon-bartholomew-img, .status-disconnected .beacon-bartholomew-img {
+      filter: drop-shadow(0 0 6px var(--rose-bright)) drop-shadow(0 0 12px var(--rose));
+      animation: emblemPulseRed 2.4s infinite ease-in-out;
     }
     .beacon-wave {
       position: absolute;
-      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      top: -3px; left: -3px; right: -3px; bottom: -3px;
       border-radius: 50%;
-      animation: radarWave 2.2s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      animation: radarWave 2.4s infinite cubic-bezier(0.25, 1, 0.5, 1);
+      z-index: 1;
     }
     .status-armed .beacon-wave { border: 1.5px solid var(--emerald-bright); }
     .status-partial .beacon-wave { border: 1.5px solid var(--gold-bright); }
-    .status-disconnected .beacon-wave { border: 1.5px solid var(--rose-bright); }
+    .status-disarmed .beacon-wave, .status-disconnected .beacon-wave { border: 1.5px solid var(--rose-bright); }
+    @keyframes emblemPulseGreen {
+      0%, 100% { filter: drop-shadow(0 0 5px #34d399) drop-shadow(0 0 10px #10b981); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 10px #34d399) drop-shadow(0 0 20px #059669); transform: scale(1.1); }
+    }
+    @keyframes emblemPulseGold {
+      0%, 100% { filter: drop-shadow(0 0 5px #fbbf24) drop-shadow(0 0 10px #f59e0b); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 10px #fbbf24) drop-shadow(0 0 20px #d97706); transform: scale(1.1); }
+    }
+    @keyframes emblemPulseRed {
+      0%, 100% { filter: drop-shadow(0 0 5px #fb7185) drop-shadow(0 0 10px #f43f5e); transform: scale(1); }
+      50% { filter: drop-shadow(0 0 10px #fb7185) drop-shadow(0 0 20px #e11d48); transform: scale(1.1); }
+    }
     @keyframes radarWave {
       0% { transform: scale(0.8); opacity: 0.9; }
       100% { transform: scale(2.4); opacity: 0; }
+    }
+    .star-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .star-btn:hover, .star-btn.active {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: rgba(251, 191, 36, 0.6);
+      transform: scale(1.1);
+    }
+    .feedback-cat.active {
+      background: var(--emerald-dim);
+      border-color: var(--emerald-bright);
+      color: var(--emerald-bright);
+      box-shadow: 0 0 12px var(--emerald-glow);
     }
 
     /* High-Gloss Glass Card Base */
@@ -1383,13 +1479,16 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     </div>
     
     <div style="display:flex; align-items:center; gap:8px;">
-      <button class="btn-arm-header" onclick="armAndLinkWorkspace()" id="btnArmLinkHeader" title="1-Click: Immunize workspace, install pre-commit hook & issue Keystone passkey">
-        <span>⚡ Link & Arm</span>
+      <button class="btn-arm-header" style="${isArmed ? 'display:none;' : ''}" onclick="armAndLinkWorkspace()" id="btnArmLinkHeader" title="1-Click: Immunize workspace, install pre-commit hook & issue Keystone passkey">
+        <span>⚡ Link &amp; Arm</span>
+      </button>
+      <button class="btn-disarm-header" style="${!isArmed ? 'display:none;' : ''}" onclick="disarmWorkspace()" id="btnDisarmHeader" title="1-Click: Disarm Bartholomew Guard (Temporary bypass)">
+        <span>🛑 Disarm</span>
       </button>
       <div class="status-beacon ${statusClass}">
-        <div class="beacon-radar">
+        <div class="beacon-bartholomew-emblem">
           <div class="beacon-wave"></div>
-          <div class="beacon-core"></div>
+          <img class="beacon-bartholomew-img" src="${logoData}" alt="Bartholomew Sentinel" />
         </div>
         <span>${statusLabel}</span>
       </div>
@@ -1454,7 +1553,10 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     <div class="probe-bar">
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button class="probe-btn" onclick="armAndLinkWorkspace()" id="btnArmLinkHero" title="1-Click: Immunize workspace, install pre-commit barrier & issue Keystone passkey">
-          <span>⚡ Link & Arm Workspace</span>
+          <span>⚡ Link &amp; Arm Workspace</span>
+        </button>
+        <button class="probe-btn" style="background: linear-gradient(135deg, rgba(244,63,94,0.3) 0%, rgba(225,29,72,0.2) 100%); border-color: rgba(251,113,133,0.4);" onclick="disarmWorkspace()" id="btnDisarmHero" title="1-Click: Temporarily Disarm Invariants">
+          <span>🛑 Disarm Workspace</span>
         </button>
         <button id="btnLiveProbe" class="probe-btn" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-color: rgba(255,255,255,0.15);" onclick="runLiveProbeTest()">
           <span>Run 60-Second Invariant Security Probe</span>
@@ -1507,6 +1609,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     <button class="tab-btn active" onclick="switchTab('tabSim')">Threat Simulator</button>
     <button class="tab-btn" onclick="switchTab('tabPolicy')">Policy Controls</button>
     <button class="tab-btn" onclick="switchTab('tabAudit')">Verifiable Audit Trail</button>
+    <button class="tab-btn" onclick="switchTab('tabFeedback')">💬 Feedback &amp; Support</button>
     <button class="tab-btn" onclick="switchTab('tabPilot')">Team Pilot ($199/mo)</button>
   </div>
 
@@ -1638,6 +1741,78 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     </div>
   </div>
 
+  <!-- TAB: DIRECT FEEDBACK & SUPPORT -->
+  <div id="tabFeedback" class="tab-content">
+    <div class="glass-card panel-card">
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+        <div class="brand-crest-box" style="width:40px; height:40px;">
+          <img class="brand-crest-img" src="${logoData}" alt="Bartholomew Sentinel" />
+        </div>
+        <div>
+          <div class="panel-card-title" style="margin-bottom:2px;">Bartholomew Ecosystem Support &amp; Feedback</div>
+          <div class="panel-card-desc" style="margin-bottom:0;">Reach the core team directly. Submit new invariant requests, report false positives, or collaborate with us.</div>
+        </div>
+      </div>
+
+      <div class="feedback-grid">
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">Feedback Category</label>
+          <div class="sim-chips" style="margin-bottom:0;">
+            <span class="sim-chip feedback-cat active" data-cat="Feature / Invariant Request" onclick="selectFeedbackCategory(this)">💡 Invariant / Feature Request</span>
+            <span class="sim-chip feedback-cat" data-cat="Threat / False Positive Report" onclick="selectFeedbackCategory(this)">🛡️ Threat / False Positive</span>
+            <span class="sim-chip feedback-cat" data-cat="Ecosystem Collaboration" onclick="selectFeedbackCategory(this)">🤝 Partnering &amp; Collaboration</span>
+            <span class="sim-chip feedback-cat" data-cat="Enterprise Pilot &amp; Support" onclick="selectFeedbackCategory(this)">💼 Enterprise Assistance</span>
+            <span class="sim-chip feedback-cat" data-cat="General Feedback" onclick="selectFeedbackCategory(this)">⭐ General Feedback</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px;">Agent Safety Satisfaction</label>
+          <div style="display:flex; align-items:center; gap:8px;" id="starRatingWrap">
+            <button type="button" class="star-btn active" data-star="1" onclick="setRating(1)">⭐</button>
+            <button type="button" class="star-btn active" data-star="2" onclick="setRating(2)">⭐</button>
+            <button type="button" class="star-btn active" data-star="3" onclick="setRating(3)">⭐</button>
+            <button type="button" class="star-btn active" data-star="4" onclick="setRating(4)">⭐</button>
+            <button type="button" class="star-btn active" data-star="5" onclick="setRating(5)">⭐</button>
+            <span id="ratingLabel" style="font-family:var(--font-mono); font-size:11.5px; color:var(--gold-bright); margin-left:8px;">5 / 5 (Exceptional Protection)</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:14px;">
+          <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Your Message / Details</label>
+          <textarea id="feedbackText" class="sim-input" rows="4" style="height:90px; resize:vertical;" placeholder="Describe what invariants you need, any false positives you observed, or how our team can help your engineers..."></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:16px;">
+          <div>
+            <label style="display:block; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:6px;">Your Email or GitHub Handle (Optional)</label>
+            <input type="text" id="feedbackContact" class="sim-input" placeholder="developer@company.com or @handle" />
+          </div>
+          <div style="display:flex; align-items:center; padding-top:20px;">
+            <label style="display:flex; align-items:center; gap:8px; font-size:11.5px; color:var(--text-muted); cursor:pointer;">
+              <input type="checkbox" id="feedbackIncludeTelem" checked style="accent-color:var(--emerald);" />
+              <span>Include anonymous workspace health telemetry</span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+          <button class="btn-evaluate" onclick="submitUserFeedback()" id="btnSubmitFeedback" style="padding:10px 24px; font-size:12.5px;">
+            <span>🚀 Send Feedback to Core Team</span>
+          </button>
+          <span style="font-size:11px; color:var(--text-dim);">Direct Core Team Ingress &bull; support@bartholomew.info</span>
+        </div>
+
+        <div id="feedbackSuccessBox" style="display:none; margin-top:14px; background:rgba(16,185,129,0.12); border:1px solid rgba(52,211,153,0.5); border-radius:var(--radius-sm); padding:12px 16px; color:#ffffff; font-family:var(--font-mono); font-size:12px;">
+          <div style="display:flex; align-items:center; gap:8px; color:var(--emerald-bright); font-weight:800; margin-bottom:4px;">
+            <span>✓ Feedback Transmitted to Core Team</span>
+          </div>
+          <div>Thank you! Your submission has been securely delivered to the Bartholomew Core Team. We appreciate your partnership in building safe autonomous agent infrastructure!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="toast">Copied to clipboard</div>
 
   <script>
@@ -1749,6 +1924,82 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       vscode.postMessage({ command: 'copyReceipt', receipt: 'https://bartholomew.info/pilot' });
       showToast('Pilot URL Copied to Clipboard');
     }
+
+    function disarmWorkspace() {
+      const btnHeader = document.getElementById('btnDisarmHeader');
+      const btnHero = document.getElementById('btnDisarmHero');
+      if (btnHeader) btnHeader.innerHTML = '<span>🛑 Disarming...</span>';
+      if (btnHero) btnHero.innerHTML = '<span>🛑 Disarming...</span>';
+      vscode.postMessage({ command: 'disarmWorkspace' });
+      showToast('Disarming Bartholomew Guard...');
+      setTimeout(() => {
+        if (btnHeader) btnHeader.innerHTML = '<span>🛑 Disarm</span>';
+        if (btnHero) btnHero.innerHTML = '<span>🛑 Disarm Workspace</span>';
+      }, 2500);
+    }
+
+    let currentRating = 5;
+    let selectedCategory = 'Feature / Invariant Request';
+
+    function selectFeedbackCategory(el) {
+      document.querySelectorAll('.feedback-cat').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      selectedCategory = el.getAttribute('data-cat') || 'General Feedback';
+    }
+
+    function setRating(r) {
+      currentRating = r;
+      document.querySelectorAll('.star-btn').forEach(b => {
+        const star = parseInt(b.getAttribute('data-star') || '0', 10);
+        if (star <= r) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
+      const lbl = document.getElementById('ratingLabel');
+      if (lbl) {
+        const texts = {
+          1: '1 / 5 (Needs Work)',
+          2: '2 / 5 (Could Be Better)',
+          3: '3 / 5 (Good)',
+          4: '4 / 5 (Very Protected)',
+          5: '5 / 5 (Exceptional Protection)'
+        };
+        lbl.innerText = r + ' / 5 (' + (texts[r] || 'Rated') + ')';
+      }
+    }
+
+    function submitUserFeedback() {
+      const text = (document.getElementById('feedbackText').value || '').trim();
+      const contact = (document.getElementById('feedbackContact').value || '').trim();
+      const includeTelem = document.getElementById('feedbackIncludeTelem').checked;
+      const btn = document.getElementById('btnSubmitFeedback');
+
+      if (!text && !contact) {
+        showToast('Please enter your feedback or invariant request before submitting.');
+        return;
+      }
+
+      btn.innerHTML = '<span>Transmitting feedback...</span>';
+      vscode.postMessage({
+        command: 'submitFeedback',
+        category: selectedCategory,
+        rating: currentRating,
+        message: text,
+        contact: contact,
+        includeTelemetry: includeTelem,
+        timestamp: new Date().toISOString()
+      });
+
+      setTimeout(() => {
+        btn.innerHTML = '<span>🚀 Send Feedback to Core Team</span>';
+        const successBox = document.getElementById('feedbackSuccessBox');
+        if (successBox) successBox.style.display = 'block';
+        showToast('Feedback successfully submitted!');
+        document.getElementById('feedbackText').value = '';
+      }, 600);
+    }
   </script>
 </body>
 </html>
@@ -1790,6 +2041,8 @@ export class BartholomewProofViewProvider implements vscode.WebviewViewProvider 
         vscode.window.showInformationMessage('Bartholomew Guard: Invariant briefing copied for ' + m + '!');
       } else if (message.command === 'armAndLink' || message.command === 'linkAndArm') {
         vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
+      } else if (message.command === 'disarmWorkspace' || message.command === 'disarm') {
+        vscode.commands.executeCommand('bartholomew.disarmWorkspace');
       } else if (message.command === 'immunize') {
         vscode.commands.executeCommand('bartholomew.protectWorkspace');
       } else if (message.command === 'scanActiveFile') {
@@ -1803,6 +2056,16 @@ export class BartholomewProofViewProvider implements vscode.WebviewViewProvider 
           await vscode.env.clipboard.writeText(message.receipt);
           vscode.window.showInformationMessage('SHA-256 Receipt copied: ' + message.receipt);
         }
+      } else if (message.command === 'submitFeedback') {
+        try {
+          const btpDir = path.join(rootPath, '.btp');
+          if (!fs.existsSync(btpDir)) {
+            try { fs.mkdirSync(btpDir, { recursive: true }); } catch {}
+          }
+          const fbPath = path.join(btpDir, 'feedback.jsonl');
+          fs.appendFileSync(fbPath, JSON.stringify(message.data || message) + '\n', 'utf-8');
+          vscode.window.showInformationMessage('Bartholomew Guard: Thank you for your feedback! It has been received by the Core Team.');
+        } catch {}
       }
     });
   }

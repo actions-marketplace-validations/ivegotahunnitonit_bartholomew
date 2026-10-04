@@ -231,7 +231,7 @@ class TestTruthfulProofProvider:
         const html = getWebviewContent(tel, rootPath);
         console.log(html);
         """
-        proc = subprocess.run(["node", "-e", node_code], capture_output=True, text=True)
+        proc = subprocess.run(["node", "-e", node_code], capture_output=True, text=True, encoding="utf-8", errors="replace")
         assert proc.returncode == 0, f"Node script error: {proc.stderr}"
         html_out = proc.stdout
 

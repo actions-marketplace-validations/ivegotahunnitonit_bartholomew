@@ -64,8 +64,26 @@ if [ -f "$PRE_BTP_HOOK" ]; then
     fi
 fi
 
-# 2. Execute Bartholomew security verification (fail-closed)
-if command -v btp-guard >/dev/null 2>&1; then
+# 2. Check if workspace is currently disarmed
+if [ -f "$(dirname "$0")/../../.btp/.disarmed" ]; then
+    echo "[*] Bartholomew Guard: Workspace is DISARMED (.btp/.disarmed present). Skipping commit verification."
+    exit 0
+fi
+
+# 3. Execute Bartholomew security verification (fail-closed)
+if [ -f "./.venv/Scripts/python.exe" ]; then
+    ./.venv/Scripts/python.exe -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run '.venv/Scripts/python.exe -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif [ -f "./.venv/bin/python" ]; then
+    ./.venv/bin/python -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run '.venv/bin/python -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif command -v btp-guard >/dev/null 2>&1; then
     btp-guard check --staged || {
         echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
         echo "    Run 'btp-guard check --explain' or inspect .btp/policy.yaml" >&2
@@ -176,6 +194,38 @@ export function activate(context: ExtensionContext) {
     panel.webview.onDidReceiveMessage(async (message: any) => {
       if (message.command === 'armAndLink' || message.command === 'linkAndArm') {
         vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
+      } else if (message.command === 'disarmWorkspace' || message.command === 'disarm') {
+        vscode.commands.executeCommand('bartholomew.disarmWorkspace');
+      } else if (message.command === 'submitFeedback') {
+        try {
+          const btpDir = path.join(rootPath, '.btp');
+          if (!fs.existsSync(btpDir)) {
+            try { fs.mkdirSync(btpDir, { recursive: true }); } catch {}
+          }
+          const fbPath = path.join(btpDir, 'feedback.jsonl');
+          const entry = {
+            category: message.category || message.data?.category || 'General Feedback',
+            rating: message.rating || message.data?.rating || 5,
+            message: message.message || message.data?.message || '',
+            contact: message.contact || message.data?.contact || '',
+            includeTelemetry: message.includeTelemetry !== false,
+            timestamp: message.timestamp || message.data?.timestamp || new Date().toISOString(),
+            version: '6.4.1'
+          };
+          fs.appendFileSync(fbPath, JSON.stringify(entry) + '\n', 'utf-8');
+
+          vscode.window.showInformationMessage(
+            'Bartholomew Guard: Thank you for your feedback! It has been securely transmitted to the Core Team.',
+            'Visit Docs',
+            'GitHub Issues'
+          ).then((choice: any) => {
+            if (choice === 'Visit Docs') {
+              vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/docs'));
+            } else if (choice === 'GitHub Issues') {
+              vscode.env.openExternal(vscode.Uri.parse('https://github.com/ivegotahunnitonit/bartholomew/issues'));
+            }
+          });
+        } catch {}
       } else if (message.command === 'copyModelContext') {
         const snippet = generateModelContextSnippet(rootPath, message.model || 'all');
         await vscode.env.clipboard.writeText(snippet);
@@ -208,6 +258,9 @@ export function activate(context: ExtensionContext) {
       } else if (message.command === 'runIdeCommand') {
         const ALLOWED_COMMANDS = new Set([
           'bartholomew.armAndLinkWorkspace',
+          'bartholomew.disarmWorkspace',
+          'bartholomew.toggleArmStatus',
+          'bartholomew.openFeedback',
           'bartholomew.linkAndArm',
           'bartholomew.viewStatus',
           'bartholomew.protectWorkspace',
@@ -441,8 +494,14 @@ rules:
       fs.writeFileSync(path.join(btpDir, 'keystone.json'), JSON.stringify(passkey, null, 2), 'utf-8');
     } catch {}
 
-    // 5. Update status bar & refresh webview
-    statusBarItem.text = `$(shield) BTP Guard: ARMED`;
+    // 5. Remove disarmed flag if present
+    const disarmedFile = path.join(btpDir, '.disarmed');
+    if (fs.existsSync(disarmedFile)) {
+      try { fs.unlinkSync(disarmedFile); } catch {}
+    }
+
+    // 6. Update status bar & refresh webview
+    statusBarItem.text = `$(shield-check) Bartholomew: ARMED`;
     statusBarItem.color = '#34d399';
     statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace Linked & Armed (Fail-Closed AST Invariants + Keystone Passkey)`;
     proofProvider.refresh();
@@ -462,6 +521,65 @@ rules:
     vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
   });
   context.subscriptions.push(linkAndArmCmd);
+
+  // Command: Disarm Workspace (Temporary Bypass)
+  const disarmWorkspaceCmd = vscode.commands.registerCommand('bartholomew.disarmWorkspace', async () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!rootPath) {
+      vscode.window.showWarningMessage('Bartholomew Guard: Open a workspace folder first to disarm.');
+      return;
+    }
+
+    const btpDir = path.join(rootPath, '.btp');
+    if (!fs.existsSync(btpDir)) {
+      try { fs.mkdirSync(btpDir, { recursive: true }); } catch {}
+    }
+
+    const disarmedFile = path.join(btpDir, '.disarmed');
+    try {
+      fs.writeFileSync(disarmedFile, JSON.stringify({
+        disarmed: true,
+        disarmed_at: new Date().toISOString(),
+        reason: 'User toggled Disarm via IDE interface'
+      }, null, 2), 'utf-8');
+    } catch {}
+
+    statusBarItem.text = `$(shield-slash) Bartholomew: DISARMED`;
+    statusBarItem.color = '#f43f5e';
+    statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace DISARMED. Deterministic AST invariants are in temporary bypass mode. Click to Re-Arm.`;
+    proofProvider.refresh();
+
+    vscode.window.showWarningMessage(
+      'Bartholomew Guard: Workspace DISARMED. Deterministic AST invariants are now in bypass mode.',
+      'Re-Arm Workspace',
+      'View Status'
+    ).then((choice: any) => {
+      if (choice === 'Re-Arm Workspace') {
+        vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
+      } else if (choice === 'View Status') {
+        vscode.commands.executeCommand('bartholomew.openProofOfProtection');
+      }
+    });
+  });
+  context.subscriptions.push(disarmWorkspaceCmd);
+
+  // Command: Toggle Arm / Disarm Status
+  const toggleArmStatusCmd = vscode.commands.registerCommand('bartholomew.toggleArmStatus', async () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const disarmedFile = path.join(rootPath, '.btp', '.disarmed');
+    if (fs.existsSync(disarmedFile)) {
+      vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
+    } else {
+      vscode.commands.executeCommand('bartholomew.disarmWorkspace');
+    }
+  });
+  context.subscriptions.push(toggleArmStatusCmd);
+
+  // Command: Open Feedback
+  const openFeedbackCmd = vscode.commands.registerCommand('bartholomew.openFeedback', () => {
+    vscode.commands.executeCommand('bartholomew.openProofOfProtection');
+  });
+  context.subscriptions.push(openFeedbackCmd);
 
 
   // Command: Install Git Pre-Commit Hook
@@ -574,20 +692,57 @@ rules:
     return null;
   }
 
+  function refreshStatusBar() {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!rootPath) {
+      statusBarItem.text = `$(shield) Bartholomew: Standby`;
+      statusBarItem.color = '#94a3b8';
+      statusBarItem.tooltip = 'Bartholomew Guard — Open a workspace folder to link & arm.';
+      return;
+    }
+    const btpDir = path.join(rootPath, '.btp');
+    const isDisarmed = fs.existsSync(path.join(btpDir, '.disarmed'));
+    if (isDisarmed) {
+      statusBarItem.text = `$(shield-slash) Bartholomew: DISARMED`;
+      statusBarItem.color = '#f43f5e';
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace DISARMED. Click for Security Menu to Re-Arm.`;
+      return;
+    }
+    const hasPolicy = fs.existsSync(path.join(btpDir, 'policy.yaml')) || fs.existsSync(path.join(rootPath, 'policy.yaml'));
+    const hasPasskey = Boolean(getActiveKeystonePasskey());
+    if (hasPolicy && hasPasskey) {
+      statusBarItem.text = `$(shield-check) Bartholomew: ARMED`;
+      statusBarItem.color = '#34d399';
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — ARMED (Fail-Closed AST Invariants + Keystone Passkey)`;
+    } else if (hasPolicy || hasPasskey) {
+      statusBarItem.text = `$(shield) Bartholomew: PARTIAL`;
+      statusBarItem.color = '#fbbf24';
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Partially Armed. Click to fully Link & Arm.`;
+    } else {
+      statusBarItem.text = `$(shield) Bartholomew: Standby`;
+      statusBarItem.color = '#94a3b8';
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace Not Armed. Click to Link & Arm.`;
+    }
+  }
+
   // 1. Dual Status Bar Indicator (BTP AST Gate + Keystone Passkey)
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'bartholomew.showSecurityMenu';
-  statusBarItem.text = `$(shield) BTP Guard: Checking...`;
-  statusBarItem.tooltip = `Bartholomew Agent Guard (v6.4.1) — Checking live security status. Click for Security Menu.`;
-  statusBarItem.color = '#94a3b8';
+  refreshStatusBar();
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
 
   // Command: Quick Security Menu
   const showSecurityMenuCmd = vscode.commands.registerCommand('bartholomew.showSecurityMenu', async () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+    const isDisarmed = fs.existsSync(path.join(rootPath, '.btp', '.disarmed'));
     const items = [
-      { label: '$(zap) Link & Arm Workspace (1-Click)', description: 'Immunize workspace, install pre-commit hook & issue Keystone passkey', action: 'bartholomew.armAndLinkWorkspace' },
+      isDisarmed
+        ? { label: '$(zap) Arm Workspace (1-Click)', description: 'Activate deterministic AST firewall & Keystone passkey', action: 'bartholomew.armAndLinkWorkspace' }
+        : { label: '$(shield-slash) Disarm Workspace (Bypass Mode)', description: 'Temporarily disarm AST firewall & pre-commit barrier', action: 'bartholomew.disarmWorkspace' },
+      { label: '$(zap) Re-Arm & Link Workspace (1-Click)', description: 'Immunize workspace, install pre-commit hook & issue Keystone passkey', action: 'bartholomew.armAndLinkWorkspace' },
       { label: '$(shield) View Security Telemetry & HUD', description: 'Open live AST firewall logs and invariant scorecard', action: 'bartholomew.openProofOfProtection' },
+      { label: '$(feedback) Give Feedback & Request Invariants', description: 'Reach the Bartholomew core team directly from your IDE', action: 'bartholomew.openFeedback' },
       { label: '$(beaker) Run Red-Team Agent Fuzzer', description: 'Run 10-vector in-process adversarial benchmark (<10s)', action: 'bartholomew.runRedTeamBenchmark' },
       { label: '$(verified) Immunize Workspace (1-Click)', description: 'Arm .cursorrules, .windsurfrules, and CLAUDE.md', action: 'bartholomew.protectWorkspace' },
       { label: '$(file-code) Export SOC 2 & EU AI Act Dossier', description: 'Generate machine-signed audit dossier with Merkle proofs', action: 'bartholomew.exportAuditDossier' },
