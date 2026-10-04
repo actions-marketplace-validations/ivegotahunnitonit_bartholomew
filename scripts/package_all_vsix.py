@@ -107,11 +107,11 @@ def pack_package(pkg_dir, package_id, display_name, description):
       <Property Id="Microsoft.VisualStudio.Code.LocalizedLanguages" Value="" />
       <Property Id="Microsoft.VisualStudio.Code.EnabledApiProposals" Value="" />
       <Property Id="Microsoft.VisualStudio.Code.ExecutesCode" Value="true" />
-      <Property Id="Microsoft.VisualStudio.Services.Links.Source" Value="https://github.com/bartholomew-ai/bartholomew.git" />
-      <Property Id="Microsoft.VisualStudio.Services.Links.Getstarted" Value="https://github.com/bartholomew-ai/bartholomew.git" />
-      <Property Id="Microsoft.VisualStudio.Services.Links.GitHub" Value="https://github.com/bartholomew-ai/bartholomew.git" />
-      <Property Id="Microsoft.VisualStudio.Services.Links.Support" Value="https://github.com/bartholomew-ai/bartholomew/issues" />
-      <Property Id="Microsoft.VisualStudio.Services.Links.Learn" Value="https://github.com/bartholomew-ai/bartholomew#readme" />
+      <Property Id="Microsoft.VisualStudio.Services.Links.Source" Value="https://github.com/ivegotahunnitonit/bartholomew.git" />
+      <Property Id="Microsoft.VisualStudio.Services.Links.Getstarted" Value="https://github.com/ivegotahunnitonit/bartholomew.git" />
+      <Property Id="Microsoft.VisualStudio.Services.Links.GitHub" Value="https://github.com/ivegotahunnitonit/bartholomew.git" />
+      <Property Id="Microsoft.VisualStudio.Services.Links.Support" Value="https://github.com/ivegotahunnitonit/bartholomew/issues" />
+      <Property Id="Microsoft.VisualStudio.Services.Links.Learn" Value="https://github.com/ivegotahunnitonit/bartholomew#readme" />
       <Property Id="Microsoft.VisualStudio.Services.GitHubFlavoredMarkdown" Value="true" />
       <Property Id="Microsoft.VisualStudio.Services.Content.Pricing" Value="Free"/>
     </Properties>
@@ -130,8 +130,8 @@ def pack_package(pkg_dir, package_id, display_name, description):
   </Assets>
 </PackageManifest>"""
 
-    allowlist_exact_files = {"package.json", "README.md", "LICENSE.md", "icon.png", "icon.svg"}
-    allowlist_dir_prefixes = {"dist"}
+    allowlist_exact_files = {"package.json", "README.md", "LICENSE.md", "icon.png", "icon.svg", "keystone_logo_1024.png"}
+    allowlist_dir_prefixes = {"dist", "images"}
 
     with zipfile.ZipFile(out_vsix, "w", zipfile.ZIP_DEFLATED) as z:
         z.writestr("[Content_Types].xml", content_types_xml)
