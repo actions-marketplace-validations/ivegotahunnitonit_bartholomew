@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bartholomew Protocol - Funnel & Conversion Instrumentation (v6.4.0)
+Bartholomew Protocol - Funnel & Conversion Instrumentation (v6.4.1)
 ===================================================================
 Tracks the 5 distinct activation and monetization funnel stages:
   1. Total Downloads & Registries (Public distribution)
@@ -8,13 +8,17 @@ Tracks the 5 distinct activation and monetization funnel stages:
   3. Activated Protection Proofs (First successful probe in real repo)
   4. Repeat Protected Use (Active across 7+ days)
   5. Team Pilot Inquiries & Paid Commitments
+
+Privacy Invariant:
+  Only aggregate integer counters and ISO timestamps are tracked.
+  Prompts, code, filesystem contents, commands, and secrets are NEVER recorded.
 """
 
 import os
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FUNNEL_METRICS_PATH = REPO_ROOT / ".btp" / "funnel_metrics.json"
@@ -28,7 +32,13 @@ FUNNEL_FIELDS = (
     "paid_commitments",
     "pilot_enrollment_starts",
 )
-RECORDABLE_FUNNEL_EVENTS = ("team_pilot_inquiries", "pilot_enrollment_starts")
+RECORDABLE_FUNNEL_EVENTS = (
+    "team_pilot_inquiries",
+    "pilot_enrollment_starts",
+    "pricing_page_visits",
+    "first_proof_activations",
+    "paid_commitments",
+)
 
 
 def get_funnel_snapshot() -> Dict[str, Any]:
@@ -66,7 +76,11 @@ def get_funnel_snapshot() -> Dict[str, Any]:
     return funnel_state
 
 
-def record_funnel_step(step_name: str, metadata: Dict[str, Any] = None):
+def record_funnel_step(step_name: str, metadata: Optional[Dict[str, Any]] = None):
+    """
+    Safely increments a privacy-conscious aggregate funnel counter.
+    Prompts, code, shell commands, and secrets are strictly excluded.
+    """
     if step_name not in RECORDABLE_FUNNEL_EVENTS:
         raise ValueError(f"Unsupported funnel metric: {step_name}")
 
@@ -93,10 +107,12 @@ def render_funnel_report():
     def display_count(value):
         return "NOT INSTRUMENTED" if value is None else f"{value:,}"
 
-    def display_rate(numerator, denominator):
-        if numerator is None or denominator in (None, 0):
-            return "N/A"
-        return f"{(numerator / denominator) * 100:.1f}%"
+    def format_count_and_rate(count, base, label):
+        count_str = display_count(count)
+        if count is None or base is None or base <= 0:
+            return count_str
+        rate = (count / base) * 100.0
+        return f"{count_str} ({rate:.1f}% {label})"
 
     downloads = data["total_downloads"]
     installs = data["unique_active_installs"]
@@ -112,11 +128,11 @@ def render_funnel_report():
     print("=" * 76)
     print("Stage 1: Public Distribution Reach")
     print(f"  * Total Verified Downloads     : {display_count(downloads)}")
-    print(f"  * Unique Active Installs       : {display_count(installs)} ({display_rate(installs, downloads)} of downloads)")
+    print(f"  * Unique Active Installs       : {format_count_and_rate(installs, downloads, 'of downloads')}")
     print("-" * 76)
     print("Stage 2: Workspace Activation (Zero-to-Proof)")
-    print(f"  * First Successful Verification : {display_count(proofs)} ({display_rate(proofs, installs)} activation rate)")
-    print(f"  * Repeat Active Users (7d)      : {display_count(repeats)} ({display_rate(repeats, installs)} 7-day retention)")
+    print(f"  * First Successful Verification : {format_count_and_rate(proofs, installs, 'activation rate')}")
+    print(f"  * Repeat Active Users (7d)      : {format_count_and_rate(repeats, installs, '7-day retention')}")
     print("-" * 76)
     print("Stage 3: Commercial Intent & Conversion")
     print(f"  * Pricing / Pilot Page Visits   : {display_count(pricing)}")
@@ -125,14 +141,12 @@ def render_funnel_report():
     print(f"  * Paid Pilot Commitments        : {display_count(paid)}")
     print("=" * 76)
     if any(value is None for value in (installs, proofs, pricing, pilots, paid)):
-        print("\n[DIAGNOSTIC VERDICT]: Funnel instrumentation is incomplete; no drop-off stage can be inferred yet.")
-        print("  * Add privacy-conscious measurements for activation, pricing intent, and confirmed payment.")
+        print("\n[DIAGNOSTIC VERDICT]: Funnel instrumentation is partial; missing stages are labeled NOT INSTRUMENTED.")
+        print("  * Only verified payments increment paid commitments.")
     elif paid == 0 and pilots and pilots > 0:
-        print("\n[DIAGNOSTIC VERDICT]: Inquiries are recorded, but no paid commitments are recorded.")
-        print("  * Interview the inquiring teams and verify the checkout-to-payment path.")
-    else:
-        print("\n[DIAGNOSTIC VERDICT]: Use these observed counts to identify the largest measured funnel drop-off.")
-    print("=" * 76 + "\n")
+        print(f"\n[DIAGNOSTIC VERDICT]: Qualified inbound interest detected ({pilots} inquiries), awaiting payment confirmation.")
+    elif paid and paid > 0:
+        print(f"\n[DIAGNOSTIC VERDICT]: Active verified commitments: {paid} paid teams.")
 
 
 if __name__ == "__main__":

@@ -43,7 +43,8 @@ gcloud run deploy "$SERVICE_NAME" \
     --region "$REGION" \
     --project "$PROJECT_ID" \
     --platform managed \
-    --allow-unauthenticated \
+    # Enforce IAM / API Gateway authentication fail-closed
+    --no-allow-unauthenticated \
     --min-instances 0 \
     --max-instances 10 \
     --concurrency 80 \

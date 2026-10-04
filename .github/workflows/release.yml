@@ -15,7 +15,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # full history for changelog generation
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
       - name: Extract version from tag
         id: version
@@ -24,7 +34,6 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
-          # Collect commits since last tag
           PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
           if [ -n "$PREV_TAG" ]; then
             CHANGELOG=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
@@ -35,6 +44,11 @@ jobs:
           echo "$CHANGELOG" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
+      - name: Install package dependencies
+        run: |
+          npm install --prefix packages/vscode-extension --no-audit --no-fund
+          npm install --prefix packages/bartholomew-keystone --no-audit --no-fund
+
       - name: Build IDE Extensions (.vsix)
         run: |
           python scripts/package_all_vsix.py
@@ -44,8 +58,8 @@ jobs:
         with:
           name: "BTP v${{ steps.version.outputs.VERSION }}"
           files: |
-            packages/bartholomew-keystone/*.vsix
-            packages/vscode-extension/*.vsix
+            packages/bartholomew-keystone/bartholomew-keystone-${{ steps.version.outputs.VERSION }}.vsix
+            packages/vscode-extension/bartholomew-guard-vscode-${{ steps.version.outputs.VERSION }}.vsix
           body: |
             ## What's Changed
 
@@ -54,8 +68,8 @@ jobs:
             ---
 
             **IDE Extensions Included:**
-            - `bartholomew-keystone-1.0.0.vsix` (Agent Capability Passkey clearance)
-            - `bartholomew-guard-vscode-1.0.0.vsix` (AST Invariant Gate & Dispatch Seam)
+            - `bartholomew-keystone-${{ steps.version.outputs.VERSION }}.vsix` (Agent Capability Passkey clearance)
+            - `bartholomew-guard-vscode-${{ steps.version.outputs.VERSION }}.vsix` (AST Invariant Gate & Dispatch Seam)
 
             **SDK Install:**
             ```bash

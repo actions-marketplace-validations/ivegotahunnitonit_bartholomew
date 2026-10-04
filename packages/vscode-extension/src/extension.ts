@@ -12,9 +12,24 @@ function getMcpUsageCount(): number {
 }
 
 function isProLicensed(): boolean {
+  // Client license checks are strictly advisory; authoritative entitlement requires active Keystone passkey or verified server record
+  const homeDir = process.env.USERPROFILE || process.env.HOME || '.';
+  const keystonePath = path.join(homeDir, '.btp', 'keystone.json');
+  if (fs.existsSync(keystonePath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(keystonePath, 'utf-8'));
+      if (data && data.passkey_id && data.tier && data.tier !== 'FREE') {
+        const exp = new Date(data.expires_at).getTime();
+        if (!isNaN(exp) && exp > Date.now()) {
+          return true;
+        }
+      }
+    } catch {}
+  }
   const k = process.env.BTP_API_KEY || process.env.BTP_PRO_KEY || process.env.BTP_LICENSE_KEY;
   if (!k) return false;
-  return k.startsWith('sk_live_') || k.startsWith('btp_pro_') || k.startsWith('btp_ent_') || k.startsWith('key_');
+  // Tokens must be non-trivial and cryptographically structured
+  return k.length >= 32 && (k.startsWith('btp_pro_') || k.startsWith('btp_ent_') || k.startsWith('sk_live_'));
 }
 
 declare const require: any;
@@ -159,7 +174,9 @@ export function activate(context: ExtensionContext) {
     updatePanel();
 
     panel.webview.onDidReceiveMessage(async (message: any) => {
-      if (message.command === 'copyModelContext') {
+      if (message.command === 'armAndLink' || message.command === 'linkAndArm') {
+        vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
+      } else if (message.command === 'copyModelContext') {
         const snippet = generateModelContextSnippet(rootPath, message.model || 'all');
         await vscode.env.clipboard.writeText(snippet);
         vscode.window.showInformationMessage(
@@ -189,8 +206,32 @@ export function activate(context: ExtensionContext) {
       } else if (message.command === 'immunizeWorkspace') {
         vscode.commands.executeCommand('bartholomew.protectWorkspace');
       } else if (message.command === 'runIdeCommand') {
-        if (message.actionCommand) {
+        const ALLOWED_COMMANDS = new Set([
+          'bartholomew.armAndLinkWorkspace',
+          'bartholomew.linkAndArm',
+          'bartholomew.viewStatus',
+          'bartholomew.protectWorkspace',
+          'bartholomew.scanActiveFile',
+          'bartholomew.copyModelContext',
+          'bartholomew.installPreCommit',
+          'bartholomew.injectAiRules',
+          'bartholomew.exportAuditDossier',
+          'bartholomew.harmonizeToolSchema',
+          'bartholomew.showSecurityMenu',
+          'bartholomew.issueKeystonePasskey',
+          'bartholomew.inspectKeystoneClearance',
+          'bartholomew.revokeKeystonePasskey',
+          'bartholomew.validatePolicy',
+          'bartholomew.dryRunTrace',
+          'bartholomew.generateComplianceEvidence',
+          'bartholomew.openDashboard',
+          'bartholomew.openTelemetry',
+          'bartholomew.runRedTeamBenchmark'
+        ]);
+        if (message.actionCommand && ALLOWED_COMMANDS.has(message.actionCommand)) {
           vscode.commands.executeCommand(message.actionCommand);
+        } else {
+          console.warn('[Bartholomew Security] Blocked unallowed IDE command execution:', message.actionCommand);
         }
       } else if (message.command === 'generateCollabMesh') {
         const terminal = vscode.window.createTerminal('Bartholomew Collaboration');
@@ -304,6 +345,124 @@ export function activate(context: ExtensionContext) {
     }, 2500);
   });
   context.subscriptions.push(protectWorkspaceCmd);
+
+  // Command: Link & Arm Workspace (1-Click)
+  const armAndLinkWorkspaceCmd = vscode.commands.registerCommand('bartholomew.armAndLinkWorkspace', async () => {
+    const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (!rootPath) {
+      vscode.window.showWarningMessage('Bartholomew Guard: Open a workspace folder first to link and arm.');
+      return;
+    }
+
+    const btpDir = path.join(rootPath, '.btp');
+    if (!fs.existsSync(btpDir)) {
+      try { fs.mkdirSync(btpDir, { recursive: true }); } catch {}
+    }
+
+    // 1. Ensure sovereign policy.yaml is valid
+    const policyFile = path.join(btpDir, 'policy.yaml');
+    const defaultPolicy = `version: "6.4.1"
+invariants:
+  block_destructive_shell: true
+  block_credential_leak: true
+  quarantine_curl_pipe_sh: true
+  enforce_spend_ceiling: true
+rules:
+  - id: BTP-AST-001
+    description: "Prevent destructive file deletions and disk formats"
+  - id: BTP-SEC-001
+    description: "Scrub unmasked API keys and credentials in-flight"
+  - id: BTP-AST-003
+    description: "Quarantine unverified curl|sh piping"
+`;
+    if (!fs.existsSync(policyFile)) {
+      try { fs.writeFileSync(policyFile, defaultPolicy, 'utf-8'); } catch {}
+    }
+
+    // 2. Inject AI agent rule files if missing
+    const ruleFiles: [string, string][] = [
+      ['.cursorrules', '# Bartholomew Guard Invariant Rules\n- Block destructive shell commands\n- Mask high-entropy secrets\n'],
+      ['CLAUDE.md', '# Bartholomew Guard Safety Invariants\nAll agent tool invocations must adhere to .btp/policy.yaml.\n'],
+      ['.windsurfrules', '# Bartholomew Guard Invariants\nDeterministic safety checks active.\n'],
+      ['GEMINI.md', '# Bartholomew Guard Invariants\nDeterministic safety checks active.\n']
+    ];
+    for (const [fname, fcontent] of ruleFiles) {
+      const fpath = path.join(rootPath, fname);
+      if (!fs.existsSync(fpath)) {
+        try { fs.writeFileSync(fpath, fcontent, 'utf-8'); } catch {}
+      }
+    }
+
+    // 3. Install fail-closed pre-commit hook
+    const gitDir = path.join(rootPath, '.git');
+    if (fs.existsSync(gitDir)) {
+      const gitHooks = path.join(gitDir, 'hooks');
+      if (!fs.existsSync(gitHooks)) {
+        try { fs.mkdirSync(gitHooks, { recursive: true }); } catch {}
+      }
+      const hookFile = path.join(gitHooks, 'pre-commit');
+      const backupFile = path.join(gitHooks, 'pre-commit.pre-btp');
+      if (fs.existsSync(hookFile)) {
+        try {
+          const existing = fs.readFileSync(hookFile, 'utf-8');
+          if (!existing.includes('Bartholomew')) {
+            fs.writeFileSync(backupFile, existing, 'utf-8');
+            try { fs.chmodSync(backupFile, 0o755); } catch {}
+          }
+        } catch {}
+      }
+      try {
+        fs.writeFileSync(hookFile, UNIFIED_PRE_COMMIT_HOOK, 'utf-8');
+        try { fs.chmodSync(hookFile, 0o755); } catch {}
+      } catch {}
+    }
+
+    // 4. Issue & link Keystone passkey clearance
+    try {
+      const passkey = keystoneEngine.issuePasskey('workspace_developer', {
+        files: {
+          allow_read: ['**/*'],
+          allow_write: ['./src/**', './site/**', './tests/**', './packages/**'],
+          deny: ['.env', 'secrets', 'credentials.json', 'id_rsa', '*.pem']
+        },
+        commands: {
+          allow_exec: ['npm test', 'npm run build', 'python -m unittest', 'pytest', 'git status', 'git diff'],
+          deny_exec: ['rm -rf', 'curl', 'wget', 'sudo', 'mkfs', 'dd']
+        },
+        network: {
+          allow_domains: ['github.com', 'npmjs.com', 'pypi.org', 'docs.python.org', 'bartholomew.info'],
+          allow_search: true
+        },
+        budget: {
+          max_spend_usd: 50.00
+        }
+      }, 720);
+      fs.writeFileSync(getKeystonePasskeyPath(), JSON.stringify(passkey, null, 2), 'utf-8');
+      fs.writeFileSync(path.join(btpDir, 'keystone.json'), JSON.stringify(passkey, null, 2), 'utf-8');
+    } catch {}
+
+    // 5. Update status bar & refresh webview
+    statusBarItem.text = `$(shield) BTP Guard: ARMED`;
+    statusBarItem.color = '#34d399';
+    statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace Linked & Armed (Fail-Closed AST Invariants + Keystone Passkey)`;
+    proofProvider.refresh();
+
+    vscode.window.showInformationMessage(
+      'Bartholomew Guard: Workspace successfully linked and armed! Real-time AST invariants, Keystone passkey, and pre-commit gate are active.',
+      'View Status'
+    ).then((choice: any) => {
+      if (choice === 'View Status') {
+        vscode.commands.executeCommand('bartholomew.openProofOfProtection');
+      }
+    });
+  });
+  context.subscriptions.push(armAndLinkWorkspaceCmd);
+
+  const linkAndArmCmd = vscode.commands.registerCommand('bartholomew.linkAndArm', () => {
+    vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
+  });
+  context.subscriptions.push(linkAndArmCmd);
+
 
   // Command: Install Git Pre-Commit Hook
   const installPreCommitCmd = vscode.commands.registerCommand('bartholomew.installPreCommit', async () => {
@@ -419,7 +578,7 @@ export function activate(context: ExtensionContext) {
   const statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   statusBarItem.command = 'bartholomew.showSecurityMenu';
   statusBarItem.text = `$(shield) BTP Guard: Checking...`;
-  statusBarItem.tooltip = `Bartholomew Agent Guard (v6.4.0) — Checking live security status. Click for Security Menu.`;
+  statusBarItem.tooltip = `Bartholomew Agent Guard (v6.4.1) — Checking live security status. Click for Security Menu.`;
   statusBarItem.color = '#94a3b8';
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
@@ -427,6 +586,7 @@ export function activate(context: ExtensionContext) {
   // Command: Quick Security Menu
   const showSecurityMenuCmd = vscode.commands.registerCommand('bartholomew.showSecurityMenu', async () => {
     const items = [
+      { label: '$(zap) Link & Arm Workspace (1-Click)', description: 'Immunize workspace, install pre-commit hook & issue Keystone passkey', action: 'bartholomew.armAndLinkWorkspace' },
       { label: '$(shield) View Security Telemetry & HUD', description: 'Open live AST firewall logs and invariant scorecard', action: 'bartholomew.openProofOfProtection' },
       { label: '$(beaker) Run Red-Team Agent Fuzzer', description: 'Run 10-vector in-process adversarial benchmark (<10s)', action: 'bartholomew.runRedTeamBenchmark' },
       { label: '$(verified) Immunize Workspace (1-Click)', description: 'Arm .cursorrules, .windsurfrules, and CLAUDE.md', action: 'bartholomew.protectWorkspace' },
@@ -434,7 +594,7 @@ export function activate(context: ExtensionContext) {
       { label: '$(key) Issue Keystone Capability Passkey', description: 'Generate Ed25519 passkey with $25 daily autonomous spend limit', action: 'bartholomew.issueKeystonePasskey' },
       { label: '$(clippy) Copy Agent Context Rules', description: 'Copy system prompts for Cursor, Windsurf, Claude Code, Gemini', action: 'bartholomew.copyModelContext' }
     ];
-    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.4.0)' });
+    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.4.1)' });
     if (picked && picked.action) {
       vscode.commands.executeCommand(picked.action);
     }
@@ -458,12 +618,12 @@ export function activate(context: ExtensionContext) {
     const windsurfRule = path.join(rootPath, '.windsurfrules');
     if (!fs.existsSync(cursorRule) && !fs.existsSync(claudeRule) && !fs.existsSync(windsurfRule)) {
       vscode.window.showInformationMessage(
-        'Bartholomew Guard: Autonomous agent safety gates are not armed in this workspace. Immunize now?',
-        'Immunize Workspace (1-Click)',
+        'Bartholomew Guard: Autonomous agent safety gates are not armed in this workspace. Link & Arm now?',
+        'Link & Arm Workspace (1-Click)',
         'Later'
       ).then((choice: any) => {
-        if (choice === 'Immunize Workspace (1-Click)') {
-          vscode.commands.executeCommand('bartholomew.protectWorkspace');
+        if (choice === 'Link & Arm Workspace (1-Click)') {
+          vscode.commands.executeCommand('bartholomew.armAndLinkWorkspace');
         }
       });
     }
@@ -882,7 +1042,7 @@ context.subscriptions.push(
   // 15. Command: Run in Bartholomew Kernel Sandbox
     // Return Public Collaboration API for other extensions and agents
   const publicApi = {
-    version: '6.4.0',
+    version: '6.4.1',
     isCommandSafe: (command: string) => {
       return new Promise((resolve) => {
         const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';

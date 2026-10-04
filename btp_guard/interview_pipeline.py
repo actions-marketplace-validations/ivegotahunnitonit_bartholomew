@@ -37,7 +37,7 @@ DEFAULT_LEADS: List[Dict[str, Any]] = [
         "offer_type": "Team Offer ($199/mo or $950)",
         "primary_pain": "In-container bash escapes, accidental root disk deletion, unvetted API egress",
         "budget_owner": "Head of Engineering / Security Lead",
-        "status": "MESSAGE_SENT",
+        "status": "DRAFT_READY",
         "last_updated": "2026-10-03T19:30:00Z",
         "tailored_message": (
             "Hi OpenHands team -- quick question from a fellow developer building agent tooling:\n\n"
@@ -48,7 +48,7 @@ DEFAULT_LEADS: List[Dict[str, Any]] = [
             "I'm not trying to sell you anything or do a slide demo. We're interviewing 10 platform teams on how they "
             "currently handle agent permission boundaries and who owns that policy. Would you have 10 minutes for a brief chat?"
         ),
-        "notes": "Outreach message queued for Discord #security. Focus on in-container fail-closed bash boundaries."
+        "notes": "Outreach message drafted for Discord #security. Focus on in-container fail-closed bash boundaries."
     },
     {
         "id": "lead-continue",
@@ -59,7 +59,7 @@ DEFAULT_LEADS: List[Dict[str, Any]] = [
         "offer_type": "Team Offer ($199/mo or $950)",
         "primary_pain": "Unchecked agent edits across multi-root workspaces, secret leakage",
         "budget_owner": "CTO / Founding Team",
-        "status": "MESSAGE_SENT",
+        "status": "DRAFT_READY",
         "last_updated": "2026-10-03T19:30:00Z",
         "tailored_message": (
             "Hey Nate & Ty -- love what you've built with Continue.dev.\n\n"
@@ -81,7 +81,7 @@ DEFAULT_LEADS: List[Dict[str, Any]] = [
         "offer_type": "Team Offer ($199/mo or $950)",
         "primary_pain": "Runaway tool loops, unbounded API spend, lack of verifiable audit logs",
         "budget_owner": "VP Engineering",
-        "status": "MESSAGE_SENT",
+        "status": "DRAFT_READY",
         "last_updated": "2026-10-03T19:30:00Z",
         "tailored_message": (
             "Hi CrewAI team --\n\n"
@@ -103,7 +103,7 @@ DEFAULT_LEADS: List[Dict[str, Any]] = [
         "offer_type": "Team Offer ($199/mo or $950)",
         "primary_pain": "Cloud sandbox escapes, network exfiltration, compliance proof for customers",
         "budget_owner": "Head of Infrastructure",
-        "status": "MESSAGE_SENT",
+        "status": "DRAFT_READY",
         "last_updated": "2026-10-03T19:30:00Z",
         "tailored_message": (
             "Hey E2B team --\n\n"
@@ -124,7 +124,7 @@ DEFAULT_LEADS: List[Dict[str, Any]] = [
         "offer_type": "Developer Offer (Zero-friction safety)",
         "primary_pain": "Agent auto-committing destructive or secret-leaking changes to git",
         "budget_owner": "Individual Developer / Tech Lead",
-        "status": "MESSAGE_SENT",
+        "status": "DRAFT_READY",
         "last_updated": "2026-10-03T19:30:00Z",
         "tailored_message": (
             "Hi Paul -- huge respect for Aider. The git integration is best-in-class.\n\n"
@@ -231,7 +231,7 @@ def render_pipeline_table():
         persona = lead.get("target_persona", "")[:14]
         print(f"{lead_id:<22} | {org:<26} | {status:<16} | {persona:<14}")
     print("=" * 80)
-    print("Status Legend: MESSAGE_SENT -> CALL_SCHEDULED -> INTERVIEWED -> PILOT_PROPOSED -> PILOT_CLOSED")
+    print("Status Legend: MESSAGE_DRAFT_READY -> CALL_SCHEDULED -> INTERVIEWED -> PILOT_PROPOSED -> PILOT_CLOSED")
     print("Goal: 1 PAID TEAM PILOT COMMITMENT ($199/mo or $950)\n")
 
 
