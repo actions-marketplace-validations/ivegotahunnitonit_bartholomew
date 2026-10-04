@@ -825,7 +825,7 @@ export function activate(context: ExtensionContext) {
         </svg>
       </div>
       <div>
-        <div class="brand-title">BARTHOLOMEW KEYSTONE &bull; CAPABILITY PASSKEY <span class="brand-version">v6.4.1</span></div>
+        <div class="brand-title">BARTHOLOMEW KEYSTONE &bull; CAPABILITY PASSKEY <span class="brand-version">v6.4.2</span></div>
         <div class="brand-sub">ZERO TRUST AGENT RUNTIME &bull; SUB-15&mu;s DETERMINISTIC INVARIANTS</div>
       </div>
     </div>

@@ -16,11 +16,11 @@ class TestExtensionCommandHandling:
         with open(PACKAGE_JSON, "r", encoding="utf-8") as f:
             pkg_data = json.load(f)
         version = pkg_data.get("version")
-        assert version == "6.4.1", f"Expected package.json version 6.4.1, got {version}"
+        assert version == "6.4.2", f"Expected package.json version 6.4.2, got {version}"
 
         # Verify extension.ts version strings
         ts_content = EXTENSION_TS.read_text(encoding="utf-8")
-        assert "version: '6.4.1'" in ts_content, "extension.ts telemetry version must be 6.4.1"
+        assert "version: '6.4.2'" in ts_content, "extension.ts telemetry version must be 6.4.2"
         assert "v6.4.0" not in ts_content, "extension.ts contains stale v6.4.0 reference"
 
     def test_all_contributed_commands_are_registered_in_ts(self):

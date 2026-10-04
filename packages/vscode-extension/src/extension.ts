@@ -210,7 +210,7 @@ export function activate(context: ExtensionContext) {
             contact: message.contact || message.data?.contact || '',
             includeTelemetry: message.includeTelemetry !== false,
             timestamp: message.timestamp || message.data?.timestamp || new Date().toISOString(),
-            version: '6.4.1'
+            version: '6.4.2'
           };
           fs.appendFileSync(fbPath, JSON.stringify(entry) + '\n', 'utf-8');
 
@@ -458,7 +458,7 @@ export function activate(context: ExtensionContext) {
 
     // 1. Ensure sovereign policy.yaml is valid
     const policyFile = path.join(btpDir, 'policy.yaml');
-    const defaultPolicy = `version: "6.4.1"
+    const defaultPolicy = `version: "6.4.2"
 invariants:
   block_destructive_shell: true
   block_credential_leak: true
@@ -547,7 +547,7 @@ rules:
     // 6. Update status bar & refresh webview
     statusBarItem.text = `$(shield-check) Bartholomew: ARMED`;
     statusBarItem.color = '#34d399';
-    statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace Linked & Armed (Fail-Closed AST Invariants + Keystone Passkey)`;
+    statusBarItem.tooltip = `Bartholomew Guard (v6.4.2) — Workspace Linked & Armed (Fail-Closed AST Invariants + Keystone Passkey)`;
     proofProvider.refresh();
 
     vscode.window.showInformationMessage(
@@ -590,7 +590,7 @@ rules:
 
     statusBarItem.text = `$(shield-slash) Bartholomew: DISARMED`;
     statusBarItem.color = '#f43f5e';
-    statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace DISARMED. Deterministic AST invariants are in temporary bypass mode. Click to Re-Arm.`;
+    statusBarItem.tooltip = `Bartholomew Guard (v6.4.2) — Workspace DISARMED. Deterministic AST invariants are in temporary bypass mode. Click to Re-Arm.`;
     proofProvider.refresh();
 
     vscode.window.showWarningMessage(
@@ -749,7 +749,7 @@ rules:
     if (isDisarmed) {
       statusBarItem.text = `$(shield-slash) Bartholomew: DISARMED`;
       statusBarItem.color = '#f43f5e';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace DISARMED. Click for Security Menu to Re-Arm.`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.2) — Workspace DISARMED. Click for Security Menu to Re-Arm.`;
       return;
     }
     const hasPolicy = fs.existsSync(path.join(btpDir, 'policy.yaml')) || fs.existsSync(path.join(rootPath, 'policy.yaml'));
@@ -757,15 +757,15 @@ rules:
     if (hasPolicy && hasPasskey) {
       statusBarItem.text = `$(shield-check) Bartholomew: ARMED`;
       statusBarItem.color = '#34d399';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — ARMED (Fail-Closed AST Invariants + Keystone Passkey)`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.2) — ARMED (Fail-Closed AST Invariants + Keystone Passkey)`;
     } else if (hasPolicy || hasPasskey) {
       statusBarItem.text = `$(shield) Bartholomew: PARTIAL`;
       statusBarItem.color = '#fbbf24';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Partially Armed. Click to fully Link & Arm.`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.2) — Partially Armed. Click to fully Link & Arm.`;
     } else {
       statusBarItem.text = `$(shield) Bartholomew: Standby`;
       statusBarItem.color = '#94a3b8';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.1) — Workspace Not Armed. Click to Link & Arm.`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.4.2) — Workspace Not Armed. Click to Link & Arm.`;
     }
   }
 
@@ -793,7 +793,7 @@ rules:
       { label: '$(key) Issue Keystone Capability Passkey', description: 'Generate Ed25519 passkey with $25 daily autonomous spend limit', action: 'bartholomew.issueKeystonePasskey' },
       { label: '$(clippy) Copy Agent Context Rules', description: 'Copy system prompts for Cursor, Windsurf, Claude Code, Gemini', action: 'bartholomew.copyModelContext' }
     ];
-    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.4.1)' });
+    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.4.2)' });
     if (picked && picked.action) {
       vscode.commands.executeCommand(picked.action);
     }
@@ -1241,7 +1241,7 @@ context.subscriptions.push(
   // 15. Command: Run in Bartholomew Kernel Sandbox
     // Return Public Collaboration API for other extensions and agents
   const publicApi = {
-    version: '6.4.1',
+    version: '6.4.2',
     isCommandSafe: (command: string) => {
       return new Promise((resolve) => {
         const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
