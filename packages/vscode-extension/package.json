@@ -69,6 +69,24 @@
         "icon": "$(zap)"
       },
       {
+        "command": "bartholomew.disarmWorkspace",
+        "title": "Bartholomew: Disarm Workspace (Temporary Bypass)",
+        "category": "Bartholomew Guard",
+        "icon": "$(shield-slash)"
+      },
+      {
+        "command": "bartholomew.toggleArmStatus",
+        "title": "Bartholomew: Toggle Arm / Disarm Protection",
+        "category": "Bartholomew Guard",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "bartholomew.openFeedback",
+        "title": "Bartholomew: Give Feedback & Request Invariants",
+        "category": "Bartholomew Guard",
+        "icon": "$(feedback)"
+      },
+      {
         "command": "bartholomew.backOpenSource",
         "title": "Bartholomew: Back Open Source Development (Stripe)",
         "icon": "$(heart)"
