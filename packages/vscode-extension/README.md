@@ -37,9 +37,9 @@ Bartholomew enforces deterministic security invariants along 4 concrete, verifie
 
 To build genuine trust, we state clearly what is **outside the enforcement boundary**:
 
-- ❌ **Unshimmed Arbitrary IDE Terminals**: Manual terminal keystrokes and third-party IDE child processes that do NOT route through the Git hook, MCP server, or `ProcessShimSandbox` wrapper run directly on your shell without Bartholomew interception.
-- ❌ **Semantic Code Correctness**: Bartholomew does not judge whether an agent wrote optimal algorithms or inefficient loops. Use your test suite (`npm test`, `pytest`).
-- ❌ **Prompt Hallucinations / Pure Chat**: Bartholomew does not filter conversational chat text that does not execute tools, touch files, or make network calls.
+- - **Unshimmed Arbitrary IDE Terminals**: Manual terminal keystrokes and third-party IDE child processes that do NOT route through the Git hook, MCP server, or `ProcessShimSandbox` wrapper run directly on your shell without Bartholomew interception.
+- - **Semantic Code Correctness**: Bartholomew does not judge whether an agent wrote optimal algorithms or inefficient loops. Use your test suite (`npm test`, `pytest`).
+- - **Prompt Hallucinations / Pure Chat**: Bartholomew does not filter conversational chat text that does not execute tools, touch files, or make network calls.
 
 ---
 
@@ -47,7 +47,7 @@ To build genuine trust, we state clearly what is **outside the enforcement bound
 
 ### Option A: From VS Code / Cursor Sidebar
 1. Click the **Bartholomew Shield** icon in your activity bar.
-2. Click **`[⚡ Run 60-Second Live Security Probe]`**.
+2. Click **`[ Run 60-Second Live Security Probe]`**.
 3. Watch the animated in-process probe test safe vs. blocked execution in <35µs with SHA-256 receipts.
 
 ### Option B: From Any Terminal
@@ -66,7 +66,7 @@ python -m btp_guard.demo_trust_boundary
 | **Developer Edition** | **Free Forever** (MIT) | Personal AST invariant gate, secret scrubber, local tamper-evident ledger, VS Code / Cursor sidebar. |
 | **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized repository policy sync (`.btp/policy.yaml`), team-wide pre-commit hooks, CISO/SOC2-ready PDF compliance dossier, 30-min setup call, 100% money-back guarantee. |
 
-👉 **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
+-> **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
 
 ---
 

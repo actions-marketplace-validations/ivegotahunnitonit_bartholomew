@@ -83,7 +83,7 @@ exit 0
     fs.writeFileSync(preCommitPath, hookScript, { mode: 0o755 });
 
     console.log(`\n======================================================================`);
-    console.log(`  ${BOLD}${GREEN}✓ BARTHOLOMEW PRE-COMMIT SENTINEL INSTALLED${RESET}`);
+    console.log(`  ${BOLD}${GREEN}[+] BARTHOLOMEW PRE-COMMIT SENTINEL INSTALLED${RESET}`);
     console.log(`======================================================================`);
     console.log(`  Hook Path:  ${preCommitPath}`);
     console.log(`  Protection: ${CYAN}Sub-5ms AST Gate & Zero-Leak Secret Interceptor${RESET}`);
@@ -169,7 +169,7 @@ exit 0
     const preCommitPath = path.join(process.cwd(), '.git', 'hooks', 'pre-commit');
     if (fs.existsSync(preCommitPath)) {
       fs.unlinkSync(preCommitPath);
-      console.log(`${GREEN}✓ Bartholomew pre-commit hook uninstalled successfully.${RESET}`);
+      console.log(`${GREEN}[+] Bartholomew pre-commit hook uninstalled successfully.${RESET}`);
     } else {
       console.log(`${YELLOW}[!] No pre-commit hook found at: ${preCommitPath}${RESET}`);
     }
@@ -209,7 +209,7 @@ function runBadgeCli(subArgs) {
           content = badgeBlock + content;
         }
         fs.writeFileSync(readmePath, content, 'utf-8');
-        console.log(`${GREEN}✓ Badges automatically injected into ${readmePath}!${RESET}`);
+        console.log(`${GREEN}[+] Badges automatically injected into ${readmePath}!${RESET}`);
       } else {
         console.log(`${YELLOW}[!] Bartholomew badge already present in README.md${RESET}`);
       }
@@ -1357,7 +1357,7 @@ function runBenchmark(subargs = []) {
   console.log(`\n  ${BOLD}SPEEDUP FACTOR:${RESET} Bartholomew is ${BOLD}${GREEN}${Math.round(280000 / Math.max(1, parseFloat(p50Us))).toLocaleString()}x faster${RESET} than cloud API guardrails.`);
   console.log(`  * Cryptographic Merkle Seal  : 0x${merkleRoot.slice(0, 32)}...`);
   console.log('='.repeat(72) + '\n');
-  console.log(`  ${DIM}💜 Back open-source agent runtime security:${RESET} https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605\n`);
+  console.log(`  ${DIM}[*] Back open-source agent runtime security:${RESET} https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605\n`);
 }
 
 function runAuditExport(subargs = []) {

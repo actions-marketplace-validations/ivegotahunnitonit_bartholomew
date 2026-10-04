@@ -202,7 +202,7 @@ export function generateModelContextSnippet(rootPath: string, model: string): st
   const workspaceName = path.basename(rootPath);
 
   return `<!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
-# Agent Companion Security & Invariant Briefing (Bartholomew Keystone v6.4.0)
+# Agent Companion Security & Invariant Briefing (Bartholomew Keystone v6.4.1)
 Target Agent Companion: ${model.toUpperCase()} | Workspace: ${workspaceName}
 
 You are collaborating on this codebase under the active protection of **Bartholomew Guard**.
@@ -280,7 +280,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     return `
       <tr class="ledger-row" data-search="${ev.action} ${ev.verdict} ${ev.rule_id || ''} ${ev.reason || ''}">
         <td class="mono muted-td">${ev.timestamp ? ev.timestamp.slice(11, 19) : '00:00:00'}</td>
-        <td class="mono font-bold action-cell"><span class="action-icon">❯</span> ${ev.action}</td>
+        <td class="mono font-bold action-cell"><span class="action-icon">&gt;</span> ${ev.action}</td>
         <td><span class="badge ${badgeClass}">${displayVerdict}</span></td>
         <td class="reason-cell" title="${ev.reason || ''}"><span class="rule-tag">${ev.rule_id || 'BTP-AST-001'}</span> &bull; ${ev.reason ? ev.reason.slice(0, 42) : 'Normal invariant check'}</td>
         <td>${receiptSnippet}</td>
@@ -1294,7 +1294,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
         </svg>
       </div>
       <div class="brand-info">
-        <div class="brand-title">BARTHOLOMEW GUARD <span class="brand-version">v6.4.0</span></div>
+        <div class="brand-title">BARTHOLOMEW GUARD <span class="brand-version">v6.4.1</span></div>
         <div class="brand-sub">
           <span>Deterministic AST Invariant Sentinel</span> &bull; 
           <span class="brand-sub-badge">Sub-35&mu;s Gating</span>
@@ -1315,7 +1315,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
   <div class="telemetry-strip">
     <div class="metric-card">
       <div class="metric-card-top">
-        <span class="metric-icon">&#9889;</span>
+        
         <span class="metric-tag">IN-PROCESS</span>
       </div>
       <div class="metric-val" style="color:var(--emerald-bright);">${telemetry.astLatencyUs > 0 ? telemetry.astLatencyUs + ' &mu;s' : '< 25 &mu;s'}</div>
@@ -1324,7 +1324,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
     <div class="metric-card">
       <div class="metric-card-top">
-        <span class="metric-icon">&#128737;</span>
+        
         <span class="metric-tag">FAIL-CLOSED</span>
       </div>
       <div class="metric-val" style="color:${telemetry.totalBlocked > 0 ? 'var(--rose-bright)' : 'var(--cyan-bright)'};">${telemetry.totalBlocked}</div>
@@ -1333,7 +1333,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
     <div class="metric-card">
       <div class="metric-card-top">
-        <span class="metric-icon">&#9733;</span>
+        
         <span class="metric-tag">VERIFIED</span>
       </div>
       <div class="metric-val" style="color:var(--gold-bright);">${telemetry.grade} <span style="font-size:12px; font-weight:600;">(${telemetry.securityScore}/100)</span></div>
@@ -1342,7 +1342,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
     <div class="metric-card">
       <div class="metric-card-top">
-        <span class="metric-icon">&#128273;</span>
+        
         <span class="metric-tag">PASSKEY</span>
       </div>
       <div class="metric-val" style="color:${telemetry.keystone.armed ? 'var(--emerald-bright)' : 'var(--text-dim)'};">${telemetry.keystone.armed ? 'ARMED' : 'STANDBY'}</div>
@@ -1368,16 +1368,16 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     <!-- Actionable Live Probe -->
     <div class="probe-bar">
       <button id="btnLiveProbe" class="probe-btn" onclick="runLiveProbeTest()">
-        <span>&#9889; Run 60-Second Invariant Security Probe</span>
+        <span>Run 60-Second Invariant Security Probe</span>
       </button>
       <div class="probe-hint">
-        <span>&#10003; 100% Fail-Closed</span> &bull; <span>SHA-256 Merkle Receipts</span>
+        <span>100% Fail-Closed</span> &bull; <span>SHA-256 Merkle Receipts</span>
       </div>
     </div>
 
     <div id="probeResultBox">
       <div class="probe-result-header">
-        <span class="probe-status-pill">&#10003; INVARIANT PROBE COMPLETE (18.2 &mu;s)</span>
+        <span class="probe-status-pill">INVARIANT PROBE COMPLETE (18.2 &mu;s)</span>
         <button class="btn-secondary" onclick="copyProbeReceipt()" style="padding:3px 8px; font-size:10.5px;">Copy Merkle Receipt</button>
       </div>
       <div class="probe-detail-line">&bull; AST Invariant Gate: PASS [BTP-PASS-000]</div>
@@ -1385,7 +1385,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       <div class="probe-detail-line">&bull; Destructive Command Veto: ARMED (fail-closed verified)</div>
       <div class="probe-receipt-line">
         <span id="probeReceiptHash" class="mono">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>
-        <span style="color:var(--emerald-bright); font-weight:700;">&#10003; SIGNED</span>
+        <span style="color:var(--emerald-bright); font-weight:700;">SIGNED</span>
       </div>
     </div>
   </div>
@@ -1414,10 +1414,10 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
   <!-- Navigation Segmented Tab Bar -->
   <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('tabSim')">&#9889; Threat Simulator</button>
-    <button class="tab-btn" onclick="switchTab('tabPolicy')">&#128737; Policy Controls</button>
-    <button class="tab-btn" onclick="switchTab('tabAudit')">&#128220; Verifiable Audit Trail</button>
-    <button class="tab-btn" onclick="switchTab('tabPilot')">&#9733; Team Pilot ($199/mo)</button>
+    <button class="tab-btn active" onclick="switchTab('tabSim')">Threat Simulator</button>
+    <button class="tab-btn" onclick="switchTab('tabPolicy')">Policy Controls</button>
+    <button class="tab-btn" onclick="switchTab('tabAudit')">Verifiable Audit Trail</button>
+    <button class="tab-btn" onclick="switchTab('tabPilot')">Team Pilot ($199/mo)</button>
   </div>
 
   <!-- TAB 1: THREAT SIMULATOR -->
@@ -1427,23 +1427,23 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       <div class="panel-card-desc">Click any preset attack vector or enter custom commands to verify deterministic AST enforcement before tool execution.</div>
       
       <div class="sim-chips">
-        <span class="sim-chip danger" onclick="loadSimPreset('rm -rf /')">&#128165; rm -rf /</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('format C: /q /y')">&#128721; format C:</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('del /s C:\\\\Windows')">&#128163; del /s C:\\\\</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('export STRIPE_KEY=sk-live-94812')">&#128273; Leak Stripe Key</span>
-        <span class="sim-chip danger" onclick="loadSimPreset(':(){ :|:& };:')">&#9762; Fork Bomb</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('DROP TABLE users;')">&#9888; DROP TABLE</span>
-        <span class="sim-chip" onclick="loadSimPreset('npm test')">&#10003; npm test</span>
-        <span class="sim-chip" onclick="loadSimPreset('git status')">&#10003; git status</span>
-        <span class="sim-chip" onclick="loadSimPreset('python -m pytest')">&#10003; pytest</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('rm -rf /')">rm -rf /</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('format C: /q /y')">format C:</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('del /s C:\\\\Windows')">del /s C:\\\\</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('export STRIPE_KEY=sk-live-94812')">Leak Stripe Key</span>
+        <span class="sim-chip danger" onclick="loadSimPreset(':(){ :|:& };:')">Fork Bomb</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('DROP TABLE users;')">DROP TABLE</span>
+        <span class="sim-chip" onclick="loadSimPreset('npm test')">npm test</span>
+        <span class="sim-chip" onclick="loadSimPreset('git status')">git status</span>
+        <span class="sim-chip" onclick="loadSimPreset('python -m pytest')">pytest</span>
       </div>
 
       <div class="sim-box">
         <div class="sim-input-wrap">
-          <span class="sim-prompt-icon">❯</span>
+          <span class="sim-prompt-icon">&gt;</span>
           <input type="text" id="simInput" class="sim-input" placeholder="Type a terminal command or agent prompt..." value="rm -rf /" />
         </div>
-        <button class="btn-evaluate" onclick="executeSimTest()">&#9889; Evaluate</button>
+        <button class="btn-evaluate" onclick="executeSimTest()">Evaluate</button>
       </div>
 
       <div id="simResult" class="sim-result">
@@ -1493,9 +1493,9 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       </div>
 
       <div class="btn-action-row">
-        <button class="btn-secondary" onclick="openPreCommitInstall()">&#128279; Configure Pre-Commit Hook</button>
-        <button class="btn-secondary" onclick="openImmunize()">&#128737; Protect Workspace</button>
-        <button class="btn-secondary" onclick="openPasskey()">&#128273; Issue Keystone Passkey</button>
+        <button class="btn-secondary" onclick="openPreCommitInstall()">Configure Pre-Commit Hook</button>
+        <button class="btn-secondary" onclick="openImmunize()">Protect Workspace</button>
+        <button class="btn-secondary" onclick="openPasskey()">Issue Keystone Passkey</button>
       </div>
     </div>
   </div>
@@ -1536,10 +1536,10 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       </div>
       
       <div style="margin: 14px 0; font-size:12px; color:#e2e8f0; line-height:1.75;">
-        <div>&#10003; <strong>Shared Team Policy:</strong> Synchronize <code>.btp/policy.yaml</code> across all developer machines.</div>
-        <div>&#10003; <strong>Fail-Closed Pre-Commit Gates:</strong> Block unauthorized agent diffs before push.</div>
-        <div>&#10003; <strong>Centralized CISO Audit Trail:</strong> Weekly cryptographically signed compliance reports.</div>
-        <div>&#10003; <strong>100% Money-Back Guarantee:</strong> Full refund if any unauthorized action slips through.</div>
+        <div>&bull; <strong>Shared Team Policy:</strong> Synchronize <code>.btp/policy.yaml</code> across all developer machines.</div>
+        <div>&bull; <strong>Fail-Closed Pre-Commit Gates:</strong> Block unauthorized agent diffs before push.</div>
+        <div>&bull; <strong>Centralized CISO Audit Trail:</strong> Weekly cryptographically signed compliance reports.</div>
+        <div>&bull; <strong>100% Money-Back Guarantee:</strong> Full refund if any unauthorized action slips through.</div>
       </div>
 
       <button class="pilot-btn" onclick="openPilotEnrollment()">
@@ -1548,14 +1548,14 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     </div>
   </div>
 
-  <div id="toast">✓ Copied to clipboard!</div>
+  <div id="toast">Copied to clipboard</div>
 
   <script>
     const vscode = acquireVsCodeApi();
 
     function showToast(text) {
       const toast = document.getElementById('toast');
-      toast.innerText = text || '✓ Copied to clipboard!';
+      toast.innerText = text || 'Copied to clipboard';
       toast.style.display = 'block';
       setTimeout(() => { toast.style.display = 'none'; }, 2200);
     }
@@ -1572,10 +1572,10 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     function runLiveProbeTest() {
       const box = document.getElementById('probeResultBox');
       const btn = document.getElementById('btnLiveProbe');
-      btn.innerHTML = '<span>&#8987; Evaluating Deterministic Invariant Probe...</span>';
+      btn.innerHTML = '<span>Evaluating Deterministic Invariant Probe...</span>';
       
       setTimeout(() => {
-        btn.innerHTML = '<span>&#9889; Run 60-Second Invariant Security Probe</span>';
+        btn.innerHTML = '<span>Run 60-Second Invariant Security Probe</span>';
         box.style.display = 'block';
         box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 350);
@@ -1616,7 +1616,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
     function copyReceipt(r) {
       vscode.postMessage({ command: 'copyReceipt', receipt: r });
-      showToast('✓ Receipt Copied: ' + r.slice(0, 16) + '...');
+      showToast('Receipt Copied: ' + r.slice(0, 16) + '...');
     }
 
     function openPreCommitInstall() {
@@ -1633,7 +1633,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
     function openPilotEnrollment() {
       vscode.postMessage({ command: 'copyReceipt', receipt: 'https://bartholomew.info/pilot' });
-      showToast('✓ Pilot URL Copied to Clipboard!');
+      showToast('Pilot URL Copied to Clipboard');
     }
   </script>
 </body>

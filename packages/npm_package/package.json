@@ -1,6 +1,6 @@
 {
   "name": "btp-guard",
-  "version": "6.4.0",
+  "version": "6.4.1",
   "description": "BTP v6.4.0 Agentic Runtime Protection (ARP) Gateway - Sub-35us In-Process Tool Gating, Compute Silicon Provenance, and Locked Telemetry Vault for Autonomous Agents",
   "main": "index.js",
   "types": "index.d.ts",
