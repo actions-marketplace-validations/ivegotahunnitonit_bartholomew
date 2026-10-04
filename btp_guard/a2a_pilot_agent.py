@@ -126,6 +126,8 @@ def create_a2a_handshake_envelope(target: Dict[str, Any]) -> Dict[str, Any]:
         "recipient_agent_id": target["agent_id"],
         "recipient_name": target["name"],
         "action": "PROPOSE_WORKSPACE_GUARD_PILOT",
+        "delivery_status": "DRAFT_LOCAL_PROPOSAL",
+        "confirmed_delivery": False,
         "proposal_terms": {
             "duration_days": 30,
             "pilot_fee_usd": 199.00,
@@ -168,7 +170,7 @@ def dispatch_a2a_outreach_campaign() -> List[Dict[str, Any]]:
                     (event_name, tenant_id, agent_id, action_type, amount_usd, currency, policy_version, receipt_sha256, metadata_json, created_at)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
-                    "btp.a2a.pilot_proposal_dispatched",
+                    "btp.a2a.pilot_proposal_draft_generated",
                     "a2a-outreach-engine",
                     envelope["recipient_agent_id"],
                     "A2A_PILOT_HANDSHAKE",
@@ -200,15 +202,15 @@ def render_a2a_campaign_status():
     print("\n" + "=" * 80)
     print("   BARTHOLOMEW AUTONOMOUS AGENT-TO-AGENT (A2A) SCALED OUTREACH CAMPAIGN")
     print("=" * 80)
-    print(f"  * Protocol Standard     : BTP/A2A/3.1 (Ed25519 / HMAC-SHA256 Signed Envelopes)")
+    print(f"  * Protocol Standard     : BTP/A2A/3.1 (Draft Envelopes, Awaiting Outbound Delivery)")
     print(f"  * Target Ecosystems     : {len(dispatched)} Frontier Autonomous Runtimes")
     print(f"  * Attached Passkeys     : 30-Day Evaluation Clearances Generated (10 Seats Each)")
     print(f"  * Commercial Pilot Fee  : $199.00 / month (or $950 one-time setup & audit)")
     print("-" * 80)
-    print("  Dispatched Ecosystem Targets:")
+    print("  Generated Draft Proposals (Awaiting Outbound Integration):")
     for idx, env in enumerate(dispatched, 1):
         pid = env["evaluation_license"]["passkey_id"]
-        print(f"    [{idx:02d}] {env['recipient_name']:<38} | Passkey: {pid} | {env['receipt_sha256'][:16]}...")
+        print(f"    [{idx:02d}] [DRAFT] {env['recipient_name']:<30} | Passkey: {pid} | {env['receipt_sha256'][:16]}...")
     print("-" * 80)
     print("  [+] Ledger Persistence  : .btp/a2a_pilot_outreach_ledger.jsonl (Recorded & Grounded)")
     print("  [+] Online Pilot Portal : https://bartholomew.info/pilot")

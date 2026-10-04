@@ -1,30 +1,84 @@
-from xml.sax.saxutils import escape as xml_escape
-import os
+from __future__ import annotations
+
 import json
+import os
+import subprocess
 import zipfile
-import shutil
+from pathlib import Path
+from xml.sax.saxutils import escape as xml_escape
+
+
+def run_command(cmd, cwd):
+    result = subprocess.run(
+        cmd,
+        cwd=str(cwd),
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            cmd,
+            output=result.stdout,
+            stderr=result.stderr,
+        )
+    return result
+
+
+def ensure_package_ready(pkg_dir):
+    pkg_dir = Path(pkg_dir)
+    pkg_json_path = pkg_dir / "package.json"
+    if not pkg_json_path.exists():
+        raise FileNotFoundError(f"Package manifest missing: {pkg_json_path}")
+
+    with open(pkg_json_path, "r", encoding="utf-8") as f:
+        pkg_json = json.load(f)
+
+    scripts = pkg_json.get("scripts", {})
+    if "compile" not in scripts and "build" not in scripts:
+        raise FileNotFoundError(
+            f"{pkg_dir / 'dist' / 'extension.js'} is missing and this package does not define a compile/build script."
+        )
+
+    dist_entry = pkg_dir / "dist" / "extension.js"
+    if not dist_entry.exists():
+        if not (pkg_dir / "node_modules").exists():
+            print(f"[*] Installing npm dependencies for {pkg_dir.name}...")
+            run_command(["npm", "install", "--no-audit", "--no-fund"], pkg_dir)
+        print(f"[*] Building {pkg_dir.name} bundle...")
+        run_command(["npm", "run", "compile"], pkg_dir)
+
+    if not dist_entry.exists():
+        raise FileNotFoundError(
+            f"{dist_entry} is missing after compile; refusing to package a stale or incomplete extension."
+        )
+
+    return dist_entry
+
 
 def pack_package(pkg_dir, package_id, display_name, description):
-    # Read version and details from package.json
-    pkg_json_path = os.path.join(pkg_dir, 'package.json')
-    version = "5.4.26"
-    publisher = "bartholomew"
-    keywords = "ai,security,agent,mcp,trust,guardrails,cursor,copilot"
-    categories = "Machine Learning,Security,Other"
-    
-    if os.path.exists(pkg_json_path):
-        with open(pkg_json_path, 'r', encoding='utf-8') as f:
-            vinfo = json.load(f)
-            version = vinfo.get('version', version)
-            publisher = vinfo.get('publisher', publisher)
-            if 'keywords' in vinfo:
-                keywords = ','.join(vinfo['keywords'])
-            if 'categories' in vinfo:
-                categories = ','.join(vinfo['categories'])
+    pkg_dir = Path(pkg_dir)
+    ensure_package_ready(pkg_dir)
+
+    pkg_json_path = pkg_dir / "package.json"
+    with open(pkg_json_path, "r", encoding="utf-8") as f:
+        vinfo = json.load(f)
+
+    version = vinfo.get("version", "0.0.0")
+    publisher = vinfo.get("publisher", "bartholomew")
+    keywords = ",".join(vinfo.get("keywords", ["ai", "security", "guardrails"]))
+    categories = ",".join(vinfo.get("categories", ["Other", "Security"]))
 
     out_vsix_name = f"{package_id}-{version}.vsix"
-    out_vsix = os.path.join(pkg_dir, out_vsix_name)
-    
+    out_vsix = pkg_dir / out_vsix_name
+
+    for stale_vsix in pkg_dir.glob(f"{package_id}-*.vsix"):
+        if stale_vsix.name != out_vsix_name:
+            stale_vsix.unlink()
+            print(f"[-] Removed stale VSIX: {stale_vsix}")
+
     content_types_xml = """<?xml version="1.0" encoding="utf-8"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension=".json" ContentType="application/json"/>
@@ -45,7 +99,6 @@ def pack_package(pkg_dir, package_id, display_name, description):
     <Tags>{keywords}</Tags>
     <Categories>{categories}</Categories>
     <GalleryFlags>Public</GalleryFlags>
-    
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.80.0" />
       <Property Id="Microsoft.VisualStudio.Code.ExtensionDependencies" Value="" />
@@ -77,38 +130,40 @@ def pack_package(pkg_dir, package_id, display_name, description):
   </Assets>
 </PackageManifest>"""
 
-    with zipfile.ZipFile(out_vsix, 'w', zipfile.ZIP_DEFLATED) as z:
-        z.writestr('[Content_Types].xml', content_types_xml)
-        z.writestr('extension.vsixmanifest', vsixmanifest_xml)
-        for root, dirs, files in os.walk(pkg_dir):
-            if 'node_modules' in root or '.git' in root or '.vsix' in root:
+    allowlist_exact_files = {"package.json", "README.md", "LICENSE.md", "icon.png", "icon.svg"}
+    allowlist_dir_prefixes = {"dist"}
+
+    with zipfile.ZipFile(out_vsix, "w", zipfile.ZIP_DEFLATED) as z:
+        z.writestr("[Content_Types].xml", content_types_xml)
+        z.writestr("extension.vsixmanifest", vsixmanifest_xml)
+        for root, _, files in os.walk(pkg_dir):
+            if "node_modules" in root or ".git" in root or ".vsix" in root:
                 continue
             for f in files:
-                if f.endswith('.vsix'):
+                if f.endswith(".vsix"):
                     continue
                 fp = os.path.join(root, f)
-                rel = os.path.relpath(fp, pkg_dir)
-                z.write(fp, 'extension/' + rel.replace('\\', '/'))
+                rel = os.path.relpath(fp, pkg_dir).replace("\\", "/")
+                top_part = rel.split("/")[0]
+                if rel in allowlist_exact_files or top_part in allowlist_dir_prefixes or (top_part == "dist" and f.endswith((".js", ".map"))):
+                    z.write(fp, "extension/" + rel)
 
     size = os.path.getsize(out_vsix)
-    print(f"[+] Successfully packaged {out_vsix} ({size:,} bytes) with GalleryFlags=Public")
-    
-    # Also write 1.0.0 copy for any legacy CI/CD references
-    legacy_vsix = os.path.join(pkg_dir, f"{package_id}-1.0.0.vsix")
-    shutil.copyfile(out_vsix, legacy_vsix)
+    print(f"[+] Successfully packaged {out_vsix} ({size:,} bytes) with explicit allowlist & GalleryFlags=Public")
     return out_vsix
 
-if __name__ == '__main__':
-    root = os.path.abspath('.')
+
+if __name__ == "__main__":
+    root = Path(__file__).resolve().parent.parent
     pack_package(
-        os.path.join(root, 'packages/bartholomew-keystone'),
-        'bartholomew-keystone',
-        'Bartholomew Keystone - AI Agent Capabilities & Passkeys (Cursor, Claude)',
-        'Cryptographically signed clearance tokens granting autonomous AI agents fine-grained access across files, commands, and domains in Cursor, Claude Desktop, and VS Code.'
+        root / "packages" / "bartholomew-keystone",
+        "bartholomew-keystone",
+        "Bartholomew Keystone - AI Agent Capabilities & Passkeys (Cursor, Claude)",
+        "Cryptographically signed clearance tokens granting autonomous AI agents fine-grained access across files, commands, and domains in Cursor, Claude Desktop, and VS Code.",
     )
     pack_package(
-        os.path.join(root, 'packages/vscode-extension'),
-        'bartholomew-guard-vscode',
-        'Bartholomew AI Agent Guard - Security & Guardrails (Cursor, Claude, Copilot)',
-        'Zero-trust firewall & security guardrails for AI agents. Prevents dangerous commands, secret exfiltration, and destructive file deletion in Cursor, Claude Desktop, and VS Code.'
+        root / "packages" / "vscode-extension",
+        "bartholomew-guard-vscode",
+        "Bartholomew AI Agent Guard - Security & Guardrails (Cursor, Claude, Copilot)",
+        "Zero-trust firewall & security guardrails for AI agents. Prevents dangerous commands, secret exfiltration, and destructive file deletion in Cursor, Claude Desktop, and VS Code.",
     )

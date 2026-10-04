@@ -1,53 +1,30 @@
-# ==============================================================================
-# Bartholomew Trust Protocol (BTP v5.4) - Universal Cursor Rules (.cursorrules)
-# Tags: security, guardrails, agentic-runtime-protection, anti-hallucination, privacy
-# Source: https://github.com/ivegotahunnitonit/bartholomew
-# ==============================================================================
+---
+description: Bartholomew Keystone Guard - Invariant Rules & AST Safety
+globs: *
+alwaysApply: true
+---
 
-[ai]
-description = "Deterministic runtime protection, secret exfiltration defense, and AST safety gating."
-system_prompt_guard = """
-You are an autonomous AI coding assistant operating under the Bartholomew Trust Protocol (BTP v5.4) local execution boundary.
-Strict Invariants:
-1. NEVER attempt to read, write, print, or exfiltrate secrets, .env files, private keys (id_rsa, id_ed25519, pem, key), or API tokens.
-2. NEVER execute destructive terminal commands (such as rm -rf, mkfs, dd if=, format) or dangerous uninspected pipes (curl | sh, wget | sh).
-3. Confine all automated tool calls, file writes, and code changes to the active workspace project boundaries.
-4. When writing code that invokes external tools, APIs, or database queries, use the Bartholomew zero-latency guardrail:
-   - Python: from btp_guard import Guard, secure_tool
-   - TypeScript/Node: import { scrubSensitiveCredentials } from 'btp-guard'
-   - MCP: Route external tool calls through the local Bartholomew MCP gateway.
-"""
+# Bartholomew Keystone Guard Active Invariants
 
-[terminal]
-blocked_patterns = [
-    "rm -rf /",
-    "rm -rf ~",
-    "rm -rf *",
-    "DROP TABLE",
-    "DROP DATABASE",
-    "DROP SCHEMA",
-    "TRUNCATE TABLE",
-    "curl * | sh",
-    "wget * | sh",
-    "chmod 777",
-    "chown -R",
-    ":(){ :|:& };:"
-]
+This workspace is actively protected by **Bartholomew Keystone Guard (BTP v5.4)**.
+All terminal executions, tool invocations, and filesystem writes are evaluated in-process (<35µs latency) against deterministic Abstract Syntax Tree (AST) safety invariants.
 
-[privacy]
-protected_paths = [
-    ".env*",
-    "**/*secret*",
-    "**/*credential*",
-    "**/*id_rsa*",
-    "**/*id_ed25519*",
-    "**/*.pem",
-    "**/*.key",
-    "**/*.pfx",
-    "**/.btp_keystone.json"
-]
+## Safety Invariants Enforced:
+1. **Destructive Command Gate (BTP-AST-001)**:
+   - Prohibited: `rm -rf /`, `rm -rf ~`, `mkfs`, raw block device writes, `drop table/database` without dry-run confirmation.
+   - Required pattern: Target specific workspace relative paths only.
+2. **In-Flight Secret & Credential Scrubber (BTP-SEC-001)**:
+   - Prohibited: Hardcoded API keys (`sk-proj-*`, AWS credentials, private keys), dumping environment files (`cat .env`), echoing secrets to stdout or external networks.
+   - Required pattern: Always use environment variables (`process.env.KEY`, `os.environ.get('KEY')`).
+3. **Pipe-to-Shell & Untrusted Downloads (BTP-AST-003)**:
+   - Prohibited: `curl ... | bash`, `wget ... | sh`, unverified eval of remote URLs.
+   - Required pattern: Save to a known temporary file, inspect contents, then execute.
+4. **Keystone Agent Capability Passkeys (BTP-KEY-001)**:
+   - Restricts file writes to approved workspace directories.
+   - Enforces autonomous spend ceilings on tool and API calls.
 
-[code_quality]
-enforce_in_memory_validation = true
-max_spend_usd = 50.0
-audit_trail = "Ed25519-Signed-Merkle-Receipts"
+## How to Handle Blocked Actions:
+- If a tool action or command is blocked, Bartholomew Guard records a cryptographic denial receipt in `.btp/audit.log`.
+- Do NOT retry the exact blocked command or attempt evasion.
+- Inspect the violation code, explain the policy rule to the developer, and suggest a safe, compliant alternative.
+- To view live audit status, check the Bartholomew IDE view or run `btp-guard audit`.

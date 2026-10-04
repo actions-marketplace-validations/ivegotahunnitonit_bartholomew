@@ -641,36 +641,137 @@
     </div>
   </footer>
 
-  <script>
-    function handlePilotEnroll(e) {
+    <script>
+    async function handlePilotEnroll(e) {
       e.preventDefault();
-      const team = document.getElementById('team-name').value;
-      const email = document.getElementById('lead-email').value;
-      const seats = document.getElementById('seat-count').value;
-      const agent = document.getElementById('primary-agent').value;
-      const billing = document.getElementById('billing-structure').value;
+      const teamInput = document.getElementById('team-name');
+      const emailInput = document.getElementById('lead-email');
+      const seatsInput = document.getElementById('seat-count');
+      const agentInput = document.getElementById('primary-agent');
+      const billingInput = document.getElementById('billing-structure');
+      const dateInput = document.getElementById('kickoff-date');
+
+      const team = teamInput ? teamInput.value.trim() : '';
+      const email = emailInput ? emailInput.value.trim() : '';
+      const seats = seatsInput ? parseInt(seatsInput.value, 10) : 10;
+      const agent = agentInput ? agentInput.value : 'cursor';
+      const billing = billingInput ? billingInput.value : 'monthly';
+      const kickoffDate = dateInput ? dateInput.value : '';
 
       const resBox = document.getElementById('enroll-result');
-      resBox.style.display = 'block';
-      resBox.style.background = 'rgba(16, 185, 129, 0.12)';
-      resBox.style.border = '1px solid rgba(16, 185, 129, 0.4)';
-      resBox.style.color = '#f8fafc';
-      
-      const passkey = 'BTP-PILOT-' + Math.random().toString(16).substr(2, 8).toUpperCase();
+      if (!resBox) return;
 
-      resBox.innerHTML = `
-        <div style="font-weight: 800; color: #10b981; margin-bottom: 6px;">[✓ PILOT ENROLLMENT INITIATED]</div>
-        <div><strong>Team:</strong> ${team} (${seats} Seats) &bull; <strong>Lead:</strong> ${email}</div>
-        <div><strong>Evaluation Passkey:</strong> <code>${passkey}</code> (Valid for 30 Days)</div>
-        <div style="margin-top: 10px; color: #94a3b8;">
-          Next step: Our engineering team has received your kickoff registration. You will receive an invitation to the 30-minute policy walkthrough within 2 hours.
-        </div>
-        <div style="margin-top: 14px;">
-          <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" style="display: inline-block; background: #10b981; color: #070a0f; padding: 6px 14px; border-radius: 4px; font-weight: 800; text-decoration: none;">COMPLETE PAYMENT VIA STRIPE &rarr;</a>
-          <span style="margin: 0 8px; color: #64748b;">or</span>
-          <a href="mailto:founders@bartholomew.info?subject=Team%20Pilot%20Invoice%20Request%20(${encodeURIComponent(team)})&body=Team:%20${encodeURIComponent(team)}%0ASeats:%20${seats}%0ABilling:%20${billing}" style="color: #06b6d4; text-decoration: underline;">Request Manual Corporate Invoice</a>
-        </div>
-      `;
+      resBox.style.display = 'block';
+      resBox.textContent = ''; // Clear content safely
+
+      if (!team || !email) {
+        resBox.style.background = 'rgba(244, 63, 94, 0.12)';
+        resBox.style.border = '1px solid rgba(244, 63, 94, 0.4)';
+        resBox.style.color = '#fb7185';
+        resBox.textContent = 'Please provide both team name and lead email.';
+        return;
+      }
+
+      resBox.style.background = 'rgba(6, 182, 212, 0.12)';
+      resBox.style.border = '1px solid rgba(6, 182, 212, 0.4)';
+      resBox.style.color = '#38bdf8';
+      resBox.textContent = 'Submitting pilot enrollment to server...';
+
+      try {
+        const response = await fetch('/api/v1/pilot/enroll', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            team_name: team,
+            email: email,
+            seats: seats,
+            agent: agent,
+            billing: billing,
+            kickoff_date: kickoffDate
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          const errMsg = errData.detail || 'Enrollment submission failed. Please check inputs and retry.';
+          resBox.textContent = '';
+          resBox.style.background = 'rgba(244, 63, 94, 0.12)';
+          resBox.style.border = '1px solid rgba(244, 63, 94, 0.4)';
+          resBox.style.color = '#fb7185';
+          resBox.textContent = 'Error: ' + errMsg;
+          return;
+        }
+
+        const data = await response.json();
+        resBox.textContent = ''; // Clear for safe DOM construction
+        resBox.style.background = 'rgba(16, 185, 129, 0.12)';
+        resBox.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        resBox.style.color = '#f8fafc';
+
+        // Safe DOM creation - NEVER interpolate untrusted text into innerHTML
+        const titleDiv = document.createElement('div');
+        titleDiv.style.fontWeight = '800';
+        titleDiv.style.color = '#10b981';
+        titleDiv.style.marginBottom = '6px';
+        titleDiv.textContent = '[PILOT ENROLLMENT INITIATED]';
+        resBox.appendChild(titleDiv);
+
+        const detailsDiv = document.createElement('div');
+        const teamLabel = document.createElement('strong');
+        teamLabel.textContent = 'Team: ';
+        detailsDiv.appendChild(teamLabel);
+        detailsDiv.appendChild(document.createTextNode(data.team_name + ' (' + data.seats + ' Seats) • '));
+        const leadLabel = document.createElement('strong');
+        leadLabel.textContent = 'Lead: ';
+        detailsDiv.appendChild(leadLabel);
+        detailsDiv.appendChild(document.createTextNode(data.email));
+        resBox.appendChild(detailsDiv);
+
+        const nextStepDiv = document.createElement('div');
+        nextStepDiv.style.marginTop = '10px';
+        nextStepDiv.style.color = '#94a3b8';
+        nextStepDiv.textContent = 'Next step: Complete checkout via Stripe to activate your 30-day team pilot. Cryptographic access passkeys and workspace policy are activated immediately upon payment confirmation.';
+        resBox.appendChild(nextStepDiv);
+
+        const actionsDiv = document.createElement('div');
+        actionsDiv.style.marginTop = '14px';
+
+        const checkoutBtn = document.createElement('a');
+        checkoutBtn.id = 'stripe-checkout-btn';
+        checkoutBtn.href = data.checkout_url;
+        checkoutBtn.style.display = 'inline-block';
+        checkoutBtn.style.background = '#10b981';
+        checkoutBtn.style.color = '#070a0f';
+        checkoutBtn.style.padding = '8px 18px';
+        checkoutBtn.style.borderRadius = '4px';
+        checkoutBtn.style.fontWeight = '800';
+        checkoutBtn.style.textDecoration = 'none';
+        const feeText = data.amount_usd ? '$' + data.amount_usd.toFixed(0) : '$199';
+        checkoutBtn.textContent = 'COMPLETE PAYMENT VIA STRIPE (' + feeText + ') →';
+        actionsDiv.appendChild(checkoutBtn);
+
+        const sepSpan = document.createElement('span');
+        sepSpan.style.margin = '0 8px';
+        sepSpan.style.color = '#64748b';
+        sepSpan.textContent = 'or';
+        actionsDiv.appendChild(sepSpan);
+
+        const invoiceLink = document.createElement('a');
+        invoiceLink.href = 'mailto:founders@bartholomew.info?subject=' + encodeURIComponent('Team Pilot Invoice Request (' + data.team_name + ')') +
+          '&body=' + encodeURIComponent('Team: ' + data.team_name + '\nSeats: ' + data.seats + '\nBilling: ' + data.billing);
+        invoiceLink.style.color = '#06b6d4';
+        invoiceLink.style.textDecoration = 'underline';
+        invoiceLink.textContent = 'Request Manual Corporate Invoice';
+        actionsDiv.appendChild(invoiceLink);
+
+        resBox.appendChild(actionsDiv);
+      } catch (networkErr) {
+        resBox.textContent = '';
+        resBox.style.background = 'rgba(244, 63, 94, 0.12)';
+        resBox.style.border = '1px solid rgba(244, 63, 94, 0.4)';
+        resBox.style.color = '#fb7185';
+        resBox.textContent = 'Network error connecting to control plane. Please verify server connection and try again.';
+      }
     }
   </script>
 </body>

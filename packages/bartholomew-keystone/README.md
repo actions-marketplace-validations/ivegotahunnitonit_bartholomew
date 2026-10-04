@@ -34,9 +34,9 @@ Before an agent writes a file, executes a terminal command, or triggers a billab
 
 ## What Keystone Does NOT Protect (Explicit Scope Boundary)
 
-- ❌ **Code Quality**: Keystone does not evaluate whether code written inside allowed paths is optimal or bug-free.
-- ❌ **Prompt Accuracy**: Keystone does not police general conversation text.
-- ❌ **Manual Human Actions**: Keystone enforces bounds on autonomous agents operating through IDE tools or MCP protocols.
+- - **Code Quality**: Keystone does not evaluate whether code written inside allowed paths is optimal or bug-free.
+- - **Prompt Accuracy**: Keystone does not police general conversation text.
+- - **Manual Human Actions**: Keystone enforces bounds on autonomous agents operating through IDE tools or MCP protocols.
 
 ---
 
@@ -55,7 +55,7 @@ Before an agent writes a file, executes a terminal command, or triggers a billab
 | **Developer Edition** | **Free Forever** (MIT) | Local capability passkeys, interactive dashboard, spend capping, tamper-evident logs. |
 | **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized passkey policy sync, multi-seat key rings, weekly CISO/SOC2 compliance dossier, 30-min onboarding kickoff, 100% money-back guarantee. |
 
-👉 **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
+-> **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
 
 ---
 

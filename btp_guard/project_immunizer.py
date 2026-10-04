@@ -71,18 +71,44 @@ This repository is armed with **Bartholomew Keystone Guard** for autonomous agen
 """
 
 GIT_PRE_COMMIT_HOOK = """#!/bin/sh
-# Bartholomew Keystone Pre-Commit Hook (BTP v5.4)
-# Verifies zero secret leakage and zero dangerous AST patterns before commit.
+# Bartholomew Keystone Pre-Commit Hook (BTP v6.4)
+# Fail-closed execution gate: blocks commits if checks fail or if security checkers are missing/erroring.
 
+# 1. Execute preserved chained pre-commit hook if present
+PRE_BTP_HOOK="$(dirname "$0")/pre-commit.pre-btp"
+if [ -f "$PRE_BTP_HOOK" ]; then
+    if [ -x "$PRE_BTP_HOOK" ]; then
+        "$PRE_BTP_HOOK" "$@" || exit $?
+    else
+        sh "$PRE_BTP_HOOK" "$@" || exit $?
+    fi
+fi
+
+# 2. Execute Bartholomew security verification (fail-closed)
 if command -v btp-guard >/dev/null 2>&1; then
     btp-guard check --staged || {
-        echo "[!] Bartholomew Guard: Commit aborted due to security policy violations." >&2
-        echo "    Run 'btp-guard check --explain' to view detailed remediation." >&2
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run 'btp-guard check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif command -v python3 >/dev/null 2>&1; then
+    python3 -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run 'python3 -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
         exit 1
     }
 elif command -v python >/dev/null 2>&1; then
-    python -m btp_guard.cli check --staged 2>/dev/null || true
+    python -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run 'python -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+else
+    echo "[!] Bartholomew Guard (FAIL-CLOSED): Neither 'btp-guard' nor Python is available in PATH to verify commit safety." >&2
+    echo "    Commit aborted to protect repository integrity. Install btp-guard or Python to proceed." >&2
+    exit 1
 fi
+
 exit 0
 """
 
@@ -381,7 +407,18 @@ def immunize_project(workspace_root=".", mode="balanced", force=False):
         hooks_dir = git_dir / "hooks"
         hooks_dir.mkdir(parents=True, exist_ok=True)
         pre_commit_file = hooks_dir / "pre-commit"
-        if not pre_commit_file.exists() or force:
+        if not pre_commit_file.exists() or force or ('Bartholomew' not in pre_commit_file.read_text(encoding='utf-8', errors='ignore')):
+            if pre_commit_file.exists():
+                existing_hook = pre_commit_file.read_text(encoding="utf-8", errors="ignore")
+                if "Bartholomew" not in existing_hook:
+                    backup_hook = hooks_dir / "pre-commit.pre-btp"
+                    backup_hook.write_text(existing_hook, encoding="utf-8")
+                    try:
+                        if os.name != "nt":
+                            backup_hook.chmod(backup_hook.stat().st_mode | 0o111)
+                    except Exception:
+                        pass
+                    changes.append({"file": ".git/hooks/pre-commit.pre-btp", "action": "preserved", "desc": "Preserved existing pre-commit hook"})
             pre_commit_file.write_text(GIT_PRE_COMMIT_HOOK, encoding="utf-8")
             try:
                 # Make executable on Unix

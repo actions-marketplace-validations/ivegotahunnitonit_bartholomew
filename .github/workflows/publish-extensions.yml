@@ -3,9 +3,6 @@ name: Publish IDE Extensions
 on:
   release:
     types: [published]
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -32,6 +29,8 @@ jobs:
       - name: Install Dependencies
         run: |
           npm install -g @vscode/vsce ovsx
+          npm install --prefix packages/vscode-extension --no-audit --no-fund
+          npm install --prefix packages/bartholomew-keystone --no-audit --no-fund
           python -m pip install --upgrade pip
 
       - name: Package Latest VSIX Bundles
@@ -42,16 +41,17 @@ jobs:
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        shell: bash
         run: |
-          args=""
+          args=()
           if [ -n "$VSCE_PAT" ]; then
-            args="$args --vsce-pat $VSCE_PAT"
+            args+=(--vsce-pat "$VSCE_PAT")
           fi
           if [ -n "$OVSX_PAT" ]; then
-            args="$args --ovsx-pat $OVSX_PAT"
+            args+=(--ovsx-pat "$OVSX_PAT")
           fi
-          if [ -n "$args" ]; then
-            python scripts/publish_extensions.py $args
-          else
-            echo "[NOTE] Neither VSCE_PAT nor OVSX_PAT configured in repository secrets. Skipping upload."
+          if [ ${#args[@]} -eq 0 ]; then
+            echo "[ERROR] Neither VSCE_PAT nor OVSX_PAT is configured. Publishing is intentionally blocked."
+            exit 1
           fi
+          python scripts/publish_extensions.py "${args[@]}"

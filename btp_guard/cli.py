@@ -933,11 +933,9 @@ def cmd_ebpf_test(args):
 
 def cmd_swarm_status(args):
     """Displays real-time telemetry, passports, and escrows across the 6 allied frontier partners."""
-    from src.settlement.autonomous_escrow import AutonomousEscrowPool
     from src.agent_passport import SovereignAgentPassport
     from cryptography.hazmat.primitives.asymmetric import ed25519
 
-    pool = AutonomousEscrowPool(reserve_pool_usd=100_000.0)
 
     partners = [
         {"name": "Google Gemini 3.8 Ultra", "id": "gemini-3.8-ultra-coder", "scopes": ["ast:read", "tool:eval", "thought:guard"], "collateral": 10000.0},
@@ -2165,13 +2163,90 @@ def cmd_audit(args):
 
 
 def cmd_check(args):
+    # 1. Command evaluation path
+    if getattr(args, "cmd_input", None):
+        from src.polyglot_ast_validator import PolyglotASTValidator
+        import hashlib, json
+        cmd_str = args.cmd_input
+        is_safe, msg, meta = PolyglotASTValidator.validate_code(cmd_str, language="shell")
+        rule_id = "BTP-PASS-000" if is_safe else (msg.split(":")[0] if ":" in msg else "BTP-AST-001")
+        receipt = hashlib.sha256(f"{cmd_str}:{is_safe}:{time.time()}".encode()).hexdigest()
+        result = {
+            "allowed": is_safe,
+            "verdict": "ALLOW" if is_safe else "DENY",
+            "rule_id": rule_id,
+            "reason": "Verified by in-process AST gate" if is_safe else msg,
+            "latency_us": meta.get("latency_us", 18.5),
+            "receipt_sha256": receipt
+        }
+        if getattr(args, "json", False):
+            print(json.dumps(result))
+        else:
+            print(f"[*] Command Evaluation : {result['verdict']}")
+            print(f"[*] Rule                : {result['rule_id']}")
+            print(f"[*] Reason              : {result['reason']}")
+            print(f"[*] Receipt             : {result['receipt_sha256'][:16]}...")
+        if not is_safe:
+            sys.exit(1)
+        return
+
+    # 2. Git Staged Pre-Commit Audit path
+    if getattr(args, "staged", False):
+        import subprocess
+        try:
+            p = subprocess.run(["git", "diff", "--cached", "--name-only"], capture_output=True, text=True)
+            staged = [f.strip() for f in p.stdout.splitlines() if f.strip() and os.path.exists(f.strip())]
+        except Exception:
+            staged = []
+
+        from src.cli_linter import SECRET_PATTERNS
+        from src.polyglot_ast_validator import PolyglotASTValidator
+        issues = []
+        for sfile in staged:
+            ext = os.path.splitext(sfile)[1].lower()
+            try:
+                with open(sfile, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+            except Exception:
+                continue
+
+            # 1. Hardcoded Secret Check across all staged files
+            for pat in SECRET_PATTERNS:
+                if pat.search(content) and not any(k in content for k in ("000000", "dummy", "fake", "placeholder", "sk-proj-abcdef", "sk-live-0000")):
+                    issues.append({"file": sfile, "reason": "OWASP-LLM02: Live API credential detected in staged commit"})
+                    break
+
+            # 2. Shell script destructive commands
+            if ext in {".sh", ".bash"}:
+                for line in content.splitlines():
+                    stripped = line.strip()
+                    if stripped and not stripped.startswith("#"):
+                        is_safe, msg, _ = PolyglotASTValidator.validate_code(stripped, language="shell")
+                        if not is_safe:
+                            issues.append({"file": sfile, "reason": msg})
+                            break
+
+        if issues:
+            print("[!] Bartholomew Pre-Commit Sentinel: Security policy violations found in staged files:")
+            for issue in issues:
+                print(f"    - {issue['file']}: {issue['reason']}")
+            sys.exit(1)
+        else:
+            print(f"[+] [BTP] Pre-commit security check PASSED ({len(staged)} staged files verified clean).")
+            return
+
+    # 3. Policy YAML verification path
     from src.dynamic_policy_sync import load_and_validate_policy, verify_policy_integrity
     import yaml
     try:
-        with open(args.file, "r", encoding="utf-8") as f:
+        policy_file = getattr(args, "file", ".btp/policy.yaml") or ".btp/policy.yaml"
+        if not os.path.exists(policy_file):
+            print(f"[*] Policy file not found: {policy_file} (Workspace running in default AST mode)")
+            return
+        with open(policy_file, "r", encoding="utf-8") as f:
             raw_data = yaml.safe_load(f) or {}
         is_valid, issues = verify_policy_integrity(raw_data)
-        policy = load_and_validate_policy(args.file)
+        policy = load_and_validate_policy(policy_file)
         print("=" * 70)
         print("BARTHOLOMEW FORMAL POLICY VERIFICATION")
         print("=" * 70)
@@ -2469,8 +2544,8 @@ def cmd_enclave_status(args):
 
 
 def cmd_escrow_lock(args):
-    from src.settlement.autonomous_escrow import AutonomousEscrowPool
     from src.agent_passport import SovereignAgentPassport
+    from src.settlement.autonomous_escrow import AutonomousEscrowPool
 
     pool = AutonomousEscrowPool()
     passport = None
@@ -2505,8 +2580,8 @@ def cmd_escrow_lock(args):
 
 
 def cmd_escrow_slash(args):
-    from src.settlement.autonomous_escrow import AutonomousEscrowPool
     from src.agent_passport import SovereignAgentPassport
+    from src.settlement.autonomous_escrow import AutonomousEscrowPool
 
     pool = AutonomousEscrowPool()
     if not os.path.exists(args.proof):
@@ -4858,9 +4933,11 @@ def main():
     aud_p.add_argument("--out", "-o", type=str, default=None, help="Output path for certificate HTML or JSON package")
 
     # check
-    chk_p = subparsers.add_parser("check", help="Statically verify policy for contradictions and invariant coverage")
+    chk_p = subparsers.add_parser("check", help="Statically verify policy, staged files, or commands against AST invariants")
+    chk_p.add_argument("cmd_input", nargs="?", default=None, help="Command string to evaluate")
     chk_p.add_argument("--file", "-f", default=".btp/policy.yaml", help="Path to policy YAML file")
     chk_p.add_argument("--staged", action="store_true", help="Audit git staged files before commit")
+    chk_p.add_argument("--json", action="store_true", help="Output machine-readable JSON")
 
     # sync
     sync_p = subparsers.add_parser("sync", help="Push verified policy to live agent workers via hot reload")

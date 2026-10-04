@@ -33,12 +33,23 @@ STRIPE_PAYMENT_LINKS = {
 
 GLOBAL_SAAS_ENGINE = BartholomewSaaSEngine(ledger_file="saas_production_ledger.jsonl")
 
-# Seed initial verified subscriptions for demo & live tracking
-GLOBAL_SAAS_ENGINE.create_checkout_session("fintech-corp", "PRO_REPO_$49")
-GLOBAL_SAAS_ENGINE.create_checkout_session("scale-saas-infra", "TEAM_ORG_$199")
+# Only seed demo subscriptions when explicitly running in DEMO_MODE
+if os.environ.get("DEMO_MODE", "").lower() in ("true", "1", "yes"):
+    GLOBAL_SAAS_ENGINE.create_checkout_session("fintech-corp", "PRO_REPO_$49")
+    GLOBAL_SAAS_ENGINE.create_checkout_session("scale-saas-infra", "TEAM_ORG_$199")
 
 
 class BartholomewSaaSHandler(BaseHTTPRequestHandler):
+    def _is_authenticated(self) -> bool:
+        api_key = self.headers.get("X-API-KEY") or self.headers.get("X-BTP-API-KEY")
+        auth_header = self.headers.get("Authorization", "")
+        if auth_header.startswith("Bearer "):
+            api_key = auth_header[7:].strip()
+        expected = os.environ.get("BTP_ADMIN_KEY") or os.environ.get("BTP_API_KEY")
+        if expected and api_key == expected:
+            return True
+        return False
+
     def do_GET(self):
         parsed = urlparse(self.path)
 
@@ -49,6 +60,12 @@ class BartholomewSaaSHandler(BaseHTTPRequestHandler):
         elif parsed.path == "/dashboard":
             self._serve_dashboard()
         elif parsed.path == "/api/stats":
+            if not self._is_authenticated():
+                self.send_response(401)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"error": "Unauthorized: API key required"}')
+                return
             self._serve_json(self._get_stats())
         else:
             self.send_response(404)
@@ -87,6 +104,12 @@ class BartholomewSaaSHandler(BaseHTTPRequestHandler):
             self._serve_json(session)
 
         elif parsed.path == "/api/customers":
+            if not self._is_authenticated():
+                self.send_response(401)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                self.wfile.write(b'{"error": "Unauthorized: Admin access required"}')
+                return
             self._serve_json(get_provisioned_customers())
 
         else:

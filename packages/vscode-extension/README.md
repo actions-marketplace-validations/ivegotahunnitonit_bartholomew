@@ -7,8 +7,8 @@
 > **The in-process execution firewall for autonomous coding agents.**  
 > Intercepts destructive commands, prevents API key leaks, and caps agent spend in **under 35 microseconds** before code touches your operating system.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.0-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.0-blue)](https://pypi.org/project/btp-guard/)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.1-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.1-blue)](https://pypi.org/project/btp-guard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://bartholomew.info/#pricing)
 
@@ -22,22 +22,24 @@ Every action is verified against policy in **<35 microseconds**. If an agent att
 
 ---
 
-## What Bartholomew Protects
+## Verified Enforcement Boundaries (Explicit Architectural Scope)
 
-1. **Destructive Terminal Operations**: Blocks `rm -rf`, disk wipes (`format C:`, `del /s`), raw partition writes (`dd`, `mkfs`), and pipe-to-shell payloads (`curl | bash`).
-2. **In-Flight API Secret Leaks**: Intercepts high-entropy credentials (`.env`, `sk-*`, AWS keys, bearer tokens) and replaces them with redaction masks before external transmission.
-3. **Agent Spend & Budget Ceilings**: Enforces hard caps on agentic transactions ($25 session ceiling, $5 single-transaction cap) to prevent accidental infinite loops and runaway API billing.
-4. **Git Pre-Commit Protection**: Enforces pre-commit invariants so no toxic commands or raw secrets enter your team's repository branches.
+Bartholomew enforces deterministic security invariants along 4 concrete, verified boundaries:
+
+1. **Git Version Control Barrier (Fail-Closed Pre-Commit)**: Blocks unverified commits, secret leaks, and destructive code patterns before they can enter git history or be pushed to team remotes. Chained and non-destructive.
+2. **Model Context Protocol (MCP) Tool Proxy (`btp_execute_command`, `btp_write_file`, etc.)**: When AI coding companions (Cursor MCP, Claude Desktop, Cline) invoke tools via MCP JSON-RPC stdio, payloads are gated and sanitized in-process (<35µs) before execution.
+3. **Process Shim Sandbox (`ProcessShimSandbox` / `btp run`)**: Commands executed within the shimmed environment or launched via `btp run <cmd>` have their PATH wrapped with protective AST filters.
+4. **Direct Static & Policy Verification (`btp check`, `btp audit`)**: Evaluates command strings, staged diffs, and workspace files against `.btp/policy.yaml`.
 
 ---
 
-## What Bartholomew Does NOT Protect (Explicit Scope Boundary)
+## What Bartholomew Does NOT Claim to Intercept (Explicit Boundary)
 
-To build genuine trust, we state clearly what is **out of scope**:
+To build genuine trust, we state clearly what is **outside the enforcement boundary**:
 
-- ❌ **Semantic Code Quality**: Bartholomew does not judge whether the agent wrote good algorithms or poor $O(N^3)$ loops. Use your standard test suite (`npm test`, `pytest`).
-- ❌ **Prompt Hallucinations / Factual Errors**: Bartholomew does not filter chat text that does not touch files, terminal commands, or network sockets.
-- ❌ **Manual Human Actions**: Bartholomew inspects agentic tool proposals, not manual terminal actions initiated directly by human developers.
+- - **Unshimmed Arbitrary IDE Terminals**: Manual terminal keystrokes and third-party IDE child processes that do NOT route through the Git hook, MCP server, or `ProcessShimSandbox` wrapper run directly on your shell without Bartholomew interception.
+- - **Semantic Code Correctness**: Bartholomew does not judge whether an agent wrote optimal algorithms or inefficient loops. Use your test suite (`npm test`, `pytest`).
+- - **Prompt Hallucinations / Pure Chat**: Bartholomew does not filter conversational chat text that does not execute tools, touch files, or make network calls.
 
 ---
 
@@ -45,7 +47,7 @@ To build genuine trust, we state clearly what is **out of scope**:
 
 ### Option A: From VS Code / Cursor Sidebar
 1. Click the **Bartholomew Shield** icon in your activity bar.
-2. Click **`[⚡ Run 60-Second Live Security Probe]`**.
+2. Click **`[ Run 60-Second Live Security Probe]`**.
 3. Watch the animated in-process probe test safe vs. blocked execution in <35µs with SHA-256 receipts.
 
 ### Option B: From Any Terminal
@@ -62,9 +64,9 @@ python -m btp_guard.demo_trust_boundary
 | Tier | Price | What You Get |
 | :--- | :--- | :--- |
 | **Developer Edition** | **Free Forever** (MIT) | Personal AST invariant gate, secret scrubber, local tamper-evident ledger, VS Code / Cursor sidebar. |
-| **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized repository policy sync (`.btp/policy.yaml`), team-wide pre-commit hooks, CISO/SOC2-ready PDF compliance dossier, 30-min setup call, 100% money-back guarantee. |
+| **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized repository policy sync (`.btp/policy.yaml`), team-wide pre-commit hooks, CISO compliance audit dossier, 30-min setup call, 100% money-back guarantee. |
 
-👉 **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
+-> **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
 
 ---
 

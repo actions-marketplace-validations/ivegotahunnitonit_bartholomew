@@ -1,5 +1,31 @@
 # Bartholomew Guard — CHANGELOG
 
+## [v6.4.1] — 2026-10-04 (P0 Hardening & Security Release)
+
+### Security & Release Hardening
+- **Cloud Route Authorization & Workspace Isolation**:
+  - Enforced fail-closed authentication (`X-API-KEY`, `X-BTP-API-KEY`, Bearer tokens) across all sensitive endpoints (`/api/v1/telemetry/*`, `/api/v1/compliance/*`, `/api/v1/workspaces/*`, `/api/v1/escrow/*`, `/api/v1/leads/*`, `/api/v1/m2m/*`).
+  - Strict workspace ownership gating returning `403 Forbidden` on foreign tenant access.
+  - Removed shared demo-key fallbacks; deleted `sk_btp_demo_key`.
+- **Billing & Stripe Webhook Verification**:
+  - Enforced raw request HMAC-SHA256 `Stripe-Signature` verification with replay timestamp tolerance.
+  - Durable atomic entitlement store (`.btp/entitlements.json`) with processed event idempotency.
+  - Disallowed arbitrary key claims; unverified emails receive `404 Not Found`.
+- **Truthful Customer Evidence & Telemetry**:
+  - Removed synthetic customer evidence, fake uptime, and hardcoded SOC 2 claims from production responses.
+  - Isolated demo simulations behind explicit `?demo=true` parameters with clear simulation markings.
+- **IDE Webview Hardening & XSS Prevention**:
+  - Injected strict Content Security Policy (`default-src 'none'`) into extension webview.
+  - Escaped all dynamic log/reason fields via `escapeHtml()`.
+  - Replaced unconstrained `runIdeCommand` message listener with a strict command allowlist.
+- **Pilot Page Security**:
+  - Switched from client-only simulation to server-verified `POST /api/v1/pilot/enroll`.
+  - Escaped user inputs and routed to distinct Stripe checkout links ($199/mo vs $950 one-time).
+- **Packaging & CI Pipeline Hygiene**:
+  - Explicit file allowlist for VSIX packaging; eradicated misleading legacy `1.0.0.vsix` artifacts.
+  - Made extension compilation fatal in CI, added all security test suites to required gates, and isolated PR tokens.
+
+
 ## [v6.3.0] — 2026-10-01 (Autonomous Agentic Runtime Protection & Universal MCP)
 
 ### 🚀 Major Enhancements

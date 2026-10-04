@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -37,6 +40,14 @@ jobs:
       - name: Run test suite
         run: |
           python -m pytest \
+            tests/test_real_security_boundary.py \
+            tests/test_billing_and_entitlements.py \
+            tests/test_pilot_xss_and_conversion.py \
+            tests/test_execution_paths_and_truthful_gates.py \
+            tests/test_truthful_proof_provider.py \
+            tests/test_extension_command_handling.py \
+            tests/test_cloud_engine_server.py \
+            tests/test_pre_commit_enforcement.py \
             tests/test_authorization_gate_mvp.py \
             tests/test_v31_agent_passport_and_discovery.py \
             tests/test_m2m_benchmark_and_manifest.py \
@@ -92,7 +103,7 @@ jobs:
         run: |
           cd packages/vscode-extension
           npm ci || npm install
-          npm run compile || true   # non-fatal: extension compile is best-effort in CI
+          npm run compile
 
   #  Go Verifier 
   go:
