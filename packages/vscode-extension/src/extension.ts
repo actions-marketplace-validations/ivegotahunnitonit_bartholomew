@@ -71,7 +71,19 @@ if [ -f "$(dirname "$0")/../../.btp/.disarmed" ]; then
 fi
 
 # 3. Execute Bartholomew security verification (fail-closed)
-if command -v btp-guard >/dev/null 2>&1; then
+if [ -f "./.venv/Scripts/python.exe" ]; then
+    ./.venv/Scripts/python.exe -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run '.venv/Scripts/python.exe -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif [ -f "./.venv/bin/python" ]; then
+    ./.venv/bin/python -m btp_guard.cli check --staged || {
+        echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
+        echo "    Run '.venv/bin/python -m btp_guard.cli check --explain' or inspect .btp/policy.yaml" >&2
+        exit 1
+    }
+elif command -v btp-guard >/dev/null 2>&1; then
     btp-guard check --staged || {
         echo "[!] Bartholomew Guard (FAIL-CLOSED): Commit blocked due to security policy violations or checker error." >&2
         echo "    Run 'btp-guard check --explain' or inspect .btp/policy.yaml" >&2
