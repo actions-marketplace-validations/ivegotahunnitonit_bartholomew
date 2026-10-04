@@ -73,4 +73,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd packages/npm_package
+          if [ -z "$NODE_AUTH_TOKEN" ]; then
+            echo "[!] NPM_TOKEN secret not configured in repository. Skipping npm publish."
+            exit 0
+          fi
           npm publish --access public --provenance

@@ -83,3 +83,9 @@ jobs:
           prerelease: ${{ contains(github.ref_name, '-') }}
           generate_release_notes: false
 
+      - name: Trigger Marketplace Extension Publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run publish-extensions.yml || echo "Manual dispatch fallback available"
+

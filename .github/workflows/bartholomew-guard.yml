@@ -25,12 +25,13 @@ jobs:
 
       - name: Execute Policy Validation & AST Lint
         run: |
-          btp-guard check --all
+          pip install -e .
+          btp-guard check
           btp-guard policy validate
 
       - name: Generate SOC 2 Cryptographic Receipt
         run: |
-          btp-guard audit --summary --json > btp-audit-receipt.json
+          btp-guard audit . --certify --out btp-audit-receipt.json
 
       - name: Upload Security Receipt
         uses: actions/upload-artifact@v4

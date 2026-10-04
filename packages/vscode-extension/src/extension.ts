@@ -373,7 +373,7 @@ rules:
   - id: BTP-SEC-001
     description: "Scrub unmasked API keys and credentials in-flight"
   - id: BTP-AST-003
-    description: "Quarantine unverified curl|sh piping"
+    description: "Quarantine unverified remote pipe-to-shell execution"
 `;
     if (!fs.existsSync(policyFile)) {
       try { fs.writeFileSync(policyFile, defaultPolicy, 'utf-8'); } catch {}
