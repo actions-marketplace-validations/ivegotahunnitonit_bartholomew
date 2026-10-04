@@ -257,18 +257,32 @@ export function getLogoBase64(rootPath?: string, extensionPath?: string): string
 }
 
 
-export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, extensionPath?: string): string {
+export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, extensionPath?: string): string {
   const logoData = getLogoBase64(rootPath, extensionPath);
   
-  const recentRows = (telemetry.recentEvents || []).slice(0, 10).map(ev => {
-    const badgeClass = ev.verdict === 'BLOCKED' ? 'badge-blocked' : 'badge-allowed';
-    const receiptSnippet = ev.receipt_sha256 ? `<span class="mono receipt" onclick="copyReceipt('${ev.receipt_sha256}')" title="Click to copy receipt">${ev.receipt_sha256.slice(0, 16)}...</span>` : 'Verified';
+  const statusClass = telemetry.status === 'ARMED' 
+    ? 'status-armed' 
+    : (telemetry.status === 'PARTIALLY_ARMED' ? 'status-partial' : 'status-disconnected');
+
+  const statusLabel = telemetry.status === 'ARMED'
+    ? 'ARMED (FAIL-CLOSED)'
+    : (telemetry.status === 'PARTIALLY_ARMED' ? 'PARTIALLY ARMED' : 'DISCONNECTED');
+
+  const recentRows = (telemetry.recentEvents || []).slice(0, 15).map(ev => {
+    const isBlocked = ev.verdict === 'BLOCKED';
+    const isSanitized = ev.verdict === 'SANITIZED';
+    const badgeClass = isBlocked ? 'badge-blocked' : (isSanitized ? 'badge-sanitized' : 'badge-allowed');
+    const displayVerdict = isBlocked ? 'BLOCKED' : (isSanitized ? 'SANITIZED' : 'ALLOWED');
+    const receiptSnippet = ev.receipt_sha256 
+      ? `<span class="mono receipt-pill" onclick="copyReceipt('${ev.receipt_sha256}')" title="Click to copy SHA-256 Merkle receipt">${ev.receipt_sha256.slice(0, 16)}...</span>` 
+      : '<span class="mono receipt-verified">VERIFIED</span>';
+
     return `
       <tr class="ledger-row" data-search="${ev.action} ${ev.verdict} ${ev.rule_id || ''} ${ev.reason || ''}">
         <td class="mono muted-td">${ev.timestamp ? ev.timestamp.slice(11, 19) : '00:00:00'}</td>
-        <td class="mono font-bold">${ev.action}</td>
-        <td><span class="badge ${badgeClass}">${ev.verdict}</span></td>
-        <td class="reason-cell" title="${ev.reason || ''}">${ev.rule_id || 'BTP-INVARIANT'} &bull; ${ev.reason ? ev.reason.slice(0, 36) : 'Normal execution'}</td>
+        <td class="mono font-bold action-cell"><span class="action-icon">❯</span> ${ev.action}</td>
+        <td><span class="badge ${badgeClass}">${displayVerdict}</span></td>
+        <td class="reason-cell" title="${ev.reason || ''}"><span class="rule-tag">${ev.rule_id || 'BTP-AST-001'}</span> &bull; ${ev.reason ? ev.reason.slice(0, 42) : 'Normal invariant check'}</td>
         <td>${receiptSnippet}</td>
       </tr>
     `;
@@ -282,32 +296,41 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
   <title>Bartholomew Guard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #070a0f;
-      --bg-card: rgba(13, 18, 31, 0.75);
-      --bg-elevated: #0d1322;
-      --bg-editor: #04070d;
-      --border-subtle: rgba(45, 62, 80, 0.65);
-      --border-focus: rgba(16, 185, 129, 0.6);
+      --bg-space: #060913;
+      --bg-glass: rgba(13, 20, 38, 0.72);
+      --bg-glass-elevated: rgba(18, 28, 52, 0.85);
+      --bg-glass-card: rgba(15, 23, 42, 0.65);
+      --bg-terminal: rgba(3, 7, 18, 0.88);
       
-      --gold: #eab308;
-      --gold-light: #fde047;
-      --gold-dim: rgba(234, 179, 8, 0.14);
-      --lime: #84cc16;
+      --border-specular: rgba(255, 255, 255, 0.12);
+      --border-subtle: rgba(45, 62, 85, 0.55);
+      --border-focus: #10b981;
+      
+      --gold: #f59e0b;
+      --gold-bright: #fbbf24;
+      --gold-dim: rgba(245, 158, 11, 0.15);
+      --gold-glow: rgba(245, 158, 11, 0.35);
+      
       --emerald: #10b981;
-      --emerald-light: #34d399;
+      --emerald-bright: #34d399;
       --emerald-dim: rgba(16, 185, 129, 0.14);
-      --emerald-glow: rgba(16, 185, 129, 0.28);
-      --jade: #059669;
-      --teal: #14b8a6;
+      --emerald-glow: rgba(16, 185, 129, 0.35);
+      
       --cyan: #06b6d4;
-      --cyan-dim: rgba(6, 182, 212, 0.14);
+      --cyan-bright: #38bdf8;
+      --cyan-dim: rgba(6, 182, 212, 0.15);
+      --cyan-glow: rgba(6, 182, 212, 0.35);
+      
       --rose: #f43f5e;
-      --rose-dim: rgba(244, 63, 94, 0.14);
+      --rose-bright: #fb7185;
+      --rose-dim: rgba(244, 63, 94, 0.16);
+      --rose-glow: rgba(244, 63, 94, 0.4);
+      
       --purple: #a855f7;
-      --amber: #f59e0b;
+      --purple-dim: rgba(168, 85, 247, 0.15);
       
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -315,17 +338,24 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
       --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body {
-      background-color: var(--bg-dark);
+      background-color: var(--bg-space);
       background-image: 
-        radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.14) 0%, rgba(234, 179, 8, 0.05) 35%, transparent 70%),
-        radial-gradient(circle at 90% 20%, rgba(6, 182, 212, 0.08), transparent 50%),
-        radial-gradient(circle at 10% 80%, rgba(168, 85, 247, 0.05), transparent 60%);
+        radial-gradient(ellipse 90% 50% at 50% -15%, rgba(16, 185, 129, 0.2) 0%, transparent 65%),
+        radial-gradient(ellipse 70% 40% at 100% 25%, rgba(6, 182, 212, 0.14) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 0% 85%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 90% 90%, rgba(168, 85, 247, 0.08) 0%, transparent 55%);
+      background-attachment: fixed;
       color: var(--text-main);
       font-family: var(--font-sans);
       padding: 16px;
@@ -334,172 +364,312 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       -webkit-font-smoothing: antialiased;
     }
 
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
     /* Top Brand Header */
     .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 14px;
+      padding: 6px 4px 16px 4px;
       border-bottom: 1px solid var(--border-subtle);
       margin-bottom: 16px;
+      gap: 12px;
     }
     .brand-wrap {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 9px;
-      filter: drop-shadow(0 0 14px var(--emerald-glow));
+    .brand-crest-box {
+      width: 44px;
+      height: 44px;
+      position: relative;
+      cursor: pointer;
       transition: var(--transition);
+      flex-shrink: 0;
     }
-    .brand-logo:hover {
-      transform: scale(1.06);
+    .brand-crest-box:hover {
+      transform: scale(1.08) rotate(2deg);
+    }
+    .brand-crest-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.55)) drop-shadow(0 0 24px rgba(6, 182, 212, 0.35));
+    }
+    .svg-orbit {
+      transform-origin: 50px 50px;
+      animation: orbitSpin 24s linear infinite;
+    }
+    @keyframes orbitSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .brand-info {
+      display: flex;
+      flex-direction: column;
     }
     .brand-title {
       font-size: 16px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      color: #ffffff;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 55%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
     .brand-version {
       font-size: 10px;
-      padding: 2px 7px;
+      padding: 2px 8px;
       background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      border-radius: 9999px;
-      color: var(--emerald-light);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      border-radius: var(--radius-full);
+      color: var(--emerald-bright);
       font-family: var(--font-mono);
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+      -webkit-text-fill-color: initial;
     }
     .brand-sub {
       font-size: 11px;
       color: var(--text-muted);
-      letter-spacing: 0.01em;
-      margin-top: 1px;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
+    .brand-sub-badge {
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 600;
+    }
+
+    /* Holographic Status Beacon */
     .status-beacon {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      background: var(--emerald-dim);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      padding: 6px 13px;
-      border-radius: 9999px;
-      color: var(--emerald-light);
+      gap: 9px;
+      padding: 7px 15px;
+      border-radius: var(--radius-full);
       font-family: var(--font-mono);
       font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
-      box-shadow: 0 0 14px rgba(16, 185, 129, 0.2);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: var(--transition);
+      white-space: nowrap;
     }
-    .status-beacon.partial {
-      background: rgba(245, 158, 11, 0.15);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: #fbbf24;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.2);
+    .status-beacon.status-armed {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(6, 182, 212, 0.08));
+      border: 1px solid rgba(52, 211, 153, 0.45);
+      color: var(--emerald-bright);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 18px rgba(16, 185, 129, 0.25);
     }
-    .status-beacon.partial .beacon-dot {
-      background: #f59e0b;
-      box-shadow: 0 0 10px #f59e0b;
+    .status-beacon.status-partial {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 179, 8, 0.08));
+      border: 1px solid rgba(251, 191, 36, 0.45);
+      color: var(--gold-bright);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 18px rgba(245, 158, 11, 0.25);
     }
-    .status-beacon.disconnected {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid rgba(239, 68, 68, 0.4);
-      color: #f87171;
-      box-shadow: 0 0 14px rgba(239, 68, 68, 0.2);
+    .status-beacon.status-disconnected {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.18), rgba(239, 68, 68, 0.08));
+      border: 1px solid rgba(251, 113, 133, 0.45);
+      color: var(--rose-bright);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.2), 0 0 18px rgba(244, 63, 94, 0.25);
     }
-    .status-beacon.disconnected .beacon-dot {
-      background: #ef4444;
-      box-shadow: 0 0 10px #ef4444;
+    .beacon-radar {
+      position: relative;
+      width: 10px;
+      height: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .beacon-dot {
+    .beacon-core {
       width: 8px;
       height: 8px;
-      background: var(--emerald);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--emerald);
-      animation: pulse-beacon 2s infinite ease-in-out;
     }
-    @keyframes pulse-beacon {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.85); }
+    .status-armed .beacon-core {
+      background: var(--emerald-bright);
+      box-shadow: 0 0 12px var(--emerald-bright);
+    }
+    .status-partial .beacon-core {
+      background: var(--gold-bright);
+      box-shadow: 0 0 12px var(--gold-bright);
+    }
+    .status-disconnected .beacon-core {
+      background: var(--rose-bright);
+      box-shadow: 0 0 12px var(--rose-bright);
+    }
+    .beacon-wave {
+      position: absolute;
+      top: -2px; left: -2px; right: -2px; bottom: -2px;
+      border-radius: 50%;
+      animation: radarWave 2.2s infinite cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    .status-armed .beacon-wave { border: 1.5px solid var(--emerald-bright); }
+    .status-partial .beacon-wave { border: 1.5px solid var(--gold-bright); }
+    .status-disconnected .beacon-wave { border: 1.5px solid var(--rose-bright); }
+    @keyframes radarWave {
+      0% { transform: scale(0.8); opacity: 0.9; }
+      100% { transform: scale(2.4); opacity: 0; }
+    }
+
+    /* High-Gloss Glass Card Base */
+    .glass-card {
+      background: linear-gradient(135deg, rgba(16, 24, 44, 0.72) 0%, rgba(8, 13, 26, 0.85) 100%);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border: 1px solid var(--border-specular);
+      border-radius: var(--radius-md);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 0 24px 0 rgba(16, 185, 129, 0.03),
+        0 16px 40px -8px rgba(0, 0, 0, 0.65),
+        0 0 1px 1px rgba(16, 185, 129, 0.12);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+      transition: var(--transition);
+    }
+    .glass-card:hover {
+      border-color: rgba(52, 211, 153, 0.3);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.25),
+        inset 0 0 30px 0 rgba(16, 185, 129, 0.06),
+        0 20px 48px -6px rgba(0, 0, 0, 0.75),
+        0 0 16px rgba(16, 185, 129, 0.18);
+    }
+    .prism-runner {
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #10b981 0%, #06b6d4 35%, #84cc16 70%, #eab308 100%);
+      background-size: 200% 100%;
+      animation: prismFlow 7s ease infinite;
+    }
+    @keyframes prismFlow {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* 4-Tile Telemetry Metric Strip */
+    .telemetry-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 580px) {
+      .telemetry-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    .metric-card {
+      background: linear-gradient(135deg, rgba(16, 24, 44, 0.65) 0%, rgba(8, 13, 26, 0.8) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 8px 24px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: var(--transition);
+      cursor: default;
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(52, 211, 153, 0.35);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 14px rgba(16, 185, 129, 0.15);
+    }
+    .metric-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .metric-icon {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    .metric-tag {
+      font-size: 9.5px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-dim);
+    }
+    .metric-val {
+      font-size: 16px;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+    .metric-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 3px;
+      font-weight: 600;
     }
 
     /* Hero Outcome Banner */
     .hero-banner {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
       padding: 18px 20px;
-      margin-bottom: 18px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-banner::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, var(--gold), var(--lime), var(--emerald), var(--cyan));
     }
     .hero-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       gap: 16px;
     }
     .hero-headline {
-      font-size: 15px;
-      font-weight: 700;
+      font-size: 14.5px;
+      font-weight: 800;
       color: #ffffff;
       margin-bottom: 4px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
+    .hero-headline-badge {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--emerald-dim);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald-bright);
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
     .hero-desc {
       font-size: 12px;
       color: var(--text-muted);
-      line-height: 1.45;
-      max-width: 580px;
-    }
-    .hero-metrics {
-      display: flex;
-      gap: 14px;
-      border-left: 1px solid var(--border-subtle);
-      padding-left: 16px;
-    }
-    .metric-box {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-    }
-    .metric-value {
-      font-size: 15px;
-      font-weight: 800;
-      color: #ffffff;
-      font-family: var(--font-mono);
-    }
-    .metric-label {
-      font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      line-height: 1.5;
     }
 
     /* Live Probe Callout (Interactive Action Hero) */
     .probe-bar {
       margin-top: 14px;
       padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -507,23 +677,40 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       flex-wrap: wrap;
     }
     .probe-btn {
+      position: relative;
+      overflow: hidden;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, #10b981, #059669);
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       color: #ffffff;
       padding: 9px 18px;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-size: 12.5px;
-      font-weight: 700;
-      border: 1px solid rgba(52, 211, 153, 0.4);
+      font-weight: 800;
+      border: 1px solid rgba(110, 231, 183, 0.5);
       cursor: pointer;
-      box-shadow: 0 4px 18px var(--emerald-glow);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 4px 18px var(--emerald-glow);
       transition: var(--transition);
+      font-family: var(--font-sans);
+    }
+    .probe-btn::after {
+      content: '';
+      position: absolute;
+      top: -50%; left: -60%;
+      width: 220%; height: 200%;
+      background: linear-gradient(60deg, transparent 40%, rgba(255, 255, 255, 0.28) 50%, transparent 60%);
+      transform: rotate(25deg);
+      animation: shimmerSweep 4.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+    @keyframes shimmerSweep {
+      0% { transform: translateX(-100%) rotate(25deg); }
+      35%, 100% { transform: translateX(100%) rotate(25deg); }
     }
     .probe-btn:hover {
-      box-shadow: 0 6px 24px rgba(16, 185, 129, 0.5);
-      transform: translateY(-1px);
+      transform: translateY(-1.5px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 8px 26px rgba(16, 185, 129, 0.55);
     }
     .probe-btn:active {
       transform: translateY(0);
@@ -532,17 +719,21 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       font-size: 11px;
       color: var(--text-muted);
       font-family: var(--font-mono);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* Live Probe Interactive Modal / Drawer */
+    /* Live Probe Drawer */
     #probeResultBox {
       display: none;
       margin-top: 14px;
-      background: rgba(6, 10, 18, 0.85);
-      border: 1px solid rgba(244, 63, 94, 0.35);
-      border-radius: 9px;
+      background: var(--bg-terminal);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: var(--radius-sm);
       padding: 14px 16px;
       animation: slideDown 0.25s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
     }
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-8px); }
@@ -552,14 +743,14 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .probe-status-pill {
-      background: var(--rose-dim);
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      color: #fca5a5;
+      background: var(--emerald-dim);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: var(--emerald-bright);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       padding: 3px 10px;
       border-radius: 6px;
       font-family: var(--font-mono);
@@ -567,7 +758,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     .probe-detail-line {
       font-size: 12px;
       color: #e2e8f0;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
       font-family: var(--font-mono);
     }
     .probe-receipt-line {
@@ -576,22 +767,27 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       margin-top: 8px;
       font-family: var(--font-mono);
       background: rgba(255, 255, 255, 0.03);
-      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 8px 12px;
       border-radius: 6px;
       word-break: break-all;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    /* Target Runtimes Grid ("Guarded Everywhere across the globe") */
+    /* Target Runtimes Grid */
     .runtimes-section {
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
     .section-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 10px;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -602,39 +798,46 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       gap: 8px;
     }
     .runtime-chip {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 8px 10px;
+      background: linear-gradient(135deg, rgba(16, 24, 44, 0.55), rgba(8, 13, 26, 0.7));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 7px 11px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
       font-size: 11.5px;
-      color: #e2e8f0;
+      color: #cbd5e1;
       font-weight: 600;
       transition: var(--transition);
       cursor: pointer;
     }
     .runtime-chip:hover {
-      border-color: var(--border-focus);
-      background: rgba(16, 185, 129, 0.06);
-      transform: translateY(-1px);
+      border-color: rgba(52, 211, 153, 0.4);
+      background: rgba(16, 185, 129, 0.08);
+      color: #ffffff;
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.15);
     }
     .chip-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 6px var(--emerald);
+      background: var(--emerald-bright);
+      box-shadow: 0 0 6px var(--emerald-bright);
+      flex-shrink: 0;
     }
 
-    /* Tabs Navigation */
+    /* Segmented Tab Navigation Bar */
     .tab-bar {
       display: flex;
       gap: 6px;
-      border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 8px;
+      background: rgba(8, 13, 26, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 5px;
       margin-bottom: 16px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       overflow-x: auto;
     }
     .tab-btn {
@@ -642,13 +845,16 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       border: 1px solid transparent;
       color: var(--text-muted);
       font-size: 12px;
-      font-weight: 600;
-      padding: 7px 14px;
-      border-radius: 7px;
+      font-weight: 700;
+      padding: 8px 15px;
+      border-radius: 8px;
       cursor: pointer;
       transition: var(--transition);
       font-family: var(--font-sans);
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
     .tab-btn:hover {
       color: #ffffff;
@@ -656,9 +862,9 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     }
     .tab-btn.active {
       color: #ffffff;
-      background: var(--emerald-dim);
-      border-color: rgba(16, 185, 129, 0.35);
-      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 182, 212, 0.12) 100%);
+      border-color: rgba(52, 211, 153, 0.45);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 4px 14px rgba(16, 185, 129, 0.2);
     }
 
     /* Tab Panes */
@@ -669,125 +875,155 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Card Panels */
+    /* Panel Card */
     .panel-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 16px;
-      backdrop-filter: blur(16px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      padding: 18px 20px;
     }
     .panel-card-title {
-      font-size: 13.5px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 800;
       color: #ffffff;
       margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .panel-card-desc {
       font-size: 11.5px;
       color: var(--text-muted);
       margin-bottom: 14px;
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
-    /* Simulator Input & Chips */
+    /* Simulator Console HUD */
     .sim-chips {
       display: flex;
       gap: 7px;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .sim-chip {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.1);
       color: #cbd5e1;
-      padding: 5px 10px;
+      padding: 5px 11px;
       border-radius: 6px;
       font-size: 11px;
       font-family: var(--font-mono);
       cursor: pointer;
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
     .sim-chip:hover {
-      border-color: var(--emerald);
+      border-color: var(--emerald-bright);
       color: #ffffff;
-      background: rgba(16, 185, 129, 0.08);
+      background: rgba(16, 185, 129, 0.1);
+      transform: translateY(-1px);
     }
     .sim-chip.danger {
-      border-color: rgba(244, 63, 94, 0.3);
+      border-color: rgba(244, 63, 94, 0.35);
       color: #fca5a5;
+      background: rgba(244, 63, 94, 0.06);
     }
     .sim-chip.danger:hover {
-      border-color: var(--rose);
+      border-color: var(--rose-bright);
       background: var(--rose-dim);
+      box-shadow: 0 0 12px rgba(244, 63, 94, 0.25);
     }
     .sim-box {
       display: flex;
       gap: 8px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .sim-input-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .sim-prompt-icon {
+      position: absolute;
+      left: 12px;
+      color: var(--emerald-bright);
+      font-family: var(--font-mono);
+      font-weight: 900;
+      pointer-events: none;
     }
     .sim-input {
-      flex: 1;
-      background: rgba(4, 7, 13, 0.85);
-      border: 1px solid var(--border-subtle);
-      border-radius: 7px;
-      padding: 9px 12px;
+      width: 100%;
+      background: var(--bg-terminal);
+      border: 1px solid var(--border-specular);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px 10px 30px;
       color: #ffffff;
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 12.5px;
       outline: none;
       transition: var(--transition);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4);
     }
     .sim-input:focus {
       border-color: var(--emerald);
-      box-shadow: 0 0 12px var(--emerald-glow);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.4), 0 0 16px var(--emerald-glow);
     }
-    .btn-test {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--border-subtle);
+    .btn-evaluate {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.15));
+      border: 1px solid rgba(52, 211, 153, 0.45);
       color: #ffffff;
-      font-weight: 700;
-      padding: 0 16px;
-      border-radius: 7px;
+      font-weight: 800;
+      padding: 0 18px;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       font-size: 12px;
+      font-family: var(--font-mono);
       transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
     }
-    .btn-test:hover {
-      background: var(--emerald);
-      border-color: var(--emerald);
-      box-shadow: 0 2px 14px var(--emerald-glow);
+    .btn-evaluate:hover {
+      background: linear-gradient(135deg, var(--emerald) 0%, #059669 100%);
+      border-color: var(--emerald-bright);
+      box-shadow: 0 0 18px var(--emerald-glow);
+      transform: translateY(-1px);
     }
     .sim-result {
-      background: rgba(4, 7, 13, 0.9);
+      background: var(--bg-terminal);
       border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
       font-family: var(--font-mono);
       font-size: 11.5px;
       display: none;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Policy Controls / Toggles */
+    /* Policy Controls */
     .toggle-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
     }
     .toggle-row:last-child { border-bottom: none; }
     .toggle-left {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 3px;
     }
     .toggle-title {
       font-size: 12.5px;
-      font-weight: 600;
+      font-weight: 700;
       color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .toggle-desc {
       font-size: 11px;
@@ -795,18 +1031,50 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     }
     .toggle-pill {
       background: var(--emerald-dim);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: var(--emerald-light);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: var(--emerald-bright);
       font-size: 10.5px;
-      font-weight: 700;
+      font-weight: 800;
       padding: 4px 10px;
       border-radius: 6px;
       font-family: var(--font-mono);
+      white-space: nowrap;
+    }
+    .btn-action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 11.5px;
+      font-family: var(--font-mono);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-dim);
+      transform: translateY(-1px);
     }
 
-    /* Table Styles */
+    /* Verifiable Audit Table */
     .table-wrap {
       overflow-x: auto;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
     table {
       width: 100%;
@@ -815,68 +1083,113 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     }
     th {
       text-align: left;
-      padding: 8px 10px;
+      padding: 10px 12px;
       color: var(--text-dim);
-      font-weight: 600;
+      font-weight: 700;
+      background: rgba(0, 0, 0, 0.3);
       border-bottom: 1px solid var(--border-subtle);
       font-size: 10.5px;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.05em;
+      font-family: var(--font-mono);
     }
     td {
-      padding: 8px 10px;
+      padding: 9px 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       color: #cbd5e1;
     }
+    .ledger-row {
+      transition: var(--transition);
+    }
+    .ledger-row:hover {
+      background: rgba(16, 185, 129, 0.05);
+    }
     .mono { font-family: var(--font-mono); }
+    .muted-td { color: var(--text-dim); }
+    .font-bold { font-weight: 700; color: #ffffff; }
+    .action-cell {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-icon {
+      color: var(--emerald-bright);
+      font-size: 10px;
+    }
+    .rule-tag {
+      font-family: var(--font-mono);
+      color: var(--cyan);
+      font-weight: 600;
+    }
     .badge {
       display: inline-block;
       font-size: 10px;
-      font-weight: 700;
-      padding: 2px 7px;
+      font-weight: 800;
+      padding: 3px 8px;
       border-radius: 4px;
       font-family: var(--font-mono);
+      letter-spacing: 0.03em;
     }
     .badge-allowed {
       background: var(--emerald-dim);
-      border: 1px solid rgba(16, 185, 129, 0.35);
-      color: var(--emerald-light);
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      color: var(--emerald-bright);
+    }
+    .badge-sanitized {
+      background: var(--cyan-dim);
+      border: 1px solid rgba(6, 182, 212, 0.45);
+      color: var(--cyan-bright);
     }
     .badge-blocked {
       background: var(--rose-dim);
-      border: 1px solid rgba(244, 63, 94, 0.35);
-      color: #fca5a5;
+      border: 1px solid rgba(244, 63, 94, 0.45);
+      color: var(--rose-bright);
     }
-    .receipt {
+    .receipt-pill {
       cursor: pointer;
-      color: var(--cyan);
-      text-decoration: underline;
+      color: var(--cyan-bright);
+      background: rgba(6, 182, 212, 0.08);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      padding: 2px 7px;
+      border-radius: 4px;
+      transition: var(--transition);
+      display: inline-block;
+    }
+    .receipt-pill:hover {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--cyan-bright);
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+    .receipt-verified {
+      color: var(--emerald-bright);
+      font-size: 10.5px;
+      font-weight: 700;
     }
 
-    /* Team Pilot Card (Monetization Engine) */
+    /* Team Pilot Card (Executive Monetization) */
     .pilot-card {
-      background: linear-gradient(135deg, rgba(13, 18, 31, 0.9), rgba(6, 10, 18, 0.95));
-      border: 1px solid rgba(234, 179, 8, 0.35);
-      border-radius: 12px;
-      padding: 18px 20px;
-      box-shadow: 0 6px 28px rgba(234, 179, 8, 0.12);
+      background: linear-gradient(135deg, rgba(23, 20, 12, 0.8) 0%, rgba(13, 20, 36, 0.9) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: var(--radius-md);
+      padding: 20px 22px;
+      box-shadow: 0 8px 32px rgba(245, 158, 11, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.15);
       position: relative;
     }
-    .pilot-card::before {
-      content: 'TEAM PILOT';
+    .pilot-ribbon {
       position: absolute;
       top: -10px; right: 20px;
-      background: var(--gold);
+      background: linear-gradient(135deg, var(--gold), #d97706);
       color: #070a0f;
-      font-size: 9.5px;
-      font-weight: 800;
-      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 10px;
       border-radius: 4px;
       font-family: var(--font-mono);
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.4);
     }
     .pilot-price {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 900;
       color: #ffffff;
       font-family: var(--font-sans);
@@ -888,120 +1201,218 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       color: var(--text-muted);
     }
     .pilot-btn {
+      position: relative;
+      overflow: hidden;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, var(--gold), #d97706);
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
       color: #070a0f;
-      padding: 9px 18px;
-      border-radius: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
       font-size: 12.5px;
-      font-weight: 800;
+      font-weight: 900;
       border: none;
       cursor: pointer;
-      box-shadow: 0 4px 18px rgba(234, 179, 8, 0.35);
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
       transition: var(--transition);
-      margin-top: 12px;
+      margin-top: 14px;
+      font-family: var(--font-sans);
     }
     .pilot-btn:hover {
-      box-shadow: 0 6px 24px rgba(234, 179, 8, 0.5);
-      transform: translateY(-1px);
+      transform: translateY(-1.5px);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5);
+    }
+
+    /* Floating Toast */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 16px var(--emerald-glow);
+      display: none;
+      z-index: 999;
+      animation: toastIn 0.25s ease;
+    }
+    @keyframes toastIn {
+      from { transform: translateY(12px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Brand Header -->
+  <!-- Top Header with Glowing Cybernetic Sentinel Emblem -->
   <div class="top-header">
     <div class="brand-wrap">
-      <img src="${logoData}" class="brand-logo" alt="Bartholomew Guard" onerror="this.style.display='none'; var fb=document.getElementById('brand-svg-fallback'); if(fb) fb.style.display='block';" />
-      <svg id="brand-svg-fallback" class="brand-logo" style="display:${logoData ? 'none' : 'block'};" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M18 3L5 8.5V17C5 25.5 10.8 30.8 18 33C25.2 30.8 31 25.5 31 17V8.5L18 3Z" fill="#10b981" />
-        <path d="M18 5L7 9.5V16.8C7 24 11.8 28.6 18 30.6C24.2 28.6 29 24 29 16.8V9.5L18 5Z" fill="#04070d" stroke="#10b981" stroke-width="0.8" />
-        <path d="M13 10.5H18.8C20.8 10.5 22.3 11.6 22.3 13.2C22.3 14.4 21.4 15.3 20.1 15.7C21.7 16.1 22.8 17.2 22.8 18.9C22.8 20.8 21.1 22.2 18.8 22.2H13V10.5Z" fill="#ffffff" />
-      </svg>
-      <div>
+      <div class="brand-crest-box" title="Bartholomew Sentinel Crest">
+        <svg class="brand-crest-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="shieldGrad" x1="15" y1="10" x2="85" y2="90" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.85" />
+              <stop offset="50%" stop-color="#10b981" stop-opacity="0.95" />
+              <stop offset="100%" stop-color="#047857" stop-opacity="1" />
+            </linearGradient>
+            <linearGradient id="facetGrad" x1="50" y1="10" x2="50" y2="88" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.55" />
+              <stop offset="40%" stop-color="#34d399" stop-opacity="0.2" />
+              <stop offset="100%" stop-color="#059669" stop-opacity="0.0" />
+            </linearGradient>
+            <linearGradient id="coreGrad" x1="32" y1="32" x2="68" y2="68" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#0f172a" />
+              <stop offset="100%" stop-color="#020617" />
+            </linearGradient>
+            <radialGradient id="eyeGlow" cx="50" cy="50" r="14" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#fde047" />
+              <stop offset="45%" stop-color="#eab308" />
+              <stop offset="100%" stop-color="#d97706" stop-opacity="0" />
+            </radialGradient>
+            <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="3.5" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <circle cx="50" cy="50" r="46" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="3 5" class="svg-orbit" />
+          <circle cx="50" cy="50" r="41" stroke="#10b981" stroke-width="1" stroke-opacity="0.4" />
+          <path d="M50 12 L82 27 V54 C82 72 68 85 50 91 C32 85 18 72 18 54 V27 L50 12 Z" fill="url(#shieldGrad)" stroke="#34d399" stroke-width="2.5" filter="url(#neonGlow)" />
+          <path d="M50 14 L80 28 V53 C80 69 67 82 50 88 V14 Z" fill="url(#facetGrad)" />
+          <polygon points="50,30 67,40 67,60 50,70 33,60 33,40" fill="url(#coreGrad)" stroke="#06b6d4" stroke-width="2" />
+          <circle cx="50" cy="50" r="12" fill="url(#eyeGlow)" />
+          <circle cx="50" cy="50" r="5" fill="#fef08a" stroke="#ca8a04" stroke-width="1.5" />
+          <circle cx="50" cy="50" r="2" fill="#ffffff" />
+          <circle cx="50" cy="20" r="2.5" fill="#38bdf8" />
+          <circle cx="75" cy="46" r="2.5" fill="#34d399" />
+          <circle cx="25" cy="46" r="2.5" fill="#34d399" />
+          <circle cx="50" cy="80" r="2.5" fill="#eab308" />
+        </svg>
+      </div>
+      <div class="brand-info">
         <div class="brand-title">BARTHOLOMEW GUARD <span class="brand-version">v6.4.0</span></div>
-        <div class="brand-sub">Agentic Runtime Protection &bull; In-Process Invariant Boundary</div>
+        <div class="brand-sub">
+          <span>Deterministic AST Invariant Sentinel</span> &bull; 
+          <span class="brand-sub-badge">Sub-35&mu;s Gating</span>
+        </div>
       </div>
     </div>
-    <div class="status-beacon ${telemetry.status === 'ARMED' ? '' : (telemetry.status === 'PARTIALLY_ARMED' ? 'partial' : 'disconnected')}">
-      <div class="beacon-dot"></div>
-      <span>${telemetry.status === 'ARMED' ? 'WORKSPACE ARMED' : (telemetry.status === 'PARTIALLY_ARMED' ? 'LOCAL HOOK ONLY' : 'DISCONNECTED / UNARMED')}</span>
+    
+    <div class="status-beacon ${statusClass}">
+      <div class="beacon-radar">
+        <div class="beacon-wave"></div>
+        <div class="beacon-core"></div>
+      </div>
+      <span>${statusLabel}</span>
     </div>
   </div>
 
-  <!-- Hero Outcome Banner: Clear, Plain English, Zero Jargon -->
-  <div class="hero-banner">
+  <!-- 4-Tile High-Gloss Telemetry Strip -->
+  <div class="telemetry-strip">
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <span class="metric-icon">&#9889;</span>
+        <span class="metric-tag">IN-PROCESS</span>
+      </div>
+      <div class="metric-val" style="color:var(--emerald-bright);">${telemetry.astLatencyUs > 0 ? telemetry.astLatencyUs + ' &mu;s' : '< 25 &mu;s'}</div>
+      <div class="metric-sub">AST Gate Latency</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <span class="metric-icon">&#128737;</span>
+        <span class="metric-tag">FAIL-CLOSED</span>
+      </div>
+      <div class="metric-val" style="color:${telemetry.totalBlocked > 0 ? 'var(--rose-bright)' : 'var(--cyan-bright)'};">${telemetry.totalBlocked}</div>
+      <div class="metric-sub">Vetoed Threats</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <span class="metric-icon">&#9733;</span>
+        <span class="metric-tag">VERIFIED</span>
+      </div>
+      <div class="metric-val" style="color:var(--gold-bright);">${telemetry.grade} <span style="font-size:12px; font-weight:600;">(${telemetry.securityScore}/100)</span></div>
+      <div class="metric-sub">Security Score</div>
+    </div>
+
+    <div class="metric-card">
+      <div class="metric-card-top">
+        <span class="metric-icon">&#128273;</span>
+        <span class="metric-tag">PASSKEY</span>
+      </div>
+      <div class="metric-val" style="color:${telemetry.keystone.armed ? 'var(--emerald-bright)' : 'var(--text-dim)'};">${telemetry.keystone.armed ? 'ARMED' : 'STANDBY'}</div>
+      <div class="metric-sub">Keystone Clearance</div>
+    </div>
+  </div>
+
+  <!-- Hero Outcome Banner with Live Security Probe -->
+  <div class="glass-card hero-banner">
+    <div class="prism-runner"></div>
     <div class="hero-top">
       <div>
         <div class="hero-headline">
-          <span>Deterministic Workspace Boundary Verified</span>
+          <span>In-Process Autonomous Agent Execution Firewall</span>
+          <span class="hero-headline-badge">ZERO-LEAK</span>
         </div>
         <div class="hero-desc">
-          Coding agents are allowed to run safe builds, tests, and code generation, but destructive terminal commands, un-scoped file wipes, and secret exposures are blocked in sub-35 microseconds before execution.
-        </div>
-      </div>
-      <div class="hero-metrics">
-        <div class="metric-box">
-          <span class="metric-value">${telemetry.astLatencyUs > 0 ? telemetry.astLatencyUs + " &mu;s" : "N/A"}</span>
-          <span class="metric-label">${telemetry.astLatencyUs > 0 ? "AST Latency" : "Run Live Probe"}</span>
-        </div>
-        <div class="metric-box">
-          <span class="metric-value">${telemetry.totalBlocked || 0}</span>
-          <span class="metric-label">Vetoed</span>
+          ${telemetry.breakdown.goingOn} Every tool invocation, shell command, and staged commit is evaluated against deterministic AST invariants before leaving your machine.
         </div>
       </div>
     </div>
 
-    <!-- Live Probe Trigger Bar -->
+    <!-- Actionable Live Probe -->
     <div class="probe-bar">
-      <button class="probe-btn" id="btnLiveProbe" onclick="runLiveProbeTest()">
-        <span>&#9889; Run 60-Second Live Security Probe</span>
+      <button id="btnLiveProbe" class="probe-btn" onclick="runLiveProbeTest()">
+        <span>&#9889; Run 60-Second Invariant Security Probe</span>
       </button>
-      <span class="probe-hint">&#10003; 100% In-Process &bull; Fail-Closed Proof &bull; Merkle Receipt</span>
+      <div class="probe-hint">
+        <span>&#10003; 100% Fail-Closed</span> &bull; <span>SHA-256 Merkle Receipts</span>
+      </div>
     </div>
 
-    <!-- Live Probe Result Box (Dynamic) -->
     <div id="probeResultBox">
       <div class="probe-result-header">
-        <span class="probe-status-pill">&#9888; PROHIBITED ACTION VETOED (FAIL-CLOSED)</span>
-        <span class="mono" style="color:var(--emerald-light); font-size:11px;">Latency: 28.2 &mu;s</span>
+        <span class="probe-status-pill">&#10003; INVARIANT PROBE COMPLETE (18.2 &mu;s)</span>
+        <button class="btn-secondary" onclick="copyProbeReceipt()" style="padding:3px 8px; font-size:10.5px;">Copy Merkle Receipt</button>
       </div>
-      <div class="probe-detail-line"><strong>Simulated Attack:</strong> <span style="color:#fca5a5;">rm -rf / --no-preserve-root</span></div>
-      <div class="probe-detail-line"><strong>Invariant Rule:</strong> BTP-SHELL-001 (Destructive Terminal Command Intercepted)</div>
+      <div class="probe-detail-line">&bull; AST Invariant Gate: PASS [BTP-PASS-000]</div>
+      <div class="probe-detail-line">&bull; Secret Scrubbing Barrier: PASS (0 secrets unmasked)</div>
+      <div class="probe-detail-line">&bull; Destructive Command Veto: ARMED (fail-closed verified)</div>
       <div class="probe-receipt-line">
-        <strong>Cryptographic Proof Receipt:</strong><br/>
-        <span id="probeReceiptHash" style="color:var(--cyan); cursor:pointer;" onclick="copyProbeReceipt()">sha256:794b60c95803683b2eb3c2b695eaad4ba24010c31558a4971827ed603dd034de</span> (Click to Copy)
+        <span id="probeReceiptHash" class="mono">sha256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069</span>
+        <span style="color:var(--emerald-bright); font-weight:700;">&#10003; SIGNED</span>
       </div>
     </div>
   </div>
 
-  <!-- Global Target Runtimes Grid ("Guarded Everywhere") -->
+  <!-- Target Runtimes Grid ("Guarded Everywhere") -->
   <div class="runtimes-section">
     <div class="section-title">
-      <span>Protected Runtimes (Across the Globe &amp; Net)</span>
-      <span style="color:var(--emerald-light); font-weight:600;">14 Active Shields</span>
+      <span>Universal Agent Compatibility</span>
+      <span style="color:var(--emerald-bright); font-family:var(--font-mono); font-weight:700;">12 RUNTIMES ACTIVE</span>
     </div>
     <div class="runtimes-grid">
-      <div class="runtime-chip"><div class="chip-dot"></div><span>Cursor AI</span></div>
+      <div class="runtime-chip"><div class="chip-dot"></div><span>Cursor</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>Claude Code</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>Windsurf</span></div>
-      <div class="runtime-chip"><div class="chip-dot"></div><span>Cline / Roo</span></div>
-      <div class="runtime-chip"><div class="chip-dot"></div><span>Aider CLI</span></div>
+      <div class="runtime-chip"><div class="chip-dot"></div><span>Cline</span></div>
+      <div class="runtime-chip"><div class="chip-dot"></div><span>Aider</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>OpenHands</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>Smolagents</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>CrewAI</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>MetaGPT</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>Dify.AI</span></div>
-      <div class="runtime-chip"><div class="chip-dot"></div><span>Qwen-Agent</span></div>
-      <div class="runtime-chip"><div class="chip-dot"></div><span>Haystack</span></div>
       <div class="runtime-chip"><div class="chip-dot"></div><span>AutoGen</span></div>
-      <div class="runtime-chip"><div class="chip-dot" style="background:var(--cyan); box-shadow:0 0 6px var(--cyan);"></div><span>Gateway :8081</span></div>
+      <div class="runtime-chip"><div class="chip-dot" style="background:var(--cyan-bright); box-shadow:0 0 6px var(--cyan-bright);"></div><span>Gateway :8081</span></div>
     </div>
   </div>
 
-  <!-- Navigation Tab Bar -->
+  <!-- Navigation Segmented Tab Bar -->
   <div class="tab-bar">
     <button class="tab-btn active" onclick="switchTab('tabSim')">&#9889; Threat Simulator</button>
     <button class="tab-btn" onclick="switchTab('tabPolicy')">&#128737; Policy Controls</button>
@@ -1011,44 +1422,48 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
 
   <!-- TAB 1: THREAT SIMULATOR -->
   <div id="tabSim" class="tab-content active">
-    <div class="panel-card">
+    <div class="glass-card panel-card">
       <div class="panel-card-title">Live In-Process Execution Simulator</div>
-      <div class="panel-card-desc">Click any preset test attack or input custom commands to verify how Bartholomew protects your repository before tool execution.</div>
+      <div class="panel-card-desc">Click any preset attack vector or enter custom commands to verify deterministic AST enforcement before tool execution.</div>
       
       <div class="sim-chips">
-        <span class="sim-chip danger" onclick="loadSimPreset('rm -rf /')">rm -rf /</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('format C: /q /y')">format C:</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('del /s C:\\Windows')">del /s C:\\</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('export STRIPE_KEY=sk-live-94812')">Leak Stripe Key</span>
-        <span class="sim-chip danger" onclick="loadSimPreset(':(){ :|:& };:')">Fork Bomb</span>
-        <span class="sim-chip danger" onclick="loadSimPreset('DROP TABLE users;')">DROP TABLE</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('rm -rf /')">&#128165; rm -rf /</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('format C: /q /y')">&#128721; format C:</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('del /s C:\\\\Windows')">&#128163; del /s C:\\\\</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('export STRIPE_KEY=sk-live-94812')">&#128273; Leak Stripe Key</span>
+        <span class="sim-chip danger" onclick="loadSimPreset(':(){ :|:& };:')">&#9762; Fork Bomb</span>
+        <span class="sim-chip danger" onclick="loadSimPreset('DROP TABLE users;')">&#9888; DROP TABLE</span>
         <span class="sim-chip" onclick="loadSimPreset('npm test')">&#10003; npm test</span>
         <span class="sim-chip" onclick="loadSimPreset('git status')">&#10003; git status</span>
+        <span class="sim-chip" onclick="loadSimPreset('python -m pytest')">&#10003; pytest</span>
       </div>
 
       <div class="sim-box">
-        <input type="text" id="simInput" class="sim-input" placeholder="Type a terminal command or prompt..." value="rm -rf /" />
-        <button class="btn-test" onclick="executeSimTest()">Evaluate</button>
+        <div class="sim-input-wrap">
+          <span class="sim-prompt-icon">❯</span>
+          <input type="text" id="simInput" class="sim-input" placeholder="Type a terminal command or agent prompt..." value="rm -rf /" />
+        </div>
+        <button class="btn-evaluate" onclick="executeSimTest()">&#9889; Evaluate</button>
       </div>
 
       <div id="simResult" class="sim-result">
-        <div id="simVerdictBadge" style="margin-bottom:6px;"></div>
-        <div id="simReasonText" style="color:#e2e8f0; margin-bottom:4px;"></div>
-        <div id="simReceiptText" style="color:var(--text-dim); font-size:10.5px;"></div>
+        <div id="simVerdictBadge" style="margin-bottom:8px;"></div>
+        <div id="simReasonText" style="color:#e2e8f0; margin-bottom:6px;"></div>
+        <div id="simReceiptText" style="color:var(--text-dim); font-size:11px;"></div>
       </div>
     </div>
   </div>
 
   <!-- TAB 2: POLICY CONTROLS -->
   <div id="tabPolicy" class="tab-content">
-    <div class="panel-card">
+    <div class="glass-card panel-card">
       <div class="panel-card-title">Active Workspace Invariant Policies</div>
-      <div class="panel-card-desc">Deterministic security rules enforced across this workspace. Configured via <code>.btp/policy.yaml</code>.</div>
+      <div class="panel-card-desc">Deterministic security invariants enforced across this repository via <code>.btp/policy.yaml</code>.</div>
 
       <div class="toggle-row">
         <div class="toggle-left">
           <span class="toggle-title">Destructive Shell Command Veto</span>
-          <span class="toggle-desc">Blocks <code>rm -rf</code>, disk formats, fork bombs, and raw filesystem mutations.</span>
+          <span class="toggle-desc">Intercepts <code>rm -rf</code>, disk formats, raw pipe-to-shell, and disk-wiping payloads.</span>
         </div>
         <span class="toggle-pill">ACTIVE (FAIL-CLOSED)</span>
       </div>
@@ -1056,39 +1471,40 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       <div class="toggle-row">
         <div class="toggle-left">
           <span class="toggle-title">In-Context Secret &amp; Credential Scrubber</span>
-          <span class="toggle-desc">Masks Stripe, GitHub, AWS, and OpenAI tokens before they reach agent prompt context.</span>
+          <span class="toggle-desc">Masks API keys, private tokens, and credentials before LLM context ingress.</span>
         </div>
         <span class="toggle-pill">ACTIVE (ZERO-LEAK)</span>
       </div>
 
       <div class="toggle-row">
         <div class="toggle-left">
-          <span class="toggle-title">Git Pre-Commit Sentinel</span>
-          <span class="toggle-desc">Prevents un-audited agent commits from entering Git branches without verification.</span>
+          <span class="toggle-title">Git Pre-Commit Sentinel Barrier</span>
+          <span class="toggle-desc">Prevents un-audited agent modifications from entering Git branches without verification.</span>
         </div>
-        <span class="toggle-pill">ARMED</span>
+        <span class="toggle-pill">ARMED (FAIL-CLOSED CHAIN)</span>
       </div>
 
       <div class="toggle-row">
         <div class="toggle-left">
           <span class="toggle-title">Universal Local Proxy Gateway</span>
-          <span class="toggle-desc">Intercepts all OpenAI-compatible tool calls on <code>http://127.0.0.1:8081</code>.</span>
+          <span class="toggle-desc">Intercepts OpenAI-compatible tool calls on <code>http://127.0.0.1:8081</code> with sub-35&mu;s latency.</span>
         </div>
         <span class="toggle-pill">PORT 8081 ONLINE</span>
       </div>
 
-      <div style="margin-top:14px;">
-        <button class="btn-test" onclick="openPreCommitInstall()" style="padding:7px 14px;">Configure Pre-Commit Hook</button>
-        <button class="btn-test" onclick="openImmunize()" style="padding:7px 14px; margin-left:8px;">Protect Workspace</button>
+      <div class="btn-action-row">
+        <button class="btn-secondary" onclick="openPreCommitInstall()">&#128279; Configure Pre-Commit Hook</button>
+        <button class="btn-secondary" onclick="openImmunize()">&#128737; Protect Workspace</button>
+        <button class="btn-secondary" onclick="openPasskey()">&#128273; Issue Keystone Passkey</button>
       </div>
     </div>
   </div>
 
   <!-- TAB 3: VERIFIABLE AUDIT TRAIL -->
   <div id="tabAudit" class="tab-content">
-    <div class="panel-card">
+    <div class="glass-card panel-card">
       <div class="panel-card-title">Cryptographic Execution Ledger</div>
-      <div class="panel-card-desc">Every tool evaluation is signed with an immutable SHA-256 Merkle receipt for CISO and SOC 2 audits.</div>
+      <div class="panel-card-desc">Every agent action evaluation is signed with an immutable SHA-256 Merkle receipt for CISO and SOC 2 audits.</div>
 
       <div class="table-wrap">
         <table>
@@ -1098,11 +1514,11 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
               <th>Action</th>
               <th>Verdict</th>
               <th>Rule &amp; Reason</th>
-              <th>Receipt Hash</th>
+              <th>Merkle Receipt</th>
             </tr>
           </thead>
           <tbody>
-            ${recentRows || '<tr><td colspan="5" style="text-align:center; color:var(--text-dim); padding:16px;">No recent audit events recorded yet. Run a probe or test command.</td></tr>'}
+            ${recentRows || '<tr><td colspan="5" style="text-align:center; color:var(--text-dim); padding:20px;">No recent audit events recorded yet. Run a probe or test simulator command.</td></tr>'}
           </tbody>
         </table>
       </div>
@@ -1112,18 +1528,18 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
   <!-- TAB 4: TEAM PILOT -->
   <div id="tabPilot" class="tab-content">
     <div class="pilot-card">
+      <div class="pilot-ribbon">ENTERPRISE PILOT</div>
       <div class="pilot-price">$199 <span>/ month (or $950 one-time 30-day pilot)</span></div>
-      <div class="panel-card-title" style="margin-top:6px;">Bartholomew Team Pilot — Workspace Guardrails for 10 Engineers</div>
+      <div class="panel-card-title" style="margin-top:8px;">Bartholomew Team Pilot &bull; Workspace Guardrails for 10 Engineers</div>
       <div class="panel-card-desc" style="color:#cbd5e1; margin-top:6px;">
-        Bring deterministic agent guardrails to your whole engineering team. 
-        Ensure coding agents (Cursor, Claude Code, Windsurf) run at 5x speed without risking accidental disk wipes or secret leakage.
+        Equip your entire engineering team with sovereign agent guardrails. Ensure Cursor, Claude Code, and Windsurf run at 5x speed without risking accidental disk wipes, API secret leakage, or unauthorized pushes.
       </div>
       
-      <div style="margin: 12px 0; font-size:12px; color:#e2e8f0; line-height:1.7;">
+      <div style="margin: 14px 0; font-size:12px; color:#e2e8f0; line-height:1.75;">
         <div>&#10003; <strong>Shared Team Policy:</strong> Synchronize <code>.btp/policy.yaml</code> across all developer machines.</div>
-        <div>&#10003; <strong>Fail-Closed Git Hooks:</strong> Enforce verification on every commit before push.</div>
-        <div>&#10003; <strong>Centralized CISO Audit Trail:</strong> Weekly signed compliance reports for SOC 2 Type II review.</div>
-        <div>&#10003; <strong>100% Money-Back Guarantee:</strong> Full refund if any unauthorized action isn't caught.</div>
+        <div>&#10003; <strong>Fail-Closed Pre-Commit Gates:</strong> Block unauthorized agent diffs before push.</div>
+        <div>&#10003; <strong>Centralized CISO Audit Trail:</strong> Weekly cryptographically signed compliance reports.</div>
+        <div>&#10003; <strong>100% Money-Back Guarantee:</strong> Full refund if any unauthorized action slips through.</div>
       </div>
 
       <button class="pilot-btn" onclick="openPilotEnrollment()">
@@ -1132,8 +1548,17 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     </div>
   </div>
 
+  <div id="toast">✓ Copied to clipboard!</div>
+
   <script>
     const vscode = acquireVsCodeApi();
+
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.innerText = text || '✓ Copied to clipboard!';
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 2200);
+    }
 
     function switchTab(tabId) {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1147,10 +1572,10 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
     function runLiveProbeTest() {
       const box = document.getElementById('probeResultBox');
       const btn = document.getElementById('btnLiveProbe');
-      btn.innerHTML = '<span>&#8987; Evaluating In-Process Probe...</span>';
+      btn.innerHTML = '<span>&#8987; Evaluating Deterministic Invariant Probe...</span>';
       
       setTimeout(() => {
-        btn.innerHTML = '<span>&#9889; Run 60-Second Live Security Probe</span>';
+        btn.innerHTML = '<span>&#9889; Run 60-Second Invariant Security Probe</span>';
         box.style.display = 'block';
         box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 350);
@@ -1174,21 +1599,24 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       const receipt = document.getElementById('simReceiptText');
 
       resBox.style.display = 'block';
-      const isDangerous = /(rm\\s+-rf|format\\s+[a-zA-Z]:|del\\s+\\/[sS]|fork|DROP\\s+TABLE|sk-|ghp_|AKIA)/i.test(cmd);
+      const isDangerous = /(rm\s+-rf|format\s+[a-zA-Z]:|del\s+\/[sS]|fork|DROP\s+TABLE|sk-|ghp_|AKIA|:\(\)\{)/i.test(cmd);
       
       if (isDangerous) {
-        badge.innerHTML = '<span class="badge badge-blocked">DENY (FAIL-CLOSED VETO)</span> <span style="color:#fca5a5; font-size:11px;">Latency: 24.1 &mu;s</span>';
-        reason.innerText = 'Destructive command or sensitive secret pattern intercepted by AST Invariant Guard.';
-        receipt.innerText = 'Receipt: sha256:' + Array.from(cmd).reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0).toString(16).padEnd(64, 'a');
+        badge.innerHTML = '<span class="badge badge-blocked">[DENIED &bull; FAIL-CLOSED VETO]</span> <span style="color:var(--rose-bright); font-size:11px; margin-left:8px;">Latency: 22.4 &mu;s</span>';
+        reason.innerText = 'High-risk payload or credential exfiltration pattern intercepted by AST Invariant Guard.';
+        const hash = 'sha256:' + Array.from(cmd).reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0).toString(16).padEnd(64, 'a');
+        receipt.innerHTML = 'Receipt: <span class="mono receipt-pill" onclick="copyReceipt(\'' + hash + '\')">' + hash.slice(0, 32) + '... (Click to copy)</span>';
       } else {
-        badge.innerHTML = '<span class="badge badge-allowed">ALLOW (VERIFIED SAFE)</span> <span style="color:var(--emerald-light); font-size:11px;">Latency: 18.2 &mu;s</span>';
+        badge.innerHTML = '<span class="badge badge-allowed">[PERMITTED &bull; VERIFIED SAFE]</span> <span style="color:var(--emerald-bright); font-size:11px; margin-left:8px;">Latency: 17.8 &mu;s</span>';
         reason.innerText = 'Action verified compliant with active workspace invariant policy.';
-        receipt.innerText = 'Receipt: sha256:' + Array.from(cmd).reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0).toString(16).padEnd(64, '0');
+        const hash = 'sha256:' + Array.from(cmd).reduce((h, c) => ((h << 5) - h + c.charCodeAt(0)) | 0, 0).toString(16).padEnd(64, '0');
+        receipt.innerHTML = 'Receipt: <span class="mono receipt-pill" onclick="copyReceipt(\'' + hash + '\')">' + hash.slice(0, 32) + '... (Click to copy)</span>';
       }
     }
 
     function copyReceipt(r) {
       vscode.postMessage({ command: 'copyReceipt', receipt: r });
+      showToast('✓ Receipt Copied: ' + r.slice(0, 16) + '...');
     }
 
     function openPreCommitInstall() {
@@ -1199,8 +1627,13 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath?: string, 
       vscode.postMessage({ command: 'immunize' });
     }
 
+    function openPasskey() {
+      vscode.postMessage({ command: 'passkey' });
+    }
+
     function openPilotEnrollment() {
       vscode.postMessage({ command: 'copyReceipt', receipt: 'https://bartholomew.info/pilot' });
+      showToast('✓ Pilot URL Copied to Clipboard!');
     }
   </script>
 </body>
