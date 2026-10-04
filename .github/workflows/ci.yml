@@ -38,6 +38,8 @@ jobs:
           pip install -e .
 
       - name: Run test suite
+        env:
+          PYTHONPATH: src:.
         run: |
           python -m pytest \
             tests/test_real_security_boundary.py \
@@ -59,7 +61,6 @@ jobs:
             tests/test_enterprise_polish_and_metering.py \
             tests/test_universal_agent_protector.py \
             tests/test_cli_linter.py \
-            -o "pythonpath=src ." \
             --timeout=60 \
             --tb=short \
             -q
