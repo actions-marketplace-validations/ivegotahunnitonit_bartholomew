@@ -65,6 +65,8 @@ def ensure_packaged():
 
 
 def _run_publish_command(cmd):
+    if sys.platform == "win32" and cmd and cmd[0] == "npx":
+        cmd = ["npx.cmd"] + cmd[1:]
     res = subprocess.run(cmd, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if res.returncode != 0:
         details = (res.stdout or "") + (res.stderr or "")
