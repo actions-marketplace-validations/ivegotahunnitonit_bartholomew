@@ -245,6 +245,50 @@ export function activate(context: ExtensionContext) {
           await vscode.env.clipboard.writeText(message.receipt);
           vscode.window.showInformationMessage('SHA-256 Receipt copied: ' + message.receipt);
         }
+      } else if (message.command === 'openPolicyFile') {
+        const polPath = path.join(rootPath, '.btp', 'policy.yaml');
+        if (fs.existsSync(polPath)) {
+          const doc = await vscode.workspace.openTextDocument(polPath);
+          vscode.window.showTextDocument(doc);
+        } else {
+          vscode.commands.executeCommand('bartholomew.protectWorkspace');
+        }
+      } else if (message.command === 'validatePolicy') {
+        vscode.commands.executeCommand('bartholomew.validatePolicy');
+      } else if (message.command === 'exportAuditDossier') {
+        vscode.commands.executeCommand('bartholomew.exportAuditDossier');
+      } else if (message.command === 'openExternalUrl') {
+        if (message.url) {
+          vscode.env.openExternal(vscode.Uri.parse(message.url));
+        }
+      } else if (message.command === 'submitPilotApplication') {
+        try {
+          const btpDir = path.join(rootPath, '.btp');
+          if (!fs.existsSync(btpDir)) {
+            try { fs.mkdirSync(btpDir, { recursive: true }); } catch {}
+          }
+          const appPath = path.join(btpDir, 'pilot_applications.jsonl');
+          const entry = {
+            org: message.data?.org || message.org || 'Autonomous Engineering Team',
+            seats: message.data?.seats || message.seats || '10 Seats ($199/mo)',
+            email: message.data?.email || message.email || '',
+            timestamp: new Date().toISOString()
+          };
+          fs.appendFileSync(appPath, JSON.stringify(entry) + '\n', 'utf-8');
+          vscode.window.showInformationMessage(
+            `Bartholomew Team Pilot: Application registered for ${entry.org}! Complete onboarding via Stripe checkout or schedule your guided kickoff.`,
+            'Checkout ($199/mo)',
+            'Documentation'
+          ).then((choice: any) => {
+            if (choice === 'Checkout ($199/mo)') {
+              vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605'));
+            } else if (choice === 'Documentation') {
+              vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/pilot'));
+            }
+          });
+        } catch {}
+      } else if (message.command === 'generateCollabKit') {
+        vscode.commands.executeCommand('bartholomew.injectAiRules');
       } else if (message.command === 'openModelDoc') {
         const p = path.join(rootPath, '.btp', 'model-context.md');
         if (fs.existsSync(p)) {
