@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bartholomew Protocol - Team Pilot Enrollment & Manager (v6.4.1)
+Bartholomew Protocol - Team Pilot Enrollment & Manager (v6.4.3)
 ================================================================
 Automates 30-day team pilot enrollment, workspace policy synthesis,
 cryptographic passkey generation, and Stripe commercial confirmation.
@@ -62,7 +62,7 @@ def write_policy_yaml(team_name: str, email: str, seats: int, passkey: str, expi
     """Serializes policy.yaml safely through PyYAML without raw string interpolation."""
     POLICY_FILE.parent.mkdir(parents=True, exist_ok=True)
     policy_data = {
-        "version": "6.4.1",
+        "version": "6.4.3",
         "team": {
             "name": team_name,
             "lead_email": email,
