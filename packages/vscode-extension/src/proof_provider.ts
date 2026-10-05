@@ -12,6 +12,7 @@ export function escapeHtml(unsafe: any): string {
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as https from 'https';
 
 export interface AuditEvent {
   timestamp: string;
@@ -2300,7 +2301,32 @@ export class BartholomewProofViewProvider implements vscode.WebviewViewProvider 
             try { fs.mkdirSync(btpDir, { recursive: true }); } catch {}
           }
           const fbPath = path.join(btpDir, 'feedback.jsonl');
-          fs.appendFileSync(fbPath, JSON.stringify(message.data || message) + '\n', 'utf-8');
+          const payload = message.data || message;
+          fs.appendFileSync(fbPath, JSON.stringify(payload) + '\n', 'utf-8');
+
+          try {
+            const dataStr = JSON.stringify({
+              source: 'vscode_extension',
+              category: payload.category || 'general',
+              rating: payload.rating || 5,
+              message: payload.message || '',
+              contact: payload.contact || '',
+              workspace: path.basename(rootPath),
+              timestamp: new Date().toISOString()
+            });
+            const req = https.request('https://api.bartholomew.info/api/v1/leads', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(dataStr)
+              },
+              timeout: 4000
+            });
+            req.on('error', () => {});
+            req.write(dataStr);
+            req.end();
+          } catch {}
+
           vscode.window.showInformationMessage('Bartholomew Guard: Thank you for your feedback! It has been received by the Core Team.');
         } catch {}
       }

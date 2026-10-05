@@ -1,15 +1,17 @@
 apiVersion: v2
 name: bartholomew-guard
-description: Official Sovereign In-Process AST Firewall & Zero-Trust Guardrails for Autonomous Agents
+description: Official Sovereign In-Process AST Firewall, Confidential Enclave Attestation & Zero-Trust Guardrails for Autonomous Agents in Data Centres
 type: application
-version: 6.3.0
-appVersion: "6.3.0"
+version: 6.4.3
+appVersion: "6.4.3"
 keywords:
   - ai-security
   - zero-trust
   - ast-firewall
   - mcp-guard
-  - airgapped
+  - confidential-enclave
+  - ebpf-kernel-guard
+  - datacenter
 home: https://bartholomew.info
 sources:
   - https://github.com/ivegotahunnitonit/bartholomew

@@ -1,0 +1,28 @@
+name: Bartholomew Security Gate
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  agent-security-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Run Bartholomew Keystone Guard
+        uses: ivegotahunnitonit/bartholomew/packages/github_action@main
+        with:
+          audit-path: '.'
+          fail-on-violation: 'true'
+          generate-sarif: 'true'
+          export-dossier: 'true'
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: bartholomew.sarif

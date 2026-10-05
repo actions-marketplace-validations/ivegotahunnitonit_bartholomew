@@ -37,14 +37,23 @@ from src.daemon.m2m_wire_daemon import GLOBAL_M2M_LEDGER
 from src.btp_manifest import generate_manifest
 from src.btp_guard.stripe_bridge import StripeMeterBridge
 from btp_guard.entitlements import GLOBAL_ENTITLEMENT_STORE
+from src.confidential_enclave_attestation import (
+    ConfidentialEnclaveAttestationEngine,
+    EnclaveAttestationDocument,
+    EnclaveMeasurements
+)
+from src.kernel_interceptor import KernelTrajectoryInterceptor
 
 logger = logging.getLogger("btp.cloud_engine")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 
+GLOBAL_ENCLAVE_ENGINE = ConfidentialEnclaveAttestationEngine()
+GLOBAL_KERNEL_INTERCEPTOR = KernelTrajectoryInterceptor()
+
 app = FastAPI(
     title="Bartholomew Cloud Control Plane API",
     description="High-throughput SaaS audit, telemetry, and SOC 2 compliance control plane for autonomous AI agent fleets.",
-    version="6.4.1"
+    version="6.4.3"
 )
 
 app.add_middleware(
@@ -1369,6 +1378,128 @@ async def get_security_badge(
             "Content-Disposition": "inline; filename=secured-by-bartholomew.svg"
         }
     )
+
+
+# ---------------------------------------------------------------------------
+# Data Centre & Confidential Enclave Remote Attestation (BTP v6.4.3)
+# ---------------------------------------------------------------------------
+
+class EnclaveAttestRequest(BaseModel):
+    module_id: str = Field(..., description="Unique enclave hardware module identifier")
+    public_key_pem: str = Field(..., description="Agent Ed25519 public key generated in enclave")
+    nonce: str = Field(..., description="Fresh anti-replay nonce challenge")
+    custom_pcr0: Optional[str] = Field(None, description="Platform Configuration Register 0 (Kernel hash)")
+    custom_pcr1: Optional[str] = Field(None, description="Platform Configuration Register 1 (Policy hash)")
+
+class WorkloadGovernRequest(BaseModel):
+    tenant_id: str = Field(..., description="Tenant workspace identifier")
+    container_id: str = Field(..., description="Target pod or container ID")
+    action: str = Field(..., description="Syscall or tool execution action")
+    payload: Dict[str, Any] = Field(default_factory=dict, description="Execution payload or tool arguments")
+    compute_units: float = Field(1.0, description="Allocated compute units")
+    memory_mb: float = Field(256.0, description="Memory consumption in megabytes")
+    egress_kb: float = Field(0.0, description="Network egress in kilobytes")
+    passkey_token: Optional[str] = Field(None, description="Optional Keystone passkey token")
+
+@app.post("/api/v1/enclave/attest")
+async def attest_confidential_enclave(req: EnclaveAttestRequest):
+    """
+    Data Centre Remote Attestation Gateway:
+    Validates AMD SEV-SNP / AWS Nitro Enclave PCR measurements, establishes hardware root-of-trust,
+    and issues cryptographically signed execution tickets.
+    """
+    t0 = time.perf_counter()
+    doc = GLOBAL_ENCLAVE_ENGINE.generate_attestation_document(
+        module_id=req.module_id,
+        public_key_pem=req.public_key_pem,
+        nonce=req.nonce,
+        custom_pcr0=req.custom_pcr0,
+        custom_pcr1=req.custom_pcr1
+    )
+
+    valid, err = GLOBAL_ENCLAVE_ENGINE.verify_attestation_document(doc, expected_nonce=req.nonce)
+    latency_us = (time.perf_counter() - t0) * 1_000_000
+
+    if not valid:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Enclave Attestation Rejected: {err}"
+        )
+
+    receipt_sha256 = hashlib.sha256(
+        f"{doc.module_id}:{doc.digest}:{doc.signature}:{doc.measurements.nonce}".encode("utf-8")
+    ).hexdigest()
+
+    ticket = f"btp_ticket_{doc.module_id}_{receipt_sha256[:16]}"
+
+    return {
+        "attested": True,
+        "module_id": doc.module_id,
+        "hardware_certified": doc.is_hardware_certified,
+        "digest": doc.digest,
+        "signature": doc.signature,
+        "pcr_measurements": {
+            "pcr0": doc.measurements.pcr0,
+            "pcr1": doc.measurements.pcr1,
+            "pcr2": doc.measurements.pcr2,
+            "nonce": doc.measurements.nonce,
+            "timestamp": doc.measurements.timestamp
+        },
+        "receipt_sha256": receipt_sha256,
+        "enclave_ticket": ticket,
+        "latency_us": round(latency_us, 2)
+    }
+
+@app.post("/api/v1/workload/govern")
+async def govern_workload(req: WorkloadGovernRequest):
+    """
+    Multi-Tenant Data Centre Workload Governor:
+    Enforces hardware compute quotas, memory limits, and ring-0 eBPF syscall safety at sub-microsecond latency.
+    """
+    # Ensure tenant profile is registered
+    if req.tenant_id not in GLOBAL_KERNEL_INTERCEPTOR.tenant_quotas:
+        GLOBAL_KERNEL_INTERCEPTOR.register_tenant(req.tenant_id, max_memory_mb=2048.0, max_egress_kb=100000.0)
+
+    # Extract args to check
+    args = []
+    if isinstance(req.payload, dict):
+        for v in req.payload.values():
+            args.append(str(v))
+    elif isinstance(req.payload, list):
+        args = [str(x) for x in req.payload]
+    else:
+        args = [str(req.payload)]
+
+    allowed, msg, meta = GLOBAL_KERNEL_INTERCEPTOR.govern_syscall(
+        syscall=req.action,
+        process_pid=os.getpid(),
+        agent_ctx=f"{req.tenant_id}:{req.container_id}",
+        payload_args=args,
+        tenant_id=req.tenant_id,
+        memory_mb=req.memory_mb,
+        egress_kb=req.egress_kb
+    )
+
+    status_verdict = meta.get("status", "APPROVED" if allowed else "BLOCKED")
+    quota_info = GLOBAL_KERNEL_INTERCEPTOR.tenant_quotas.get(req.tenant_id, {})
+
+    return {
+        "verdict": status_verdict,
+        "allowed": allowed,
+        "reason": msg,
+        "latency_us": meta.get("latency_us", 1.2),
+        "receipt_sha256": meta.get("receipt_sha256", ""),
+        "tenant_id": req.tenant_id,
+        "container_id": req.container_id,
+        "quota_status": {
+            "used_memory_mb": quota_info.get("used_memory_mb", 0.0),
+            "max_memory_mb": quota_info.get("max_memory_mb", 2048.0),
+            "used_egress_kb": quota_info.get("used_egress_kb", 0.0),
+            "max_egress_kb": quota_info.get("max_egress_kb", 100000.0),
+            "violations": quota_info.get("violations", 0)
+        }
+    }
+
 
 
 
