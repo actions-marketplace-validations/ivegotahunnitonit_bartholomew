@@ -17,8 +17,10 @@ import os
 import subprocess
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 def get_pkg_version(pkg_dir: Path) -> str:

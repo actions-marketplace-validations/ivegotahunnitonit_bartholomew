@@ -7,10 +7,10 @@
 > **The in-process execution firewall for autonomous coding agents.**  
 > Intercepts destructive commands, prevents API key leaks, and caps agent spend in **under 35 microseconds** before code touches your operating system.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.1-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.3-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.1-blue)](https://pypi.org/project/btp-guard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://bartholomew.info/#pricing)
+[![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 
 ---
 
@@ -66,7 +66,7 @@ python -m btp_guard.demo_trust_boundary
 | **Developer Edition** | **Free Forever** (MIT) | Personal AST invariant gate, secret scrubber, local tamper-evident ledger, VS Code / Cursor sidebar. |
 | **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized repository policy sync (`.btp/policy.yaml`), team-wide pre-commit hooks, CISO compliance audit dossier, 30-min setup call, 100% money-back guarantee. |
 
--> **[Start a 30-Day Team Pilot](https://bartholomew.info/#pricing)** or email `founders@bartholomew.info`.
+-> **[Start a 30-Day Team Pilot ($199/mo)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)** or learn more at [bartholomew.info](https://bartholomew.info/#pricing) or email `founders@bartholomew.info`.
 
 ---
 
