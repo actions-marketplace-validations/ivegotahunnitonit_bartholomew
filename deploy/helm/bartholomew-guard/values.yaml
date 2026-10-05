@@ -3,11 +3,28 @@ replicaCount: 3
 image:
   repository: ghcr.io/ivegotahunnitonit/bartholomew
   pullPolicy: IfNotPresent
-  tag: "v6.3.0"
+  tag: "6.4.3"
 
 service:
   type: ClusterIP
   port: 8080
+
+datacenter:
+  enabled: true
+  enclaveAttestation:
+    enabled: true
+    goldenPcr0Verification: true
+  ebpfDaemon:
+    enabled: true
+    mode: "RING0_POSIX"
+    interceptSyscalls:
+      - sys_enter_execve
+      - sys_enter_connect
+      - sys_enter_openat
+      - sys_enter_ptrace
+  quotas:
+    defaultMemoryMb: 2048.0
+    defaultEgressKb: 100000.0
 
 ast:
   subMicrosecond: true
@@ -22,11 +39,11 @@ telemetry:
 
 resources:
   limits:
-    cpu: 500m
-    memory: 256Mi
+    cpu: 1000m
+    memory: 512Mi
   requests:
     cpu: 100m
-    memory: 64Mi
+    memory: 128Mi
 
 securityContext:
   readOnlyRootFilesystem: true

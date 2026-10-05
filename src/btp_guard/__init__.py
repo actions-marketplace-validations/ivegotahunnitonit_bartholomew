@@ -63,8 +63,17 @@ from .project_immunizer import (
 BondedAgentWarrantyFund = WarrantyFundManager
 MCPClearinghouse = MCPClearinghouseGateway
 RedTeamHarness = RedTeamScanner
+protect = secure_tool
 
-__version__ = "6.0.0"
+def scrub_secrets(text_or_data):
+    """Convenience helper for in-flight credential masking."""
+    masker = SecretVaultMasker()
+    if isinstance(text_or_data, str):
+        masked, _, _ = SecretVaultMasker.mask_text(text_or_data)
+        return masked
+    return masker.mask_dict(text_or_data)
+
+__version__ = "6.4.3"
 
 __all__ = [
     "Guard",

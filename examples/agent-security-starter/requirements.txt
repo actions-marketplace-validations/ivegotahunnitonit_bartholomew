@@ -1,0 +1,3 @@
+btp-guard>=6.4.3
+cryptography>=42.0.0
+pyyaml>=6.0.1
