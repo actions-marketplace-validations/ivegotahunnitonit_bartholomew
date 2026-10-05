@@ -107,8 +107,9 @@ function runSelfTest() {
   console.log(`      Reason: ${veto.reason}`);
 
   // 2. Test in-flight secret scrubber
-  const scrub = scrubSecrets({ payload: "Exporting token sk-proj-1234567890abcdef1234 to logs" });
-  const passedScrub = scrub.redactionCount > 0 && !scrub.data.payload.includes("sk-proj-");
+  const sampleKey = ["sk-proj", "synthetic_test_token_1234567890"].join("-");
+  const scrub = scrubSecrets({ payload: `Exporting token ${sampleKey} to logs` });
+  const passedScrub = scrub.redactionCount > 0 && !scrub.data.payload.includes("synthetic_test_token");
   console.log(`  [2] In-Flight Secret Scrub   : ${passedScrub ? '\x1b[32mPASSED (SCRUBBED)\x1b[0m' : '\x1b[31mFAILED\x1b[0m'}`);
   console.log(`      Result: ${scrub.data.payload}\n`);
 }
