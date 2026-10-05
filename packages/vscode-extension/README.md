@@ -8,7 +8,7 @@
 > Intercepts destructive commands, prevents API key leaks, and caps agent spend in **under 35 microseconds** before code touches your operating system.
 
 [![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.3-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.1-blue)](https://pypi.org/project/btp-guard/)
+[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.3-blue)](https://pypi.org/project/btp-guard/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
 

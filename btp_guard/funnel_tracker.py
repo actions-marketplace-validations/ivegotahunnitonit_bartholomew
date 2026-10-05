@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Bartholomew Protocol - Funnel & Conversion Instrumentation (v6.4.1)
+Bartholomew Protocol - Funnel & Conversion Instrumentation (v6.4.3)
 ===================================================================
 Tracks the 5 distinct activation and monetization funnel stages:
   1. Total Downloads & Registries (Public distribution)
