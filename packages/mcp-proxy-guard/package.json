@@ -1,6 +1,6 @@
 {
   "name": "mcp-proxy-guard",
-  "version": "1.0.0",
+  "version": "6.4.3",
   "description": "Sub-35\u00b5s security proxy and credential scrubber for Model Context Protocol (MCP) servers in Claude Desktop, Cursor, and Windsurf.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -29,11 +29,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bartholomew-ai/bartholomew.git"
+    "url": "git+https://github.com/ivegotahunnitonit/bartholomew.git"
   },
   "homepage": "https://bartholomew.info",
   "bugs": {
-    "url": "https://github.com/bartholomew-ai/bartholomew/issues"
+    "url": "https://github.com/ivegotahunnitonit/bartholomew/issues"
   },
   "publisher": "bartholomew"
 }
