@@ -228,3 +228,6 @@ docs/*L402*
 docs/*ASTRA*
 docs/legal/
 scripts/outreach_tracker.py
+
+scripts/audit_fulfillment_engine.py
+scripts/generate_1500_targets.py
