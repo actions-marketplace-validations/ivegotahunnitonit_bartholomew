@@ -1,5 +1,5 @@
 """
-Bartholomew Universal Schema Harmonizer & Adapter v6.3.0
+Bartholomew Universal Schema Harmonizer & Adapter v6.4.4
 Ingests arbitrary tool schemas (Anthropic, OpenAI, Gemini, OpenAPI 3.x, JSON Schema)
 and generates hardened zero-trust execution contracts with sub-35µs in-process AST gating.
 """
