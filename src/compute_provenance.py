@@ -1,5 +1,5 @@
 """
-Bartholomew Compute Provenance & Swarm Auto-Targeting Engine (BTP v6.3.0)
+Bartholomew Compute Provenance & Swarm Auto-Targeting Engine (BTP v6.4.4)
 ========================================================================
 Autonomous Circularity Labs -- Deterministic Agentic Runtime Protection (ARP)
 
@@ -434,7 +434,7 @@ class AutoTargetingSwarmProtector:
         Builds an RFC 8785 Ed25519 verifiable compute provenance voucher.
         """
         payload = {
-            "version": "BTP-v6.3.0",
+            "version": "BTP-v6.4.4",
             "timestamp": int(time.time()),
             "agent_name": self.agent_name,
             "target_framework": self.runtime_framework,

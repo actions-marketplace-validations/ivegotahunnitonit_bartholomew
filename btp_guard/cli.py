@@ -39,7 +39,7 @@ def cmd_wrap(args):
     port = getattr(args, "port", 8081) or 8081
     host = getattr(args, "host", "127.0.0.1") or "127.0.0.1"
     print("\n" + "=" * 74)
-    print("   BARTHOLOMEW LLAMA.CPP & OLLAMA LOCAL GATEWAY (BTP v6.3.0)")
+    print("   BARTHOLOMEW LLAMA.CPP & OLLAMA LOCAL GATEWAY (BTP v6.4.4)")
     print("=" * 74)
     print(f"  * Upstream Runtime  : {upstream}")
     print(f"  * Guarded Endpoint  : http://{host}:{port}/v1")
@@ -1135,7 +1135,7 @@ def cmd_try(args):
     iso_tier = profile.sandbox.isolation_tier if profile else "LOCAL_ISOLATED"
 
     print("=" * 76)
-    print("  Bartholomew Guard -- Agentic Runtime Protection (BTP v6.3.0)")
+    print("  Bartholomew Guard -- Agentic Runtime Protection (BTP v6.4.4)")
     print(f"  Silicon Accelerator: {chip_desc}")
     print(f"  Isolation Enclave  : {iso_tier} (RFC 8785 Ed25519)")
     print("=" * 76)
@@ -4504,7 +4504,7 @@ def cmd_provenance(args):
         return
 
     print("\n" + "=" * 76)
-    print("   BARTHOLOMEW COMPUTE PROVENANCE & SWARM AUTO-TARGETING (BTP v6.3.0)")
+    print("   BARTHOLOMEW COMPUTE PROVENANCE & SWARM AUTO-TARGETING (BTP v6.4.4)")
     print("   Autonomous Circularity Labs · Deterministic Hardware Attestation")
     print("=" * 76)
     hw = env["hardware_chip"]
@@ -4986,7 +4986,7 @@ def main():
     b_slash_p.add_argument("--proof", "-p", help="Path to breach receipt or failed ZK receipt JSON")
     b_slash_p.add_argument("--reason", "-r", help="Slashing reason description")
 
-        # wrap (BTP v6.3.0 Llama.cpp & Ollama Local Gateway)
+        # wrap (BTP v6.4.4 Llama.cpp & Ollama Local Gateway)
     wrap_p = subparsers.add_parser("wrap", help="Wrap local llama.cpp or Ollama with sub-35us AST Invariant Guard")
     wrap_p.add_argument("--upstream", default="http://localhost:8080", help="Upstream local AI endpoint (default: http://localhost:8080)")
     wrap_p.add_argument("--port", type=int, default=8081, help="Port for Bartholomew Guard to listen on (default: 8081)")

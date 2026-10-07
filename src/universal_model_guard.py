@@ -65,6 +65,9 @@ class ModelProvider:
     YANDEX = "yandex"
     YANDEX_GPT = "yandex_gpt"
     KIMI = "kimi"
+    MISTRAL = "mistral"
+    MISTRAL_LARGE_4 = "mistral_large_4"
+    PIXTRAL = "pixtral"
     OLLAMA = "ollama"
     UNIVERSAL = "universal"
 
@@ -74,7 +77,8 @@ class UniversalBTPModelGuard:
     Universal wire-level interceptor that accepts raw tool-call objects or dictionaries
     emitted by any major LLM provider, normalizes them into an invariant payload,
     and applies sub-35µs local AST gating, Bartholomew companion counsel, and autonomous micro-escrows.
-    Supports GPT-Astra, Claude 3.7 (Hybrid Reasoning), Gemini 2.0, DeepSeek-R1, and OpenAI Agents SDK.
+    Supports GPT-Astra, Claude 3.7 (Hybrid Reasoning), Gemini 2.0 / 3.8, Mistral Large 4 (Multimodal),
+    Pixtral, DeepSeek-R1, and OpenAI Agents SDK.
     """
 
     def __init__(
@@ -132,7 +136,13 @@ class UniversalBTPModelGuard:
         else:
             data = tool_call
 
-        # Unwrap chat completion message or tool_calls array if present (e.g. YandexGPT, OpenAI)
+        # Unwrap choices if present (Mistral Large 4, OpenAI, DeepSeek raw API response)
+        if "choices" in data and isinstance(data["choices"], list) and len(data["choices"]) > 0:
+            first_choice = data["choices"][0]
+            if isinstance(first_choice, dict):
+                data = first_choice.get("message", first_choice)
+
+        # Unwrap chat completion message or tool_calls array if present (e.g. Mistral, YandexGPT, OpenAI)
         if "message" in data and isinstance(data["message"], dict):
             data = data["message"]
         if "tool_calls" in data and isinstance(data["tool_calls"], list) and len(data["tool_calls"]) > 0:
@@ -271,18 +281,27 @@ class UniversalBTPModelGuard:
         elif any(kw in upper_payload for kw in ["AWS_SECRET_ACCESS_KEY", "PRIVATE_KEY", "ID_RSA", "BEARER EY"]):
             is_safe = False
             violation_rule = "CREDENTIAL_EXFILTRATION_BREACH"
+        elif any(kw in upper_payload for kw in ["<SVG", "DATA:IMAGE/SVG+XML"]) and any(xss in upper_payload for xss in ["<SCRIPT", "ONERROR=", "ONLOAD=", "JAVASCRIPT:"]):
+            is_safe = False
+            violation_rule = "MULTIMODAL_SVG_MALICIOUS_EXECUTION"
+        elif any(kw in upper_payload for kw in ["SYSTEM PROMPT OVERRIDE", "IGNORE ALL PREVIOUS INSTRUCTIONS", "DISREGARD SAFETY INVARIANTS", "DAN MODE"]):
+            is_safe = False
+            violation_rule = "MULTIMODAL_PROMPT_INJECTION_OVERRIDE"
         elif self._guard is not None or PolyglotASTValidator is not None:
+            code_keys = {"cmd", "command", "code", "script", "bash", "sh", "exec"}
             for k, val in arguments.items():
                 if isinstance(val, str) and len(val) > 2:
-                    if self._guard is not None:
-                        res = self._guard.evaluate_ast(val)
-                    else:
-                        safe_ast, r_ast, _ = PolyglotASTValidator.validate_code(val)
-                        res = {"allowed": safe_ast, "reason": r_ast, "rule_id": "BTP-AST-001"}
-                    if not res.get("allowed", True):
-                        is_safe = False
-                        violation_rule = res.get("rule_id", "BTP-AST-001")
-                        break
+                    # Fast-path: Only invoke heavyweight polyglot AST parser if key indicates executable code or contains shell operators
+                    if k.lower() in code_keys or any(ch in val for ch in [";", "|", "&", "`", "$(", "\n"]):
+                        if self._guard is not None:
+                            res = self._guard.evaluate_ast(val)
+                        else:
+                            safe_ast, r_ast, _ = PolyglotASTValidator.validate_code(val)
+                            res = {"allowed": safe_ast, "reason": r_ast, "rule_id": "BTP-AST-001"}
+                        if not res.get("allowed", True):
+                            is_safe = False
+                            violation_rule = res.get("rule_id", "BTP-AST-001")
+                            break
 
         # 4. Optional Cloud Run Wire-Level Verification (BTP v5.4.6)
         if is_safe and self.wire_guard is not None:

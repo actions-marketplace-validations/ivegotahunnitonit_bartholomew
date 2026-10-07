@@ -1,5 +1,5 @@
 """
-Bartholomew Agent Core Engine (BTP v6.3.0) — Python Edition
+Bartholomew Agent Core Engine (BTP v6.4.4) — Python Edition
 ============================================================
 Unified Agent-Native Operating System & Runtime Sentinel:
   1. Self-Correction Protocol: Structured JSON Remediation Envelopes.
@@ -53,7 +53,7 @@ def create_agent_delegation_passport(
         "max_spend_usd": round(float(max_spend_usd), 2),
         "issued_at": now,
         "expires_at": now + ttl_seconds,
-        "protocol": "BTP/A2A-DELEGATION-v6.3.0"
+        "protocol": "BTP/A2A-DELEGATION-v6.4.4"
     }
 
     canonical_json = json.dumps(claims, sort_keys=True, separators=(',', ':')).encode('utf-8')

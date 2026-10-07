@@ -1,5 +1,5 @@
 """
-Bartholomew AST Auto-Healer & Self-Repair Engine (BTP v6.3.0)
+Bartholomew AST Auto-Healer & Self-Repair Engine (BTP v6.4.4)
 ==============================================================
 Rather than merely terminating an agent trajectory with a hard DENY,
 the Auto-Healer dynamically repairs dangerous or uncontained actions:
@@ -164,7 +164,7 @@ class ASTAutoHealer:
             "repair_explanation": reason,
             "rule_id": rule_id,
             "latency_us": latency_us,
-            "engine": "Bartholomew-AST-AutoHealer-v6.3.0"
+            "engine": "Bartholomew-AST-AutoHealer-v6.4.4"
         }
 
     @classmethod
