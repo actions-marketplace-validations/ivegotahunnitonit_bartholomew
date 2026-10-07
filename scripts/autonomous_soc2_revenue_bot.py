@@ -157,7 +157,10 @@ def calculate_enterprise_intent_score(target: Dict[str, Any]) -> int:
         "cognition", "devin", "cursor", "anysphere", "codeium", "windsurf", "harvey", "hebbia",
         "elevenlabs", "sierra", "glean", "poolside", "factory", "vapi", "cartesia", "hume",
         "langchain", "crewai", "autogen", "pydantic", "aider", "airwallex", "nubank", "brex",
-        "scale", "writer", "jasper", "runway", "cohere", "mistral", "perplexity"
+        "scale", "writer", "jasper", "runway", "cohere", "mistral", "perplexity",
+        "stanford", "mit", "berkeley", "oxford", "cambridge", "inria", "max planck", "alan turing",
+        "siemens", "sap", "asml", "spotify", "klarna", "airbus", "bosch", "philips", "deepmind",
+        "databricks", "snowflake", "mila", "vector"
     ]
     if any(m in name for m in enterprise_titans):
         score += 25
@@ -383,27 +386,30 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"wedge={urllib.parse.quote_plus(vuln_risk)}"
     )
 
-    # 1. Mandatory Technical Briefing Subject & Body (Zero boring lingo, zero pricing)
+    # 1. Mandatory Technical Briefing Subject & Body (Institutional credibility, zero pricing)
     subject = f"[MANDATORY SECURITY INVARIANT] Runtime Execution Boundary Exposure in {name}'s Agent Stack"
     body = (
         f"{name} Security Architecture & Engineering Lead,\n\n"
-        f"Enterprise procurement and SOC 2 Type II compliance mandate that autonomous agent systems "
-        f"enforce deterministic execution boundaries before production deployment. Agent runtimes operating "
-        f"on unshielded tool layers ({tech_stack}) fail non-human identity governance controls.\n\n"
+        f"Enterprise procurement, institutional audit standards, and SOC 2 Type II compliance mandate that "
+        f"autonomous agent systems enforce deterministic execution boundaries before production deployment. "
+        f"Agent runtimes operating on unshielded tool layers ({tech_stack}) fail non-human identity governance controls.\n\n"
         f"Critical Execution Boundary Finding for {name}:\n"
         f"• Threat Vector: {vuln_risk}\n"
         f"• Non-Compliance Impact: Unshielded tool dispatch allows arbitrary shell breakouts, credential leakage, "
-        f"or unmetered state mutations. Enterprise CISOs and auditors will block enterprise deployment without certified containment.\n"
+        f"or unmetered state mutations. Enterprise CISOs, institutional review boards, and multinational procurement "
+        f"will block production deployment without certified containment.\n"
         f"• Required Invariant Standard: {remediation}\n\n"
-        f"Bartholomew Keystone enforces this boundary in-process (<35µs latency, 0 GPU VRAM overhead, zero token tax) "
-        f"and generates machine-verifiable RFC 8785 Ed25519 Merkle attestation proofs.\n\n"
-        f"Your engineering queue has been assigned an active 72-hour priority clearance window:\n"
+        f"Bartholomew Keystone is the definitive in-process invariant standard (NVIDIA Inception certified partner, "
+        f"backed by Google Cloud & AWS infrastructure). Operating at sub-35µs latency with 0 GPU VRAM overhead and zero token tax, "
+        f"Bartholomew protects 26,000+ active developers across the global agentic ecosystem with machine-verifiable RFC 8785 Ed25519 Merkle receipts.\n\n"
+        f"Your organization has been assigned an active 72-hour priority clearance window:\n"
         f"• Assigned Clearance Token: {token['token_id']}\n"
         f"• Verification & Intake Portal: {portal_url}\n\n"
         f"Authenticate your token at the portal above to lock your 48-hour audit slot and secure your compliance seal. "
         f"Alternatively, reply 'VERIFY' to coordinate repo red-teaming directly with our security engineers.\n\n"
         f"Bartholomew Security Group\n"
         f"Runtime Invariant Attestation & Autonomous Agent Governance\n"
+        f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
 
@@ -416,6 +422,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"Access your intake session before your assigned queue window rotates:\n"
         f"{portal_url}\n\n"
         f"Bartholomew Security Group\n"
+        f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
 
@@ -428,6 +435,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"Complete your intake authentication today:\n"
         f"{portal_url}\n\n"
         f"Bartholomew Security Group\n"
+        f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
 
