@@ -9,8 +9,9 @@ Zero manual sales work:
 - Analyzes target company codebase & tech stack for compliance gaps
 - Generates personalized cryptographic reservation tokens (72h lock)
 - Generates 1-click self-serve Stripe checkout links ($3,500 Startup / $7,500 Fleet)
-- Pre-fills personalized /enterprise portal sessions
+- Pre-fills personalized /enterprise portal sessions (clearance-gated)
 - Pre-computes 3-step automated follow-up cadences (Initial -> 48h Reminder -> Breakup)
+- Supports direct automated transmission via Google Workspace SMTP (tls:587) or Option B (Resend API / SendGrid)
 - Tracks state locally in data/ (strictly git-ignored)
 """
 
@@ -19,8 +20,13 @@ import sys
 import json
 import time
 import urllib.parse
+import urllib.request
 import hashlib
+import smtplib
+import ssl
 import argparse
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
@@ -113,34 +119,164 @@ def save_state(state: Dict[str, Any]):
 
 
 def generate_reservation_token(target_name: str, tier: str) -> Dict[str, Any]:
-    salt = f"{target_name}:{tier}:{time.time_ns()}"
-    token_id = "tok_" + hashlib.sha256(salt.encode()).hexdigest()[:16]
+    now = time.time()
+    raw = f"{target_name}:{tier}:{now}:btp_autonomous_soc2_revenue_v1"
+    token_id = "tok_" + hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
     return {
         "token_id": token_id,
-        "target": target_name,
-        "tier": tier,
-        "issued_at": time.strftime("%Y-%m-%d %H:%M:%S UTC"),
-        "expires_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(time.time() + 72 * 3600)),
-        "sla_window": "48 Hours Guaranteed",
-        "signature": hashlib.sha256((token_id + ":ed25519:btp").encode()).hexdigest()
+        "created_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(now)),
+        "expires_at": time.strftime("%Y-%m-%d %H:%M:%S UTC", time.gmtime(now + (72 * 3600))),
+        "status": "ACTIVE_72H_LOCK"
+    }
+
+
+def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
+    """
+    Autonomous multi-provider transmission router:
+    1. Google Workspace SMTP (tls:587) via WORKSPACE_APP_PASSWORD / SMTP_PASSWORD
+    2. Option B: Resend API via RESEND_API_KEY
+    3. Option B: SendGrid API via SENDGRID_API_KEY
+    4. Fallback Staging mode (logs message with zero-touch 1-click compose URLs)
+    """
+    sender = os.getenv("SMTP_USER", "itsub@bartholomew.info")
+
+    # 1. Google Workspace SMTP
+    workspace_pw = (
+        os.getenv("WORKSPACE_APP_PASSWORD") or
+        os.getenv("SMTP_PASSWORD") or
+        os.getenv("GMAIL_APP_PASSWORD") or
+        os.getenv("SMTP_PASS")
+    )
+    if workspace_pw:
+        try:
+            msg = MIMEMultipart()
+            msg["From"] = f"Bartholomew Security Group <{sender}>"
+            msg["To"] = to_email
+            msg["Subject"] = subject
+            msg["Reply-To"] = "security@bartholomew.info"
+            msg.attach(MIMEText(body, "plain", "utf-8"))
+
+            context = ssl.create_default_context()
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.starttls(context=context)
+                server.login(sender, workspace_pw)
+                server.send_message(msg)
+
+            return {
+                "status": "TRANSMITTED_LIVE",
+                "channel": "GOOGLE_WORKSPACE_SMTP",
+                "recipient": to_email,
+                "timestamp": time.time()
+            }
+        except Exception as e:
+            return {
+                "status": "TRANSMIT_FAILED",
+                "channel": "GOOGLE_WORKSPACE_SMTP",
+                "error": str(e),
+                "timestamp": time.time()
+            }
+
+    # 2. Resend API
+    resend_key = os.getenv("RESEND_API_KEY")
+    if resend_key:
+        try:
+            payload = json.dumps({
+                "from": f"Bartholomew Security <{sender}>",
+                "to": [to_email],
+                "reply_to": "security@bartholomew.info",
+                "subject": subject,
+                "text": body
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                "https://api.resend.com/emails",
+                data=payload,
+                headers={
+                    "Authorization": f"Bearer {resend_key}",
+                    "Content-Type": "application/json",
+                    "User-Agent": "Bartholomew-Revenue-Bot/6.4"
+                }
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                res = json.loads(resp.read().decode("utf-8"))
+                return {
+                    "status": "TRANSMITTED_LIVE",
+                    "channel": "RESEND_API",
+                    "resend_id": res.get("id"),
+                    "recipient": to_email,
+                    "timestamp": time.time()
+                }
+        except Exception as e:
+            return {
+                "status": "TRANSMIT_FAILED",
+                "channel": "RESEND_API",
+                "error": str(e),
+                "timestamp": time.time()
+            }
+
+    # 3. SendGrid API
+    sendgrid_key = os.getenv("SENDGRID_API_KEY")
+    if sendgrid_key:
+        try:
+            payload = json.dumps({
+                "personalizations": [{"to": [{"email": to_email}]}],
+                "from": {"email": sender, "name": "Bartholomew Security Group"},
+                "reply_to": {"email": "security@bartholomew.info"},
+                "subject": subject,
+                "content": [{"type": "text/plain", "value": body}]
+            }).encode("utf-8")
+            req = urllib.request.Request(
+                "https://api.sendgrid.com/v3/mail/send",
+                data=payload,
+                headers={
+                    "Authorization": f"Bearer {sendgrid_key}",
+                    "Content-Type": "application/json"
+                }
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                return {
+                    "status": "TRANSMITTED_LIVE",
+                    "channel": "SENDGRID_API",
+                    "status_code": resp.status,
+                    "recipient": to_email,
+                    "timestamp": time.time()
+                }
+        except Exception as e:
+            return {
+                "status": "TRANSMIT_FAILED",
+                "channel": "SENDGRID_API",
+                "error": str(e),
+                "timestamp": time.time()
+            }
+
+    # Fallback Staged Mode
+    return {
+        "status": "STAGED_READY_FOR_TRANSMISSION",
+        "channel": "STAGED_LOCAL_QUEUE",
+        "note": "Awaiting WORKSPACE_APP_PASSWORD or RESEND_API_KEY in .env for autonomous background socket transmission.",
+        "recipient": to_email,
+        "timestamp": time.time()
     }
 
 
 def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
-    name = target.get("name", "Target AI")
-    category = target.get("category", "")
-    email = target.get("email") or f"security@{target.get('domain', 'target.ai')}"
-    tech_stack = target.get("tech_stack", "Python, TypeScript, LLM Agents")
-    stage = target.get("stage", "Seed / Growth")
+    name = target.get("name", "Target AI Platform")
+    category = target.get("role_focus") or target.get("category", "Autonomous Agent")
+    email = target.get("email", "security@target.ai")
+    tech_stack = target.get("tech_stack", "Python / LangGraph / MCP")
 
-    # Select audit tier based on stage & category
-    is_enterprise = any(k in category for k in ["Enterprise", "Healthcare", "Fintech", "Legal"]) or "Series A" in stage or "Series B" in stage
-    tier = "$7,500 Enterprise Fleet Audit" if is_enterprise else "$3,500 Startup Agent Audit"
-    tier_key = "enterprise" if is_enterprise else "startup"
-    stripe_url = STRIPE_ENTERPRISE_URL if is_enterprise else STRIPE_STARTUP_URL
+    # Select compliance wedge
+    wedge_pair = COMPLIANCE_WEDGES.get(category, DEFAULT_WEDGE)
+    vuln_risk = target.get("audit_wedge") or wedge_pair[0]
+    remediation = wedge_pair[1]
 
-    # Identify exact vulnerability wedge
-    vuln_risk, remediation = COMPLIANCE_WEDGES.get(category, DEFAULT_WEDGE)
+    # Select tier
+    tier = target.get("recommended_tier") or target.get("tier", "Tier 2: Enterprise Fleet Audit ($7,500)")
+    if "3,500" in tier or "Startup" in tier:
+        stripe_url = STRIPE_STARTUP_URL
+        tier_key = "startup"
+    else:
+        stripe_url = STRIPE_ENTERPRISE_URL
+        tier_key = "enterprise"
 
     token = generate_reservation_token(name, tier)
     portal_url = (
@@ -204,6 +340,9 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     fu_gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={urllib.parse.quote(email)}&su={urllib.parse.quote(fu_subject)}&body={urllib.parse.quote(fu_body)}"
     bu_gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={urllib.parse.quote(email)}&su={urllib.parse.quote(bu_subject)}&body={urllib.parse.quote(bu_body)}"
 
+    # Attempt transmission
+    tx_result = transmit_email(email, subject, body)
+
     return {
         "target_id": target.get("id") or target.get("target_id") or name.lower().replace(" ", "-"),
         "name": name,
@@ -217,6 +356,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         "gmail_url": gmail_url,
         "follow_up_url": fu_gmail_url,
         "breakup_url": bu_gmail_url,
+        "transmission": tx_result,
         "sequences": {
             "initial": {"subject": subject, "body": body},
             "follow_up": {"subject": fu_subject, "body": fu_body},
@@ -227,7 +367,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def run_batch(batch_size: int = 25) -> Dict[str, Any]:
+def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
     state = get_state()
     targets = load_targets()
     if not targets:
@@ -237,23 +377,33 @@ def run_batch(batch_size: int = 25) -> Dict[str, Any]:
     current_idx = state.get("total_dispatched", 0)
     selected = targets[current_idx:current_idx + batch_size]
 
-    # Cycle back if we reached end of 1520 targets
+    # Cycle back if we reached end of targets pool
     if not selected:
         print(f"[*] Reached end of {len(targets)} targets pool. Cycling back for continuous pacing.")
         current_idx = 0
         selected = targets[:batch_size]
 
     print("\n" + "=" * 80)
-    print(f" BARTHOLOMEW SOC 2 AUTONOMOUS REVENUE BOT — BATCH EXECUTION")
-    print(f" Goal: {WEEKLY_GOAL} targets/week (~{DAILY_PACING}/day) | Batch Size: {len(selected)}")
+    print(f" BARTHOLOMEW SOC 2 AUTONOMOUS REVENUE BOT — DAILY DISPATCH WAVE")
+    print(f" Goal: {WEEKLY_GOAL} targets/week | Daily Limit: {len(selected)} targets")
+    print(f" Pacing: ~{DAILY_PACING}/day | Current Pool: {len(targets)} targets")
     print(f" Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 80)
 
     dispatches = []
+    transmitted_count = 0
+    staged_count = 0
+
     for t in selected:
         rec = build_dispatch_record(t)
         dispatches.append(rec)
-        print(f" [+] Queued: {rec['name']:<28} | {rec['category']:<26} | {rec['tier']:<22} | {rec['token']['token_id']}")
+        tx_status = rec["transmission"]["status"]
+        if tx_status == "TRANSMITTED_LIVE":
+            transmitted_count += 1
+            print(f" [+] LIVE SENT: {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
+        else:
+            staged_count += 1
+            print(f" [+] QUEUED:    {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
 
     # Save to active dispatches log
     existing_logs = []
@@ -263,7 +413,7 @@ def run_batch(batch_size: int = 25) -> Dict[str, Any]:
         except Exception:
             pass
     existing_logs.extend(dispatches)
-    LOG_FILE.write_text(json.dumps(existing_logs[-1000:], indent=2), encoding="utf-8")
+    LOG_FILE.write_text(json.dumps(existing_logs[-1500:], indent=2), encoding="utf-8")
 
     state["total_dispatched"] = current_idx + len(selected)
     state["cycles_completed"] += 1
@@ -271,8 +421,10 @@ def run_batch(batch_size: int = 25) -> Dict[str, Any]:
     save_state(state)
 
     print("-" * 80)
-    print(f" [OK] Batch Complete. Dispatched: {len(selected)} targets.")
-    print(f" [OK] Progress: {state['total_dispatched']} / {WEEKLY_GOAL} weekly pacing target.")
+    print(f" [OK] Daily Wave Complete: {len(selected)} targets processed.")
+    print(f"      - Live Transmitted: {transmitted_count}")
+    print(f"      - Staged / Ready:   {staged_count}")
+    print(f" [OK] Overall Progress:   {state['total_dispatched']} targets addressed to date.")
     print(f" [OK] Direct Stripe & Portal links mapped to /enterprise with 72h tokens.")
     print("=" * 80 + "\n")
     return state
@@ -298,29 +450,32 @@ def print_status():
     print("=" * 70 + "\n")
 
 
-def daemon_runner(interval_sec: int = 3600, batch_size: int = 20):
+def daemon_runner(interval_sec: int = 86400, batch_size: int = DAILY_PACING):
     print("=" * 80)
     print(" BARTHOLOMEW 24/7 SOC 2 REVENUE SWARM DAEMON LAUNCHED")
-    print(f" Pacing: {WEEKLY_GOAL} targets/week (~{DAILY_PACING}/day, ~{batch_size}/cycle)")
-    print(f" Interval: Every {interval_sec}s ({interval_sec//60} mins)")
+    print(f" Pacing: {WEEKLY_GOAL} targets/week (~{DAILY_PACING}/day, {batch_size}/daily wave)")
+    print(f" Interval: Every {interval_sec}s ({interval_sec//3600} hours)")
     print("=" * 80)
     while True:
         run_batch(batch_size=batch_size)
-        print(f"[*] Sleeping {interval_sec}s until next automated wave... (Agents on duty)")
+        print(f"[*] Sleeping {interval_sec}s until next automated daily wave... (Agents on duty)")
         time.sleep(interval_sec)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bartholomew Autonomous SOC 2 Revenue Bot")
-    parser.add_argument("--batch", type=int, default=25, help="Execute a batch of N targets (default: 25)")
-    parser.add_argument("--daemon", action="store_true", help="Run continuously in background daemon loop")
-    parser.add_argument("--interval", type=int, default=3600, help="Daemon sleep interval in seconds (default: 3600)")
+    parser.add_argument("--batch", type=int, default=None, help=f"Execute a batch of N targets (default: daily limit {DAILY_PACING})")
+    parser.add_argument("--daily", action="store_true", help=f"Send out today's full daily limit of targets ({DAILY_PACING})")
+    parser.add_argument("--daemon", action="store_true", help="Run continuously in background daily daemon loop")
+    parser.add_argument("--interval", type=int, default=86400, help="Daemon sleep interval in seconds (default: 86400s / 24h)")
     parser.add_argument("--status", action="store_true", help="Print current pacing & dispatch status")
     args = parser.parse_args()
 
     if args.status:
         print_status()
     elif args.daemon:
-        daemon_runner(interval_sec=args.interval, batch_size=args.batch)
+        batch_n = args.batch or DAILY_PACING
+        daemon_runner(interval_sec=args.interval, batch_size=batch_n)
     else:
-        run_batch(batch_size=args.batch)
+        batch_n = args.batch if args.batch is not None else DAILY_PACING
+        run_batch(batch_size=batch_n)
