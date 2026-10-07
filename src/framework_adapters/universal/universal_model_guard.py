@@ -26,8 +26,7 @@ except ImportError:
 
 try:
     from src.agent_passport import SovereignAgentPassport
-    from src.settlement.autonomous_escrow import AutonomousEscrowPool
-    from src.settlement.swarm_arbitration import ZKFaultProofEngine, SwarmDisputeArbitrator
+    from src.settlement.autonomous_escrow import AutonomousEscrowPool, ZKFaultProofEngine, SwarmDisputeArbitrator
     from src.alerting.webhook_dispatcher import (
         WebhookDispatcher,
         IncidentEvent,
