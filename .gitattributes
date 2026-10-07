@@ -1,6 +1,4 @@
 # GitHub Linguist Language Overrides
-# Ensures GitHub correctly classifies this repository as a high-performance Python/TypeScript security engine
-
 docs/** linguist-documentation
 site/** linguist-documentation
 tests/** linguist-detectable=false
@@ -8,3 +6,9 @@ tests/** linguist-detectable=false
 *.png binary
 *.jpg binary
 *.svg binary
+
+# Enforce Unix LF line endings for CI workflows and shell scripts
+*.yml text eol=lf
+*.yaml text eol=lf
+*.sh text eol=lf
+.github/workflows/* text eol=lf

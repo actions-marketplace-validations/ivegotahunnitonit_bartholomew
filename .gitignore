@@ -205,3 +205,20 @@ bartholomew_pr_audit.json
 
 BARTHOLOMEW_*.json
 *.jsonl
+# Internal Multi-Agent Configurations & Marketing Site
+.agents/
+site/
+huggingface-space/
+Formula/
+docs/*PROSPECT*
+docs/*OUTREACH*
+docs/*APPLICATION*
+docs/*GRANT*
+docs/*PITCH*
+docs/*SPEEDRUN*
+docs/*DOSSIER*
+docs/*INSURANCE*
+docs/*L402*
+docs/*ASTRA*
+docs/legal/
+scripts/outreach_tracker.py

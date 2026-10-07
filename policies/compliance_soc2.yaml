@@ -1,15 +1,32 @@
-description: SOC 2 Type II Security & Audit Pack
-policy_id: urn:btp:compliance:soc2
+# ==============================================================================
+# Bartholomew Trust Protocol (BTP) - Declarative Enterprise Policy Preset
+# Control Mapping: AICPA SOC 2 Type II (CC6.1, CC6.6, CC6.8, CC7.2)
+# ==============================================================================
+version: "2.2.0"
+policy_id: "urn:btp:compliance:soc2"
+description: "SOC 2 Type II Security & Audit Invariant Pack for Autonomous Agents"
+
 rules:
-- action: DENY
-  id: SOC2-CC6.1
-  name: Logical Access Restrictions
-  type: no_credentials_in_logs
-- action: DENY
-  id: SOC2-CC6.8
-  name: Malicious Software Prevention
-  type: no_arbitrary_shell_eval
-- action: ALLOW_WITH_AUDIT
-  id: SOC2-CC7.2
-  name: Vulnerability & Security Event Audit
-version: 2.2.0
+  - id: "SOC2-CC6.1"
+    name: "Logical Access Restrictions & In-Flight Secret Redaction"
+    type: "no_credentials_in_logs"
+    action: "DENY"
+    message: "Credentials or high-entropy tokens detected in tool parameters."
+
+  - id: "SOC2-CC6.6"
+    name: "Boundary Protection & Subprocess Execution Gating"
+    type: "forbidden_destructive_commands"
+    action: "DENY"
+    message: "Destructive system modification commands blocked before execution."
+
+  - id: "SOC2-CC6.8"
+    name: "Malicious Software Prevention & Unauthorized Execution"
+    type: "no_arbitrary_shell_eval"
+    action: "DENY"
+    message: "Arbitrary subshell evaluation or base64 piped execution prohibited."
+
+  - id: "SOC2-CC7.2"
+    name: "Continuous Security Monitoring & Tamper-Evident Audit Ledger"
+    type: "tamper_evident_logging"
+    action: "ALLOW_WITH_AUDIT"
+    message: "Action permitted and cryptographically logged to audit ledger."

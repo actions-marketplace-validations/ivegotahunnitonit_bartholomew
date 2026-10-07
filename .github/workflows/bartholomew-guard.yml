@@ -21,17 +21,17 @@ jobs:
 
       - name: Install Bartholomew Guard
         run: |
-          pip install --upgrade btp-guard
+          python -m pip install --upgrade pip
+          python -m pip install -e .
 
       - name: Execute Policy Validation & AST Lint
         run: |
-          pip install -e .
-          btp-guard check
-          btp-guard policy validate
+          python -m btp_guard.cli check
+          python -m btp_guard.cli policy validate
 
       - name: Generate SOC 2 Cryptographic Receipt
         run: |
-          btp-guard audit . --certify --out btp-audit-receipt.json
+          python -m btp_guard.cli audit . --certify --out btp-audit-receipt.json
 
       - name: Upload Security Receipt
         uses: actions/upload-artifact@v4

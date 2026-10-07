@@ -276,12 +276,12 @@ export function activate(context: ExtensionContext) {
           };
           fs.appendFileSync(appPath, JSON.stringify(entry) + '\n', 'utf-8');
           vscode.window.showInformationMessage(
-            `Bartholomew Team Pilot: Application registered for ${entry.org}! Complete onboarding via Stripe checkout or schedule your guided kickoff.`,
-            'Checkout ($199/mo)',
+            `Bartholomew Team Pilot: Application registered for ${entry.org}! Contact enterprise sales or review documentation to schedule your onboarding.`,
+            'Enterprise Contact',
             'Documentation'
           ).then((choice: any) => {
-            if (choice === 'Checkout ($199/mo)') {
-              vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605'));
+            if (choice === 'Enterprise Contact') {
+              vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/enterprise'));
             } else if (choice === 'Documentation') {
               vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/pilot'));
             }
@@ -872,18 +872,18 @@ context.subscriptions.push(
   });
   context.subscriptions.push(upgradeProCmd);
 
-  const backOpenSourceCmd = vscode.commands.registerCommand('bartholomew.backOpenSource', () => {
-    vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605'));
+  const openEnterpriseDocsCmd = vscode.commands.registerCommand('bartholomew.openEnterpriseDocs', () => {
+    vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/enterprise'));
   });
-  context.subscriptions.push(backOpenSourceCmd);
-  // Dedicated Status Bar Item: Back Open Source Development
-  const sponsorStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
-  sponsorStatusBar.text = '$(heart) Back BTP';
-  sponsorStatusBar.tooltip = 'Back Open Source Development via Stripe (Bartholomew Security)';
-  sponsorStatusBar.command = 'bartholomew.backOpenSource';
-  sponsorStatusBar.color = '#a78bfa';
-  sponsorStatusBar.show();
-  context.subscriptions.push(sponsorStatusBar);
+  context.subscriptions.push(openEnterpriseDocsCmd);
+  // Dedicated Status Bar Item: Enterprise Portal
+  const enterpriseStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
+  enterpriseStatusBar.text = '$(shield) BTP Enterprise';
+  enterpriseStatusBar.tooltip = 'Bartholomew Enterprise Security Portal';
+  enterpriseStatusBar.command = 'bartholomew.openEnterpriseDocs';
+  enterpriseStatusBar.color = '#38bdf8';
+  enterpriseStatusBar.show();
+  context.subscriptions.push(enterpriseStatusBar);
 
 
   // 2. Poll local daemon or files for real-time telemetry

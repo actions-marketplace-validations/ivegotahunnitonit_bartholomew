@@ -46,15 +46,15 @@
     "vercel-ai"
   ],
   "author": "Bartholomew Security <security@bartholomew.info>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "homepage": "https://bartholomew.info",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ivegotahunnitonit/bartholomew.git",
+    "url": "git+https://github.com/bartholomew-security/bartholomew.git",
     "directory": "packages/npm_package"
   },
   "bugs": {
-    "url": "https://github.com/ivegotahunnitonit/bartholomew/issues"
+    "url": "https://github.com/bartholomew-security/bartholomew/issues"
   },
   "files": [
     "index.js",
