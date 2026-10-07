@@ -8,7 +8,8 @@
       ],
       "env": {
         "BTP_ENFORCE_STRICT": "true",
-        "BTP_POLICY_ID": "urn:btp:policy:cursor-agent-v2026.1"
+        "BTP_POLICY_ID": "urn:btp:policy:cursor-agent-v2026.1",
+        "BTP_UNMETERED": "1"
       }
     }
   }

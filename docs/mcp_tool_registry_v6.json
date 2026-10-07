@@ -1,5 +1,5 @@
 {
-  "version": "6.0.0-rc1",
+  "version": "6.4.4",
   "schema": "https://bartholomew.sh/mcp/registry/v6",
   "description": "Bartholomew Sovereign MCP Tool Registry \u2014 25 native tools for AI coding security, compliance, and autonomous agent protection.",
   "tools": [
@@ -242,7 +242,19 @@
       "category": "PERMISSION_GUARD",
       "description": "Get permission scope guard summary: total checks, violations, violation rate.",
       "tier": "FREE"
+    },
+    {
+      "name": "btp_multimodal_guard",
+      "category": "AI_DEFENSE",
+      "description": "Inspect and sanitize multimodal inputs (vision, diagrams, SVG XSS, prompt injections, Pixtral/Mistral Large 4/Gemini candidate thought parts).",
+      "tier": "FREE"
+    },
+    {
+      "name": "btp_silicon_provenance",
+      "category": "ATTESTATION",
+      "description": "Cryptographically attest and verify hardware silicon accelerators, confidential compute enclaves (Nitro, SGX, SEV-SNP, vTPM), and model weight integrity.",
+      "tier": "FREE"
     }
   ],
-  "total_tools": 40
+  "total_tools": 42
 }
