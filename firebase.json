@@ -18,6 +18,16 @@
           }
         ]
       }
+    ],
+    "rewrites": [
+      {
+        "source": "/enterprise",
+        "destination": "/enterprise.html"
+      },
+      {
+        "source": "/cloud",
+        "destination": "/control-plane.html"
+      }
     ]
   }
 }
