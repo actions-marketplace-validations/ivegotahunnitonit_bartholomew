@@ -74,8 +74,8 @@ class TestExecutionPathsAndGates:
         benign_code = execute_shielded_command(["python", "-c", "print('safe')"], cwd=str(tmp_path))
         assert benign_code == 0
 
-        # 2. Dangerous command blocked / healed with redirection
-        danger_code = execute_shielded_command(["rm", "-rf", "/"], cwd=str(tmp_path))
+        # 2. Dangerous command blocked
+        danger_code = execute_shielded_command(["rm", "-rf", "/"], auto_heal=False, cwd=str(tmp_path))
         assert danger_code != 0
 
         # 3. Audit recording

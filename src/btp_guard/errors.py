@@ -4,7 +4,14 @@ Error Handling and Mapping
 
 from typing import Any
 
-from fastapi import HTTPException
+try:
+    from fastapi import HTTPException
+except ImportError:
+    class HTTPException(Exception):  # type: ignore
+        def __init__(self, status_code: int = 500, detail: Any = None):
+            self.status_code = status_code
+            self.detail = detail
+            super().__init__(str(detail) if detail is not None else f"HTTP {status_code}")
 
 
 class MemantoError(Exception):

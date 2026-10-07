@@ -132,7 +132,7 @@ class TestRealSecurityBoundary:
 
     def test_6_unapproved_webview_command_rejected(self):
         """Proof point 6: Webview message handler strictly filters actions against ALLOWED_COMMANDS."""
-        ext_ts = Path(r"C:\Users\User\.gemini\antigravity\scratch\autonomous-circularity-network\packages\vscode-extension\src\extension.ts").read_text(encoding="utf-8")
+        ext_ts = (Path(__file__).resolve().parent.parent / "packages" / "vscode-extension" / "src" / "extension.ts").read_text(encoding="utf-8")
         
         # Verify ALLOWED_COMMANDS set is defined and used
         match = re.search(r"const ALLOWED_COMMANDS = new Set\(\[(.*?)\]\);", ext_ts, re.DOTALL)

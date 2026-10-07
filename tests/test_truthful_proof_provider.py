@@ -23,6 +23,12 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parent.parent
 PROOF_JS = REPO_ROOT / "packages" / "vscode-extension" / "dist" / "proof_provider.js"
 
+if not PROOF_JS.exists():
+    pytest.skip(
+        "VS Code extension dist/proof_provider.js not built. Run 'npm run compile' in packages/vscode-extension.",
+        allow_module_level=True,
+    )
+
 
 def run_node_telemetry_check(workspace_dir: str, daemon_status: dict = None) -> dict:
     """Invokes compiled proof_provider.js via Node.js to evaluate truthful telemetry with mock vscode module."""

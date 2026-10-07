@@ -22,6 +22,11 @@ docs/COMMUNITY_DISTRIBUTION_SHOW_HN_REDDIT.md
 docs/PRODUCT_HUNT_RESPONSE_PLAYBOOK.md
 docs/dossiers/
 scripts/compile_seed_one_pager.py
+scripts/prospect_auditor.py
+scripts/dispatch_*
+scripts/*wave*
+scripts/*lead*
+scripts/*handshake*
 scripts/generate_investor_materials.py
 scripts/investor_*
 scripts/dispatch_cycle_runner.py

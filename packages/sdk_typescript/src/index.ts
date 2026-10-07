@@ -271,4 +271,38 @@ export class BartholomewGuard {
       return await next();
     };
   }
+
+  /**
+   * Adapter for Generative Media APIs (Midjourney, Suno, ElevenLabs, Runway, etc.)
+   */
+  public wrapGenerativeMediaTool<TParams, TResult>(
+    provider: 'MIDJOURNEY' | 'SUNO' | 'ELEVENLABS' | 'RUNWAY' | string,
+    toolDef: {
+      execute: (args: TParams, options?: any) => Promise<TResult>;
+      maxCostUsd?: number;
+    }
+  ) {
+    const self = this;
+    const maxCost = toolDef.maxCostUsd ?? 2.0;
+    return {
+      execute: async (args: TParams, options?: any): Promise<TResult> => {
+        const payload = (args && typeof args === 'object') ? (args as Record<string, any>) : { prompt: args };
+        const promptStr = JSON.stringify(payload).toLowerCase();
+        if (promptStr.includes('deepfake') || promptStr.includes('bypass safety') || promptStr.includes('forge voice')) {
+          throw new BTPViolationError(
+            `Generative media safety violation for ${provider}: disallowed deepfake or bypass prompt`,
+            'BTP-MEDIA-001',
+            `generate:${provider}`,
+            12.5,
+            self.canonicalJson(payload)
+          );
+        }
+        return await self.protectAndExecute(
+          `gen-media:${provider}`,
+          { ...payload, amount_usd: maxCost },
+          async () => await toolDef.execute(args, options)
+        );
+      }
+    };
+  }
 }

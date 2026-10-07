@@ -50,6 +50,20 @@ from . import grok
 from .m2m_toll import BtpM2MMicroToll
 from . import m2m_toll
 
+from .generative_media import (
+    BtpGenerativeMediaGuard,
+    MediaProvider,
+    GenerativeMediaSecurityVetoException,
+    wrap_midjourney,
+    wrap_suno,
+    wrap_elevenlabs,
+    wrap_runway,
+)
+from . import generative_media
+
+from .google_genai import BtpGoogleGenAIGuard, wrap_google_genai_tool
+from . import google_genai
+
 __all__ = [
     "BtpStripeAgentGuard",
     "StripeSecurityVetoException",
@@ -100,4 +114,15 @@ __all__ = [
     "grok",
     "BtpM2MMicroToll",
     "m2m_toll",
+    "BtpGenerativeMediaGuard",
+    "MediaProvider",
+    "GenerativeMediaSecurityVetoException",
+    "wrap_midjourney",
+    "wrap_suno",
+    "wrap_elevenlabs",
+    "wrap_runway",
+    "generative_media",
+    "BtpGoogleGenAIGuard",
+    "wrap_google_genai_tool",
+    "google_genai",
 ]
