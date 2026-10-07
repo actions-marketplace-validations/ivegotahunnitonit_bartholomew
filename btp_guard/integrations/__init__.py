@@ -1,9 +1,10 @@
 """
-Bartholomew Trust Protocol (BTP v6.4.0) - Framework Integrations
+Bartholomew Trust Protocol (BTP v6.4.4) - Framework Integrations
 ================================================================
 First-class adapters for LangChain, LangGraph, CrewAI, AutoGen, LlamaIndex,
 PydanticAI, Smolagents, OpenAI Swarm, MetaGPT, Dify, Qwen-Agent, ChatDev,
-Haystack, CAMEL-AI, and OpenDevin / OpenHands.
+Haystack, CAMEL-AI, OpenDevin / OpenHands, Semantic Kernel, DSPy, Agno,
+and Universal Coding Agents.
 """
 
 from .crewai import BtpCrewAIGuard
@@ -23,6 +24,10 @@ from .chatdev import BtpChatDevGuard
 from .haystack import BtpHaystackGuard
 from .camel import BtpCamelGuard
 from .opendevin import BtpOpenDevinGuard
+from .semantic_kernel import BtpSemanticKernelGuard
+from .dspy import BtpDSPyGuard
+from .agno import BtpAgnoGuard
+from .coding_agents import BtpCodingAgentGuard, wrap_coding_agent
 
 from . import crewai
 from . import langchain
@@ -40,6 +45,10 @@ from . import chatdev
 from . import haystack
 from . import camel
 from . import opendevin
+from . import semantic_kernel
+from . import dspy
+from . import agno
+from . import coding_agents
 
 from .stripe_agent import BtpStripeAgentGuard, StripeSecurityVetoException, BtpStripeLicenseRequiredException, wrap_stripe
 from . import stripe_agent
@@ -77,6 +86,11 @@ __all__ = [
     "BtpHaystackGuard",
     "BtpCamelGuard",
     "BtpOpenDevinGuard",
+    "BtpSemanticKernelGuard",
+    "BtpDSPyGuard",
+    "BtpAgnoGuard",
+    "BtpCodingAgentGuard",
+    "wrap_coding_agent",
     "crewai",
     "langchain",
     "langgraph",
@@ -93,6 +107,10 @@ __all__ = [
     "haystack",
     "camel",
     "opendevin",
+    "semantic_kernel",
+    "dspy",
+    "agno",
+    "coding_agents",
     "BtpUniversalPayGuard",
     "PaymentProvider",
     "UniversalSecurityVetoException",

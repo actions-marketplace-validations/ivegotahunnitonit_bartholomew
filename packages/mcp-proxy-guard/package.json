@@ -1,7 +1,7 @@
 {
   "name": "mcp-proxy-guard",
-  "version": "6.4.3",
-  "description": "Sub-35\u00b5s security proxy and credential scrubber for Model Context Protocol (MCP) servers in Claude Desktop, Cursor, and Windsurf.",
+  "version": "6.4.4",
+  "description": "Sub-35µs security proxy and credential scrubber for Model Context Protocol (MCP) servers in Claude Desktop, Cursor, and Windsurf.",
   "main": "index.js",
   "types": "index.d.ts",
   "bin": {

@@ -198,3 +198,7 @@ class ASTSecurityValidator:
             if left is not None and right is not None:
                 return left + right
         return None
+
+
+ASTValidator = ASTSecurityValidator
+

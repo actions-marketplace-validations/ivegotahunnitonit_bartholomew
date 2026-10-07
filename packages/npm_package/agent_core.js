@@ -58,20 +58,33 @@ const DANGEROUS_SQL_PATTERNS = [
     rule: "BTP-SQL-002",
     alternative: (query) => query.split(";")[0] + ";",
     hint: "Pruned trailing destructive DDL (DROP/TRUNCATE) from stacked SQL query."
+  },
+  {
+    regex: /^\s*(DROP|TRUNCATE|ALTER)\s+(TABLE|DATABASE)\b/i,
+    rule: "BTP-SQL-003",
+    alternative: () => "SELECT 'DEST_MUTATION_PREVENTED';",
+    hint: "Direct destructive DDL mutation blocked by BTP AST guard."
   }
 ];
 
 export function evaluateAndRemediate(actionType, payload, context = {}) {
   const t0 = process.hrtime.bigint();
   const typeUpper = (actionType || "SHELL").toUpperCase();
-  const original = String(payload || "");
+  let original = "";
+  if (typeof payload === 'string') {
+    original = payload;
+  } else if (payload && typeof payload === 'object') {
+    original = payload.cmd || payload.command || payload.sql || payload.query || JSON.stringify(payload);
+  } else {
+    original = String(payload || "");
+  }
 
   let healed = false;
   let safeAlternative = original;
   let hint = "Action verified and permitted.";
   let ruleId = "BTP-OK";
 
-  if (typeUpper.includes("SHELL") || typeUpper.includes("CMD") || typeUpper.includes("EXEC")) {
+  if (typeUpper.includes("SHELL") || typeUpper.includes("CMD") || typeUpper.includes("EXEC") || typeUpper.includes("TERMINAL") || typeUpper.includes("BASH")) {
     for (const p of DANGEROUS_SHELL_PATTERNS) {
       if (p.regex.test(original)) {
         healed = true;
@@ -319,3 +332,45 @@ export function sanitizeAgentContext(rawText, maxTokens = null) {
     is_sanitized: true
   };
 }
+
+// ============================================================================
+// 5. UNIVERSAL JAVASCRIPT FRAMEWORK GUARDS (Vercel AI SDK, LangChain.js, Node)
+// ============================================================================
+
+export function guardUniversalAgentTool(toolName, executeFn, options = {}) {
+  return async function wrappedTool(...args) {
+    const payload = args.length === 1 && typeof args[0] === 'object' && args[0] !== null
+      ? args[0]
+      : { args };
+
+    const evaluation = evaluateAndRemediate(toolName, payload, options);
+    if (!evaluation.allowed) {
+      throw new Error(`[BTP-VETO] ${toolName} execution blocked by ${evaluation.rule_id}: ${evaluation.remediation_hint}`);
+    }
+
+    const safePayload = evaluation.remediated_payload || payload;
+    const result = await executeFn(safePayload);
+    return result;
+  };
+}
+
+export function guardVercelAITool(toolDef, options = {}) {
+  if (!toolDef || typeof toolDef.execute !== 'function') return toolDef;
+  const toolName = toolDef.description || 'vercel_ai_tool';
+  const originalExecute = toolDef.execute;
+  
+  return {
+    ...toolDef,
+    execute: guardUniversalAgentTool(toolName, originalExecute, options)
+  };
+}
+
+export function guardLangChainJsTool(toolInstance, options = {}) {
+  if (!toolInstance || typeof toolInstance._call !== 'function') return toolInstance;
+  const toolName = toolInstance.name || 'langchain_tool';
+  const originalCall = toolInstance._call.bind(toolInstance);
+
+  toolInstance._call = guardUniversalAgentTool(toolName, originalCall, options);
+  return toolInstance;
+}
+

@@ -23,6 +23,7 @@ class AuthorizationGate:
         re.compile(r"(?i)\bformat\s+[a-zA-Z]:"),
         re.compile(r"(?i)\bdel\s+/[sS]"),
         re.compile(r"(?i)powershell\s+-enc\b"),
+        re.compile(r"(?i)(curl|wget)\s+.*\|\s*(ba)?sh\b"),
     ]
 
     DANGEROUS_SQL_PATTERNS = [

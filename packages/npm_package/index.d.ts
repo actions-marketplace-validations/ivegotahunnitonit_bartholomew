@@ -237,3 +237,13 @@ export function validateToolPayload(toolOrSchema: any, payload?: any, options?: 
 export function computeMerkleRoot(leaves: any[]): string;
 export function generateAuditPack(options?: any): AuditDossier;
 export function verifyAuditPack(dossier: any): AuditVerificationResult;
+
+export function guardUniversalAgentTool<T extends (...args: any[]) => any>(
+  toolName: string,
+  executeFn: T,
+  options?: any
+): (...args: Parameters<T>) => Promise<any>;
+
+export function guardVercelAITool<T extends object>(toolDef: T, options?: any): T;
+export function guardLangChainJsTool<T extends object>(toolInstance: T, options?: any): T;
+
