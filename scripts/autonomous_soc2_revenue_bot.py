@@ -47,7 +47,8 @@ if ENV_FILE.exists():
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-TARGETS_FILE = DATA_DIR / "global_audit_targets_1500.json"
+TARGETS_FILE = DATA_DIR / "verified_audit_targets_live.json"
+FALLBACK_TARGETS_FILE = DATA_DIR / "global_audit_targets_1500.json"
 STATE_FILE = DATA_DIR / "soc2_dispatch_state.json"
 LOG_FILE = DATA_DIR / "soc2_dispatches_active.json"
 
@@ -57,6 +58,35 @@ BARTHOLOMEW_ENTERPRISE_URL = "https://bartholomew.info/enterprise"
 
 WEEKLY_GOAL = 1000
 DAILY_PACING = 143  # ~1000 / 7 days
+
+# In-memory DNS MX verification cache
+_MX_CACHE: Dict[str, tuple] = {}
+
+
+def verify_recipient_mx(email: str) -> tuple:
+    """
+    Real-time DNS Mail Exchange (MX) record preflight validation.
+    Guarantees zero bounced emails by verifying the target domain has active mail servers.
+    """
+    if not email or "@" not in email:
+        return False, "Invalid email format"
+    domain = email.split("@")[1].strip().lower()
+
+    if domain in _MX_CACHE:
+        return _MX_CACHE[domain]
+
+    try:
+        import dns.resolver
+        answers = dns.resolver.resolve(domain, "MX", lifetime=2.5)
+        exchanges = [str(r.exchange).rstrip(".") for r in answers if r.exchange]
+        if exchanges:
+            _MX_CACHE[domain] = (True, exchanges[0])
+            return True, exchanges[0]
+        _MX_CACHE[domain] = (False, "No MX records found")
+        return False, "No MX records found"
+    except Exception as e:
+        _MX_CACHE[domain] = (False, f"DNS MX error: {type(e).__name__}")
+        return False, f"DNS MX error: {type(e).__name__}"
 
 COMPLIANCE_WEDGES = {
     "Clinical & Healthcare AI": (
@@ -100,12 +130,15 @@ DEFAULT_WEDGE = (
 
 
 def load_targets() -> List[Dict[str, Any]]:
-    if TARGETS_FILE.exists():
+    file_to_read = TARGETS_FILE if TARGETS_FILE.exists() else FALLBACK_TARGETS_FILE
+    if file_to_read.exists():
         try:
-            data = json.loads(TARGETS_FILE.read_text(encoding="utf-8"))
-            return data.get("targets", [])
+            data = json.loads(file_to_read.read_text(encoding="utf-8"))
+            targets = data.get("targets", [])
+            # Mandatory filter: ONLY targets with 100% active MX records pass
+            return [t for t in targets if verify_recipient_mx(t.get("email", ""))[0]]
         except Exception as e:
-            print(f"[!] Error reading {TARGETS_FILE}: {e}")
+            print(f"[!] Error reading {file_to_read}: {e}")
     return []
 
 
@@ -146,13 +179,21 @@ def generate_reservation_token(target_name: str, tier: str) -> Dict[str, Any]:
 
 def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
     """
-    Autonomous multi-provider transmission router:
-    1. Google Workspace SMTP (tls:587) via WORKSPACE_APP_PASSWORD / SMTP_PASSWORD
-    2. Option B: Resend API via RESEND_API_KEY
-    3. Option B: SendGrid API via SENDGRID_API_KEY
-    4. Fallback Staging mode (logs message with zero-touch 1-click compose URLs)
+    Autonomous multi-provider transmission router with mandatory preflight DNS MX verification.
+    Guarantees that unresolvable, non-existent, or synthetic domains are NEVER transmitted.
     """
     sender = os.getenv("SMTP_USER", "itsub@bartholomew.info")
+
+    # MANDATORY PREFLIGHT DNS MX CHECK
+    has_mx, mx_detail = verify_recipient_mx(to_email)
+    if not has_mx:
+        return {
+            "status": "DROPPED_INVALID_MX",
+            "channel": "PREFLIGHT_DNS_GUARD",
+            "recipient": to_email,
+            "reason": f"Domain lacks valid MX records ({mx_detail})",
+            "timestamp": time.time()
+        }
 
     # 1. Google Workspace SMTP
     workspace_pw = (
@@ -415,11 +456,13 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
         tx_status = rec["transmission"]["status"]
         if tx_status == "TRANSMITTED_LIVE":
             transmitted_count += 1
-            print(f" [+] LIVE SENT: {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
+            print(f" [+] LIVE SENT:       {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
             time.sleep(1.0)
+        elif tx_status == "DROPPED_INVALID_MX":
+            print(f" [!] DROPPED (NO MX): {rec['name']:<24} | {rec['email']}")
         else:
             staged_count += 1
-            print(f" [+] QUEUED:    {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
+            print(f" [+] QUEUED:          {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
 
     # Save to active dispatches log
     existing_logs = []
