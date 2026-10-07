@@ -50,7 +50,7 @@ jobs:
         env:
           PYTHONPATH: src:.
         run: |
-          python -m pytest tests/test_real_security_boundary.py tests/test_billing_and_entitlements.py tests/test_pilot_xss_and_conversion.py tests/test_execution_paths_and_truthful_gates.py tests/test_truthful_proof_provider.py tests/test_extension_command_handling.py tests/test_cloud_engine_server.py tests/test_pre_commit_enforcement.py tests/test_authorization_gate_mvp.py tests/test_v31_agent_passport_and_discovery.py tests/test_m2m_benchmark_and_manifest.py tests/test_delegation_and_reputation.py tests/test_dispute_and_replay.py tests/test_framework_integrations.py tests/test_community_integrations.py tests/test_compliance_dossier_export.py tests/test_enterprise_polish_and_metering.py tests/test_universal_agent_protector.py tests/test_cli_linter.py --tb=short -q
+          python -m pytest tests/test_real_security_boundary.py tests/test_billing_and_entitlements.py tests/test_pilot_xss_and_conversion.py tests/test_execution_paths_and_truthful_gates.py tests/test_truthful_proof_provider.py tests/test_extension_command_handling.py tests/test_cloud_engine_server.py tests/test_pre_commit_enforcement.py tests/test_authorization_gate_mvp.py tests/test_v31_agent_passport_and_discovery.py tests/test_m2m_benchmark_and_manifest.py tests/test_delegation_and_reputation.py tests/test_dispute_and_replay.py tests/test_framework_integrations.py tests/test_community_integrations.py tests/test_compliance_dossier_export.py tests/test_enterprise_polish_and_metering.py tests/test_universal_agent_protector.py tests/test_cli_linter.py tests/test_generative_media_and_emerging_frameworks.py --tb=short -q
 
   # ─── Lint & Type Check ─────────────────────────────────────────────
   lint:

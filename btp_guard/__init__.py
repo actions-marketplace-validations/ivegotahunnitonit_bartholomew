@@ -45,6 +45,16 @@ from src.usage_tracker import load_license, save_license, record_evaluation, STR
 from .integrations.stripe_agent import BtpStripeAgentGuard, wrap_stripe
 from .integrations.universal_pay import BtpUniversalPayGuard, PaymentProvider, wrap_payment
 from .integrations.grok import BtpGrokGuard, wrap_grok
+from .integrations.generative_media import (
+    BtpGenerativeMediaGuard,
+    MediaProvider,
+    GenerativeMediaSecurityVetoException,
+    wrap_midjourney,
+    wrap_suno,
+    wrap_elevenlabs,
+    wrap_runway,
+)
+from .integrations.google_genai import BtpGoogleGenAIGuard, wrap_google_genai_tool
 from .warranty_service import WarrantyFundManager
 from .mcp_clearinghouse import MCPClearinghouseGateway
 from .webhook_dispatcher import WebhookDispatcher, WebhookChannel, AlertSeverity
