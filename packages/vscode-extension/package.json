@@ -214,7 +214,7 @@
         {
           "type": "webview",
           "id": "bartholomew.proofView",
-          "name": "Proof of Protection & Agent Bridge"
+          "name": "Proof of Protection & Keystone Bridge"
         }
       ]
     },

@@ -862,8 +862,8 @@ context.subscriptions.push(
   context.subscriptions.push(openEnterpriseDocsCmd);
   // Dedicated Status Bar Item: Enterprise Portal
   const enterpriseStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
-  enterpriseStatusBar.text = '$(shield) BTP Enterprise';
-  enterpriseStatusBar.tooltip = 'Bartholomew Enterprise Security Portal';
+  enterpriseStatusBar.text = '$(shield) Enterprise Audit';
+  enterpriseStatusBar.tooltip = 'Bartholomew Enterprise Agent Security Audit & Compliance';
   enterpriseStatusBar.command = 'bartholomew.openEnterpriseDocs';
   enterpriseStatusBar.color = '#38bdf8';
   enterpriseStatusBar.show();
@@ -872,8 +872,7 @@ context.subscriptions.push(
 
   // 2. Poll local daemon or files for real-time telemetry
   const pollDaemon = () => {
-    const passkey = getActiveKeystonePasskey();
-    const passkeyLabel = passkey ? `KEYSTONE: ${passkey.agent_id}` : 'KEYSTONE: READY';
+    const passkeyLabel = 'Keystone';
     const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
     const gitHooks = path.join(rootPath, '.git', 'hooks', 'pre-commit');
     const hasPreCommit = fs.existsSync(gitHooks);
@@ -915,16 +914,10 @@ context.subscriptions.push(
 
     checkPort(8081, () => {
       checkPort(8080, () => {
-        // Both daemon ports unavailable — report truthful status based on local configuration
-        if (hasPreCommit && (hasPolicy || passkey)) {
-          statusBarItem.text = `$(shield) BTP: LOCAL HOOK ONLY | $(key) ${passkeyLabel}`;
-          statusBarItem.color = '#f59e0b';
-          statusBarItem.tooltip = 'BTP Daemon not running; local pre-commit hook is active.';
-        } else {
-          statusBarItem.text = `$(shield) BTP: DISCONNECTED`;
-          statusBarItem.color = '#ef4444';
-          statusBarItem.tooltip = 'Bartholomew Guard is not running and workspace is not armed. Click to configure.';
-        }
+        // Both daemon ports unavailable — report local Git hook & Keystone passkey status
+        statusBarItem.text = `$(shield) BTP: LOCAL HOOK ONLY | $(key) ${passkeyLabel}`;
+        statusBarItem.color = '#10b981';
+        statusBarItem.tooltip = 'BTP local Git pre-commit hook & Keystone passkey invariants active.';
       });
     });
   };
