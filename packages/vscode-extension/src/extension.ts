@@ -12,24 +12,8 @@ function getMcpUsageCount(): number {
 }
 
 function isProLicensed(): boolean {
-  // Client license checks are strictly advisory; authoritative entitlement requires active Keystone passkey or verified server record
-  const homeDir = process.env.USERPROFILE || process.env.HOME || '.';
-  const keystonePath = path.join(homeDir, '.btp', 'keystone.json');
-  if (fs.existsSync(keystonePath)) {
-    try {
-      const data = JSON.parse(fs.readFileSync(keystonePath, 'utf-8'));
-      if (data && data.passkey_id && data.tier && data.tier !== 'FREE') {
-        const exp = new Date(data.expires_at).getTime();
-        if (!isNaN(exp) && exp > Date.now()) {
-          return true;
-        }
-      }
-    } catch {}
-  }
-  const k = process.env.BTP_API_KEY || process.env.BTP_PRO_KEY || process.env.BTP_LICENSE_KEY;
-  if (!k) return false;
-  // Tokens must be non-trivial and cryptographically structured
-  return k.length >= 32 && (k.startsWith('btp_pro_') || k.startsWith('btp_ent_') || k.startsWith('sk_live_'));
+  // All features unlocked: zero paywalls, 100% open protection for all developer workspaces
+  return true;
 }
 
 declare const require: any;

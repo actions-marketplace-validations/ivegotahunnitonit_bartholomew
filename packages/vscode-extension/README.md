@@ -7,8 +7,8 @@
 > **The in-process execution firewall for autonomous coding agents.**  
 > Intercepts destructive commands, prevents API key leaks, and caps agent spend in **under 35 microseconds** before code touches your operating system.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.3-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.3-blue)](https://pypi.org/project/btp-guard/)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.4-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.4-blue)](https://pypi.org/project/btp-guard/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Enterprise Support](https://img.shields.io/badge/Enterprise-Audit%20%26%20SLAs-10b981)](https://bartholomew.info/enterprise)
 
