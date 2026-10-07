@@ -1,3 +1,7 @@
+# ==============================================================================
+# Bartholomew Trust Protocol (BTP) - Multi-Agent Swarm Governance Preset
+# Frameworks: CrewAI, Microsoft AutoGen, LangGraph, OpenAI Swarm
+# ==============================================================================
 version: "6.0.0"
 policy_id: "urn:btp:policy:multi-agent-swarm-v6"
 description: "Coordination invariants and cross-tenant containment for multi-agent frameworks (CrewAI, AutoGen, LangGraph)."

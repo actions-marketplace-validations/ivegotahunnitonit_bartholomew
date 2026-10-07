@@ -11,7 +11,7 @@
 [![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](docs/mcp_tool_registry_v6.json)
 [![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen?style=flat-square)](tests/)
 [![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
-[![CI](https://github.com/bartholomew-security/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/bartholomew-security/bartholomew/actions/workflows/ci.yml)
+[![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
 [![npm](https://img.shields.io/badge/npm-btp--guard%20v6.4.4-cb3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
@@ -223,19 +223,34 @@ jobs:
 
 ---
 
-## Audit & Compliance Readiness
+## Monorepo Architecture
 
-Bartholomew produces machine-signed audit evidence logs mapping to:
-- **AICPA SOC 2 Type II**: CC6.1 (Logical Access), CC6.6 (Boundary Protection), CC7.1 (Vulnerability Management).
-- **ISO/IEC 27001:2022**: A.8.8 (Management of Technical Vulnerabilities), A.8.30 (Outsourced Development).
-- **OWASP Top 10 for LLM Applications**: LLM02 (Sensitive Information Disclosure), LLM08 (Excessive Agency).
+Bartholomew is structured as a unified multi-language monorepo:
+
+| Directory | Component | Runtime / Tooling | Target Distribution |
+| :--- | :--- | :--- | :--- |
+| `btp_guard/` | **Canonical Python In-Process Engine** | Python 3.10+ | PyPI (`btp-guard`) |
+| `packages/npm_package/` | **Node.js / TypeScript SDK** | TypeScript, Node 18+ | npm (`btp-guard`) |
+| `packages/mcp-proxy-guard/` | **MCP Security Gateway Proxy** | Node.js stdio / SSE | npm (`mcp-proxy-guard`) |
+| `packages/vscode-extension/` | **IDE Guard Extension** | VS Code API | VS Code / Cursor / Open VSX |
+| `packages/sdk_go/` | **Go In-Process Verifier & CLI** | Go 1.22+ (`cmd/`) | Go Modules (`pkg/btp`) |
+| `packages/sdk_rust/` | **Rust High-Performance Crate** | Rust / Cargo | crates.io |
+| `deploy/` | **Infrastructure & Containers** | Docker, Helm, Cloud Run | Datacenter & Kubernetes |
+| `policies/` | **Declarative Security Presets** | YAML Invariants | SOC 2 / Multi-Agent Rules |
+| `tests/` | **Deterministic Invariant Test Suite** | Pytest, Node Test | CI Automation |
+
+---
+
+## Auditable Telemetry & Control Log Exporter
+
+Bartholomew provides automated control-mapping exporters to generate structured telemetry and evidence logs for independent CPA examination (mapping directly to AICPA SOC 2 CC6.1, CC6.6, CC7.1 and ISO/IEC 27001:2022 controls):
 
 ```bash
-# Generate machine-verifiable compliance evidence pack
+# Export structured control logs & cryptographic telemetry
 python scripts/generate_soc2_compliance_evidence.py
 ```
 
-Output: `docs/audit/soc2-compliance-evidence.json` containing SHA-256 Merkle tree hashes and canonical JSON audit receipts for independent verification.
+Output: `audit_evidence/soc2_compliance_evidence_pack.json` containing SHA-256 Merkle tree hashes and RFC 8785 canonical JSON audit receipts ready for direct ingestion into your SIEM, GRC platform, or third-party CPA auditor review.
 
 ---
 
