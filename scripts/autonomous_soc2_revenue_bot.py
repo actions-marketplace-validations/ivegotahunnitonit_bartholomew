@@ -30,6 +30,20 @@ from email.mime.multipart import MIMEMultipart
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
+# Load .env file automatically
+ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
+if ENV_FILE.exists():
+    try:
+        from dotenv import load_dotenv
+        load_dotenv(ENV_FILE)
+    except Exception:
+        # Fallback native parsing
+        for line in ENV_FILE.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ.setdefault(k.strip(), v.strip())
+
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -148,6 +162,7 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
         os.getenv("SMTP_PASS")
     )
     if workspace_pw:
+        workspace_pw = workspace_pw.replace(" ", "").strip()
         try:
             msg = MIMEMultipart()
             msg["From"] = f"Bartholomew Security Group <{sender}>"
@@ -401,6 +416,7 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
         if tx_status == "TRANSMITTED_LIVE":
             transmitted_count += 1
             print(f" [+] LIVE SENT: {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
+            time.sleep(1.0)
         else:
             staged_count += 1
             print(f" [+] QUEUED:    {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
