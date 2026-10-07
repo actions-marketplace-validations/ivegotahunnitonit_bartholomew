@@ -4611,10 +4611,6 @@ def main():
     start_p.add_argument("--m2m", action="store_true", default=True, help="Run in autonomous M2M wire barter mode")
 
 
-    yield_p = daemon_sub.add_parser("yield", help="Run unified yield harvester (Subnet + DePIN + Arbitrage)")
-    yield_p.add_argument("--once", action="store_true", help="Execute single discrete harvest cycle and exit")
-    yield_p.add_argument("--interval", "-i", type=float, default=15.0, help="Harvest interval in seconds (default: 15.0)")
-
     status_p = daemon_sub.add_parser("status", help="Query local daemon heartbeat & telemetry")
     status_p.add_argument("--port", type=int, default=8443, help="Daemon port")
 

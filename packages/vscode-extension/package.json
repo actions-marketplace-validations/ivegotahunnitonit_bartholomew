@@ -1,11 +1,11 @@
 {
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew Agent Guard - Coding Agent Runtime Protection",
-  "description": "BTP v6.4.3 Deterministic workspace execution firewall, fail-closed pre-commit sentinel, and sub-35us AST invariant guard for AI coding agents (Cursor, Claude Code, Windsurf, Copilot, Cline, Aider, OpenHands, Smolagents).",
+  "description": "Deterministic workspace execution firewall, fail-closed pre-commit sentinel, and sub-millisecond AST invariant guard for AI coding agents (Cursor, Claude Code, Windsurf, Copilot, Cline, Aider, OpenHands, Smolagents).",
   "version": "6.4.3",
   "publisher": "bartholomew",
   "icon": "icon.png",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "galleryBanner": {
     "color": "#070b14",
     "theme": "dark"
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ivegotahunnitonit/bartholomew.git",
+    "url": "https://github.com/bartholomew-security/bartholomew.git",
     "directory": "packages/vscode-extension"
   },
   "engines": {
@@ -87,14 +87,9 @@
         "icon": "$(feedback)"
       },
       {
-        "command": "bartholomew.backOpenSource",
-        "title": "Bartholomew: Back Open Source Development (Stripe)",
-        "icon": "$(heart)"
-      },
-      {
-        "command": "bartholomew.startYieldDaemon",
-        "title": "Bartholomew: Launch Autonomous Yield Harvester Daemon",
-        "icon": "$(server-process)"
+        "command": "bartholomew.openEnterpriseDocs",
+        "title": "Bartholomew: Open Enterprise Security Portal",
+        "icon": "$(book)"
       },
       {
         "command": "bartholomew.injectAiRules",
@@ -282,12 +277,5 @@
       "description": "Sub-35us In-Process Latency"
     }
   ],
-  "funding": {
-    "type": "stripe",
-    "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
-  },
-  "sponsor": {
-    "url": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605"
-  },
   "homepage": "https://bartholomew.info"
 }

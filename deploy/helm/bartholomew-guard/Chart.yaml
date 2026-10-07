@@ -14,7 +14,7 @@ keywords:
   - datacenter
 home: https://bartholomew.info
 sources:
-  - https://github.com/ivegotahunnitonit/bartholomew
+  - https://github.com/bartholomew-security/bartholomew
 maintainers:
-  - name: Bartholomew Sovereign Trust Authority
+  - name: Bartholomew Security Contributors
     email: security@bartholomew.info

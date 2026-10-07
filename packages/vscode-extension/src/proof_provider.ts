@@ -2095,9 +2095,9 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
     }
 
     function openPilotEnrollment() {
-      vscode.postMessage({ command: 'openExternalUrl', url: 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605' });
-      vscode.postMessage({ command: 'copyReceipt', receipt: 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605' });
-      showToast('Opening Stripe Checkout & Copied Pilot URL');
+      vscode.postMessage({ command: 'openExternalUrl', url: 'https://bartholomew.info/enterprise' });
+      vscode.postMessage({ command: 'copyReceipt', receipt: 'https://bartholomew.info/enterprise' });
+      showToast('Opening Enterprise Portal & Pilot Information');
     }
 
     function submitPilotApplication() {
@@ -2274,12 +2274,12 @@ export class BartholomewProofViewProvider implements vscode.WebviewViewProvider 
           };
           fs.appendFileSync(appPath, JSON.stringify(entry) + '\n', 'utf-8');
           vscode.window.showInformationMessage(
-            'Bartholomew Team Pilot: Application registered for ' + entry.org + '! Complete onboarding via Stripe checkout or schedule your guided kickoff.',
-            'Checkout ($199/mo)',
+            'Bartholomew Team Pilot: Application registered for ' + entry.org + '! Schedule your onboarding with enterprise sales or review documentation.',
+            'Enterprise Contact',
             'Documentation'
           ).then((choice: any) => {
-            if (choice === 'Checkout ($199/mo)') {
-              vscode.env.openExternal(vscode.Uri.parse('https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605'));
+            if (choice === 'Enterprise Contact') {
+              vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/enterprise'));
             } else if (choice === 'Documentation') {
               vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/pilot'));
             }

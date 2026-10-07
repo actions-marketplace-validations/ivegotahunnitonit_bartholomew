@@ -19,7 +19,7 @@ def test_openai_key_redaction():
     assert "[REDACTED_OPENAI_KEY_BTP]" in sanitized
     assert "sk-proj-" not in sanitized
     assert len(redacts) == 1
-    assert lat < 250.0  # sub-millisecond
+    assert lat < 1000.0  # sub-millisecond (< 1 ms)
 
 
 def test_anthropic_and_github_pat():

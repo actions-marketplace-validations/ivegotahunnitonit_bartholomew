@@ -26,14 +26,14 @@
     "secret-scrubber"
   ],
   "author": "Bartholomew Security <security@bartholomew.info>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ivegotahunnitonit/bartholomew.git"
+    "url": "git+https://github.com/bartholomew-security/bartholomew.git"
   },
   "homepage": "https://bartholomew.info",
   "bugs": {
-    "url": "https://github.com/ivegotahunnitonit/bartholomew/issues"
+    "url": "https://github.com/bartholomew-security/bartholomew/issues"
   },
   "publisher": "bartholomew"
 }

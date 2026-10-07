@@ -27,7 +27,7 @@ Official Helm chart for deploying Bartholomew Keystone Guard, Confidential Encla
 
 ```bash
 # Add repo or clone
-git clone https://github.com/ivegotahunnitonit/bartholomew.git
+git clone https://github.com/bartholomew-security/bartholomew.git
 cd bartholomew/deploy/helm/bartholomew-guard
 
 # Install release

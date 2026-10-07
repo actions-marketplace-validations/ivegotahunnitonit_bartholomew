@@ -17,7 +17,7 @@ Security updates are actively maintained and published for the following version
 The Bartholomew Protocol engineering team takes runtime security, invariant evasion, and cryptographic integrity seriously. If you identify a potential security flaw, sandbox escape, secret disclosure, or AST parser bypass, disclose it privately:
 
 - **Primary Security Contact:** `security@bartholomew.info`
-- **GitHub Private Vulnerability Advisory:** [Report via GitHub Security Advisory](https://github.com/ivegotahunnitonit/bartholomew/security/advisories/new)
+- **GitHub Private Vulnerability Advisory:** [Report via GitHub Security Advisory](https://github.com/bartholomew-security/bartholomew/security/advisories/new)
 - **PGP Encryption (Optional):**
   - **Key ID:** `0x9B4E3FA1C2D87B04`
   - **Fingerprint:** `5E81 A20F 761C B499 D203  579E 9B4E 3FA1 C2D8 7B04`
