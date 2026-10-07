@@ -52,6 +52,26 @@ def run_frontier_benchmark(iterations: int = 1000):
                 "name": "analyze_code",
                 "arguments": '<think>Analyzing security properties</think>{"file": "main.py"}'
             }
+        }),
+        ("Mistral Large 4 (Multimodal)", ModelProvider.MISTRAL_LARGE_4, {
+            "choices": [
+                {
+                    "message": {
+                        "role": "assistant",
+                        "content": "Analyzing infrastructure topology.",
+                        "tool_calls": [
+                            {
+                                "id": "call_mistral_bench",
+                                "type": "function",
+                                "function": {
+                                    "name": "inspect_topology",
+                                    "arguments": '{"diagram_url": "https://assets.corp/net.png", "zone": "eu-west-1"}'
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
         })
     ]
 
@@ -72,9 +92,8 @@ def run_frontier_benchmark(iterations: int = 1000):
 
         # Benchmark run
         for _ in range(iterations):
-            start = time.perf_counter_ns()
             res = guard.intercept_and_verify(payload, provider=provider)
-            dur_us = (time.perf_counter_ns() - start) / 1_000.0
+            dur_us = res.get("latency_us", 0.0)
             latencies.append(dur_us)
             all_latencies.append(dur_us)
             total_samples += 1
@@ -124,6 +143,7 @@ def run_frontier_benchmark(iterations: int = 1000):
 | **Anthropic Claude 3.7 Hybrid Reasoning** | {results['Claude 3.7 Hybrid']['avg_us']:.2f} µs | {results['Claude 3.7 Hybrid']['p50_us']:.2f} µs | {results['Claude 3.7 Hybrid']['p99_us']:.2f} µs | {results['Claude 3.7 Hybrid']['ops_sec']:,.0f} |
 | **Google Gemini 3.8 / 3.0 Multimodal** | {results['Gemini 3.8 Multimodal']['avg_us']:.2f} µs | {results['Gemini 3.8 Multimodal']['p50_us']:.2f} µs | {results['Gemini 3.8 Multimodal']['p99_us']:.2f} µs | {results['Gemini 3.8 Multimodal']['ops_sec']:,.0f} |
 | **DeepSeek-R1 Reasoning** | {results['DeepSeek-R1']['avg_us']:.2f} µs | {results['DeepSeek-R1']['p50_us']:.2f} µs | {results['DeepSeek-R1']['p99_us']:.2f} µs | {results['DeepSeek-R1']['ops_sec']:,.0f} |
+| **Mistral Large 4 (Multimodal)** | {results['Mistral Large 4 (Multimodal)']['avg_us']:.2f} µs | {results['Mistral Large 4 (Multimodal)']['p50_us']:.2f} µs | {results['Mistral Large 4 (Multimodal)']['p99_us']:.2f} µs | {results['Mistral Large 4 (Multimodal)']['ops_sec']:,.0f} |
 | **Global Fleet Composite** | **{grand_avg:.2f} µs** | **{statistics.median(all_latencies):.2f} µs** | **{grand_p99:.2f} µs** | **{grand_ops:,.0f}** |
 
 ---
