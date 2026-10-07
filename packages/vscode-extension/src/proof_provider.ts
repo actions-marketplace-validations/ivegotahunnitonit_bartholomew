@@ -1624,7 +1624,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
   <!-- Target Runtimes Grid ("Guarded Everywhere") -->
   <div class="runtimes-section">
     <div class="section-title">
-      <span>Universal Agent Compatibility</span>
+      <span>Keystone Agent Compatibility</span>
       <span style="color:var(--emerald-bright); font-family:var(--font-mono); font-weight:700;">12 RUNTIMES ACTIVE</span>
     </div>
     <div class="runtimes-grid">
@@ -1734,7 +1734,7 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
 
       <div class="toggle-row">
         <div class="toggle-left">
-          <span class="toggle-title">Universal Local Proxy Gateway</span>
+          <span class="toggle-title">Keystone Local Security Gateway</span>
           <span class="toggle-desc">Intercepts OpenAI-compatible tool calls on <code>http://127.0.0.1:8081</code> with sub-35&mu;s latency.</span>
         </div>
         <span class="toggle-pill">PORT 8081 ONLINE</span>
