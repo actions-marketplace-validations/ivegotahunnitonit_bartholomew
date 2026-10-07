@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { rfc8785Canonicalize, verifyBtpReceipt, verifyTurnReceiptChaining, scrubSensitiveCredentials, evaluateIntent, verifyReceipt, protectAgent, harmonizeUniversalSchema, validateToolPayload, exportToolSchema, detectSchemaFormat, generateAuditPack, verifyAuditPack, evaluateAndRemediate, createAgentDelegationPassport, verifyAgentDelegationPassport, guardMcpToolExecution, sanitizeAgentContext, evaluateLocalToolCall, inspectAndFilterResponse } from './index.js';
+import { rfc8785Canonicalize, verifyBtpReceipt, verifyTurnReceiptChaining, scrubSensitiveCredentials, evaluateIntent, verifyReceipt, protectAgent, harmonizeUniversalSchema, validateToolPayload, exportToolSchema, detectSchemaFormat, generateAuditPack, verifyAuditPack, evaluateAndRemediate, createAgentDelegationPassport, verifyAgentDelegationPassport, guardMcpToolExecution, sanitizeAgentContext, evaluateLocalToolCall, inspectAndFilterResponse, guardVercelAITool, guardLangChainJsTool, guardUniversalAgentTool } from './index.js';
 import crypto from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -229,7 +229,33 @@ async function runTests() {
     choices: [{ message: { tool_calls: [{ function: { name: 'exec', arguments: JSON.stringify({ cmd: 'rm -rf /' }) } }] } }]
   }));
   const llamaOk = safeLlamaTool.safe && !dangerousLlamaTool.safe && filteredChat.includes('bartholomew_remediation_guard');
-  console.log(`[20/20] Llama.cpp & Ollama Local Tool Guard: ${llamaOk ? "PASS" : "FAIL"}`);
+  console.log(`[20/21] Llama.cpp & Ollama Local Tool Guard: ${llamaOk ? "PASS" : "FAIL"}`);
+
+  // 21. Vercel AI SDK & LangChain.js Universal Framework Guards
+  let vercelBlocked = false;
+  const mockVercelTool = guardVercelAITool({
+    description: "run_shell",
+    execute: async (input) => `Executed: ${input.cmd}`
+  });
+  try {
+    await mockVercelTool.execute({ cmd: "rm -rf / --no-preserve-root" });
+  } catch (err) {
+    vercelBlocked = true;
+  }
+
+  let langchainBlocked = false;
+  const mockLangChainTool = guardLangChainJsTool({
+    name: "db_query",
+    _call: async (input) => `Queried: ${input.sql}`
+  });
+  try {
+    await mockLangChainTool._call({ sql: "DROP TABLE users; SELECT 1;" });
+  } catch (err) {
+    langchainBlocked = true;
+  }
+
+  const frameworksOk = vercelBlocked && langchainBlocked;
+  console.log(`[21/21] Universal Framework Guards (Vercel AI & LangChain.js): ${frameworksOk ? "PASS" : "FAIL"}`);
 
   console.log("==========================================================");
 
@@ -245,8 +271,8 @@ async function runTests() {
       toolVetoOk &&
       schemaHarmonizeOk &&
       safePayloadOk &&
-      dangerousPayloadOk && remOk && a2aOk && mcpOk && contextOk && llamaOk) {
-    console.log("ALL 20 NODE.JS TESTS PASSED (100.00%)");
+      dangerousPayloadOk && remOk && a2aOk && mcpOk && contextOk && llamaOk && frameworksOk) {
+    console.log("ALL 21 NODE.JS TESTS PASSED (100.00%)");
     process.exit(0);
   } else {
     console.error("TEST FAILED");

@@ -137,3 +137,14 @@ class SecretVaultMasker:
         sanitized_obj = _recursive_clean(payload)
         latency_us = (time.perf_counter() - t0) * 1_000_000
         return sanitized_obj, total_count, round(latency_us, 2)
+
+    def mask(self, text_or_payload: Any) -> Any:
+        if isinstance(text_or_payload, str):
+            cleaned, _, _ = self.mask_text(text_or_payload)
+            return cleaned
+        cleaned, _, _ = self.mask_payload(text_or_payload)
+        return cleaned
+
+
+SecretMasker = SecretVaultMasker
+

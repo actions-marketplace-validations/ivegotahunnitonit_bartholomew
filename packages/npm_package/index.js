@@ -745,7 +745,10 @@ export {
   createAgentDelegationPassport,
   verifyAgentDelegationPassport,
   guardMcpToolExecution,
-  sanitizeAgentContext
+  sanitizeAgentContext,
+  guardUniversalAgentTool,
+  guardVercelAITool,
+  guardLangChainJsTool
 } from './agent_core.js';
 
 // Export Llama.cpp & Ollama Local AI Gateway (BTP v6.3.0)
