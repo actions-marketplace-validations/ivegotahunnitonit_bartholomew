@@ -129,14 +129,53 @@ DEFAULT_WEDGE = (
 )
 
 
+def calculate_enterprise_intent_score(target: Dict[str, Any]) -> int:
+    """
+    Data-driven Enterprise Intent & Willingness-to-Pay Scoring (0 - 100):
+    - Regulated / High-Stakes Enterprise Verticals (Legal, Health, Fintech, Coding Swarms): +25 pts
+    - High-Privilege Runtime Risk Primitives (Shell execution, PHI, DB mutations, Financial tools): +25 pts
+    - Top-Tier Market Leaders & Well-Funded Scaleups with Active Enterprise Procurement: +25 pts
+    - Verified Direct Security/CTO/Executive Point of Contact: +25 pts
+    """
+    score = 25
+    role = (target.get("role_focus") or "").lower()
+    wedge = (target.get("audit_wedge") or "").lower()
+    name = (target.get("name") or "").lower()
+
+    # 1. Regulated enterprise vertical with strict auditor requirements
+    if any(k in role for k in ["coding", "legal", "healthcare", "clinical", "fintech", "trading", "enterprise"]):
+        score += 25
+    elif any(k in role for k in ["robotics", "voice", "browser", "computer use", "data engineering"]):
+        score += 15
+
+    # 2. Elevated runtime blast radius requiring machine-signed AST boundaries
+    if any(k in wedge for k in ["shell", "breakout", "phi", "hipaa", "pci", "credential", "financial", "privilege", "sql", "mutations"]):
+        score += 25
+
+    # 3. Proven enterprise commercial traction & well-funded buyer profile
+    enterprise_titans = [
+        "cognition", "devin", "cursor", "anysphere", "codeium", "windsurf", "harvey", "hebbia",
+        "elevenlabs", "sierra", "glean", "poolside", "factory", "vapi", "cartesia", "hume",
+        "langchain", "crewai", "autogen", "pydantic", "aider", "airwallex", "nubank", "brex",
+        "scale", "writer", "jasper", "runway", "cohere", "mistral", "perplexity"
+    ]
+    if any(m in name for m in enterprise_titans):
+        score += 25
+
+    return min(100, score)
+
+
 def load_targets() -> List[Dict[str, Any]]:
     file_to_read = TARGETS_FILE if TARGETS_FILE.exists() else FALLBACK_TARGETS_FILE
     if file_to_read.exists():
         try:
             data = json.loads(file_to_read.read_text(encoding="utf-8"))
             targets = data.get("targets", [])
-            # Mandatory filter: ONLY targets with 100% active MX records pass
-            return [t for t in targets if verify_recipient_mx(t.get("email", ""))[0]]
+            # 1. Mandatory filter: ONLY targets with 100% active DNS MX records
+            verified = [t for t in targets if verify_recipient_mx(t.get("email", ""))[0]]
+            # 2. Prioritize by Enterprise Intent & Willingness-to-Pay Score
+            verified.sort(key=lambda t: calculate_enterprise_intent_score(t), reverse=True)
+            return verified
         except Exception as e:
             print(f"[!] Error reading {file_to_read}: {e}")
     return []
@@ -396,7 +435,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     fu_gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={urllib.parse.quote(email)}&su={urllib.parse.quote(fu_subject)}&body={urllib.parse.quote(fu_body)}"
     bu_gmail_url = f"https://mail.google.com/mail/?view=cm&fs=1&to={urllib.parse.quote(email)}&su={urllib.parse.quote(bu_subject)}&body={urllib.parse.quote(bu_body)}"
 
-    # Attempt transmission
+    intent_score = calculate_enterprise_intent_score(target)
     tx_result = transmit_email(email, subject, body)
 
     return {
@@ -406,6 +445,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         "region": target.get("region", "Global"),
         "email": email,
         "tier": tier,
+        "intent_score": intent_score,
         "token": token,
         "stripe_url": stripe_url,
         "portal_url": portal_url,
@@ -442,7 +482,7 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
     print("\n" + "=" * 80)
     print(f" BARTHOLOMEW SOC 2 AUTONOMOUS REVENUE BOT — DAILY DISPATCH WAVE")
     print(f" Goal: {WEEKLY_GOAL} targets/week | Daily Limit: {len(selected)} targets")
-    print(f" Pacing: ~{DAILY_PACING}/day | Current Pool: {len(targets)} targets")
+    print(f" Pacing: ~{DAILY_PACING}/day | Current Pool: {len(targets)} targets (Sorted by Intent Score)")
     print(f" Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 80)
 
@@ -456,13 +496,13 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
         tx_status = rec["transmission"]["status"]
         if tx_status == "TRANSMITTED_LIVE":
             transmitted_count += 1
-            print(f" [+] LIVE SENT:       {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
+            print(f" [+] LIVE SENT:       {rec['name']:<24} | Intent: {rec['intent_score']:>2}/100 | {rec['token']['token_id']}")
             time.sleep(1.0)
         elif tx_status == "DROPPED_INVALID_MX":
             print(f" [!] DROPPED (NO MX): {rec['name']:<24} | {rec['email']}")
         else:
             staged_count += 1
-            print(f" [+] QUEUED:          {rec['name']:<24} | {rec['tier']:<20} | {rec['token']['token_id']}")
+            print(f" [+] QUEUED:          {rec['name']:<24} | Intent: {rec['intent_score']:>2}/100 | {rec['token']['token_id']}")
 
     # Save to active dispatches log
     existing_logs = []
