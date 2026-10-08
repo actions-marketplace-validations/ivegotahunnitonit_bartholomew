@@ -614,11 +614,15 @@ def retry_failed_dispatches(delay_sec: int = 5):
     quota_blocked = False
 
     for i, rec in enumerate(failed):
-        to_email = rec["target"]["email"]
-        subject = rec["sequences"]["initial"]["subject"]
-        body = rec["sequences"]["initial"]["body"]
+        to_email = rec.get("email") or rec.get("target", {}).get("email")
+        target_name = rec.get("name") or rec.get("target", {}).get("name") or "Engineering Team"
+        subject = rec.get("sequences", {}).get("initial", {}).get("subject") or f"Security Advisory for {target_name}"
+        body = rec.get("sequences", {}).get("initial", {}).get("body") or ""
 
-        print(f"[*] [{i+1}/{len(failed)}] Retrying transmission to {rec['target']['name']} ({to_email})...")
+        if not to_email:
+            continue
+
+        print(f"[*] [{i+1}/{len(failed)}] Retrying transmission to {target_name} ({to_email})...")
         res = transmit_email(to_email, subject, body)
 
         if res["status"] == "TRANSMITTED_LIVE":
