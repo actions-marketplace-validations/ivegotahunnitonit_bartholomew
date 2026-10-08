@@ -386,8 +386,8 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"wedge={urllib.parse.quote_plus(vuln_risk)}"
     )
 
-    # 1. Mandatory Technical Briefing Subject & Body (Institutional credibility, zero pricing)
-    subject = f"[MANDATORY SECURITY INVARIANT] Runtime Execution Boundary Exposure in {name}'s Agent Stack"
+    # 1. Technical Briefing Subject & Body (Clean, authoritative, zero pricing)
+    subject = f"Security Notice: Runtime execution boundaries for {name}"
     body = (
         f"{name} Security Architecture & Engineering Lead,\n\n"
         f"Enterprise procurement, institutional audit standards, and SOC 2 Type II compliance mandate that "
@@ -414,7 +414,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     # 2. Automated Follow-Up (Day 3)
-    fu_subject = f"Re: [MANDATORY SECURITY INVARIANT] Action Required: Clearance Token {token['token_id']} for {name}"
+    fu_subject = f"Re: Security Notice: Runtime execution boundaries for {name}"
     fu_body = (
         f"{name} Engineering Team,\n\n"
         f"Your compliance clearance token ({token['token_id']}) expires in 24 hours.\n\n"
@@ -427,7 +427,7 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     # 3. Final Breakup Notice (Day 5)
-    bu_subject = f"Final Invariant Notice: Queue Rotation for {name} ({token['token_id']})"
+    bu_subject = f"Final Notice: Clearance token {token['token_id']} expiring for {name}"
     bu_body = (
         f"{name} Team,\n\n"
         f"Your 72-hour priority compliance hold ({token['token_id']}) expires today.\n\n"
