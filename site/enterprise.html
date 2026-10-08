@@ -722,7 +722,7 @@
             <li>Drop-In Remediation PR (Python / TS)</li>
             <li>"Secured by Bartholomew" Digital Seal</li>
           </ul>
-          <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" class="btn-checkout btn-secondary" target="_blank">Book Startup Audit ($3,500)</a>
+          <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" id="btnStripeStartup" class="btn-checkout btn-secondary" target="_blank">Book Startup Audit ($3,500)</a>
         </div>
 
         <!-- Tier 2: Enterprise Fleet Audit (Featured) -->
@@ -740,7 +740,7 @@
             <li>Automated Pre-Commit &amp; CI/CD Security Gate</li>
             <li>Official Compliance Certificate for Procurement</li>
           </ul>
-          <a href="https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601" class="btn-checkout btn-primary" target="_blank">Book Enterprise Audit ($7,500)</a>
+          <a href="https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601" id="btnStripeEnterprise" class="btn-checkout btn-primary" target="_blank">Book Enterprise Audit ($7,500)</a>
         </div>
 
         <!-- Tier 3: Continuous Retainer -->
@@ -835,6 +835,42 @@
         </div>
       </div>
     </section>
+
+    <!-- Intake Confirmation Modal -->
+    <div class="modal-overlay" id="intakeConfirmationModal" style="display:none; position:fixed; inset:0; background:rgba(3,6,13,0.85); backdrop-filter:blur(10px); align-items:center; justify-content:center; z-index:1000; padding:20px;">
+      <div style="background:#0d1322; border:1px solid var(--emerald); border-radius:14px; max-width:520px; width:100%; padding:32px; box-shadow:0 24px 60px rgba(0,0,0,0.8); text-align:center;">
+        <div style="width:56px; height:56px; margin:0 auto 16px; border-radius:50%; background:rgba(16,185,129,0.15); border:1px solid var(--emerald); display:flex; align-items:center; justify-content:center; color:var(--emerald);">
+          <svg width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:11px; font-weight:800; color:var(--emerald); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;">
+          [AUTHENTICATED INTAKE RESERVATION SEALED]
+        </div>
+        <h3 style="font-size:22px; font-weight:800; color:#ffffff; margin-bottom:8px;" id="modalCompanyHeader">Audit Slot Confirmed</h3>
+        <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:20px; line-height:1.5;">
+          Your technical invariant assessment dossier has been logged. Delivery SLA is locked for 48 hours.
+        </p>
+
+        <div style="background:#070a0f; border:1px solid var(--border-subtle); border-radius:8px; padding:12px; margin-bottom:20px; text-align:left;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">REFERENCE ID:</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--cyan); font-weight:700;" id="modalRefId">AUDIT-XXXX</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">ENGAGEMENT TIER:</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--emerald-light); font-weight:700;" id="modalTier">Enterprise Fleet Audit</span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <a id="modalStripeRedirectBtn" href="#" class="btn-gate-unlock" style="display:block; text-decoration:none; padding:12px; font-size:13px; text-align:center;">
+            PROCEED TO STRIPE CHECKOUT &rarr;
+          </a>
+        </div>
+        <div style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);" id="modalCountdownText">
+          Redirecting to Stripe in 3 seconds...
+        </div>
+      </div>
+    </div>
 
     <!-- Footer -->
     <footer>
@@ -941,6 +977,21 @@
         if (notesEl) notesEl.value = `Identified Risk Vector: ${wedge}`;
       }
 
+      // Dynamically attach prefilled parameters to tier Stripe checkout links
+      if (email || company) {
+        const startupBtn = document.getElementById('btnStripeStartup');
+        const enterpriseBtn = document.getElementById('btnStripeEnterprise');
+        const emailParam = email ? '&prefilled_email=' + encodeURIComponent(email) : '';
+        const refParam = token ? '&client_reference_id=' + encodeURIComponent(token) : '';
+
+        if (startupBtn) {
+          startupBtn.href = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605?' + (emailParam ? emailParam.substring(1) : '') + refParam;
+        }
+        if (enterpriseBtn) {
+          enterpriseBtn.href = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601?' + (emailParam ? emailParam.substring(1) : '') + refParam;
+        }
+      }
+
       // Check URL token or existing session
       const storedToken = sessionStorage.getItem('btp_clearance_token');
       const storedCompany = sessionStorage.getItem('btp_clearance_company');
@@ -959,21 +1010,66 @@
       }
     });
 
+    let redirectTimer = null;
     function handleIntakeSubmit(e) {
       e.preventDefault();
-      const comp = document.getElementById('companyName').value;
-      const email = document.getElementById('contactEmail').value;
-      const tier = document.getElementById('tierSelect').value;
+      const comp = document.getElementById('companyName').value || 'Authorized Organization';
+      const email = document.getElementById('contactEmail').value || '';
+      const tier = document.getElementById('tierSelect').value || 'enterprise';
+      const repo = document.getElementById('repoUrl').value || '';
+      const notes = document.getElementById('notes').value || '';
       
-      const refId = 'AUDIT-' + Math.random().toString(36).substring(2, 10).toUpperCase();
-      alert(`[Bartholomew Verified] Intake Reference ${refId} created for ${comp}.\n\nOur team has been notified at security@bartholomew.info. You will now be redirected to lock your 48-hour delivery slot.`);
-      
+      const refId = 'BTP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
+
+      // Persist lead locally in localStorage
+      try {
+        const stored = JSON.parse(localStorage.getItem('btp_enterprise_intakes') || '[]');
+        stored.push({
+          refId,
+          company: comp,
+          email: email,
+          tier: tier,
+          repo: repo,
+          notes: notes,
+          timestamp: new Date().toISOString()
+        });
+        localStorage.setItem('btp_enterprise_intakes', JSON.stringify(stored));
+      } catch (err) {}
+
+      // Calculate checkout URL with prefilled parameters
+      let checkoutUrl = '';
       if (tier === 'startup') {
-        window.location.href = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605';
+        checkoutUrl = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(refId);
       } else if (tier === 'enterprise') {
-        window.location.href = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601';
+        checkoutUrl = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(refId);
       } else {
-        window.location.href = 'mailto:contact@bartholomew.info?subject=Retainer%20Intake%20' + refId;
+        checkoutUrl = 'mailto:security@bartholomew.info?subject=Retainer%20Intake%20' + refId + '&body=' + encodeURIComponent('Organization: ' + comp + '\nTier: Continuous OEM\nRepo: ' + repo);
+      }
+
+      // Display Modal
+      const modal = document.getElementById('intakeConfirmationModal');
+      document.getElementById('modalCompanyHeader').textContent = comp + ' Audit Reserved';
+      document.getElementById('modalRefId').textContent = refId;
+      document.getElementById('modalTier').textContent = tier === 'startup' ? 'Startup Agent Audit ($3,500)' : (tier === 'enterprise' ? 'Enterprise Fleet Audit ($7,500)' : 'Continuous OEM Retainer');
+      const redirectBtn = document.getElementById('modalStripeRedirectBtn');
+      redirectBtn.href = checkoutUrl;
+
+      modal.style.display = 'flex';
+
+      if (tier === 'startup' || tier === 'enterprise') {
+        let seconds = 3;
+        const countdownEl = document.getElementById('modalCountdownText');
+        if (redirectTimer) clearInterval(redirectTimer);
+        redirectTimer = setInterval(() => {
+          seconds--;
+          if (countdownEl) countdownEl.textContent = `Redirecting to Secure Stripe Checkout in ${seconds}s...`;
+          if (seconds <= 0) {
+            clearInterval(redirectTimer);
+            window.location.href = checkoutUrl;
+          }
+        }, 1000);
+      } else {
+        document.getElementById('modalCountdownText').textContent = 'Direct leadership confirmation email ready.';
       }
     }
   </script>
