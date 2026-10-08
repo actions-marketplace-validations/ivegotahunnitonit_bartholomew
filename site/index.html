@@ -1527,6 +1527,138 @@
       flex-shrink: 0;
     }
 
+    .footer-bottom-container {
+      padding-top: 26px;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+    }
+
+    .footer-row-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-identity-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      color: #94a3b8;
+    }
+
+    .footer-btp-pill {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--emerald-light);
+      font-size: 0.72rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .footer-support-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.35);
+      color: #c084fc;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-support-btn:hover {
+      background: rgba(168, 85, 247, 0.22);
+      border-color: #c084fc;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+    }
+
+    .footer-row-nav {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.8rem;
+    }
+
+    .footer-row-nav a {
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-row-nav a:hover {
+      opacity: 0.85;
+      text-decoration: underline;
+    }
+
+    .footer-row-links {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+
+    .footer-contacts-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .footer-contacts-wrap a {
+      color: #94a3b8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+    }
+
+    .footer-contacts-wrap a:hover {
+      color: #ffffff;
+    }
+
+    .footer-util-wrap {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .footer-util-wrap a {
+      color: #94a3b8;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+    }
+
+    .footer-util-wrap a:hover {
+      color: #ffffff;
+    }
+
     .footer-bottom-bar {
       padding-top: 24px;
       display: flex;
@@ -4180,32 +4312,61 @@
       </div>
 
       <!-- Bottom Bar -->
-      <div class="footer-bottom-bar">
-        <div>© 2026 Autonomous Circularity Labs • SOVEREIGN OPEN STANDARDS (BTP v6.0) • <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" target="_blank" style="color:#a78bfa; text-decoration:none; font-weight:700;">💜 Support Development</a></div>
-        <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
-          <a href="/careers" style="color: #34d399; font-weight: 800; text-decoration: none;">[CAREERS: WE'RE HIRING &rarr;]</a>
-          <span>•</span>
-          <a href="/docs.html" style="color: #cbd5e1; font-weight: 700; text-decoration: none;">[DOCUMENTATION]</a>
-          <span>•</span>
-          <a href="/verify.html" style="color: #10b981; font-weight: 700; text-decoration: none;">[VERIFIED BARTHOLOMEW SEAL]</a>
-          <span>•</span>
-          <a href="/investors.html" style="color: #c084fc; font-weight: 700; text-decoration: none;">[INVESTOR ROOM]</a>
-          <span>•</span>
-          <a href="/sim-lab.html" style="color: #38bdf8; font-weight: 700; text-decoration: none;">[LIVE ATTACK SIMULATOR]</a>
-          <span>•</span>
-          <a href="/robots.txt">robots.txt</a>
-          <span>·</span>
-          <a href="/sitemap.xml">sitemap.xml</a>
-          <span>·</span>
-          <a href="https://github.com/ivegotahunnitonit/bartholomew/blob/main/LICENSE" target="_blank">[MIT LICENSE]</a>
-          <span>•</span>
-          <a href="mailto:security@bartholomew.info" style="color:var(--text-muted); text-decoration:none;">security@bartholomew.info</a>
-          <span>·</span>
-          <a href="mailto:contact@bartholomew.info" style="color:var(--text-muted); text-decoration:none;">contact@bartholomew.info</a>
-          <span>·</span>
-          <a href="/.well-known/security.txt" style="color:var(--text-muted); text-decoration:none;">security.txt</a>
-          <span>·</span>
-          <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" style="color:var(--text-muted); text-decoration:none;">GitHub</a>
+      <div class="footer-bottom-container">
+        <!-- Row 1: Legal Identity & Support Button -->
+        <div class="footer-row-meta">
+          <div class="footer-identity-group">
+            <span>&copy; 2026 Autonomous Circularity Labs</span>
+            <span style="color:rgba(255,255,255,0.18);">&bull;</span>
+            <span style="letter-spacing:0.04em;">SOVEREIGN OPEN STANDARDS</span>
+            <span class="footer-btp-pill">BTP v6.0</span>
+          </div>
+          <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" target="_blank" rel="noopener noreferrer" class="footer-support-btn">
+            <span>💜 Support Development</span>
+          </a>
+        </div>
+
+        <!-- Row 2: Core Platform & Protocol Links -->
+        <div class="footer-row-nav">
+          <a href="/careers" style="color: #34d399; font-weight: 800;">[CAREERS: WE'RE HIRING &rarr;]</a>
+          <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+          <a href="/docs.html" style="color: #cbd5e1; font-weight: 700;">[DOCUMENTATION]</a>
+          <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+          <a href="/verify.html" style="color: #10b981; font-weight: 700;">[VERIFIED BARTHOLOMEW SEAL]</a>
+          <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+          <a href="/investors.html" style="color: #c084fc; font-weight: 700;">[INVESTOR ROOM]</a>
+          <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+          <a href="/sim-lab.html" style="color: #38bdf8; font-weight: 700;">[LIVE ATTACK SIMULATOR]</a>
+          <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+          <a href="https://github.com/ivegotahunnitonit/bartholomew/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" style="color: #94a3b8; font-weight: 600;">[MIT LICENSE]</a>
+        </div>
+
+        <!-- Row 3: Security, Endpoints, & Developer Verification -->
+        <div class="footer-row-links">
+          <div class="footer-contacts-wrap">
+            <a href="mailto:security@bartholomew.info">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>security@bartholomew.info</span>
+            </a>
+            <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+            <a href="mailto:contact@bartholomew.info">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>contact@bartholomew.info</span>
+            </a>
+            <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+            <a href="/.well-known/security.txt">security.txt</a>
+          </div>
+
+          <div class="footer-util-wrap">
+            <a href="/robots.txt">robots.txt</a>
+            <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+            <a href="/sitemap.xml">sitemap.xml</a>
+            <span style="color:rgba(255,255,255,0.15);">&bull;</span>
+            <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" rel="noopener noreferrer" style="color: #cbd5e1; font-weight: 600;">
+              <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+              <span>GitHub</span>
+            </a>
+          </div>
         </div>
       </div>
     </div>
