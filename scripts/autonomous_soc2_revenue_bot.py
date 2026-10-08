@@ -262,7 +262,7 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             msg["From"] = f"Bartholomew Security Group <{sender}>"
             msg["To"] = to_email
             msg["Subject"] = subject
-            msg["Reply-To"] = "security@bartholomew.info"
+            msg["Reply-To"] = f"{sender}, security@bartholomew.info"
             msg.attach(MIMEText(body, "plain", "utf-8"))
 
             context = ssl.create_default_context()
@@ -292,7 +292,7 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             payload = json.dumps({
                 "from": f"Bartholomew Security <{sender}>",
                 "to": [to_email],
-                "reply_to": "security@bartholomew.info",
+                "reply_to": sender,
                 "subject": subject,
                 "text": body
             }).encode("utf-8")
@@ -329,7 +329,7 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             payload = json.dumps({
                 "personalizations": [{"to": [{"email": to_email}]}],
                 "from": {"email": sender, "name": "Bartholomew Security Group"},
-                "reply_to": {"email": "security@bartholomew.info"},
+                "reply_to": {"email": sender},
                 "subject": subject,
                 "content": [{"type": "text/plain", "value": body}]
             }).encode("utf-8")
@@ -430,9 +430,9 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"• Verification & Intake Portal: {portal_url}\n"
         f"• 1-Click Instant Audit Retainer: {stripe_url}\n\n"
         f"Authenticate your token at the portal above to lock your 48-hour audit slot and secure your compliance seal. "
-        f"Alternatively, reply 'VERIFY' to coordinate repo red-teaming directly with our security engineers.\n\n"
-        f"Bartholomew Security Group\n"
-        f"Runtime Invariant Attestation & Autonomous Agent Governance\n"
+        f"If you'd like us to run our 1,000-vector stress test against a staging repo without booking, simply reply with your branch or ping me directly.\n\n"
+        f"Itsul Alemayehu\n"
+        f"Founder & Lead Architect, Bartholomew Security Group\n"
         f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
@@ -440,12 +440,15 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     # 2. Automated Follow-Up (Day 3)
     fu_subject = f"Re: Security Notice: Runtime execution boundaries for {name}"
     fu_body = (
-        f"{name} Engineering Team,\n\n"
-        f"Your compliance clearance token ({token['token_id']}) expires in 24 hours.\n\n"
-        f"Without certified AST runtime gating ({vuln_risk}), enterprise procurement audits for autonomous agents remain blocked.\n\n"
-        f"Access your intake session before your assigned queue window rotates:\n"
+        f"Hey {name} engineering team,\n\n"
+        f"Quick follow-up on this note. Wanted to see if your runtime team had a chance to look at the AST execution boundary for {vuln_risk}.\n\n"
+        f"We built an open 1,000-vector simulation suite and in-process invariant gate (sub-35µs) specifically for autonomous agent tool execution.\n\n"
+        f"If you want, I can run our fuzzer against your public agent workflows and send over the trace logs + patch diff free of charge so you have it handy for your next SOC 2 / auditor review.\n\n"
+        f"Alternatively, you can authenticate your 72-hour clearance token ({token['token_id']}) directly at our intake portal:\n"
         f"{portal_url}\n\n"
-        f"Bartholomew Security Group\n"
+        f"Let me know if that's helpful,\n\n"
+        f"Itsul Alemayehu\n"
+        f"Founder & Lead Architect, Bartholomew Security Group\n"
         f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
@@ -455,11 +458,12 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     bu_body = (
         f"{name} Team,\n\n"
         f"Your 72-hour priority compliance hold ({token['token_id']}) expires today.\n\n"
-        f"Unverified agent execution stacks cannot be certified for enterprise deployment once this clearance token is revoked.\n\n"
+        f"Unverified agent execution stacks cannot be certified for enterprise deployment once this clearance token rotates out of the queue.\n\n"
         f"Complete your intake authentication today:\n"
         f"{portal_url}\n\n"
-        f"Bartholomew Security Group\n"
-        f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
+        f"If you prefer to hold off on AST invariant gating for now, no worries at all—I'll close your clearance token and release the slot. Best of luck with the build!\n\n"
+        f"Itsul Alemayehu\n"
+        f"Founder & Lead Architect, Bartholomew Security Group\n"
         f"https://bartholomew.info"
     )
 
