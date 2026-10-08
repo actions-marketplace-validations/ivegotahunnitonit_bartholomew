@@ -25,6 +25,14 @@
         "destination": "/enterprise.html"
       },
       {
+        "source": "/careers",
+        "destination": "/careers.html"
+      },
+      {
+        "source": "/careers/admin",
+        "destination": "/careers_admin.html"
+      },
+      {
         "source": "/cloud",
         "destination": "/control-plane.html"
       }

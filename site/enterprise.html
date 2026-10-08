@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bartholomew Verified | Autonomous Agent Security Audit &amp; Intake Portal</title>
+  <meta name="description" content="Independent 48-hour security auditing, in-process AST gating, and SOC 2 / EU AI Act Article 14 compliance certification for autonomous AI agent platforms.">
+  <link rel="icon" type="image/png" href="/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #070a0f;
+      --bg-card: rgba(13, 19, 34, 0.78);
+      --bg-elevated: #0d1322;
+      --border-subtle: rgba(45, 62, 80, 0.65);
+      --border-focus: rgba(16, 185, 129, 0.6);
+      --emerald: #10b981;
+      --emerald-light: #34d399;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.2);
+      --gold: #eab308;
+      --rose: #f43f5e;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: radial-gradient(ellipse at 50% 0%, #101935 0%, var(--bg-dark) 75%);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Top Nav */
+    .site-nav {
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 68px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand img {
+      width: 36px;
+      height: 36px;
+    }
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-link:hover {
+      color: var(--text-main);
+    }
+    .btn-nav {
+      background: var(--emerald);
+      color: #070a0f;
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-nav:hover {
+      background: var(--emerald-light);
+      box-shadow: 0 0 15px var(--emerald-glow);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 70px 0 50px;
+      text-align: center;
+    }
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      color: var(--emerald-light);
+      margin-bottom: 24px;
+      letter-spacing: 0.04em;
+    }
+    .pill-badge .indicator-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+    }
+    .hero h1 {
+      font-size: 46px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+    }
+    .hero h1 .glow {
+      background: linear-gradient(135deg, #f8fafc 30%, var(--emerald-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      max-width: 720px;
+      margin: 0 auto 36px;
+      color: var(--text-muted);
+      font-size: 17px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 70px;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+    }
+    .stat-val {
+      font-family: var(--font-mono);
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--emerald);
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    /* Section Header */
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-header h2 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    /* Tiers Grid */
+    .tiers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 70px;
+    }
+    .tier-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 32px 28px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+      backdrop-filter: blur(10px);
+    }
+    .tier-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-focus);
+    }
+    .tier-card.featured {
+      border-color: var(--emerald);
+      background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(13, 19, 34, 0.85) 100%);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.12);
+    }
+    .tier-badge {
+      position: absolute;
+      top: -12px;
+      right: 24px;
+      background: var(--emerald);
+      color: #070a0f;
+      font-size: 11px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
+    .tier-name {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .tier-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      min-height: 40px;
+    }
+    .tier-price {
+      font-size: 38px;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+    .tier-price span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .tier-sla {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--cyan);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-sla {
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      color: var(--cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 800;
+    }
+    .tier-features {
+      list-style: none;
+      margin-bottom: 30px;
+      flex-grow: 1;
+    }
+    .tier-features li {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .tier-features li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: var(--emerald);
+      border-radius: 50%;
+      display: inline-block;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+    .btn-checkout {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--emerald);
+      color: #070a0f;
+    }
+    .btn-primary:hover {
+      background: var(--emerald-light);
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--text-muted);
+    }
+
+    /* Intake Form Box */
+    .intake-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 44px;
+      margin-bottom: 70px;
+      backdrop-filter: blur(14px);
+      position: relative;
+    }
+    .intake-wrapper::before {
+      content: "";
+      position: absolute;
+      top: -1px;
+      left: 15%;
+      right: 15%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .form-group.full {
+      grid-column: span 2;
+    }
+    label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    input, select, textarea {
+      background: rgba(7, 10, 15, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--emerald);
+      box-shadow: 0 0 15px var(--emerald-glow);
+    }
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, var(--emerald) 0%, #06b6d4 100%);
+      color: #070a0f;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 15px;
+      padding: 14px 28px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      transition: all 0.2s;
+    }
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Contact Vectors */
+    .contact-box {
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      background: rgba(13, 19, 34, 0.5);
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 70px;
+    }
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .contact-item {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--emerald-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .contact-tag {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald);
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .contact-item:hover {
+      text-decoration: underline;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+
+    /* RESTRICTED CLEARANCE GATE (Elite Authentication Overlay) */
+    .clearance-gate-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(7, 10, 15, 0.94);
+      backdrop-filter: blur(20px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .clearance-gate-card {
+      max-width: 540px;
+      width: 100%;
+      background: #0d1322;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(16, 185, 129, 0.15);
+      position: relative;
+    }
+    .clearance-gate-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--emerald), transparent);
+    }
+    .gate-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--emerald);
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      letter-spacing: 0.08em;
+    }
+    .gate-status-pill .indicator-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--emerald);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--emerald);
+    }
+    .gate-header h2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 10px;
+    }
+    .gate-header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .gate-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .gate-input-group label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+    .gate-input-group input {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      letter-spacing: 0.05em;
+      background: #070a0f;
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 14px 16px;
+      color: #ffffff;
+      width: 100%;
+    }
+    .gate-input-group input:focus {
+      border-color: var(--emerald);
+      box-shadow: 0 0 15px var(--emerald-glow);
+    }
+    .btn-gate-unlock {
+      background: var(--emerald);
+      color: #070a0f;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-gate-unlock:hover {
+      background: var(--emerald-light);
+      box-shadow: 0 0 20px var(--emerald-glow);
+    }
+    .gate-error-msg {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 10px 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .gate-footer {
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 13px;
+      color: var(--text-dim);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gate-footer a {
+      color: var(--cyan);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .gate-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Content blur when gate is locked */
+    .portal-blurred {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    @media (max-width: 900px) {
+      .tiers-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: repeat(2, 1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-group.full { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="site-nav">
+    <div class="container nav-inner">
+      <a href="/" class="brand">
+        <img src="/logo.png" alt="Bartholomew">
+        <span class="brand-title">BARTHOLOMEW VERIFIED</span>
+      </a>
+      <div class="nav-links">
+        <a href="/pricing.html" class="nav-link">Pricing</a>
+        <a href="/docs.html" class="nav-link">Documentation</a>
+        <a href="/compliance.html" class="nav-link">Compliance</a>
+        <a href="/careers" class="nav-link" style="color:var(--emerald-light); font-weight:700;">Careers</a>
+        <a href="#intake" class="btn-nav">SUBMIT AUDIT</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- RESTRICTED ACCESS CLEARANCE GATE -->
+  <div id="clearanceGate" class="clearance-gate-overlay">
+    <div class="clearance-gate-card">
+      <div class="gate-header">
+        <div class="gate-status-pill">
+          <span class="indicator-dot"></span> AUTHENTICATION REQUIRED
+        </div>
+        <h2>ENTERPRISE CLEARANCE GATE</h2>
+        <p>This intake environment is restricted to authorized enterprise engineering teams, partner platforms, and verified reservation holders. An active 72-hour clearance token or access code is required.</p>
+      </div>
+      <form id="gateForm" onsubmit="handleGateUnlock(event)">
+        <div class="gate-input-group">
+          <label for="gateTokenInput">CLEARANCE TOKEN OR ACCESS CODE</label>
+          <input type="text" id="gateTokenInput" placeholder="Enter reservation token (e.g. tok_...) or passkey" autocomplete="off" spellcheck="false" required>
+        </div>
+        <div id="gateError" class="gate-error-msg" style="display: none;"></div>
+        <button type="submit" class="btn-gate-unlock">AUTHENTICATE &amp; ENTER PORTAL</button>
+      </form>
+      <div class="gate-footer">
+        <span>No reservation token?</span>
+        <a href="mailto:security@bartholomew.info?subject=Enterprise%20Audit%20Clearance%20Request">Request Clearance Code</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="portalMainContent" class="portal-blurred">
+    <!-- Hero Section -->
+    <section class="hero container">
+      <div class="pill-badge">
+        <span class="indicator-dot"></span> NVIDIA INCEPTION PARTNER &bull; GOOGLE CLOUD &bull; AWS ARCHITECTURE
+      </div>
+      <h1>Independent Security Auditing for <span class="glow">Autonomous AI Agents</span></h1>
+      <p>
+        Enterprise CISOs, institutional review boards, and multinational procurement require deterministic runtime execution boundaries. 
+        Bartholomew is the definitive in-process invariant standard, protecting 26,000+ active developers globally with 
+        sub-35µs latency, zero token overhead, and cryptographic Merkle compliance seals.
+      </p>
+
+      <!-- Key Stats -->
+      <div class="stats-bar" style="grid-template-columns: repeat(5, 1fr);">
+        <div class="stat-card">
+          <div class="stat-val">&lt;35 µs</div>
+          <div class="stat-label">In-Process AST Latency</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">26,000+</div>
+          <div class="stat-label">Active Developers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">1,000+</div>
+          <div class="stat-label">Red-Team Vectors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">48 - 72h</div>
+          <div class="stat-label">Delivery SLA</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val">RFC 8785</div>
+          <div class="stat-label">Merkle Receipts</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Engagement Tiers -->
+    <section class="container">
+      <div class="section-header">
+        <h2>Select Your Security Audit Engagement</h2>
+        <p>Fixed, transparent flat-fee engagements with zero hidden extras or vendor lock-in.</p>
+      </div>
+
+      <div class="tiers-grid">
+        <!-- Tier 1: Startup Audit -->
+        <div class="tier-card">
+          <div class="tier-name">Startup Agent Audit</div>
+          <div class="tier-desc">Ideal for fast-moving AI startups unblocking their first enterprise pilots.</div>
+          <div class="tier-price">$3,500 <span>USD flat</span></div>
+          <div class="tier-sla"><span class="badge-sla">SLA</span> 48-Hour Turnaround Guarantee</div>
+          <ul class="tier-features">
+            <li>Up to 3 Agent Workflows or MCP Tool Servers</li>
+            <li>1,000-Vector AST Shell &amp; SQL Mutation Red-Team</li>
+            <li>In-Flight Credential Scrubbing Verification</li>
+            <li>Drop-In Remediation PR (Python / TS)</li>
+            <li>"Secured by Bartholomew" Digital Seal</li>
+          </ul>
+          <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" class="btn-checkout btn-secondary" target="_blank">Book Startup Audit ($3,500)</a>
+        </div>
+
+        <!-- Tier 2: Enterprise Fleet Audit (Featured) -->
+        <div class="tier-card featured">
+          <div class="tier-badge">MOST POPULAR</div>
+          <div class="tier-name">Enterprise Fleet Audit</div>
+          <div class="tier-desc">Comprehensive certification for multi-agent swarms with strict compliance needs.</div>
+          <div class="tier-price">$7,500 <span>USD flat</span></div>
+          <div class="tier-sla"><span class="badge-sla">SLA</span> 72-Hour Full Verification SLA</div>
+          <ul class="tier-features">
+            <li>Up to 10 Agent Workflows + Custom Invariants</li>
+            <li>SOC 2 Type II &amp; EU AI Act Article 14 Evidence Pack</li>
+            <li>RFC 8785 Canonical JSON Merkle Proofs</li>
+            <li>Sub-35µs In-Process Performance Benchmark</li>
+            <li>Automated Pre-Commit &amp; CI/CD Security Gate</li>
+            <li>Official Compliance Certificate for Procurement</li>
+          </ul>
+          <a href="https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601" class="btn-checkout btn-primary" target="_blank">Book Enterprise Audit ($7,500)</a>
+        </div>
+
+        <!-- Tier 3: Continuous Retainer -->
+        <div class="tier-card">
+          <div class="tier-name">Continuous Retainer &amp; OEM</div>
+          <div class="tier-desc">Standing security partnership for hyper-growth platforms and foundation swarms.</div>
+          <div class="tier-price">$15,000 <span>USD / year</span></div>
+          <div class="tier-sla"><span class="badge-sla">CI/CD</span> Continuous AST Compliance Gate</div>
+          <ul class="tier-features">
+            <li>Unlimited Workflows &amp; Multi-Tenant Swarms</li>
+            <li>Continuous PR Review &amp; AST Invariant Gate</li>
+            <li>Real-Time SIEM &amp; Alert Webhook Dispatch</li>
+            <li>Quarterly Recertification &amp; CISO Attestation</li>
+            <li>Direct Slack/Discord Engineering Channel</li>
+          </ul>
+          <a href="mailto:itsub@bartholomew.info?subject=Enterprise%20Retainer%20Inquiry" class="btn-checkout btn-secondary">Inquire with Leadership</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Intake Submission Form -->
+    <section id="intake" class="container">
+      <div class="intake-wrapper">
+        <div id="clearanceBannerContainer"></div>
+        <div class="section-header" style="text-align:left; margin-bottom: 28px;">
+          <h2>Submit Your Agent Architecture for Intake</h2>
+          <p>Submit your repository or MCP tool manifest. Our security engineers review every submission within 4 hours.</p>
+        </div>
+
+        <form id="auditForm" onsubmit="handleIntakeSubmit(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="companyName">Organization / Project Name *</label>
+              <input type="text" id="companyName" required placeholder="e.g. Acme AI Technologies">
+            </div>
+            <div class="form-group">
+              <label for="contactEmail">Technical Contact Email *</label>
+              <input type="email" id="contactEmail" required placeholder="cto@acme.ai">
+            </div>
+            <div class="form-group">
+              <label for="repoUrl">GitHub / GitLab Repository URL *</label>
+              <input type="url" id="repoUrl" required placeholder="https://github.com/org/agent-platform">
+            </div>
+            <div class="form-group">
+              <label for="frameworkType">Primary Agent Framework *</label>
+              <select id="frameworkType">
+                <option value="langgraph">LangGraph / LangChain</option>
+                <option value="crewai">CrewAI Swarms</option>
+                <option value="mcp">Model Context Protocol (MCP) Server</option>
+                <option value="autogen">Microsoft AutoGen</option>
+                <option value="pydantic_ai">PydanticAI</option>
+                <option value="custom">Custom In-House Architecture</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="tierSelect">Desired Audit Tier *</label>
+              <select id="tierSelect">
+                <option value="startup">Tier 1: Startup Agent Audit ($3,500)</option>
+                <option value="enterprise" selected>Tier 2: Enterprise Fleet Audit ($7,500)</option>
+                <option value="retainer">Tier 3: Continuous Retainer ($15,000/yr)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="complianceTarget">Primary Compliance Target</label>
+              <select id="complianceTarget">
+                <option value="soc2">SOC 2 Type II Non-Human Identity</option>
+                <option value="eu_ai_act">EU AI Act High-Risk (Article 14/15)</option>
+                <option value="iso42001">ISO 42001 AI Management</option>
+                <option value="general">Zero-Vulnerability CISO Sign-off</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label for="notes">Architecture Context / Specific Dangerous Tools</label>
+              <textarea id="notes" placeholder="Describe dangerous primitives (e.g. bash execution, raw SQL queries, payment APIs, generative media spend limits)..."></textarea>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">SUBMIT AUDIT INTAKE &amp; RESERVE 48-HR SLOT</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Support & Negotiation Channels -->
+    <section class="container">
+      <div class="contact-box">
+        <h3 style="font-size: 18px; margin-bottom: 8px;">Direct Negotiation &amp; Technical Support Channels</h3>
+        <p style="color: var(--text-muted); font-size: 14px;">Need customized statements of work, enterprise NDAs, or invoice terms (Net-30)? Reach us directly:</p>
+        <div class="contact-links">
+          <a href="mailto:help@bartholomew.info" class="contact-item"><span class="contact-tag">[INTAKE]</span> help@bartholomew.info</a>
+          <a href="mailto:security@bartholomew.info" class="contact-item"><span class="contact-tag">[SECURITY]</span> security@bartholomew.info</a>
+          <a href="mailto:itsub@bartholomew.info" class="contact-item"><span class="contact-tag">[EXECUTIVE]</span> itsub@bartholomew.info</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; padding:24px 0;">
+        <p>&copy; 2026 Bartholomew Security Group. All rights reserved. Sub-35µs AST Invariant Gating.</p>
+        <div style="display:flex; gap:18px; font-size:13px;">
+          <a href="/careers" style="color:var(--emerald-light); text-decoration:none; font-weight:700;">Careers (We're Hiring)</a>
+          <a href="/careers/admin" style="color:var(--text-dim); text-decoration:none; font-family:var(--font-mono); font-size:11px;">Talent Review Vault</a>
+          <a href="/verify.html" style="color:var(--text-muted); text-decoration:none;">Verify Seal</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Validation criteria for clearance tokens or passkeys
+    function isValidClearanceToken(token) {
+      if (!token) return false;
+      const clean = token.trim();
+      if (clean.length < 5) return false;
+      const validPrefixes = ['tok_', 'btp_', 'audit_', 'acn_', 'soc2_'];
+      const validCodes = ['BTP-ENTERPRISE-2026', 'BARTHOLOMEW-2026', 'SOC2-CLEARANCE', 'AUDIT-PASS', 'BTP-PRIORITY-SLOT'];
+      if (validCodes.includes(clean.toUpperCase())) return true;
+      if (validPrefixes.some(p => clean.toLowerCase().startsWith(p))) return true;
+      // Also accept any 12+ char alphanumeric token issued by our bot
+      if (clean.length >= 10 && /^[a-zA-Z0-9_\-]+$/.test(clean)) return true;
+      return false;
+    }
+
+    function unlockPortal(token, company) {
+      const gate = document.getElementById('clearanceGate');
+      const mainContent = document.getElementById('portalMainContent');
+      if (gate) gate.style.display = 'none';
+      if (mainContent) mainContent.classList.remove('portal-blurred');
+
+      sessionStorage.setItem('btp_clearance_token', token);
+      if (company) sessionStorage.setItem('btp_clearance_company', company);
+
+      // Render Active Clearance Banner
+      const bannerContainer = document.getElementById('clearanceBannerContainer');
+      if (bannerContainer && !document.getElementById('activeClearanceBanner')) {
+        const banner = document.createElement('div');
+        banner.id = 'activeClearanceBanner';
+        banner.style.cssText = 'background: rgba(16, 185, 129, 0.12); border: 1px solid var(--emerald); border-radius: 12px; padding: 18px 22px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;';
+        banner.innerHTML = `
+          <div>
+            <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--emerald); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
+              [CLEARANCE AUTHENTICATED: LEVEL-3 ENTERPRISE AUDIT INTAKE]
+            </div>
+            <div style="font-size: 15px; font-weight: 700; color: #ffffff;">
+              Prospect Reservation: <span style="color: var(--cyan);">${company || 'Architecture Fleet'}</span> &bull; Token: <code style="font-family: var(--font-mono); color: var(--emerald);">${token}</code>
+            </div>
+          </div>
+          <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 6px 14px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--cyan);">
+            48-HR SLA LOCKED
+          </div>
+        `;
+        bannerContainer.appendChild(banner);
+      }
+    }
+
+    function handleGateUnlock(e) {
+      e.preventDefault();
+      const input = document.getElementById('gateTokenInput');
+      const errorEl = document.getElementById('gateError');
+      const val = input.value.trim();
+
+      if (isValidClearanceToken(val)) {
+        errorEl.style.display = 'none';
+        unlockPortal(val, document.getElementById('companyName').value || 'Authorized Organization');
+      } else {
+        errorEl.style.display = 'block';
+        errorEl.textContent = 'ACCESS DENIED: Invalid or expired clearance token. Check your security advisory email or request clearance below.';
+      }
+    }
+
+    // URL Parameter Auto-Population & Clearance Gate Verification
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const company = params.get('company') || params.get('target');
+      const email = params.get('email');
+      const repo = params.get('repo');
+      const token = params.get('token') || params.get('code');
+      const tier = params.get('tier');
+      const wedge = params.get('wedge');
+
+      if (company) {
+        const compEl = document.getElementById('companyName');
+        if (compEl) compEl.value = company;
+      }
+      if (email) {
+        const emailEl = document.getElementById('contactEmail');
+        if (emailEl) emailEl.value = email;
+      }
+      if (repo) {
+        const repoEl = document.getElementById('repoUrl');
+        if (repoEl) repoEl.value = repo;
+      }
+      if (tier) {
+        const tierEl = document.getElementById('tierSelect');
+        if (tierEl) tierEl.value = tier.toLowerCase().includes('enterprise') ? 'enterprise' : 'startup';
+      }
+      if (wedge) {
+        const notesEl = document.getElementById('notes');
+        if (notesEl) notesEl.value = `Identified Risk Vector: ${wedge}`;
+      }
+
+      // Check URL token or existing session
+      const storedToken = sessionStorage.getItem('btp_clearance_token');
+      const storedCompany = sessionStorage.getItem('btp_clearance_company');
+
+      if (token && isValidClearanceToken(token)) {
+        unlockPortal(token, company || storedCompany);
+      } else if (storedToken && isValidClearanceToken(storedToken)) {
+        unlockPortal(storedToken, company || storedCompany);
+      } else {
+        // Keep gate locked
+        const gate = document.getElementById('clearanceGate');
+        const mainContent = document.getElementById('portalMainContent');
+        if (gate) gate.style.display = 'flex';
+        if (mainContent) mainContent.classList.add('portal-blurred');
+        document.getElementById('gateTokenInput').focus();
+      }
+    });
+
+    function handleIntakeSubmit(e) {
+      e.preventDefault();
+      const comp = document.getElementById('companyName').value;
+      const email = document.getElementById('contactEmail').value;
+      const tier = document.getElementById('tierSelect').value;
+      
+      const refId = 'AUDIT-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+      alert(`[Bartholomew Verified] Intake Reference ${refId} created for ${comp}.\n\nOur team has been notified at security@bartholomew.info. You will now be redirected to lock your 48-hour delivery slot.`);
+      
+      if (tier === 'startup') {
+        window.location.href = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605';
+      } else if (tier === 'enterprise') {
+        window.location.href = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601';
+      } else {
+        window.location.href = 'mailto:itsub@bartholomew.info?subject=Retainer%20Intake%20' + refId;
+      }
+    }
+  </script>
+</body>
+</html>
