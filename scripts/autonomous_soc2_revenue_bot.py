@@ -589,6 +589,59 @@ def print_status(funded_only: bool = False):
     print("=" * 70 + "\n")
 
 
+def retry_failed_dispatches(delay_sec: int = 5):
+    """
+    Scans active logs for any dispatches that failed due to Google Workspace sending limits
+    and safely re-transmits them with staggered pacing.
+    """
+    if not LOG_FILE.exists():
+        print("[!] No active logs found.")
+        return
+
+    logs = json.loads(LOG_FILE.read_text(encoding="utf-8"))
+    failed = [x for x in logs if x.get("transmission", {}).get("status") == "TRANSMIT_FAILED"]
+
+    if not failed:
+        print("[OK] Zero failed dispatches in queue. All systems clear!")
+        return
+
+    print("\n" + "=" * 80)
+    print(" BARTHOLOMEW QUEUE AUTO-RETRY ENGINE")
+    print(f" Queued Failed Dispatches to Resend: {len(failed)}")
+    print("=" * 80)
+
+    successful = 0
+    quota_blocked = False
+
+    for i, rec in enumerate(failed):
+        to_email = rec["target"]["email"]
+        subject = rec["sequences"]["initial"]["subject"]
+        body = rec["sequences"]["initial"]["body"]
+
+        print(f"[*] [{i+1}/{len(failed)}] Retrying transmission to {rec['target']['name']} ({to_email})...")
+        res = transmit_email(to_email, subject, body)
+
+        if res["status"] == "TRANSMITTED_LIVE":
+            successful += 1
+            rec["transmission"] = res
+            print(f"    [+] TRANSMITTED LIVE to {to_email}")
+            time.sleep(delay_sec)
+        elif "Daily user sending limit exceeded" in str(res.get("error", "")):
+            quota_blocked = True
+            print(f"    [!] Google Workspace daily sending limit still active.")
+            break
+        else:
+            print(f"    [!] Retrying failed: {res.get('error', 'unknown error')}")
+
+    # Save back updated logs
+    LOG_FILE.write_text(json.dumps(logs, indent=2), encoding="utf-8")
+    print("-" * 80)
+    print(f" [OK] Retry Cycle Result: {successful} successfully delivered.")
+    if quota_blocked:
+        print(f" [!] Google Workspace 24h limit is still in effect. Rolling reset unlocks in ~10.5 hours.")
+    print("=" * 80 + "\n")
+
+
 def daemon_runner(interval_sec: int = 86400, batch_size: int = DAILY_PACING, funded_only: bool = False):
     print("=" * 80)
     print(" BARTHOLOMEW 24/7 SOC 2 REVENUE SWARM DAEMON LAUNCHED")
@@ -596,6 +649,9 @@ def daemon_runner(interval_sec: int = 86400, batch_size: int = DAILY_PACING, fun
     print(f" Interval: Every {interval_sec}s ({interval_sec//3600} hours)")
     print("=" * 80)
     while True:
+        # First retry any pending failures
+        retry_failed_dispatches()
+        # Then execute the scheduled wave
         run_batch(batch_size=batch_size, funded_only=funded_only)
         print(f"[*] Sleeping {interval_sec}s until next automated daily wave... (Agents on duty)")
         time.sleep(interval_sec)
@@ -606,6 +662,7 @@ if __name__ == "__main__":
     parser.add_argument("--batch", type=int, default=None, help=f"Execute a batch of N targets (default: daily limit {DAILY_PACING})")
     parser.add_argument("--daily", action="store_true", help=f"Send out today's full daily limit of targets ({DAILY_PACING})")
     parser.add_argument("--funded", action="store_true", help="Target freshly funded AI startups (Series A-D with venture dough)")
+    parser.add_argument("--retry", action="store_true", help="Retry all previously failed dispatches held by sending limits")
     parser.add_argument("--daemon", action="store_true", help="Run continuously in background daily daemon loop")
     parser.add_argument("--interval", type=int, default=86400, help="Daemon sleep interval in seconds (default: 86400s / 24h)")
     parser.add_argument("--status", action="store_true", help="Print current pacing & dispatch status")
@@ -613,6 +670,8 @@ if __name__ == "__main__":
 
     if args.status:
         print_status(funded_only=args.funded)
+    elif args.retry:
+        retry_failed_dispatches()
     elif args.daemon:
         batch_n = args.batch or DAILY_PACING
         daemon_runner(interval_sec=args.interval, batch_size=batch_n, funded_only=args.funded)
