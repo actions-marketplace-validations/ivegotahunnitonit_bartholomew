@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bartholomew Verified | Autonomous Agent Security Audit &amp; Intake Portal</title>
-  <meta name="description" content="Independent 48-hour security auditing, in-process AST gating, and SOC 2 / EU AI Act Article 14 compliance certification for autonomous AI agent platforms.">
+  <meta name="description" content="Independent 48-hour security auditing, in-process AST gating, and SOC 2 / ISO 42001 / EU AI Act compliance certification for autonomous AI agent platforms. Direct upload to Vanta &amp; Drata Trust Centers.">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +32,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
       background: radial-gradient(ellipse at 50% 0%, #101935 0%, var(--bg-dark) 75%);
       color: var(--text-main);
@@ -50,8 +51,8 @@
     /* Top Nav */
     .site-nav {
       border-bottom: 1px solid var(--border-subtle);
-      background: rgba(7, 10, 15, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(7, 10, 15, 0.88);
+      backdrop-filter: blur(14px);
       position: sticky;
       top: 0;
       z-index: 100;
@@ -81,7 +82,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 22px;
     }
     .nav-link {
       color: var(--text-muted);
@@ -96,10 +97,10 @@
     .btn-nav {
       background: var(--emerald);
       color: #070a0f;
-      padding: 7px 16px;
+      padding: 8px 18px;
       border-radius: 6px;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       font-family: var(--font-mono);
       text-decoration: none;
       transition: all 0.2s;
@@ -109,9 +110,49 @@
       box-shadow: 0 0 15px var(--emerald-glow);
     }
 
+    /* VIP Priority Reservation Banner */
+    .vip-banner {
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.12) 0%, rgba(6, 182, 212, 0.12) 100%);
+      border-bottom: 1px solid rgba(16, 185, 129, 0.35);
+      padding: 12px 0;
+      font-size: 13px;
+    }
+    .vip-banner-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .vip-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--emerald-light);
+      font-size: 12px;
+    }
+    .vip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+    }
+    .vip-meta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 2px 10px;
+      border-radius: 4px;
+    }
+
     /* Hero Section */
     .hero {
-      padding: 70px 0 50px;
+      padding: 64px 0 44px;
       text-align: center;
     }
     .pill-badge {
@@ -126,7 +167,7 @@
       font-weight: 600;
       font-family: var(--font-mono);
       color: var(--emerald-light);
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       letter-spacing: 0.04em;
     }
     .pill-badge .indicator-dot {
@@ -142,7 +183,7 @@
       font-weight: 900;
       letter-spacing: -0.03em;
       line-height: 1.15;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .hero h1 .glow {
       background: linear-gradient(135deg, #f8fafc 30%, var(--emerald-light) 100%);
@@ -150,46 +191,63 @@
       -webkit-text-fill-color: transparent;
     }
     .hero p {
-      max-width: 720px;
-      margin: 0 auto 36px;
+      max-width: 760px;
+      margin: 0 auto 32px;
       color: var(--text-muted);
-      font-size: 17px;
+      font-size: 16.5px;
+      line-height: 1.6;
+    }
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
     }
 
     /* Stats Bar */
     .stats-bar {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 16px;
-      margin-bottom: 70px;
+      margin-bottom: 64px;
     }
     .stat-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 12px;
-      padding: 20px;
+      padding: 20px 16px;
       text-align: center;
       backdrop-filter: blur(8px);
     }
     .stat-val {
       font-family: var(--font-mono);
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 800;
       color: var(--emerald);
       margin-bottom: 4px;
     }
     .stat-label {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       font-weight: 600;
     }
 
-    /* Section Header */
+    /* Section Headers */
     .section-header {
       text-align: center;
       margin-bottom: 40px;
+    }
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
     }
     .section-header h2 {
       font-size: 30px;
@@ -200,6 +258,230 @@
     .section-header p {
       color: var(--text-muted);
       font-size: 15px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* 3-Step Simple Workflow */
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 70px;
+    }
+    .workflow-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 32px 28px;
+      text-align: left;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .workflow-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-focus);
+    }
+    .workflow-step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--emerald);
+      letter-spacing: 0.08em;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .workflow-duration {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--emerald-light);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+    .workflow-card h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    .workflow-card p {
+      color: var(--text-muted);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* Compliance Ecosystem Strip */
+    .ecosystem-strip {
+      background: rgba(13, 19, 34, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 30px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-bottom: 70px;
+    }
+    .ecosystem-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .eco-badge {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-subtle);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Program Alignment Table */
+    .matrix-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 70px;
+      backdrop-filter: blur(10px);
+    }
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13.5px;
+    }
+    .matrix-table th {
+      background: rgba(7, 10, 15, 0.8);
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .matrix-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid rgba(45, 62, 80, 0.4);
+      color: var(--text-muted);
+      vertical-align: middle;
+    }
+    .matrix-table tr:last-child td {
+      border-bottom: none;
+    }
+    .matrix-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .matrix-program {
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .matrix-badge-pass {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: var(--emerald);
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Evidence Pack Deliverables */
+    .deliverables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin-bottom: 70px;
+    }
+    .deliverable-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: left;
+    }
+    .deliverable-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .deliverable-card h4 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .deliverable-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Zero-Invasive Security Box */
+    .zero-trust-box {
+      background: linear-gradient(135deg, rgba(13, 19, 34, 0.9) 0%, rgba(7, 10, 15, 0.9) 100%);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 16px;
+      padding: 36px;
+      margin-bottom: 70px;
+    }
+    .zero-trust-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 24px;
+    }
+    .zero-col {
+      background: rgba(7, 10, 15, 0.6);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .zero-col h4 {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+    }
+    .zero-col ul {
+      list-style: none;
+    }
+    .zero-col li {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
     }
 
     /* Tiers Grid */
@@ -413,6 +695,32 @@
       box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
     }
 
+    /* FAQ Section */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 70px;
+    }
+    .faq-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: left;
+    }
+    .faq-card h4 {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+    .faq-card p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
     /* Contact Vectors */
     .contact-box {
       border: 1px solid var(--border-subtle);
@@ -454,168 +762,21 @@
     /* Footer */
     footer {
       border-top: 1px solid var(--border-subtle);
-      padding: 40px 0;
+      padding: 36px 0;
       text-align: center;
       color: var(--text-dim);
       font-size: 13px;
     }
 
-    /* RESTRICTED CLEARANCE GATE (Elite Authentication Overlay) */
-    .clearance-gate-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(7, 10, 15, 0.94);
-      backdrop-filter: blur(20px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-    .clearance-gate-card {
-      max-width: 540px;
-      width: 100%;
-      background: #0d1322;
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), 0 0 25px rgba(16, 185, 129, 0.15);
-      position: relative;
-    }
-    .clearance-gate-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 20%;
-      right: 20%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--emerald), transparent);
-    }
-    .gate-status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--emerald);
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      padding: 4px 12px;
-      border-radius: 100px;
-      margin-bottom: 16px;
-      letter-spacing: 0.08em;
-    }
-    .gate-status-pill .indicator-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--emerald);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--emerald);
-    }
-    .gate-header h2 {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      margin-bottom: 10px;
-    }
-    .gate-header p {
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
-    .gate-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 18px;
-      text-align: left;
-    }
-    .gate-input-group label {
-      font-size: 11px;
-      font-family: var(--font-mono);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: var(--text-muted);
-    }
-    .gate-input-group input {
-      font-family: var(--font-mono);
-      font-size: 15px;
-      letter-spacing: 0.05em;
-      background: #070a0f;
-      border: 1px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 14px 16px;
-      color: #ffffff;
-      width: 100%;
-    }
-    .gate-input-group input:focus {
-      border-color: var(--emerald);
-      box-shadow: 0 0 15px var(--emerald-glow);
-    }
-    .btn-gate-unlock {
-      background: var(--emerald);
-      color: #070a0f;
-      font-family: var(--font-mono);
-      font-weight: 800;
-      font-size: 14px;
-      padding: 14px;
-      border-radius: 8px;
-      border: none;
-      width: 100%;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-gate-unlock:hover {
-      background: var(--emerald-light);
-      box-shadow: 0 0 20px var(--emerald-glow);
-    }
-    .gate-error-msg {
-      background: rgba(244, 63, 94, 0.15);
-      border: 1px solid rgba(244, 63, 94, 0.4);
-      color: #fda4af;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      padding: 10px 14px;
-      border-radius: 6px;
-      margin-bottom: 16px;
-      text-align: left;
-    }
-    .gate-footer {
-      margin-top: 24px;
-      padding-top: 18px;
-      border-top: 1px solid var(--border-subtle);
-      font-size: 13px;
-      color: var(--text-dim);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .gate-footer a {
-      color: var(--cyan);
-      text-decoration: none;
-      font-weight: 600;
-    }
-    .gate-footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* Content blur when gate is locked */
-    .portal-blurred {
-      filter: blur(8px);
-      pointer-events: none;
-      user-select: none;
-    }
-
     @media (max-width: 900px) {
       .tiers-grid { grid-template-columns: 1fr; }
+      .workflow-grid { grid-template-columns: 1fr; }
       .stats-bar { grid-template-columns: repeat(2, 1fr); }
       .form-grid { grid-template-columns: 1fr; }
       .form-group.full { grid-column: span 1; }
+      .zero-trust-grid { grid-template-columns: 1fr; }
+      .faq-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 34px; }
     }
   </style>
 </head>
@@ -629,62 +790,53 @@
         <span class="brand-title">BARTHOLOMEW VERIFIED</span>
       </a>
       <div class="nav-links">
-        <a href="/pricing.html" class="nav-link">Pricing</a>
-        <a href="/docs.html" class="nav-link">Documentation</a>
-        <a href="/compliance.html" class="nav-link">Compliance</a>
-        <a href="/careers" class="nav-link" style="color:var(--emerald-light); font-weight:700;">Careers</a>
+        <a href="#workflow" class="nav-link">Workflow</a>
+        <a href="#compliance-matrix" class="nav-link">Compliance Matrix</a>
+        <a href="#evidence-pack" class="nav-link">Auditor Deliverables</a>
+        <a href="#pricing" class="nav-link">Tiers</a>
+        <a href="#faq" class="nav-link">FAQ</a>
         <a href="#intake" class="btn-nav">SUBMIT AUDIT</a>
       </div>
     </div>
   </nav>
 
-  <!-- RESTRICTED ACCESS CLEARANCE GATE -->
-  <div id="clearanceGate" class="clearance-gate-overlay">
-    <div class="clearance-gate-card">
-      <div class="gate-header">
-        <div class="gate-status-pill">
-          <span class="indicator-dot"></span> AUTHENTICATION REQUIRED
-        </div>
-        <h2>ENTERPRISE CLEARANCE GATE</h2>
-        <p>This intake environment is restricted to authorized enterprise engineering teams, partner platforms, and verified reservation holders. An active 72-hour clearance token or access code is required.</p>
+  <!-- VIP Priority Reservation Dynamic Banner (Active for Invited Orgs) -->
+  <div id="vipReservationBanner" class="vip-banner" style="display: none;">
+    <div class="container vip-banner-inner">
+      <div class="vip-tag">
+        <span class="vip-dot"></span>
+        <span>PRIORITY INTAKE ACTIVE:</span>
+        <strong id="vipCompanyLabel" style="color: #ffffff;">Authorized Partner</strong>
       </div>
-      <form id="gateForm" onsubmit="handleGateUnlock(event)">
-        <div class="gate-input-group">
-          <label for="gateTokenInput">CLEARANCE TOKEN OR ACCESS CODE</label>
-          <input type="text" id="gateTokenInput" placeholder="Enter reservation token (e.g. tok_...) or passkey" autocomplete="off" spellcheck="false" required>
-        </div>
-        <div id="gateError" class="gate-error-msg" style="display: none;"></div>
-        <button type="submit" class="btn-gate-unlock">AUTHENTICATE &amp; ENTER PORTAL</button>
-      </form>
-      <div class="gate-footer">
-        <span>No reservation token?</span>
-        <a href="mailto:security@bartholomew.info?subject=Enterprise%20Audit%20Clearance%20Request">Request Clearance Code</a>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="vip-meta" id="vipTokenBadge">48-HOUR SLA LOCKED</span>
+        <a href="#intake" style="color: var(--emerald-light); font-size: 12px; font-weight: 700; text-decoration: none;">Jump to Intake &darr;</a>
       </div>
     </div>
   </div>
 
-  <div id="portalMainContent" class="portal-blurred">
+  <div id="portalMainContent">
     <!-- Hero Section -->
     <section class="hero container">
       <div class="pill-badge">
-        <span class="indicator-dot"></span> NVIDIA INCEPTION PARTNER &bull; GOOGLE CLOUD &bull; AWS ARCHITECTURE
+        <span class="indicator-dot"></span> SOC 2 CC6.8 &bull; ISO 42001 &bull; EU AI ACT ARTICLE 14 &bull; VANTA &amp; DRATA COMPLIANT
       </div>
-      <h1>Independent Security Auditing for <span class="glow">Autonomous AI Agents</span></h1>
+      <h1>Independent Security Audit for <span class="glow">Autonomous AI Agents</span></h1>
       <p>
-        Enterprise CISOs, institutional review boards, and multinational procurement require deterministic runtime execution boundaries. 
-        Bartholomew is the definitive in-process invariant standard, protecting 26,000+ active developers globally with 
-        sub-35µs latency, zero token overhead, and cryptographic Merkle compliance seals.
+        Enterprise CISOs, procurement boards, and compliance auditors require deterministic proof that agentic tool executions cannot violate system boundaries. 
+        Bartholomew provides third-party AST penetration testing, mathematical Merkle proofs, and upload-ready compliance dossiers for Vanta and Drata in 48 hours.
       </p>
 
+      <div class="hero-actions">
+        <a href="#intake" class="btn-checkout btn-primary" style="display:inline-block; width:auto; padding:14px 28px; font-size:14px;">Submit Manifest for Intake (2 Min)</a>
+        <a href="#pricing" class="btn-checkout btn-secondary" style="display:inline-block; width:auto; padding:14px 28px; font-size:14px;">View Engagement Tiers ($3,500+)</a>
+      </div>
+
       <!-- Key Stats -->
-      <div class="stats-bar" style="grid-template-columns: repeat(5, 1fr);">
+      <div class="stats-bar">
         <div class="stat-card">
           <div class="stat-val">&lt;35 µs</div>
           <div class="stat-label">In-Process AST Latency</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val">26,000+</div>
-          <div class="stat-label">Active Developers</div>
         </div>
         <div class="stat-card">
           <div class="stat-val">1,000+</div>
@@ -698,14 +850,236 @@
           <div class="stat-val">RFC 8785</div>
           <div class="stat-label">Merkle Receipts</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-val">Zero-Secret</div>
+          <div class="stat-label">Non-Invasive Intake</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Simple 3-Step Audit Workflow -->
+    <section id="workflow" class="container" style="margin-bottom: 70px;">
+      <div class="section-header">
+        <div class="section-tag">FRICTIONLESS WORKFLOW</div>
+        <h2>Simple 3-Step Audit Workflow</h2>
+        <p>From intake to certified compliance dossier in 48 hours. Zero friction, zero secrets, zero complex setup.</p>
+      </div>
+
+      <div class="workflow-grid">
+        <div class="workflow-card">
+          <div class="workflow-step-num">
+            <span>STEP 01</span>
+            <span class="workflow-duration">2 MINUTES</span>
+          </div>
+          <h3>Submit Tool Manifest</h3>
+          <p>
+            Provide your GitHub/GitLab repository URL, Model Context Protocol (MCP) tool manifest, or OpenAPI execution schemas. We never ask for production credentials or sensitive customer data.
+          </p>
+        </div>
+
+        <div class="workflow-card">
+          <div class="workflow-step-num">
+            <span>STEP 02</span>
+            <span class="workflow-duration">48-HR SLA</span>
+          </div>
+          <h3>1,000-Vector AST Red-Team</h3>
+          <p>
+            Our automated security engine stress-tests your runtime for tool breakouts, shell injection, SQL mutation, credential exfiltration, and prompt jailbreaks. Includes turnkey remediation PRs.
+          </p>
+        </div>
+
+        <div class="workflow-card">
+          <div class="workflow-step-num">
+            <span>STEP 03</span>
+            <span class="workflow-duration">INSTANT PASS</span>
+          </div>
+          <h3>Dossier &amp; Trust Badge</h3>
+          <p>
+            Download your machine-signed RFC 8785 Ed25519 Merkle Compliance Dossier, Auditor Pass-Through Letter, and official "Secured by Bartholomew" seal, ready to upload directly into your Trust Center.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compliance Ecosystem Integration -->
+    <section class="container" style="margin-bottom: 70px;">
+      <div class="ecosystem-strip">
+        <div style="max-width: 580px;">
+          <div class="section-tag">COMPLIANCE ECOSYSTEM COMPATIBILITY</div>
+          <h3 style="font-size: 20px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">Built to Upload Directly to Your Trust Center</h3>
+          <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.5;">
+            Bartholomew audit deliverables satisfy external technical penetration testing and non-human identity governance requirements for fast-growing AI platforms.
+          </p>
+        </div>
+        <div class="ecosystem-badges">
+          <span class="eco-badge">&#x2714; Vanta Trust Center</span>
+          <span class="eco-badge">&#x2714; Drata Alliance</span>
+          <span class="eco-badge">&#x2714; SafeBase</span>
+          <span class="eco-badge">&#x2714; Conveyor</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compliance Program Alignment Matrix -->
+    <section id="compliance-matrix" class="container" style="margin-bottom: 70px;">
+      <div class="section-header">
+        <div class="section-tag">AUDITOR MAPPING MATRIX</div>
+        <h2>Compliance Program Requirements &amp; Deliverables</h2>
+        <p>How Bartholomew audit deliverables directly fulfill each regulatory framework and compliance program standard.</p>
+      </div>
+
+      <div class="matrix-wrapper">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th>Compliance Program</th>
+              <th>Auditor Control Requirement</th>
+              <th>Bartholomew Technical Verification</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="matrix-program">
+                  <span>SOC 2 Type II</span>
+                </div>
+              </td>
+              <td>Trust Services Criteria <strong>CC6.8 &amp; CC7.2</strong> (Safeguards against unauthorized software/agent execution &amp; non-human anomaly detection)</td>
+              <td>In-process AST boundary validation, dangerous shell/SQL blocking, automated anomalous sub-35µs execution termination.</td>
+              <td><span class="matrix-badge-pass">FULFILLS CC6.8 / CC7.2</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="matrix-program">
+                  <span>ISO/IEC 42001:2023</span>
+                </div>
+              </td>
+              <td><strong>Clause 6.1.2 &amp; Annex A.6/A.8</strong> (AI system risk assessment, execution boundary validation, and safe operational governance)</td>
+              <td>Formal AST invariant verification of tool parameters, zero token degradation, verified non-destructive sandbox execution.</td>
+              <td><span class="matrix-badge-pass">FULFILLS ANNEX A.6/A.8</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="matrix-program">
+                  <span>EU AI Act (2026/2027)</span>
+                </div>
+              </td>
+              <td><strong>Article 14 (Human Oversight) &amp; Article 15 (Cybersecurity)</strong> for High-Risk Autonomous Deployments</td>
+              <td>Mathematical proof of deterministic execution boundaries; inability of models to break guardrails via prompt injection.</td>
+              <td><span class="matrix-badge-pass">FULFILLS ART 14 &amp; 15</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="matrix-program">
+                  <span>Vanta / Drata Trust Centers</span>
+                </div>
+              </td>
+              <td><strong>Annual External Penetration Test</strong> &amp; Independent Non-Human Identity Verification Evidence</td>
+              <td>Upload-ready independent auditor report (PDF), raw JSON attack telemetry, and embeddable SVG Trust Center badge.</td>
+              <td><span class="matrix-badge-pass">DIRECT TRUST CENTER PASS</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="matrix-program">
+                  <span>Enterprise Vendor Risk (VRM)</span>
+                </div>
+              </td>
+              <td><strong>SIG / CAIQ / VSAQ</strong> Third-Party AI Security &amp; Non-Human Identity Questionnaires</td>
+              <td>Turnkey pre-completed architectural invariant evidence pack and CISO attestation letter signed by Bartholomew.</td>
+              <td><span class="matrix-badge-pass">ENTERPRISE SIGN-OFF</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Evidence Pack Deliverables (What You Actually Receive) -->
+    <section id="evidence-pack" class="container" style="margin-bottom: 70px;">
+      <div class="section-header">
+        <div class="section-tag">EVIDENCE PACK ARTIFACTS</div>
+        <h2>What You Receive in Your Compliance Dossier</h2>
+        <p>Complete, turnkey deliverables designed for your auditor, your enterprise buyers, and your public Trust Center.</p>
+      </div>
+
+      <div class="deliverables-grid">
+        <div class="deliverable-card">
+          <div class="deliverable-icon">01</div>
+          <h4>Independent Pen-Test Report (PDF)</h4>
+          <p>Comprehensive 25+ page third-party penetration testing report signed by Bartholomew security engineers, detailing methodology, attack vectors, and zero critical finding sign-off.</p>
+        </div>
+
+        <div class="deliverable-card">
+          <div class="deliverable-icon">02</div>
+          <h4>Auditor Pass-Through Letter</h4>
+          <p>Formal attestation letter formatted specifically for Big-4 and compliance audit firms (Schellman, A-LIGN, Prescient Security, Coalfire) validating agent execution boundaries.</p>
+        </div>
+
+        <div class="deliverable-card">
+          <div class="deliverable-icon">03</div>
+          <h4>1,000-Vector AST Red-Team Matrix</h4>
+          <p>Granular raw telemetry and JSON logs demonstrating your agent runtime was stress-tested against prompt injections, shell escapes, SQL mutations, and privilege escalations.</p>
+        </div>
+
+        <div class="deliverable-card">
+          <div class="deliverable-icon">04</div>
+          <h4>Turnkey Remediation PR (Python / TS)</h4>
+          <p>If any execution edge cases are discovered, we provide a drop-in GitHub pull request implementing sub-35µs AST gating so your team passes immediately.</p>
+        </div>
+
+        <div class="deliverable-card">
+          <div class="deliverable-icon">05</div>
+          <h4>RFC 8785 Ed25519 Cryptographic Root</h4>
+          <p>Tamper-proof Merkle root hash certifying canonical AST evaluation data, providing mathematical auditability that cannot be forged.</p>
+        </div>
+
+        <div class="deliverable-card">
+          <div class="deliverable-icon">06</div>
+          <h4>"Secured by Bartholomew" Seal</h4>
+          <p>High-resolution vector badge and verified iframe embed snippet for display on your public Trust Center (e.g. <code>trust.yourcompany.com</code>).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Zero-Invasive Security Guarantee -->
+    <section class="container" style="margin-bottom: 70px;">
+      <div class="zero-trust-box">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 10px;">
+          <div class="section-tag">ZERO-FRICTION SECURITY</div>
+          <h3 style="font-size: 22px; font-weight: 800; color: #ffffff;">Our Non-Invasive Intake Guarantee</h3>
+          <p style="color: var(--text-muted); font-size: 14px;">We believe security audits should never introduce new threat vectors. That is why our technical assessment requires zero privileged access.</p>
+        </div>
+
+        <div class="zero-trust-grid">
+          <div class="zero-col">
+            <h4 style="color: var(--emerald);">&#x2714; WHAT WE REQUIRE</h4>
+            <ul>
+              <li>Tool definitions, MCP manifests, or OpenAPI schemas</li>
+              <li>Agent prompt templates &amp; intended boundary definitions</li>
+              <li>Public or staging repository access (or sanitized zip)</li>
+              <li>Designated technical contact for question routing</li>
+            </ul>
+          </div>
+
+          <div class="zero-col">
+            <h4 style="color: var(--rose);">&#x2718; WHAT WE NEVER ASK FOR</h4>
+            <ul>
+              <li>No production database credentials or connection strings</li>
+              <li>No customer data, PII, or internal documents</li>
+              <li>No production API secret keys or payment keys</li>
+              <li>No internal VPN access or cloud root credentials</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Engagement Tiers -->
-    <section class="container">
+    <section id="pricing" class="container">
       <div class="section-header">
+        <div class="section-tag">TRANSPARENT ENGAGEMENTS</div>
         <h2>Select Your Security Audit Engagement</h2>
-        <p>Fixed, transparent flat-fee engagements with zero hidden extras or vendor lock-in.</p>
+        <p>Fixed, transparent flat-fee engagements with guaranteed SLAs and zero vendor lock-in.</p>
       </div>
 
       <div class="tiers-grid">
@@ -720,6 +1094,7 @@
             <li>1,000-Vector AST Shell &amp; SQL Mutation Red-Team</li>
             <li>In-Flight Credential Scrubbing Verification</li>
             <li>Drop-In Remediation PR (Python / TS)</li>
+            <li>Auditor Pass-Through Letter for Vanta / Drata</li>
             <li>"Secured by Bartholomew" Digital Seal</li>
           </ul>
           <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" id="btnStripeStartup" class="btn-checkout btn-secondary" target="_blank">Book Startup Audit ($3,500)</a>
@@ -739,6 +1114,7 @@
             <li>Sub-35µs In-Process Performance Benchmark</li>
             <li>Automated Pre-Commit &amp; CI/CD Security Gate</li>
             <li>Official Compliance Certificate for Procurement</li>
+            <li>1-Hour CISO Debrief &amp; Audit Review Call</li>
           </ul>
           <a href="https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601" id="btnStripeEnterprise" class="btn-checkout btn-primary" target="_blank">Book Enterprise Audit ($7,500)</a>
         </div>
@@ -766,8 +1142,9 @@
       <div class="intake-wrapper">
         <div id="clearanceBannerContainer"></div>
         <div class="section-header" style="text-align:left; margin-bottom: 28px;">
+          <div class="section-tag">ONLINE INTAKE &amp; SCHEDULING</div>
           <h2>Submit Your Agent Architecture for Intake</h2>
-          <p>Submit your repository or MCP tool manifest. Our security engineers review every submission within 4 hours.</p>
+          <p>Submit your repository or tool manifest below. Our security team reviews every intake within 4 hours to confirm your 48-hour audit window.</p>
         </div>
 
         <form id="auditForm" onsubmit="handleIntakeSubmit(event)">
@@ -781,7 +1158,7 @@
               <input type="email" id="contactEmail" required placeholder="cto@acme.ai">
             </div>
             <div class="form-group">
-              <label for="repoUrl">GitHub / GitLab Repository URL *</label>
+              <label for="repoUrl">GitHub / GitLab Repository or Manifest URL *</label>
               <input type="url" id="repoUrl" required placeholder="https://github.com/org/agent-platform">
             </div>
             <div class="form-group">
@@ -806,32 +1183,64 @@
             <div class="form-group">
               <label for="complianceTarget">Primary Compliance Target</label>
               <select id="complianceTarget">
-                <option value="soc2">SOC 2 Type II Non-Human Identity</option>
+                <option value="vanta_drata" selected>Vanta / Drata Trust Center Upload</option>
+                <option value="soc2">SOC 2 Type II Non-Human Identity (CC6.8 / CC7.2)</option>
                 <option value="eu_ai_act">EU AI Act High-Risk (Article 14/15)</option>
-                <option value="iso42001">ISO 42001 AI Management</option>
-                <option value="general">Zero-Vulnerability CISO Sign-off</option>
+                <option value="iso42001">ISO 42001 AI Management System</option>
+                <option value="general">Enterprise Procurement CISO Sign-off</option>
               </select>
             </div>
             <div class="form-group full">
-              <label for="notes">Architecture Context / Specific Dangerous Tools</label>
-              <textarea id="notes" placeholder="Describe dangerous primitives (e.g. bash execution, raw SQL queries, payment APIs, generative media spend limits)..."></textarea>
+              <label for="notes">Architecture Context / High-Risk Tool Primitives</label>
+              <textarea id="notes" placeholder="Describe dangerous primitives (e.g. bash execution, raw SQL queries, file system read/write, payment APIs, third-party webhook dispatch)..."></textarea>
             </div>
           </div>
 
-          <button type="submit" class="btn-submit">SUBMIT AUDIT INTAKE &amp; RESERVE 48-HR SLOT</button>
+          <button type="submit" class="btn-submit">SUBMIT AUDIT INTAKE &amp; RESERVE 48-HR SLOT &rarr;</button>
         </form>
       </div>
     </section>
 
-    <!-- Support & Negotiation Channels -->
+    <!-- Frequently Asked Questions (FAQ) -->
+    <section id="faq" class="container" style="margin-bottom: 70px;">
+      <div class="section-header">
+        <div class="section-tag">CLEAR ANSWERS</div>
+        <h2>Frequently Asked Questions for Compliance Teams</h2>
+        <p>Everything your CISO, legal counsel, and auditor need to know about our independent verification.</p>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-card">
+          <h4>Does this fulfill our annual SOC 2 penetration test requirement for AI?</h4>
+          <p>Yes. Traditional DAST scanners cannot evaluate dynamic LLM tool-calling or MCP servers. Bartholomew provides the specialized independent third-party penetration test and invariant verification required for Trust Services Criteria CC6.8 and CC7.2.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>How do we upload this into Vanta or Drata?</h4>
+          <p>Simply upload the signed PDF Audit Report and Attestation Letter into the "Penetration Testing" or "AI Safety Controls" evidence locker within your Vanta or Drata admin dashboard. Both platforms accept Bartholomew attestations directly.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>Do you sign mutual NDAs before reviewing architecture?</h4>
+          <p>Absolutely. We provide an instant mutual NDA upon request, or our legal team will countersign your standard enterprise agreement within 4 business hours. Email <code>security@bartholomew.info</code>.</p>
+        </div>
+
+        <div class="faq-card">
+          <h4>What happens if vulnerabilities or breakouts are discovered?</h4>
+          <p>We do not just hand you a list of problems. We provide ready-to-merge GitHub pull requests with deterministic sub-35µs AST gating code, followed by an immediate free re-test to ensure you achieve full clean certification.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Direct Contact Vectors -->
     <section class="container">
       <div class="contact-box">
         <h3 style="font-size: 18px; margin-bottom: 8px;">Direct Negotiation &amp; Technical Support Channels</h3>
-        <p style="color: var(--text-muted); font-size: 14px;">Need customized statements of work, enterprise NDAs, or invoice terms (Net-30)? Reach us directly:</p>
+        <p style="color: var(--text-muted); font-size: 14px;">Need customized statements of work, vendor security questionnaires, or Net-30 invoice terms? Reach our leadership team directly:</p>
         <div class="contact-links">
-          <a href="mailto:help@bartholomew.info" class="contact-item"><span class="contact-tag">[INTAKE]</span> help@bartholomew.info</a>
+          <a href="mailto:itsub@bartholomew.info" class="contact-item"><span class="contact-tag">[FOUNDER / CISO]</span> itsub@bartholomew.info</a>
           <a href="mailto:security@bartholomew.info" class="contact-item"><span class="contact-tag">[SECURITY]</span> security@bartholomew.info</a>
-          <a href="mailto:contact@bartholomew.info" class="contact-item"><span class="contact-tag">[GENERAL]</span> contact@bartholomew.info</a>
+          <a href="mailto:help@bartholomew.info" class="contact-item"><span class="contact-tag">[INTAKE]</span> help@bartholomew.info</a>
         </div>
       </div>
     </section>
@@ -847,7 +1256,7 @@
         </div>
         <h3 style="font-size:22px; font-weight:800; color:#ffffff; margin-bottom:8px;" id="modalCompanyHeader">Audit Slot Confirmed</h3>
         <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:20px; line-height:1.5;">
-          Your technical invariant assessment dossier has been logged. Delivery SLA is locked for 48 hours.
+          Your technical invariant assessment intake has been logged. Delivery SLA is locked for 48 hours.
         </p>
 
         <div style="background:#070a0f; border:1px solid var(--border-subtle); border-radius:8px; padding:12px; margin-bottom:20px; text-align:left;">
@@ -862,7 +1271,7 @@
         </div>
 
         <div style="margin-bottom:16px;">
-          <a id="modalStripeRedirectBtn" href="#" class="btn-gate-unlock" style="display:block; text-decoration:none; padding:12px; font-size:13px; text-align:center;">
+          <a id="modalStripeRedirectBtn" href="#" class="btn-checkout btn-primary" style="display:block; text-decoration:none; padding:12px; font-size:13px; text-align:center;">
             PROCEED TO STRIPE CHECKOUT &rarr;
           </a>
         </div>
@@ -874,10 +1283,12 @@
 
     <!-- Footer -->
     <footer>
-      <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; padding:24px 0;">
+      <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
         <p>&copy; 2026 Bartholomew Security Group. All rights reserved. Sub-35µs AST Invariant Gating.</p>
         <div style="display:flex; gap:18px; font-size:13px;">
-          <a href="/careers" style="color:var(--emerald-light); text-decoration:none; font-weight:700;">Careers (We're Hiring)</a>
+          <a href="/pricing.html" style="color:var(--text-muted); text-decoration:none;">Pricing</a>
+          <a href="/compliance.html" style="color:var(--text-muted); text-decoration:none;">Compliance</a>
+          <a href="/careers" style="color:var(--emerald-light); text-decoration:none; font-weight:700;">Careers</a>
           <a href="/verify.html" style="color:var(--text-muted); text-decoration:none;">Verify Seal</a>
         </div>
       </div>
@@ -885,68 +1296,7 @@
   </div>
 
   <script>
-    // Validation criteria for clearance tokens or passkeys
-    function isValidClearanceToken(token) {
-      if (!token) return false;
-      const clean = token.trim();
-      if (clean.length < 5) return false;
-      const validPrefixes = ['tok_', 'btp_', 'audit_', 'acn_', 'soc2_'];
-      const validCodes = ['BTP-ENTERPRISE-2026', 'BARTHOLOMEW-2026', 'SOC2-CLEARANCE', 'AUDIT-PASS', 'BTP-PRIORITY-SLOT'];
-      if (validCodes.includes(clean.toUpperCase())) return true;
-      if (validPrefixes.some(p => clean.toLowerCase().startsWith(p))) return true;
-      // Also accept any 12+ char alphanumeric token issued by our bot
-      if (clean.length >= 10 && /^[a-zA-Z0-9_\-]+$/.test(clean)) return true;
-      return false;
-    }
-
-    function unlockPortal(token, company) {
-      const gate = document.getElementById('clearanceGate');
-      const mainContent = document.getElementById('portalMainContent');
-      if (gate) gate.style.display = 'none';
-      if (mainContent) mainContent.classList.remove('portal-blurred');
-
-      sessionStorage.setItem('btp_clearance_token', token);
-      if (company) sessionStorage.setItem('btp_clearance_company', company);
-
-      // Render Active Clearance Banner
-      const bannerContainer = document.getElementById('clearanceBannerContainer');
-      if (bannerContainer && !document.getElementById('activeClearanceBanner')) {
-        const banner = document.createElement('div');
-        banner.id = 'activeClearanceBanner';
-        banner.style.cssText = 'background: rgba(16, 185, 129, 0.12); border: 1px solid var(--emerald); border-radius: 12px; padding: 18px 22px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;';
-        banner.innerHTML = `
-          <div>
-            <div style="font-family: var(--font-mono); font-size: 11px; font-weight: 800; color: var(--emerald); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px;">
-              [CLEARANCE AUTHENTICATED: LEVEL-3 ENTERPRISE AUDIT INTAKE]
-            </div>
-            <div style="font-size: 15px; font-weight: 700; color: #ffffff;">
-              Prospect Reservation: <span style="color: var(--cyan);">${company || 'Architecture Fleet'}</span> &bull; Token: <code style="font-family: var(--font-mono); color: var(--emerald);">${token}</code>
-            </div>
-          </div>
-          <div style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4); padding: 6px 14px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--cyan);">
-            48-HR SLA LOCKED
-          </div>
-        `;
-        bannerContainer.appendChild(banner);
-      }
-    }
-
-    function handleGateUnlock(e) {
-      e.preventDefault();
-      const input = document.getElementById('gateTokenInput');
-      const errorEl = document.getElementById('gateError');
-      const val = input.value.trim();
-
-      if (isValidClearanceToken(val)) {
-        errorEl.style.display = 'none';
-        unlockPortal(val, document.getElementById('companyName').value || 'Authorized Organization');
-      } else {
-        errorEl.style.display = 'block';
-        errorEl.textContent = 'ACCESS DENIED: Invalid or expired clearance token. Check your security advisory email or request clearance below.';
-      }
-    }
-
-    // URL Parameter Auto-Population & Clearance Gate Verification
+    // URL Parameter Auto-Population & Seamless Priority Banner
     window.addEventListener('DOMContentLoaded', () => {
       const params = new URLSearchParams(window.location.search);
       const company = params.get('company') || params.get('target');
@@ -956,6 +1306,7 @@
       const tier = params.get('tier');
       const wedge = params.get('wedge');
 
+      // Autofill fields if present
       if (company) {
         const compEl = document.getElementById('companyName');
         if (compEl) compEl.value = company;
@@ -977,12 +1328,12 @@
         if (notesEl) notesEl.value = `Identified Risk Vector: ${wedge}`;
       }
 
-      // Dynamically attach prefilled parameters to tier Stripe checkout links
+      // Dynamically attach prefilled parameters to Stripe checkout buttons
       if (email || company) {
         const startupBtn = document.getElementById('btnStripeStartup');
         const enterpriseBtn = document.getElementById('btnStripeEnterprise');
         const emailParam = email ? '&prefilled_email=' + encodeURIComponent(email) : '';
-        const refParam = token ? '&client_reference_id=' + encodeURIComponent(token) : '';
+        const refParam = token ? '&client_reference_id=' + encodeURIComponent(token) : (company ? '&client_reference_id=' + encodeURIComponent(company.replace(/\s+/g, '-').toLowerCase()) : '');
 
         if (startupBtn) {
           startupBtn.href = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605?' + (emailParam ? emailParam.substring(1) : '') + refParam;
@@ -992,21 +1343,15 @@
         }
       }
 
-      // Check URL token or existing session
-      const storedToken = sessionStorage.getItem('btp_clearance_token');
-      const storedCompany = sessionStorage.getItem('btp_clearance_company');
+      // Display VIP priority banner if visiting from link with company or token
+      const vipBanner = document.getElementById('vipReservationBanner');
+      const vipCompany = document.getElementById('vipCompanyLabel');
+      const vipBadge = document.getElementById('vipTokenBadge');
 
-      if (token && isValidClearanceToken(token)) {
-        unlockPortal(token, company || storedCompany);
-      } else if (storedToken && isValidClearanceToken(storedToken)) {
-        unlockPortal(storedToken, company || storedCompany);
-      } else {
-        // Keep gate locked
-        const gate = document.getElementById('clearanceGate');
-        const mainContent = document.getElementById('portalMainContent');
-        if (gate) gate.style.display = 'flex';
-        if (mainContent) mainContent.classList.add('portal-blurred');
-        document.getElementById('gateTokenInput').focus();
+      if (company || token) {
+        if (vipBanner) vipBanner.style.display = 'block';
+        if (vipCompany) vipCompany.textContent = company || 'Authorized Partner Fleet';
+        if (vipBadge && token) vipBadge.textContent = 'TOKEN: ' + token;
       }
     });
 
@@ -1043,7 +1388,7 @@
       } else if (tier === 'enterprise') {
         checkoutUrl = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(refId);
       } else {
-        checkoutUrl = 'mailto:security@bartholomew.info?subject=Retainer%20Intake%20' + refId + '&body=' + encodeURIComponent('Organization: ' + comp + '\nTier: Continuous OEM\nRepo: ' + repo);
+        checkoutUrl = 'mailto:itsub@bartholomew.info?subject=Retainer%20Intake%20' + refId + '&body=' + encodeURIComponent('Organization: ' + comp + '\nTier: Continuous OEM\nRepo: ' + repo);
       }
 
       // Display Modal
