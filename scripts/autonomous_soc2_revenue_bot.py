@@ -30,6 +30,12 @@ from email.mime.multipart import MIMEMultipart
 from pathlib import Path
 from typing import Dict, List, Any, Optional
 
+try:
+    sys.stdout.reconfigure(line_buffering=True)
+    sys.stderr.reconfigure(line_buffering=True)
+except Exception:
+    pass
+
 # Load .env file automatically
 ENV_FILE = Path(__file__).resolve().parent.parent / ".env"
 if ENV_FILE.exists():
@@ -47,6 +53,7 @@ if ENV_FILE.exists():
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+FUNDED_TARGETS_FILE = DATA_DIR / "freshly_funded_ai_startups_targets.json"
 TARGETS_FILE = DATA_DIR / "verified_audit_targets_live.json"
 FALLBACK_TARGETS_FILE = DATA_DIR / "global_audit_targets_1500.json"
 STATE_FILE = DATA_DIR / "soc2_dispatch_state.json"
@@ -168,17 +175,21 @@ def calculate_enterprise_intent_score(target: Dict[str, Any]) -> int:
     return min(100, score)
 
 
-def load_targets() -> List[Dict[str, Any]]:
-    file_to_read = TARGETS_FILE if TARGETS_FILE.exists() else FALLBACK_TARGETS_FILE
+def load_targets(funded_only: bool = False) -> List[Dict[str, Any]]:
+    if funded_only and FUNDED_TARGETS_FILE.exists():
+        file_to_read = FUNDED_TARGETS_FILE
+    elif TARGETS_FILE.exists():
+        file_to_read = TARGETS_FILE
+    else:
+        file_to_read = FALLBACK_TARGETS_FILE
+
     if file_to_read.exists():
         try:
             data = json.loads(file_to_read.read_text(encoding="utf-8"))
             targets = data.get("targets", [])
-            # 1. Mandatory filter: ONLY targets with 100% active DNS MX records
-            verified = [t for t in targets if verify_recipient_mx(t.get("email", ""))[0]]
-            # 2. Prioritize by Enterprise Intent & Willingness-to-Pay Score
-            verified.sort(key=lambda t: calculate_enterprise_intent_score(t), reverse=True)
-            return verified
+            # Prioritize by Enterprise Intent & Willingness-to-Pay Score
+            targets.sort(key=lambda t: calculate_enterprise_intent_score(t), reverse=True)
+            return targets
         except Exception as e:
             print(f"[!] Error reading {file_to_read}: {e}")
     return []
@@ -251,11 +262,11 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             msg["From"] = f"Bartholomew Security Group <{sender}>"
             msg["To"] = to_email
             msg["Subject"] = subject
-            msg["Reply-To"] = "security@bartholomew.info"
+            msg["Reply-To"] = f"{sender}, security@bartholomew.info"
             msg.attach(MIMEText(body, "plain", "utf-8"))
 
             context = ssl.create_default_context()
-            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            with smtplib.SMTP("smtp.gmail.com", 587, timeout=10) as server:
                 server.starttls(context=context)
                 server.login(sender, workspace_pw)
                 server.send_message(msg)
@@ -281,7 +292,7 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             payload = json.dumps({
                 "from": f"Bartholomew Security <{sender}>",
                 "to": [to_email],
-                "reply_to": "security@bartholomew.info",
+                "reply_to": sender,
                 "subject": subject,
                 "text": body
             }).encode("utf-8")
@@ -318,7 +329,7 @@ def transmit_email(to_email: str, subject: str, body: str) -> Dict[str, Any]:
             payload = json.dumps({
                 "personalizations": [{"to": [{"email": to_email}]}],
                 "from": {"email": sender, "name": "Bartholomew Security Group"},
-                "reply_to": {"email": "security@bartholomew.info"},
+                "reply_to": {"email": sender},
                 "subject": subject,
                 "content": [{"type": "text/plain", "value": body}]
             }).encode("utf-8")
@@ -386,12 +397,24 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"wedge={urllib.parse.quote_plus(vuln_risk)}"
     )
 
-    # 1. Technical Briefing Subject & Body (Clean, authoritative, zero pricing)
+    funding_round = target.get("funding_round", "")
+    if funding_round:
+        lead_context = (
+            f"Following your recent {funding_round} expansion, enterprise buyers, lead institutional "
+            f"investors, and compliance auditors mandate that {name} enforce deterministic execution "
+            f"boundaries before production enterprise deployment."
+        )
+    else:
+        lead_context = (
+            f"Enterprise procurement, institutional audit standards, and SOC 2 Type II compliance mandate that "
+            f"autonomous agent systems enforce deterministic execution boundaries before production deployment."
+        )
+
+    # 1. Technical Briefing Subject & Body (Clean, authoritative, includes self-serve 1-click option)
     subject = f"Security Notice: Runtime execution boundaries for {name}"
     body = (
         f"{name} Security Architecture & Engineering Lead,\n\n"
-        f"Enterprise procurement, institutional audit standards, and SOC 2 Type II compliance mandate that "
-        f"autonomous agent systems enforce deterministic execution boundaries before production deployment. "
+        f"{lead_context} "
         f"Agent runtimes operating on unshielded tool layers ({tech_stack}) fail non-human identity governance controls.\n\n"
         f"Critical Execution Boundary Finding for {name}:\n"
         f"• Threat Vector: {vuln_risk}\n"
@@ -404,11 +427,12 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
         f"Bartholomew protects 26,000+ active developers across the global agentic ecosystem with machine-verifiable RFC 8785 Ed25519 Merkle receipts.\n\n"
         f"Your organization has been assigned an active 72-hour priority clearance window:\n"
         f"• Assigned Clearance Token: {token['token_id']}\n"
-        f"• Verification & Intake Portal: {portal_url}\n\n"
+        f"• Verification & Intake Portal: {portal_url}\n"
+        f"• 1-Click Instant Audit Retainer: {stripe_url}\n\n"
         f"Authenticate your token at the portal above to lock your 48-hour audit slot and secure your compliance seal. "
-        f"Alternatively, reply 'VERIFY' to coordinate repo red-teaming directly with our security engineers.\n\n"
-        f"Bartholomew Security Group\n"
-        f"Runtime Invariant Attestation & Autonomous Agent Governance\n"
+        f"If you'd like us to run our 1,000-vector stress test against a staging repo without booking, simply reply with your branch or ping me directly.\n\n"
+        f"Itsub Alemayehu\n"
+        f"Founder & Lead Architect, Bartholomew Security Group\n"
         f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
@@ -416,12 +440,15 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     # 2. Automated Follow-Up (Day 3)
     fu_subject = f"Re: Security Notice: Runtime execution boundaries for {name}"
     fu_body = (
-        f"{name} Engineering Team,\n\n"
-        f"Your compliance clearance token ({token['token_id']}) expires in 24 hours.\n\n"
-        f"Without certified AST runtime gating ({vuln_risk}), enterprise procurement audits for autonomous agents remain blocked.\n\n"
-        f"Access your intake session before your assigned queue window rotates:\n"
+        f"Hey {name} engineering team,\n\n"
+        f"Quick follow-up on this note. Wanted to see if your runtime team had a chance to look at the AST execution boundary for {vuln_risk}.\n\n"
+        f"We built an open 1,000-vector simulation suite and in-process invariant gate (sub-35µs) specifically for autonomous agent tool execution.\n\n"
+        f"If you want, I can run our fuzzer against your public agent workflows and send over the trace logs + patch diff free of charge so you have it handy for your next SOC 2 / auditor review.\n\n"
+        f"Alternatively, you can authenticate your 72-hour clearance token ({token['token_id']}) directly at our intake portal:\n"
         f"{portal_url}\n\n"
-        f"Bartholomew Security Group\n"
+        f"Let me know if that's helpful,\n\n"
+        f"Itsub Alemayehu\n"
+        f"Founder & Lead Architect, Bartholomew Security Group\n"
         f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
         f"https://bartholomew.info"
     )
@@ -431,11 +458,12 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     bu_body = (
         f"{name} Team,\n\n"
         f"Your 72-hour priority compliance hold ({token['token_id']}) expires today.\n\n"
-        f"Unverified agent execution stacks cannot be certified for enterprise deployment once this clearance token is revoked.\n\n"
+        f"Unverified agent execution stacks cannot be certified for enterprise deployment once this clearance token rotates out of the queue.\n\n"
         f"Complete your intake authentication today:\n"
         f"{portal_url}\n\n"
-        f"Bartholomew Security Group\n"
-        f"NVIDIA Inception Partner • Google Cloud & AWS Ecosystem • 26,000+ Active Developers\n"
+        f"If you prefer to hold off on AST invariant gating for now, no worries at all—I'll close your clearance token and release the slot. Best of luck with the build!\n\n"
+        f"Itsub Alemayehu\n"
+        f"Founder & Lead Architect, Bartholomew Security Group\n"
         f"https://bartholomew.info"
     )
 
@@ -471,15 +499,15 @@ def build_dispatch_record(target: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
+def run_batch(batch_size: int = DAILY_PACING, funded_only: bool = False) -> Dict[str, Any]:
     state = get_state()
-    targets = load_targets()
+    targets = load_targets(funded_only=funded_only)
     if not targets:
         print("[!] No targets found in pipeline file.")
         return state
 
     current_idx = state.get("total_dispatched", 0)
-    selected = targets[current_idx:current_idx + batch_size]
+    selected = targets[current_idx:current_idx + batch_size] if not funded_only else targets[:batch_size]
 
     # Cycle back if we reached end of targets pool
     if not selected:
@@ -488,9 +516,10 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
         selected = targets[:batch_size]
 
     print("\n" + "=" * 80)
-    print(f" BARTHOLOMEW SOC 2 AUTONOMOUS REVENUE BOT — DAILY DISPATCH WAVE")
-    print(f" Goal: {WEEKLY_GOAL} targets/week | Daily Limit: {len(selected)} targets")
-    print(f" Pacing: ~{DAILY_PACING}/day | Current Pool: {len(targets)} targets (Sorted by Intent Score)")
+    cohort_title = "FRESHLY-FUNDED AI STARTUPS (SERIES A-D)" if funded_only else "GLOBAL ENTERPRISE POOL"
+    print(f" BARTHOLOMEW SOC 2 AUTONOMOUS REVENUE BOT — {cohort_title}")
+    print(f" Goal: {WEEKLY_GOAL} targets/week | Batch Size: {len(selected)} targets")
+    print(f" Pacing: ~{DAILY_PACING}/day | Available Pool: {len(targets)} targets (Sorted by Intent Score)")
     print(f" Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 80)
 
@@ -502,15 +531,16 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
         rec = build_dispatch_record(t)
         dispatches.append(rec)
         tx_status = rec["transmission"]["status"]
+        funding_tag = f" | {t.get('funding_round', 'Funded')[:22]}" if t.get('funding_round') else ""
         if tx_status == "TRANSMITTED_LIVE":
             transmitted_count += 1
-            print(f" [+] LIVE SENT:       {rec['name']:<24} | Intent: {rec['intent_score']:>2}/100 | {rec['token']['token_id']}")
+            print(f" [+] LIVE SENT:       {rec['name']:<24}{funding_tag} | Intent: {rec['intent_score']:>2}/100 | {rec['token']['token_id']}")
             time.sleep(1.0)
         elif tx_status == "DROPPED_INVALID_MX":
             print(f" [!] DROPPED (NO MX): {rec['name']:<24} | {rec['email']}")
         else:
             staged_count += 1
-            print(f" [+] QUEUED:          {rec['name']:<24} | Intent: {rec['intent_score']:>2}/100 | {rec['token']['token_id']}")
+            print(f" [+] QUEUED:          {rec['name']:<24}{funding_tag} | Intent: {rec['intent_score']:>2}/100 | {rec['token']['token_id']}")
 
     # Save to active dispatches log
     existing_logs = []
@@ -528,7 +558,7 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
     save_state(state)
 
     print("-" * 80)
-    print(f" [OK] Daily Wave Complete: {len(selected)} targets processed.")
+    print(f" [OK] Batch Wave Complete: {len(selected)} targets processed.")
     print(f"      - Live Transmitted: {transmitted_count}")
     print(f"      - Staged / Ready:   {staged_count}")
     print(f" [OK] Overall Progress:   {state['total_dispatched']} targets addressed to date.")
@@ -537,15 +567,17 @@ def run_batch(batch_size: int = DAILY_PACING) -> Dict[str, Any]:
     return state
 
 
-def print_status():
+def print_status(funded_only: bool = False):
     state = get_state()
-    targets = load_targets()
+    targets = load_targets(funded_only=funded_only)
+    funded_targets = load_targets(funded_only=True)
     print("\n" + "=" * 70)
     print(" BARTHOLOMEW SOC 2 AUTONOMOUS REVENUE SWARM STATUS")
     print("=" * 70)
     print(f" Bot Version:         {state.get('bot_version')}")
     print(f" Status:              {state.get('status')}")
-    print(f" Available Targets:   {len(targets):,} qualified AI platforms")
+    print(f" Freshly-Funded Pool: {len(funded_targets):,} Series A-D startups ('with dough')")
+    print(f" Global Target Pool:  {len(targets):,} qualified AI platforms")
     print(f" Total Dispatched:    {state.get('total_dispatched', 0):,} prospects")
     print(f" Weekly Target Goal:  {state.get('weekly_goal', 1000):,} prospects/week")
     print(f" Daily Pacing Quota:  {state.get('daily_pacing', 143):,} prospects/day (~6/hour)")
@@ -557,14 +589,74 @@ def print_status():
     print("=" * 70 + "\n")
 
 
-def daemon_runner(interval_sec: int = 86400, batch_size: int = DAILY_PACING):
+def retry_failed_dispatches(delay_sec: int = 5):
+    """
+    Scans active logs for any dispatches that failed due to Google Workspace sending limits
+    and safely re-transmits them with staggered pacing.
+    """
+    if not LOG_FILE.exists():
+        print("[!] No active logs found.")
+        return
+
+    logs = json.loads(LOG_FILE.read_text(encoding="utf-8"))
+    failed = [x for x in logs if x.get("transmission", {}).get("status") == "TRANSMIT_FAILED"]
+
+    if not failed:
+        print("[OK] Zero failed dispatches in queue. All systems clear!")
+        return
+
+    print("\n" + "=" * 80)
+    print(" BARTHOLOMEW QUEUE AUTO-RETRY ENGINE")
+    print(f" Queued Failed Dispatches to Resend: {len(failed)}")
+    print("=" * 80)
+
+    successful = 0
+    quota_blocked = False
+
+    for i, rec in enumerate(failed):
+        to_email = rec.get("email") or rec.get("target", {}).get("email")
+        target_name = rec.get("name") or rec.get("target", {}).get("name") or "Engineering Team"
+        subject = rec.get("sequences", {}).get("initial", {}).get("subject") or f"Security Advisory for {target_name}"
+        body = rec.get("sequences", {}).get("initial", {}).get("body") or ""
+
+        if not to_email:
+            continue
+
+        print(f"[*] [{i+1}/{len(failed)}] Retrying transmission to {target_name} ({to_email})...")
+        res = transmit_email(to_email, subject, body)
+
+        if res["status"] == "TRANSMITTED_LIVE":
+            successful += 1
+            rec["transmission"] = res
+            print(f"    [+] TRANSMITTED LIVE to {to_email}")
+            time.sleep(delay_sec)
+        elif "Daily user sending limit exceeded" in str(res.get("error", "")):
+            quota_blocked = True
+            print(f"    [!] Google Workspace daily sending limit still active.")
+            break
+        else:
+            print(f"    [!] Retrying failed: {res.get('error', 'unknown error')}")
+
+    # Save back updated logs
+    LOG_FILE.write_text(json.dumps(logs, indent=2), encoding="utf-8")
+    print("-" * 80)
+    print(f" [OK] Retry Cycle Result: {successful} successfully delivered.")
+    if quota_blocked:
+        print(f" [!] Google Workspace 24h limit is still in effect. Rolling reset unlocks in ~10.5 hours.")
+    print("=" * 80 + "\n")
+
+
+def daemon_runner(interval_sec: int = 86400, batch_size: int = DAILY_PACING, funded_only: bool = False):
     print("=" * 80)
     print(" BARTHOLOMEW 24/7 SOC 2 REVENUE SWARM DAEMON LAUNCHED")
     print(f" Pacing: {WEEKLY_GOAL} targets/week (~{DAILY_PACING}/day, {batch_size}/daily wave)")
     print(f" Interval: Every {interval_sec}s ({interval_sec//3600} hours)")
     print("=" * 80)
     while True:
-        run_batch(batch_size=batch_size)
+        # First retry any pending failures
+        retry_failed_dispatches()
+        # Then execute the scheduled wave
+        run_batch(batch_size=batch_size, funded_only=funded_only)
         print(f"[*] Sleeping {interval_sec}s until next automated daily wave... (Agents on duty)")
         time.sleep(interval_sec)
 
@@ -573,16 +665,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bartholomew Autonomous SOC 2 Revenue Bot")
     parser.add_argument("--batch", type=int, default=None, help=f"Execute a batch of N targets (default: daily limit {DAILY_PACING})")
     parser.add_argument("--daily", action="store_true", help=f"Send out today's full daily limit of targets ({DAILY_PACING})")
+    parser.add_argument("--funded", action="store_true", help="Target freshly funded AI startups (Series A-D with venture dough)")
+    parser.add_argument("--retry", action="store_true", help="Retry all previously failed dispatches held by sending limits")
     parser.add_argument("--daemon", action="store_true", help="Run continuously in background daily daemon loop")
     parser.add_argument("--interval", type=int, default=86400, help="Daemon sleep interval in seconds (default: 86400s / 24h)")
     parser.add_argument("--status", action="store_true", help="Print current pacing & dispatch status")
     args = parser.parse_args()
 
     if args.status:
-        print_status()
+        print_status(funded_only=args.funded)
+    elif args.retry:
+        retry_failed_dispatches()
     elif args.daemon:
         batch_n = args.batch or DAILY_PACING
-        daemon_runner(interval_sec=args.interval, batch_size=batch_n)
+        daemon_runner(interval_sec=args.interval, batch_size=batch_n, funded_only=args.funded)
     else:
         batch_n = args.batch if args.batch is not None else DAILY_PACING
-        run_batch(batch_size=batch_n)
+        run_batch(batch_size=batch_n, funded_only=args.funded)

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bartholomew Talent Review Portal | Candidate Resumes &amp; Submissions</title>
-  <meta name="description" content="Internal talent review console for Bartholomew Security Group. Review candidate applications, inspect questionnaires, and download candidate resumes.">
+  <title>Bartholomew Talent Review Portal | Restricted Executive Vault</title>
+  <meta name="description" content="Internal talent review console for Bartholomew Security Group. Restricted executive access.">
   <link rel="icon" type="image/png" href="/logo.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -55,6 +55,142 @@
       max-width: 1280px;
       margin: 0 auto;
       padding: 0 24px;
+    }
+
+    /* Fullscreen Authentication Gate */
+    .auth-gate-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 50% 20%, #111a36 0%, #04070e 80%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+    }
+    .auth-card {
+      max-width: 460px;
+      width: 100%;
+      background: #0d1322;
+      border: 1px solid rgba(234, 179, 8, 0.45);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.85), 0 0 35px rgba(234, 179, 8, 0.15);
+      text-align: center;
+      position: relative;
+    }
+    .auth-card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 15%; right: 15%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .auth-logo {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 16px;
+      border-radius: 12px;
+      background: rgba(234, 179, 8, 0.1);
+      border: 1px solid rgba(234, 179, 8, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold-light);
+    }
+    .auth-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold-light);
+      background: rgba(234, 179, 8, 0.12);
+      border: 1px solid rgba(234, 179, 8, 0.35);
+      padding: 4px 12px;
+      border-radius: 9999px;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+    .auth-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+    .auth-desc {
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .auth-input-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+    .auth-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+    .auth-input {
+      width: 100%;
+      background: #03060d;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      transition: var(--transition);
+    }
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.2);
+    }
+    .auth-error {
+      display: none;
+      background: rgba(244, 63, 94, 0.15);
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      color: #fda4af;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      text-align: left;
+    }
+    .btn-auth-unlock {
+      width: 100%;
+      background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+      color: #030712;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      font-size: 14px;
+      padding: 13px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition);
+      box-shadow: 0 6px 20px rgba(234, 179, 8, 0.3);
+    }
+    .btn-auth-unlock:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(234, 179, 8, 0.45);
     }
 
     /* Top Nav */
@@ -120,6 +256,25 @@
     }
     .btn-export-json:hover {
       background: var(--cyan);
+      color: #030712;
+    }
+    .btn-lock-vault {
+      background: rgba(244, 63, 94, 0.12);
+      border: 1px solid rgba(244, 63, 94, 0.35);
+      color: #fda4af;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
+    }
+    .btn-lock-vault:hover {
+      background: var(--rose);
       color: #030712;
     }
     .btn-view-site {
@@ -389,7 +544,6 @@
       line-height: 1.6;
     }
 
-    /* Empty state */
     .empty-state {
       padding: 60px 20px;
       text-align: center;
@@ -414,108 +568,141 @@
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <header class="site-nav">
-    <div class="container nav-inner">
-      <div style="display:flex; align-items:center; gap:12px;">
-        <a href="/" class="brand">
-          <img src="/logo.png" alt="Bartholomew Shield">
-          <span class="brand-title">Bartholomew</span>
-        </a>
-        <span class="badge-admin">Talent Intake &amp; Resume Vault</span>
+  <!-- Fullscreen Master Authentication Gate -->
+  <div id="adminAuthGate" class="auth-gate-overlay">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
       </div>
+      <div class="auth-badge">BARTHOLOMEW EXECUTIVE CLEARANCE</div>
+      <h2 class="auth-title">Talent Vault Restricted</h2>
+      <p class="auth-desc">
+        Access to candidate submissions, technical statements, and resumes is strictly restricted to authorized leadership.
+      </p>
 
-      <div class="nav-actions">
-        <button onclick="exportAllCandidatesJson()" class="btn-export-json" title="Export all candidate dossiers and resumes to JSON">
-          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Export All (JSON)
+      <form id="adminAuthForm" onsubmit="handleAdminUnlock(event)">
+        <div class="auth-input-group">
+          <label class="auth-label" for="adminPassInput">MASTER PASSKEY</label>
+          <input type="password" id="adminPassInput" required placeholder="Enter master passkey..." class="auth-input" autocomplete="current-password" autofocus>
+        </div>
+        <div id="authErrorMsg" class="auth-error">ACCESS DENIED: Unauthorized master passkey signature.</div>
+        <button type="submit" class="btn-auth-unlock">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>AUTHENTICATE &amp; ENTER VAULT</span>
         </button>
-        <a href="/careers" class="btn-view-site">
-          <span>View Public Careers &rarr;</span>
-        </a>
-      </div>
+      </form>
     </div>
-  </header>
+  </div>
 
-  <main class="container">
-    <!-- Dashboard Header -->
-    <div class="dashboard-header">
-      <div>
-        <h1 class="dash-title">Candidate Intake &amp; Resume Vault</h1>
-        <p class="dash-sub">
-          Review potential hires, inspect candidate determinism statements, and download attached resumes.
-        </p>
-      </div>
-      <div>
-        <button onclick="seedSampleCandidatesIfEmpty(true)" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); font-family:var(--font-mono); font-size:11px; padding:6px 12px; border-radius:6px; cursor:pointer;">
-          + Pre-load Demo Submissions
-        </button>
-      </div>
-    </div>
+  <!-- Authenticated Vault Dashboard (Hidden until unlocked) -->
+  <div id="adminMainContent" style="display:none;">
+    <!-- Top Navigation -->
+    <header class="site-nav">
+      <div class="container nav-inner">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <a href="/" class="brand">
+            <img src="/logo.png" alt="Bartholomew Shield">
+            <span class="brand-title">Bartholomew</span>
+          </a>
+          <span class="badge-admin">Talent Intake &amp; Resume Vault</span>
+        </div>
 
-    <!-- Metrics Row -->
-    <div class="metrics-row">
-      <div class="metric-card">
-        <div class="metric-num emerald" id="totalCandidatesCount">0</div>
-        <div class="metric-label">Total Applications</div>
+        <div class="nav-actions">
+          <button onclick="exportAllCandidatesJson()" class="btn-export-json" title="Export all candidate dossiers and resumes to JSON">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export All (JSON)
+          </button>
+          <button onclick="lockAdminVault()" class="btn-lock-vault" title="Lock the vault and clear session">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Lock Vault
+          </button>
+          <a href="/careers" class="btn-view-site">
+            <span>View Public Careers &rarr;</span>
+          </a>
+        </div>
       </div>
-      <div class="metric-card">
-        <div class="metric-num cyan" id="resumesReadyCount">0</div>
-        <div class="metric-label">Resumes On File</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-num gold" id="astEngineersCount">0</div>
-        <div class="metric-label">AST Compiler Leads</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-num purple" id="redTeamCount">0</div>
-        <div class="metric-label">Red-Team &amp; CISO Leads</div>
-      </div>
-    </div>
+    </header>
 
-    <!-- Filters -->
-    <div class="filter-bar">
-      <input type="text" id="candidateSearch" placeholder="Search by candidate name, email, or skill..." class="search-input" oninput="renderCandidatesTable()">
-      
-      <select id="roleFilter" class="role-filter-select" onchange="renderCandidatesTable()">
-        <option value="ALL">All Roles &amp; Requisitions</option>
-        <option value="Senior AST Invariant Engineer">Senior AST Invariant Engineer</option>
-        <option value="Autonomous Agent Red-Team Lead">Autonomous Agent Red-Team Lead</option>
-        <option value="Enterprise Compliance Solutions Architect">Enterprise Compliance Solutions Architect</option>
-        <option value="General Systems Engineering Application">General Application</option>
-      </select>
-    </div>
-
-    <!-- Submissions Table -->
-    <div class="table-card">
-      <table class="candidates-table">
-        <thead>
-          <tr>
-            <th>Candidate</th>
-            <th>Role Applied</th>
-            <th>Location</th>
-            <th>Portfolio / Code</th>
-            <th>Resume Document</th>
-            <th>Date Received</th>
-            <th style="text-align:right;">Actions</th>
-          </tr>
-        </thead>
-        <tbody id="candidatesTableBody">
-          <!-- Dynamically populated -->
-        </tbody>
-      </table>
-      <div id="emptyCandidatesState" class="empty-state" style="display:none;">
-        <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--text-dim); margin-bottom:12px;"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-        <div style="font-size:15px; font-weight:700; color:#fff; margin-bottom:4px;">No Applications In Local Storage Yet</div>
-        <p style="font-size:13px; color:var(--text-muted); max-width:440px; margin:0 auto 16px;">
-          Candidates who drop off their resumes on the Careers page will appear here immediately.
-        </p>
-        <button onclick="seedSampleCandidatesIfEmpty(true)" class="btn-action-download">
-          Populate Sample Candidates
-        </button>
+    <main class="container">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dash-title">Candidate Intake &amp; Resume Vault</h1>
+          <p class="dash-sub">
+            Review potential hires, inspect candidate determinism statements, and download attached resumes.
+          </p>
+        </div>
+        <div>
+          <button onclick="seedSampleCandidatesIfEmpty(true)" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15); color:var(--text-muted); font-family:var(--font-mono); font-size:11px; padding:6px 12px; border-radius:6px; cursor:pointer;">
+            + Pre-load Demo Submissions
+          </button>
+        </div>
       </div>
-    </div>
-  </main>
+
+      <!-- Metrics Row -->
+      <div class="metrics-row">
+        <div class="metric-card">
+          <div class="metric-num emerald" id="totalCandidatesCount">0</div>
+          <div class="metric-label">Total Applications</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num cyan" id="resumesReadyCount">0</div>
+          <div class="metric-label">Resumes On File</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num gold" id="astEngineersCount">0</div>
+          <div class="metric-label">AST Compiler Leads</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num purple" id="redTeamCount">0</div>
+          <div class="metric-label">Red-Team &amp; CISO Leads</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <input type="text" id="candidateSearch" placeholder="Search by candidate name, email, or skill..." class="search-input" oninput="renderCandidatesTable()">
+        
+        <select id="roleFilter" class="role-filter-select" onchange="renderCandidatesTable()">
+          <option value="ALL">All Roles &amp; Requisitions</option>
+          <option value="Senior AST Invariant Engineer">Senior AST Invariant Engineer</option>
+          <option value="Autonomous Agent Red-Team Lead">Autonomous Agent Red-Team Lead</option>
+          <option value="Enterprise Compliance Solutions Architect">Enterprise Compliance Solutions Architect</option>
+          <option value="General Systems Engineering Application">General Application</option>
+        </select>
+      </div>
+
+      <!-- Submissions Table -->
+      <div class="table-card">
+        <table class="candidates-table">
+          <thead>
+            <tr>
+              <th>Candidate</th>
+              <th>Role Applied</th>
+              <th>Location</th>
+              <th>Portfolio / Code</th>
+              <th>Resume Document</th>
+              <th>Date Received</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="candidatesTableBody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+        <div id="emptyCandidatesState" class="empty-state" style="display:none;">
+          <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color:var(--text-dim); margin-bottom:12px;"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <div style="font-size:15px; font-weight:700; color:#fff; margin-bottom:4px;">No Applications In Local Storage Yet</div>
+          <p style="font-size:13px; color:var(--text-muted); max-width:440px; margin:0 auto 16px;">
+            Candidates who drop off their resumes on the Careers page will appear here immediately.
+          </p>
+          <button onclick="seedSampleCandidatesIfEmpty(true)" class="btn-action-download">
+            Populate Sample Candidates
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
 
   <!-- Candidate Full Dossier Modal -->
   <div class="modal-overlay" id="dossierModal" onclick="handleDossierBackdrop(event)">
@@ -577,10 +764,56 @@
   </div>
 
   <script>
-    // Storage Key
     const STORAGE_KEY = 'btp_careers_applicants';
+    const AUTH_SESSION_KEY = 'btp_talent_auth';
+    const REQUIRED_PASSKEY = 'itsubalemayehu1998!';
 
-    // Sample High-Quality Seed Data (Pre-loaded if storage is completely empty)
+    // Authentication Handlers
+    function handleAdminUnlock(e) {
+      e.preventDefault();
+      const input = document.getElementById('adminPassInput');
+      const err = document.getElementById('authErrorMsg');
+      const entered = input.value;
+
+      if (entered === REQUIRED_PASSKEY) {
+        sessionStorage.setItem(AUTH_SESSION_KEY, 'AUTHENTICATED_ITSUB');
+        document.getElementById('adminAuthGate').style.display = 'none';
+        document.getElementById('adminMainContent').style.display = 'block';
+        err.style.display = 'none';
+        renderCandidatesTable();
+      } else {
+        err.style.display = 'block';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function lockAdminVault() {
+      sessionStorage.removeItem(AUTH_SESSION_KEY);
+      document.getElementById('adminMainContent').style.display = 'none';
+      document.getElementById('adminAuthGate').style.display = 'flex';
+      const input = document.getElementById('adminPassInput');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    function checkAuthStatus() {
+      const isAuthed = sessionStorage.getItem(AUTH_SESSION_KEY) === 'AUTHENTICATED_ITSUB';
+      if (isAuthed) {
+        document.getElementById('adminAuthGate').style.display = 'none';
+        document.getElementById('adminMainContent').style.display = 'block';
+        renderCandidatesTable();
+      } else {
+        document.getElementById('adminAuthGate').style.display = 'flex';
+        document.getElementById('adminMainContent').style.display = 'none';
+        const input = document.getElementById('adminPassInput');
+        if (input) input.focus();
+      }
+    }
+
+    // Sample High-Quality Seed Data
     const SAMPLE_APPLICANTS = [
       {
         id: 'BTP-APP-2026-RUST01',
@@ -674,6 +907,8 @@
     }
 
     function renderCandidatesTable() {
+      if (sessionStorage.getItem(AUTH_SESSION_KEY) !== 'AUTHENTICATED_ITSUB') return;
+
       let applicants = getApplicants();
       if (applicants.length === 0) {
         seedSampleCandidatesIfEmpty(false);
@@ -714,7 +949,7 @@
       }
 
       emptyState.style.display = 'none';
-      tbody.innerHTML = filtered.map((c, idx) => {
+      tbody.innerHTML = filtered.map((c) => {
         const initials = (c.name || 'AN').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
         const dateStr = c.timestamp ? new Date(c.timestamp).toLocaleDateString() : 'Recent';
         const resumeName = c.resume ? c.resume.fileName : 'None Attached';
@@ -849,7 +1084,6 @@
       return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Real-time synchronization: listen for localStorage events from other tabs
     window.addEventListener('storage', (e) => {
       if (e.key === STORAGE_KEY) {
         renderCandidatesTable();
@@ -857,7 +1091,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      renderCandidatesTable();
+      checkAuthStatus();
     });
   </script>
 </body>
