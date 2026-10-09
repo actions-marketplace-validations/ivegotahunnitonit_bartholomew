@@ -792,10 +792,9 @@
       <div class="nav-links">
         <a href="#workflow" class="nav-link">Workflow</a>
         <a href="#compliance-matrix" class="nav-link">Compliance Matrix</a>
-        <a href="#evidence-pack" class="nav-link">Auditor Deliverables</a>
-        <a href="#pricing" class="nav-link">Tiers</a>
+        <a href="#evidence-pack" class="nav-link">Deliverables</a>
         <a href="#faq" class="nav-link">FAQ</a>
-        <a href="#intake" class="btn-nav">SUBMIT AUDIT</a>
+        <a href="#intake" class="btn-nav">SUBMIT INTAKE</a>
       </div>
     </div>
   </nav>
@@ -829,7 +828,7 @@
 
       <div class="hero-actions">
         <a href="#intake" class="btn-checkout btn-primary" style="display:inline-block; width:auto; padding:14px 28px; font-size:14px;">Submit Manifest for Intake (2 Min)</a>
-        <a href="#pricing" class="btn-checkout btn-secondary" style="display:inline-block; width:auto; padding:14px 28px; font-size:14px;">View Engagement Tiers ($3,500+)</a>
+        <a href="#evidence-pack" class="btn-checkout btn-secondary" style="display:inline-block; width:auto; padding:14px 28px; font-size:14px;">View Evidence Pack Deliverables &rarr;</a>
       </div>
 
       <!-- Key Stats -->
@@ -1074,7 +1073,7 @@
       </div>
     </section>
 
-    <!-- Engagement Tiers -->
+    <!-- PRICING_TIERS_RESERVED (Kept on back burner until response)
     <section id="pricing" class="container">
       <div class="section-header">
         <div class="section-tag">TRANSPARENT ENGAGEMENTS</div>
@@ -1083,7 +1082,6 @@
       </div>
 
       <div class="tiers-grid">
-        <!-- Tier 1: Startup Audit -->
         <div class="tier-card">
           <div class="tier-name">Startup Agent Audit</div>
           <div class="tier-desc">Ideal for fast-moving AI startups unblocking their first enterprise pilots.</div>
@@ -1103,7 +1101,6 @@
           </div>
         </div>
 
-        <!-- Tier 2: Enterprise Fleet Audit (Featured) -->
         <div class="tier-card featured">
           <div class="tier-badge">MOST POPULAR</div>
           <div class="tier-name">Enterprise Fleet Audit</div>
@@ -1125,7 +1122,6 @@
           </div>
         </div>
 
-        <!-- Tier 3: Continuous Retainer -->
         <div class="tier-card">
           <div class="tier-name">Continuous Retainer &amp; OEM</div>
           <div class="tier-desc">Standing security partnership for hyper-growth platforms and foundation swarms.</div>
@@ -1145,6 +1141,7 @@
         </div>
       </div>
     </section>
+    -->
 
     <!-- Intake Submission Form -->
     <section id="intake" class="container">
@@ -1182,11 +1179,11 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="tierSelect">Desired Audit Tier *</label>
+              <label for="tierSelect">Desired Audit Scope *</label>
               <select id="tierSelect">
-                <option value="startup">Tier 1: Startup Agent Audit ($3,500)</option>
-                <option value="enterprise" selected>Tier 2: Enterprise Fleet Audit ($7,500)</option>
-                <option value="retainer">Tier 3: Continuous Retainer ($15,000/yr)</option>
+                <option value="startup">Startup Assessment (1-3 Workflows or MCP Servers)</option>
+                <option value="enterprise" selected>Enterprise Fleet Certification (Multi-Agent Swarms)</option>
+                <option value="retainer">Continuous OEM Retainer (CI/CD Gating)</option>
               </select>
             </div>
             <div class="form-group">
@@ -1198,19 +1195,6 @@
                 <option value="iso42001">ISO 42001 AI Management System</option>
                 <option value="general">Enterprise Procurement CISO Sign-off</option>
               </select>
-            </div>
-            <div class="form-group">
-              <label for="paymentMethod">Payment &amp; Remittance Preference *</label>
-              <select id="paymentMethod">
-                <option value="card" selected>Instant Card Checkout (Stripe)</option>
-                <option value="ach_wire">ACH / Domestic Wire Transfer (Bank Invoice)</option>
-                <option value="net30">Net-30 Corporate Invoice / PO Terms</option>
-                <option value="cheque">Corporate Cheque / Check by Mail</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="billingEmail">Accounts Payable / Finance Email (Optional)</label>
-              <input type="email" id="billingEmail" placeholder="ap@yourcompany.com">
             </div>
             <div class="form-group full">
               <label for="notes">Architecture Context / High-Risk Tool Primitives</label>
@@ -1243,13 +1227,8 @@
         </div>
 
         <div class="faq-card">
-          <h4>Can our accounts payable team pay via ACH Wire, Net-30 invoice, or Cheque?</h4>
-          <p>Yes. Enterprise procurement and finance teams routinely pay via ACH bank transfer, wire, Net-30 invoice, or corporate check. Select your preference on the intake form. We issue formal PDF invoices, provide banking routing numbers, and return completed W-9 vendor packets within 1 hour.</p>
-        </div>
-
-        <div class="faq-card">
           <h4>When does our 48-hour SLA delivery clock begin?</h4>
-          <p>The 48-hour SLA clock begins immediately once your tool manifest or repository intake is validated by our engineering desk. Your engineering and sales deal unblocks on schedule while your procurement desk processes payment terms.</p>
+          <p>The 48-hour SLA clock begins immediately once your tool manifest or repository intake is validated by our engineering desk. Your engineering and sales deal unblocks on schedule.</p>
         </div>
 
         <div class="faq-card">
@@ -1261,6 +1240,11 @@
           <h4>What happens if vulnerabilities or breakouts are discovered?</h4>
           <p>We do not just hand you a list of problems. We provide ready-to-merge GitHub pull requests with deterministic sub-35µs AST gating code, followed by an immediate free re-test to ensure you achieve full clean certification.</p>
         </div>
+
+        <div class="faq-card">
+          <h4>How is the audit engagement scoped?</h4>
+          <p>Audits are scoped based on the number of agent workflows, custom MCP tool servers, and compliance requirements. Submit your manifest above, and our engineering team will provide a tailored scope within 4 hours.</p>
+        </div>
       </div>
     </section>
 
@@ -1268,7 +1252,7 @@
     <section class="container">
       <div class="contact-box">
         <h3 style="font-size: 18px; margin-bottom: 8px;">Direct Negotiation &amp; Technical Support Channels</h3>
-        <p style="color: var(--text-muted); font-size: 14px;">Need customized statements of work, vendor security questionnaires, or Net-30 invoice terms? Reach our leadership team directly:</p>
+        <p style="color: var(--text-muted); font-size: 14px;">Need customized statements of work, vendor security questionnaires, or custom SOW terms? Reach our leadership team directly:</p>
         <div class="contact-links">
           <a href="mailto:itsub@bartholomew.info" class="contact-item"><span class="contact-tag">[FOUNDER / CISO]</span> itsub@bartholomew.info</a>
           <a href="mailto:security@bartholomew.info" class="contact-item"><span class="contact-tag">[SECURITY]</span> security@bartholomew.info</a>
@@ -1286,7 +1270,7 @@
         <div style="font-family:var(--font-mono); font-size:11px; font-weight:800; color:var(--emerald); letter-spacing:0.08em; text-transform:uppercase; margin-bottom:6px;">
           [AUTHENTICATED INTAKE RESERVATION SEALED]
         </div>
-        <h3 style="font-size:22px; font-weight:800; color:#ffffff; margin-bottom:8px;" id="modalCompanyHeader">Audit Slot Confirmed</h3>
+        <h3 style="font-size:22px; font-weight:800; color:#ffffff; margin-bottom:8px;" id="modalCompanyHeader">Audit Scope Logged</h3>
         <p style="color:var(--text-muted); font-size:13.5px; margin-bottom:20px; line-height:1.5;" id="modalRefDesc">
           Your technical invariant assessment intake has been logged. Delivery SLA is locked for 48 hours.
         </p>
@@ -1297,22 +1281,22 @@
             <span style="font-family:var(--font-mono); font-size:11px; color:var(--cyan); font-weight:700;" id="modalRefId">AUDIT-XXXX</span>
           </div>
           <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-            <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">ENGAGEMENT TIER:</span>
-            <span style="font-family:var(--font-mono); font-size:11px; color:var(--emerald-light); font-weight:700;" id="modalTier">Enterprise Fleet Audit</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">ENGAGEMENT SCOPE:</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--emerald-light); font-weight:700;" id="modalTier">Enterprise Fleet Certification</span>
           </div>
           <div style="display:flex; justify-content:space-between;">
-            <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">PAYMENT METHOD:</span>
-            <span style="font-family:var(--font-mono); font-size:11px; color:#ffffff; font-weight:700;" id="modalPayMethod">Card Checkout</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);">STATUS:</span>
+            <span style="font-family:var(--font-mono); font-size:11px; color:#ffffff; font-weight:700;" id="modalStatus">48-Hr Slot Reserved</span>
           </div>
         </div>
 
         <div style="margin-bottom:16px;">
-          <a id="modalStripeRedirectBtn" href="#" class="btn-checkout btn-primary" style="display:block; text-decoration:none; padding:12px; font-size:13px; text-align:center;">
-            PROCEED TO STRIPE CHECKOUT &rarr;
+          <a id="modalConfirmBtn" href="#" class="btn-checkout btn-primary" style="display:block; text-decoration:none; padding:12px; font-size:13px; text-align:center;">
+            CONFIRM WITH LEADERSHIP (EMAIL) &rarr;
           </a>
         </div>
         <div style="font-family:var(--font-mono); font-size:11px; color:var(--text-dim);" id="modalCountdownText">
-          Redirecting to Stripe in 3 seconds...
+          Audit intake confirmed. Our security engineering team will review execution boundaries within 4 hours.
         </div>
       </div>
     </div>
@@ -1322,7 +1306,6 @@
       <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
         <p>&copy; 2026 Bartholomew Security Group. All rights reserved. Sub-35µs AST Invariant Gating.</p>
         <div style="display:flex; gap:18px; font-size:13px;">
-          <a href="/pricing.html" style="color:var(--text-muted); text-decoration:none;">Pricing</a>
           <a href="/compliance.html" style="color:var(--text-muted); text-decoration:none;">Compliance</a>
           <a href="/careers" style="color:var(--emerald-light); text-decoration:none; font-weight:700;">Careers</a>
           <a href="/verify.html" style="color:var(--text-muted); text-decoration:none;">Verify Seal</a>
@@ -1341,7 +1324,6 @@
       const token = params.get('token') || params.get('code');
       const tier = params.get('tier');
       const wedge = params.get('wedge');
-      const pay = params.get('pay');
 
       // Autofill fields if present
       if (company) {
@@ -1360,28 +1342,9 @@
         const tierEl = document.getElementById('tierSelect');
         if (tierEl) tierEl.value = tier.toLowerCase().includes('enterprise') ? 'enterprise' : 'startup';
       }
-      if (pay) {
-        const payEl = document.getElementById('paymentMethod');
-        if (payEl) payEl.value = pay;
-      }
       if (wedge) {
         const notesEl = document.getElementById('notes');
         if (notesEl) notesEl.value = `Identified Risk Vector: ${wedge}`;
-      }
-
-      // Dynamically attach prefilled parameters to Stripe checkout buttons
-      if (email || company) {
-        const startupBtn = document.getElementById('btnStripeStartup');
-        const enterpriseBtn = document.getElementById('btnStripeEnterprise');
-        const emailParam = email ? '&prefilled_email=' + encodeURIComponent(email) : '';
-        const refParam = token ? '&client_reference_id=' + encodeURIComponent(token) : (company ? '&client_reference_id=' + encodeURIComponent(company.replace(/\s+/g, '-').toLowerCase()) : '');
-
-        if (startupBtn) {
-          startupBtn.href = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605?' + (emailParam ? emailParam.substring(1) : '') + refParam;
-        }
-        if (enterpriseBtn) {
-          enterpriseBtn.href = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601?' + (emailParam ? emailParam.substring(1) : '') + refParam;
-        }
       }
 
       // Display VIP priority banner if visiting from link with company or token
@@ -1396,15 +1359,12 @@
       }
     });
 
-    let redirectTimer = null;
     function handleIntakeSubmit(e) {
       e.preventDefault();
       const comp = document.getElementById('companyName').value || 'Authorized Organization';
       const email = document.getElementById('contactEmail').value || '';
       const tier = document.getElementById('tierSelect').value || 'enterprise';
       const repo = document.getElementById('repoUrl').value || '';
-      const payMethod = document.getElementById('paymentMethod') ? document.getElementById('paymentMethod').value : 'card';
-      const billingEmail = document.getElementById('billingEmail') ? document.getElementById('billingEmail').value : '';
       const notes = document.getElementById('notes').value || '';
       
       const refId = 'BTP-' + Math.random().toString(36).substring(2, 9).toUpperCase();
@@ -1416,9 +1376,7 @@
           refId,
           company: comp,
           email: email,
-          billingEmail: billingEmail,
           tier: tier,
-          paymentMethod: payMethod,
           repo: repo,
           notes: notes,
           timestamp: new Date().toISOString()
@@ -1426,78 +1384,21 @@
         localStorage.setItem('btp_enterprise_intakes', JSON.stringify(stored));
       } catch (err) {}
 
-      // Calculate checkout URL with prefilled parameters for Card
-      let checkoutUrl = '';
-      if (tier === 'startup') {
-        checkoutUrl = 'https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(refId);
-      } else if (tier === 'enterprise') {
-        checkoutUrl = 'https://buy.stripe.com/fZu14ng3PgyC9ao2z69R601?prefilled_email=' + encodeURIComponent(email) + '&client_reference_id=' + encodeURIComponent(refId);
-      } else {
-        checkoutUrl = 'mailto:itsub@bartholomew.info?subject=Retainer%20Intake%20' + refId + '&body=' + encodeURIComponent('Organization: ' + comp + '\nTier: Continuous OEM\nRepo: ' + repo);
-      }
+      // Scope label
+      const scopeLabel = tier === 'startup' ? 'Startup Assessment (1-3 Workflows)' : (tier === 'enterprise' ? 'Enterprise Fleet Certification (Multi-Agent)' : 'Continuous OEM Retainer');
+
+      // Mailto confirmation URL
+      const mailtoUrl = 'mailto:itsub@bartholomew.info?subject=' + encodeURIComponent('Enterprise Audit Intake [' + refId + '] - ' + comp) + '&body=' + encodeURIComponent('Hi Itsub,\n\nWe have submitted our agent architecture for independent Bartholomew verification:\n\nOrganization: ' + comp + '\nReference ID: ' + refId + '\nDesired Scope: ' + scopeLabel + '\nTechnical Contact: ' + email + '\nRepo / Manifest: ' + repo + '\nArchitecture Context: ' + notes + '\n\nPlease confirm our 48-hour audit window and delivery SLA.\n\nBest,\n' + comp);
 
       // Display Modal
       const modal = document.getElementById('intakeConfirmationModal');
-      const modalCompanyHeader = document.getElementById('modalCompanyHeader');
-      const modalRefDesc = document.getElementById('modalRefDesc');
-      const modalRefId = document.getElementById('modalRefId');
-      const modalTier = document.getElementById('modalTier');
-      const modalPayMethod = document.getElementById('modalPayMethod');
-      const redirectBtn = document.getElementById('modalStripeRedirectBtn');
-      const countdownEl = document.getElementById('modalCountdownText');
-
-      modalRefId.textContent = refId;
-      modalTier.textContent = tier === 'startup' ? 'Startup Agent Audit ($3,500)' : (tier === 'enterprise' ? 'Enterprise Fleet Audit ($7,500)' : 'Continuous OEM Retainer ($15,000/yr)');
-
-      if (redirectTimer) clearInterval(redirectTimer);
-
-      if (payMethod === 'card') {
-        modalCompanyHeader.textContent = comp + ' Audit Reserved';
-        modalRefDesc.textContent = 'Your technical invariant assessment intake has been logged. Delivery SLA is locked for 48 hours.';
-        modalPayMethod.textContent = 'Credit / Corporate Card (Instant Checkout)';
-        redirectBtn.textContent = 'PROCEED TO STRIPE CHECKOUT →';
-        redirectBtn.href = checkoutUrl;
-
-        let seconds = 3;
-        redirectTimer = setInterval(() => {
-          seconds--;
-          if (countdownEl) countdownEl.textContent = `Redirecting to Secure Stripe Checkout in ${seconds}s...`;
-          if (seconds <= 0) {
-            clearInterval(redirectTimer);
-            window.location.href = checkoutUrl;
-          }
-        }, 1000);
-
-      } else if (payMethod === 'ach_wire') {
-        modalCompanyHeader.textContent = comp + ' Audit & ACH Invoice Logged';
-        modalRefDesc.textContent = 'Your 48-hour audit slot is reserved. A formal PDF invoice with ACH/Domestic Wire routing and SWIFT instructions has been logged for your finance desk.';
-        modalPayMethod.textContent = 'ACH / Wire Transfer (Bank Invoice)';
-        
-        const mailtoUrl = 'mailto:itsub@bartholomew.info?subject=' + encodeURIComponent('ACH/Wire Invoice & Remittance Request [' + refId + '] - ' + comp) + '&body=' + encodeURIComponent('Hi Itsub,\n\nPlease issue formal PDF invoice and ACH/Wire banking details for:\n\nCompany: ' + comp + '\nAudit Ref ID: ' + refId + '\nTier: ' + modalTier.textContent + '\nTechnical Contact: ' + email + '\nBilling/Finance Contact: ' + (billingEmail || email) + '\n\nThanks!');
-        redirectBtn.textContent = 'EMAIL BILLING FOR WIRE DETAILS & W-9 →';
-        redirectBtn.href = mailtoUrl;
-        countdownEl.textContent = 'Invoice & routing instructions dispatched to ' + (billingEmail || email) + '. 48-Hour SLA is active.';
-
-      } else if (payMethod === 'net30') {
-        modalCompanyHeader.textContent = comp + ' Net-30 PO Reservation Logged';
-        modalRefDesc.textContent = 'Your 48-hour audit slot is reserved under Net-30 PO payment terms. Vendor onboarding documents (W-9 / Vendor Packet) are ready on demand.';
-        modalPayMethod.textContent = 'Net-30 Corporate Invoice / PO';
-
-        const mailtoUrl = 'mailto:itsub@bartholomew.info?subject=' + encodeURIComponent('Net-30 Invoice & Vendor W-9 Request [' + refId + '] - ' + comp) + '&body=' + encodeURIComponent('Hi Itsub,\n\nPlease send Net-30 invoice and completed W-9 vendor packet for:\n\nCompany: ' + comp + '\nAudit Ref ID: ' + refId + '\nTier: ' + modalTier.textContent + '\nTechnical Contact: ' + email + '\nBilling/Finance Contact: ' + (billingEmail || email) + '\n\nThanks!');
-        redirectBtn.textContent = 'REQUEST NET-30 INVOICE & W-9 →';
-        redirectBtn.href = mailtoUrl;
-        countdownEl.textContent = 'Purchase Order terms logged. 48-Hour SLA delivery is active upon intake submission.';
-
-      } else if (payMethod === 'cheque') {
-        modalCompanyHeader.textContent = comp + ' Cheque Remittance Logged';
-        modalRefDesc.textContent = 'Your 48-hour audit slot is reserved. Mailing remittance address and corporate payee information for Bartholomew Security Group has been registered.';
-        modalPayMethod.textContent = 'Corporate Cheque / Check by Mail';
-
-        const mailtoUrl = 'mailto:itsub@bartholomew.info?subject=' + encodeURIComponent('Cheque Remittance Instructions Request [' + refId + '] - ' + comp) + '&body=' + encodeURIComponent('Hi Itsub,\n\nPlease provide mailing remittance address and corporate payee details for cheque issuance for:\n\nCompany: ' + comp + '\nAudit Ref ID: ' + refId + '\nTier: ' + modalTier.textContent + '\nTechnical Contact: ' + email + '\nBilling/Finance Contact: ' + (billingEmail || email) + '\n\nThanks!');
-        redirectBtn.textContent = 'REQUEST CHEQUE MAILING DETAILS →';
-        redirectBtn.href = mailtoUrl;
-        countdownEl.textContent = 'Cheque instructions dispatched to ' + (billingEmail || email) + '. 48-Hour SLA active.';
-      }
+      document.getElementById('modalCompanyHeader').textContent = comp + ' Audit Scope Logged';
+      document.getElementById('modalRefDesc').textContent = 'Your technical invariant assessment intake has been logged. Delivery SLA is locked for 48 hours.';
+      document.getElementById('modalRefId').textContent = refId;
+      document.getElementById('modalTier').textContent = scopeLabel;
+      
+      const confirmBtn = document.getElementById('modalConfirmBtn');
+      confirmBtn.href = mailtoUrl;
 
       modal.style.display = 'flex';
     }
