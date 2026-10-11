@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#070c18"/>
+      <stop offset="100%" stop-color="#03050a"/>
+    </linearGradient>
+    <linearGradient id="panelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1a30"/>
+      <stop offset="100%" stop-color="#080e1a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="900" height="480" fill="url(#bgGrad2)" rx="12"/>
+  <rect width="898" height="478" x="1" y="1" fill="none" stroke="#1e293b" stroke-width="1.5" rx="11"/>
+
+  <!-- Header -->
+  <g transform="translate(24, 24)">
+    <text x="0" y="18" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto" font-size="16" font-weight="700">REAL-TIME INVARIANT BREAKDOWN &amp; PLAIN-ENGLISH DIAGNOSIS</text>
+    <text x="0" y="36" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">TRANSPARENT EXPLANATIONS // NO TECHNICAL JARGON // 1-CLICK REMEDIATION</text>
+  </g>
+
+  <!-- 4 Breakdown Cards -->
+  <g transform="translate(24, 76)">
+    <!-- Card 1: What is Going On -->
+    <rect width="414" height="175" rx="8" fill="url(#panelGrad)" stroke="#1e293b"/>
+    <rect x="16" y="16" width="160" height="24" rx="4" fill="#0284c7" fill-opacity="0.2" stroke="#0284c7"/>
+    <text x="24" y="32" fill="#38bdf8" font-family="Consolas, monospace" font-size="10" font-weight="700">[1] WHAT IS GOING ON</text>
+    <text x="16" y="62" fill="#f8fafc" font-size="12" font-weight="600">Bartholomew is actively running inside your workspace.</text>
+    <text x="16" y="84" fill="#94a3b8" font-size="11.5">Defending tools, extensions, and autonomous AI agents in real time.</text>
+    <text x="16" y="104" fill="#94a3b8" font-size="11.5">Over 73,000,000 operations evaluated across developer fleets</text>
+    <text x="16" y="124" fill="#94a3b8" font-size="11.5">with sub-35 microsecond hardware and AST response latency.</text>
+    <text x="16" y="152" fill="#38bdf8" font-family="Consolas, monospace" font-size="10" font-weight="700">STATUS: ZERO TELEMETRY LEAKAGE // 100% SOVEREIGN</text>
+
+    <!-- Card 2: What is Wrong -->
+    <g transform="translate(438, 0)">
+      <rect width="414" height="175" rx="8" fill="url(#panelGrad)" stroke="#1e293b"/>
+      <rect x="16" y="16" width="130" height="24" rx="4" fill="#ea580c" fill-opacity="0.2" stroke="#ea580c"/>
+      <text x="24" y="32" fill="#fb923c" font-family="Consolas, monospace" font-size="10" font-weight="700">[2] WHAT IS WRONG</text>
+      <text x="16" y="62" fill="#f8fafc" font-size="12" font-weight="600">Autonomous agents lack clearance boundaries:</text>
+      <circle cx="24" cy="84" r="3" fill="#fb923c"/>
+      <text x="34" y="88" fill="#cbd5e1" font-size="11.5">Keystone Passkey is unissued (spend ceiling unmetered).</text>
+      <circle cx="24" cy="108" r="3" fill="#fb923c"/>
+      <text x="34" y="112" fill="#cbd5e1" font-size="11.5">Workspace policy file (.btp/policy.yaml) is uninitialized.</text>
+      <circle cx="24" cy="132" r="3" fill="#fb923c"/>
+      <text x="34" y="136" fill="#cbd5e1" font-size="11.5">Git pre-commit AST sentinel is not yet installed.</text>
+    </g>
+
+    <!-- Card 3: What Needs Fixing -->
+    <g transform="translate(0, 190)">
+      <rect width="414" height="185" rx="8" fill="url(#panelGrad)" stroke="#1e293b"/>
+      <rect x="16" y="16" width="165" height="24" rx="4" fill="#8b5cf6" fill-opacity="0.2" stroke="#8b5cf6"/>
+      <text x="24" y="32" fill="#c084fc" font-family="Consolas, monospace" font-size="10" font-weight="700">[3] WHAT NEEDS FIXING</text>
+      
+      <text x="16" y="62" fill="#cbd5e1" font-size="11.5">1. Click [ISSUE PASSKEY] to grant agent scoped clearance token.</text>
+      <rect x="16" y="74" width="160" height="22" rx="4" fill="#6366f1" fill-opacity="0.2" stroke="#6366f1"/>
+      <text x="24" y="89" fill="#a5b4fc" font-family="Consolas, monospace" font-size="10" font-weight="700">[1-CLICK ISSUE PASSKEY]</text>
+
+      <text x="16" y="120" fill="#cbd5e1" font-size="11.5">2. Click [IMMUNIZE] to synthesize baseline security policy.</text>
+      <rect x="16" y="132" width="150" height="22" rx="4" fill="#10b981" fill-opacity="0.2" stroke="#10b981"/>
+      <text x="24" y="147" fill="#6ee7b7" font-family="Consolas, monospace" font-size="10" font-weight="700">[1-CLICK IMMUNIZE]</text>
+    </g>
+
+    <!-- Card 4: How We Are Helping -->
+    <g transform="translate(438, 190)">
+      <rect width="414" height="185" rx="8" fill="url(#panelGrad)" stroke="#1e293b"/>
+      <rect x="16" y="16" width="170" height="24" rx="4" fill="#059669" fill-opacity="0.2" stroke="#059669"/>
+      <text x="24" y="32" fill="#34d399" font-family="Consolas, monospace" font-size="10" font-weight="700">[4] HOW WE ARE HELPING</text>
+      
+      <circle cx="24" cy="64" r="3" fill="#34d399"/>
+      <text x="34" y="68" fill="#cbd5e1" font-size="11.5">Blocking destructive bash commands and raw SQL mutations.</text>
+
+      <circle cx="24" cy="90" r="3" fill="#34d399"/>
+      <text x="34" y="94" fill="#cbd5e1" font-size="11.5">Filtering in-flight secrets before transmitting to LLM prompts.</text>
+
+      <circle cx="24" cy="116" r="3" fill="#34d399"/>
+      <text x="34" y="120" fill="#cbd5e1" font-size="11.5">Auto-compressing codebase AST to conserve 69.6% token spend.</text>
+
+      <circle cx="24" cy="142" r="3" fill="#34d399"/>
+      <text x="34" y="146" fill="#cbd5e1" font-size="11.5">Recording tamper-evident Ed25519 cryptographic receipts.</text>
+
+      <text x="16" y="172" fill="#34d399" font-family="Consolas, monospace" font-size="10" font-weight="700">CONTINUOUS GUARANTEE: SUB-35us IN-PROCESS DEFENSE</text>
+    </g>
+  </g>
+</svg>

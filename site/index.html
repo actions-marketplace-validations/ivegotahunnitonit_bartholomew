@@ -1418,8 +1418,8 @@
 
     .footer-main-grid {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 40px;
+      grid-template-columns: 1.8fr 1fr 1fr 1fr;
+      gap: 32px;
       padding-bottom: 40px;
       border-bottom: 1px solid rgba(51, 65, 85, 0.5);
     }
@@ -2035,6 +2035,39 @@
       height: auto;
     }
 
+    @media (max-width: 1024px) {
+      .footer-main-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 28px !important;
+      }
+      .footer-brand-col {
+        grid-column: span 2 !important;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .nav-inner {
+        height: auto !important;
+        min-height: 64px !important;
+        padding: 10px 0 !important;
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+      }
+      .nav-right-items {
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .footer-nim-sandbox-box div[style*="grid-template-columns"] {
+        grid-template-columns: 1fr !important;
+      }
+      .footer-nim-sandbox-box {
+        padding: 1rem !important;
+      }
+    }
+
     @media (max-width: 768px) {
       .container {
         padding-left: 16px !important;
@@ -2049,10 +2082,28 @@
         justify-content: center !important;
       }
       .nav-right-items {
-        gap: 8px !important;
+        gap: 6px !important;
       }
       .btn-investor-nav {
         display: none !important;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .footer-main-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+      }
+      .footer-brand-col {
+        grid-column: span 1 !important;
+      }
+      .footer-bottom-container {
+        font-size: 0.72rem !important;
+      }
+      .footer-row-meta, .footer-row-nav, .footer-row-links {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
       }
     }
 
@@ -2600,8 +2651,8 @@
         <img src="/logo.png" alt="Bartholomew Shield Logo" class="brand-logo-img" width="36" height="36">
         <span class="brand-title">Bartholomew</span>
         <span class="badge-protocol">
-          <span class="badge-text-full">BTP v6.4.4 • ARP ENGINE</span>
-          <span class="badge-text-short">v6.4.4</span>
+          <span class="badge-text-full">BTP v6.4.7 • ARP ENGINE</span>
+          <span class="badge-text-short">v6.4.7</span>
         </span>
       </a>
 
@@ -2728,7 +2779,7 @@
           <div class="traction-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.06);">
             <div class="traction-tag" style="display: flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 0.8rem; font-weight: 800; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.06em;">
               <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-              <span>Traction &amp; Production Validation (BTP v6.4.4)</span>
+              <span>Traction &amp; Production Validation (BTP v6.4.7)</span>
             </div>
             <div class="traction-status-badge" style="display: inline-flex; align-items: center; gap: 7px; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; padding: 4px 12px; border-radius: 9999px;">
               <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 6px #10b981;"></span>
@@ -3504,7 +3555,7 @@
                 <h4 style="font-size:0.96rem; font-weight:700; color:#ffffff; margin:0;">AI Productization & Commercialization</h4>
               </div>
               <p style="font-size:0.82rem; color:var(--text-muted); line-height:1.55; margin-bottom:14px;">
-                Deploy autonomous agents with <strong>0 MB GPU VRAM</strong>, zero per-token safety taxes, and sub-35µs in-process gating. Scale commercial Canadian & global AI products to millions of safe tool calls without unpredictable inference bills.
+                Deploy autonomous agents with <strong>0 MB GPU VRAM</strong>, zero per-token safety taxes, and sub-35µs in-process gating. Accelerating 4,440+ verified Node.js &amp; TypeScript agent runtimes (Vercel AI SDK, LangChain.js) and 14,050+ Python frameworks.
               </p>
               <div style="display:flex; flex-wrap:wrap; gap:8px;">
                 <code style="font-size:0.75rem; font-family:var(--font-mono); color:#38bdf8; background:rgba(4,7,13,0.8); border:1px solid rgba(56,189,248,0.25); padding:6px 10px; border-radius:6px;">
@@ -3759,7 +3810,7 @@
           <div class="ext-card">
             <div class="ext-card-header">
               <div class="ext-badge-group">
-                <span class="ext-badge ext-badge-green">v6.4.4 LIVE</span>
+                <span class="ext-badge ext-badge-green">v6.4.6 LIVE</span>
                 <span class="ext-badge ext-badge-gold">Open VSX &amp; Marketplace</span>
               </div>
               <div class="ext-logo-title-row">
@@ -3785,7 +3836,7 @@
               </a>
               <a href="/bartholomew-guard-vscode-6.4.4.vsix" class="ext-btn ext-btn-secondary" download>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .VSIX (v6.4.4)
+                Download .VSIX (v6.4.6)
               </a>
             </div>
           </div>
@@ -3793,7 +3844,7 @@
           <div class="ext-card">
             <div class="ext-card-header">
               <div class="ext-badge-group">
-                <span class="ext-badge ext-badge-purple">v6.4.4 LIVE</span>
+                <span class="ext-badge ext-badge-purple">v6.4.6 LIVE</span>
                 <span class="ext-badge ext-badge-cyan">Capability Passkeys</span>
               </div>
               <div class="ext-logo-title-row">
@@ -3819,7 +3870,7 @@
               </a>
               <a href="/bartholomew-keystone.vsix" class="ext-btn ext-btn-secondary" download>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download .VSIX (v6.4.4)
+                Download .VSIX (v6.4.6)
               </a>
             </div>
           </div>
@@ -4214,6 +4265,38 @@
           </p>
         </div>
 
+        <!-- Company & Governance -->
+        <div>
+          <div class="footer-col-title">[COMPANY]</div>
+          <ul class="footer-links-list">
+            <li>
+              <a href="/careers" style="color:#34d399; font-weight:700;">
+                <span>Careers &amp; Open Roles</span>
+              </a>
+            </li>
+            <li>
+              <a href="/careers/admin" style="color:var(--gold-light); font-weight:700;">
+                <span>Admin Vault</span>
+              </a>
+            </li>
+            <li>
+              <a href="/investors.html" style="color:#c084fc; font-weight:700;">
+                <span>Investor Data Room</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/ivegotahunnitonit/bartholomew" target="_blank" rel="noreferrer">
+                <span>Open Source Repo</span>
+              </a>
+            </li>
+            <li>
+              <a href="/.well-known/security.txt">
+                <span>Security Advisory</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
         <!-- Linux & Security Certifications -->
         <div>
           <div class="footer-col-title">[SECURITY CERTIFICATIONS]</div>
@@ -4374,7 +4457,7 @@
             <span class="footer-btp-pill">BTP v6.0</span>
           </div>
           <a href="https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605" target="_blank" rel="noopener noreferrer" class="footer-support-btn">
-            <span>💜 Support Development</span>
+            <span>Support Development</span>
           </a>
         </div>
 

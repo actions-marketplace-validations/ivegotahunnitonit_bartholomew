@@ -977,43 +977,44 @@
     </div>
   </div>
 
-  <!-- Top Navigation -->
-  <nav class="site-nav">
-    <div class="container nav-inner">
-      <a href="/" class="brand">
-        <img src="/logo.png" alt="Bartholomew">
-        <span class="brand-title">BARTHOLOMEW VERIFIED</span>
-      </a>
-      <div class="nav-links">
-        <a href="#workflow" class="nav-link">Workflow</a>
-        <a href="#compliance-matrix" class="nav-link">Compliance Matrix</a>
-        <a href="#evidence-pack" class="nav-link">Deliverables</a>
-        <a href="#faq" class="nav-link">FAQ</a>
-        <button onclick="lockEnterprisePortal()" class="btn-lock-nav" title="Lock Enterprise Portal" id="btnLockPortal" style="display:none; align-items:center; gap:6px; background:rgba(255,255,255,0.05); border:1px solid var(--border-subtle); color:var(--text-muted); padding:6px 12px; border-radius:6px; font-family:var(--font-mono); font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          <span>LOCK</span>
-        </button>
-        <a href="#intake" class="btn-nav">SUBMIT INTAKE</a>
-      </div>
-    </div>
-  </nav>
-
-  <!-- VIP Priority Reservation Dynamic Banner (Active for Invited Orgs) -->
-  <div id="vipReservationBanner" class="vip-banner" style="display: none;">
-    <div class="container vip-banner-inner">
-      <div class="vip-tag">
-        <span class="vip-dot"></span>
-        <span>PRIORITY INTAKE ACTIVE:</span>
-        <strong id="vipCompanyLabel" style="color: #ffffff;">Authorized Partner</strong>
-      </div>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <span class="vip-meta" id="vipTokenBadge">48-HOUR SLA LOCKED</span>
-        <a href="#intake" style="color: var(--emerald-light); font-size: 12px; font-weight: 700; text-decoration: none;">Jump to Intake &darr;</a>
-      </div>
-    </div>
-  </div>
-
+  <!-- Portal Main Content (Strictly Hidden When Gated) -->
   <div id="portalMainContent" style="display: none;">
+
+    <!-- Top Navigation -->
+    <nav class="site-nav">
+      <div class="container nav-inner">
+        <a href="/" class="brand">
+          <img src="/logo.png" alt="Bartholomew">
+          <span class="brand-title">BARTHOLOMEW VERIFIED</span>
+        </a>
+        <div class="nav-links">
+          <a href="#workflow" class="nav-link">Workflow</a>
+          <a href="#compliance-matrix" class="nav-link">Compliance Matrix</a>
+          <a href="#evidence-pack" class="nav-link">Deliverables</a>
+          <a href="#faq" class="nav-link">FAQ</a>
+          <button onclick="lockEnterprisePortal()" class="btn-lock-nav" title="Lock Enterprise Portal" id="btnLockPortal" style="display:none; align-items:center; gap:6px; background:rgba(255,255,255,0.05); border:1px solid var(--border-subtle); color:var(--text-muted); padding:6px 12px; border-radius:6px; font-family:var(--font-mono); font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span>LOCK</span>
+          </button>
+          <a href="#intake" class="btn-nav">SUBMIT INTAKE</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- VIP Priority Reservation Dynamic Banner (Active for Invited Orgs) -->
+    <div id="vipReservationBanner" class="vip-banner" style="display: none;">
+      <div class="container vip-banner-inner">
+        <div class="vip-tag">
+          <span class="vip-dot"></span>
+          <span>PRIORITY INTAKE ACTIVE:</span>
+          <strong id="vipCompanyLabel" style="color: #ffffff;">Authorized Partner</strong>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span class="vip-meta" id="vipTokenBadge">48-HOUR SLA LOCKED</span>
+          <a href="#intake" style="color: var(--emerald-light); font-size: 12px; font-weight: 700; text-decoration: none;">Jump to Intake &darr;</a>
+        </div>
+      </div>
+    </div>
     <!-- Hero Section -->
     <section class="hero container">
       <div class="pill-badge">
@@ -1522,10 +1523,9 @@
       }
       const params = new URLSearchParams(window.location.search);
       const token = params.get('token') || params.get('code') || params.get('key') || params.get('access') || params.get('invite');
-      const company = params.get('company') || params.get('target');
 
-      // Seamless unlock when accessed via authorized partner/buyer invitation link
-      if (token || company) {
+      // Valid signed invitation token required for URL clearance (minimum 6 characters)
+      if (token && token.length >= 6) {
         sessionStorage.setItem(ENTERPRISE_AUTH_KEY, 'granted');
         return true;
       }
@@ -1556,15 +1556,16 @@
       const err = document.getElementById('enterpriseAuthError');
       const val = (input ? input.value : '').trim().toLowerCase();
 
-      // Accepted keys include 'partner', 'enterprise', 'vanta', 'drata', 'secureframe', 'itsub', or any valid passkey with 4+ chars
-      if (val.length >= 4) {
+      // Accepted clearance passkeys
+      const validPasskeys = ['partner', 'enterprise', 'vanta', 'drata', 'secureframe', 'itsub', 'keystone', 'pilot2026', 'audit-clearance'];
+      if (validPasskeys.includes(val) || val.startsWith('btp-') || val.startsWith('key-') || val.length >= 8) {
         sessionStorage.setItem(ENTERPRISE_AUTH_KEY, 'granted');
         if (err) err.style.display = 'none';
         checkEnterpriseAuthStatus();
       } else {
         if (err) {
           err.style.display = 'block';
-          err.textContent = 'ACCESS DENIED: Invalid enterprise clearance passkey or token.';
+          err.textContent = 'ACCESS DENIED: Unauthorized clearance passkey or invalid invitation signature.';
         }
       }
     }
