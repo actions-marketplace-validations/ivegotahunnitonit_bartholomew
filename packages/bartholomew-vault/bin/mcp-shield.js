@@ -19,8 +19,12 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const { VaultEngine } = require('../dist/vault_engine');
+const { KeystoneVerifier } = require('../dist/keystone_verifier');
 
 const engine = new VaultEngine();
+const keystoneVerifier = new KeystoneVerifier({
+  strictMode: process.env.BTP_ENFORCE_KEYSTONE !== '0'
+});
 const rawArgs = process.argv.slice(2);
 
 function getMcpConfigPaths() {
@@ -189,10 +193,19 @@ if (targetArgs.length === 0) {
 const childCmd = targetArgs[0];
 const childCmdArgs = targetArgs.slice(1);
 
+// Sanitize environment passed to untrusted child MCP server
+// Never leak signing keys, verification secrets, or internal auth flags
+const childEnv = { ...process.env };
+delete childEnv.BTP_KEYSTONE_SECRET;
+delete childEnv.BTP_WORKSPACE_SECRET;
+delete childEnv.BTP_ENFORCE_KEYSTONE;
+
 // Spawn target MCP server child process with pipe stdio
+const needsShell = process.platform === 'win32' && (childCmd.endsWith('.cmd') || childCmd.endsWith('.bat'));
 const child = spawn(childCmd, childCmdArgs, {
   stdio: ['pipe', 'pipe', 'inherit'],
-  shell: process.platform === 'win32'
+  shell: needsShell,
+  env: childEnv
 });
 
 child.on('error', (err) => {
@@ -216,11 +229,160 @@ rlIn.on('line', (line) => {
   try {
     const msg = JSON.parse(trimmed);
     
-    // Check if message is a tools/call request
-    if (msg.method === 'tools/call' && msg.params) {
+    // Check if message is a batch request (JSON-RPC 2.0 array)
+    if (Array.isArray(msg)) {
+      const blockedResponses = [];
+      const sanitizedBatch = [];
+      let anyBlocked = false;
+
+      for (const item of msg) {
+        if (!item || typeof item !== 'object') {
+          anyBlocked = true;
+          blockedResponses.push({
+            jsonrpc: '2.0',
+            id: null,
+            error: {
+              code: -32600,
+              message: 'Invalid Request: batch element must be a valid JSON-RPC object.'
+            }
+          });
+          continue;
+        }
+
+        if (item.method === 'tools/call') {
+          if (!item.params || typeof item.params !== 'object') {
+            anyBlocked = true;
+            blockedResponses.push({
+              jsonrpc: '2.0',
+              id: item.id !== undefined ? item.id : null,
+              error: {
+                code: -32602,
+                message: 'Invalid params: tools/call requires a valid params object.'
+              }
+            });
+            continue;
+          }
+
+          const toolName = item.params.name || 'unknown_tool';
+          const toolArgs = item.params.arguments || {};
+          const rawPasskey = (item.params._meta && item.params._meta.btp_passkey)
+            || item.params._btp_passkey
+            || (toolArgs && toolArgs._btp_passkey);
+
+          const authCheck = keystoneVerifier.verifyToolCall(toolName, toolArgs, rawPasskey);
+          if (!authCheck.allowed) {
+            anyBlocked = true;
+            blockedResponses.push({
+              jsonrpc: '2.0',
+              id: item.id,
+              error: {
+                code: authCheck.code,
+                message: `[Bartholomew Keystone Authorization Failed]: ${authCheck.reason} (${authCheck.rule_id})`,
+                data: { rule_id: authCheck.rule_id, verdict: 'DENY', tool: toolName }
+              }
+            });
+            continue;
+          }
+
+          if (toolArgs._btp_passkey) delete toolArgs._btp_passkey;
+          if (item.params._btp_passkey) delete item.params._btp_passkey;
+          if (item.params._meta && item.params._meta.btp_passkey) delete item.params._meta.btp_passkey;
+
+          const check = engine.interceptMcpToolCall(toolName, toolArgs, {
+            serverName: childCmd,
+            isAuthorizedDestination: true
+          });
+
+          if (!check.allowed) {
+            anyBlocked = true;
+            blockedResponses.push({
+              jsonrpc: '2.0',
+              id: item.id,
+              error: {
+                code: -32000,
+                message: `[Bartholomew Keystone Invariant Blocked]: ${check.reason} (${check.rule_id})`,
+                data: {
+                  rule_id: check.rule_id,
+                  verdict: check.verdict,
+                  latency_us: check.latencyUs,
+                  merkle_leaf: check.merkleLeaf
+                }
+              }
+            });
+            continue;
+          }
+
+          item.params.arguments = check.sanitizedArgs;
+          sanitizedBatch.push(item);
+        } else {
+          sanitizedBatch.push(item);
+        }
+      }
+
+      if (anyBlocked) {
+        process.stdout.write(JSON.stringify(blockedResponses) + '\n');
+        return;
+      }
+
+      child.stdin.write(JSON.stringify(sanitizedBatch) + '\n');
+      return;
+    }
+
+    // Check if message is a single tools/call request
+    if (msg.method === 'tools/call') {
+      if (!msg.params || typeof msg.params !== 'object') {
+        const errResponse = {
+          jsonrpc: '2.0',
+          id: msg.id !== undefined ? msg.id : null,
+          error: {
+            code: -32602,
+            message: 'Invalid params: tools/call requires a valid params object.'
+          }
+        };
+        process.stdout.write(JSON.stringify(errResponse) + '\n');
+        return;
+      }
+
       const toolName = msg.params.name || 'unknown_tool';
       const toolArgs = msg.params.arguments || {};
-      
+
+      // 1. Mandatory Keystone Authorization Gate (Phase 2 & Phase 4)
+      const rawPasskey = (msg.params._meta && msg.params._meta.btp_passkey)
+        || msg.params._btp_passkey
+        || (toolArgs && toolArgs._btp_passkey);
+
+      const authCheck = keystoneVerifier.verifyToolCall(toolName, toolArgs, rawPasskey);
+      if (!authCheck.allowed) {
+        process.stderr.write(`[Bartholomew MCP Shield] UNAUTHORIZED tool call '${toolName}' (${authCheck.rule_id}): ${authCheck.reason}\n`);
+        const errResponse = {
+          jsonrpc: '2.0',
+          id: msg.id,
+          error: {
+            code: authCheck.code,
+            message: `[Bartholomew Keystone Authorization Failed]: ${authCheck.reason} (${authCheck.rule_id})`,
+            data: {
+              rule_id: authCheck.rule_id,
+              verdict: 'DENY',
+              tool: toolName
+            }
+          }
+        };
+        process.stdout.write(JSON.stringify(errResponse) + '\n');
+        return;
+      }
+
+      // Remove internal security token from arguments and parameters so child MCP server gets clean parameters
+      if (toolArgs._btp_passkey) {
+        delete toolArgs._btp_passkey;
+      }
+      if (msg.params._btp_passkey) {
+        delete msg.params._btp_passkey;
+      }
+      if (msg.params._meta && msg.params._meta.btp_passkey) {
+        delete msg.params._meta.btp_passkey;
+      }
+
+      // 2. Invariant & AST Execution Gating
       const check = engine.interceptMcpToolCall(toolName, toolArgs, {
         serverName: childCmd,
         isAuthorizedDestination: true
@@ -242,6 +404,21 @@ rlIn.on('line', (line) => {
               latency_us: check.latencyUs,
               merkle_leaf: check.merkleLeaf
             }
+          }
+        };
+        process.stdout.write(JSON.stringify(errResponse) + '\n');
+        return;
+      }
+
+      // 3. Child server availability check
+      if (!child.stdin || child.stdin.destroyed || !child.stdin.writable) {
+        const errResponse = {
+          jsonrpc: '2.0',
+          id: msg.id,
+          error: {
+            code: -32002,
+            message: '[Bartholomew MCP Shield Error]: Target MCP child process is unavailable or terminated.',
+            data: { rule_id: 'BTP-MCP-CHILD-UNAVAILABLE' }
           }
         };
         process.stdout.write(JSON.stringify(errResponse) + '\n');

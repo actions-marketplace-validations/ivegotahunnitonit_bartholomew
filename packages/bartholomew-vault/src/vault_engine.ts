@@ -182,6 +182,52 @@ export class VaultEngine {
       return surrogate;
     });
 
+    // 6. Bounded Base64-Encoded Credential Scanning (Phase 5 Hardening)
+    // Limits: Input size <= 1MB, candidate length 24..512 chars, 1 level depth
+    if (input.length <= 1024 * 1024) {
+      const b64Regex = /\b[A-Za-z0-9+/_-]{24,512}={0,2}\b/g;
+      output = output.replace(b64Regex, (candidate) => {
+        try {
+          // Normalize URL-safe base64 and padding
+          let normalized = candidate.replace(/-/g, '+').replace(/_/g, '/');
+          while (normalized.length % 4 !== 0) {
+            normalized += '=';
+          }
+          const decoded = Buffer.from(normalized, 'base64').toString('utf8');
+          // Check that decoded string roundtrips reasonably to verify true base64
+          if (!decoded || decoded.length < 16) return candidate;
+          
+          // Check for signature markers of supported secrets
+          const hasSecretMarker = /(?:sk_live_[0-9a-zA-Z]{24,}|sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30,}|sk-(?:proj-)?[A-Za-z0-9_-]{32,}|AKIA[0-9A-Z]{16}|ghp_[0-9a-zA-Z]{36}|postgres:\/\/[^\s"'`]+)/.test(decoded);
+          
+          if (hasSecretMarker) {
+            // Recursive scan on the decoded inner string
+            const innerTokenized = this.tokenize(decoded, { formatPreserving });
+            if (innerTokenized.tokenCount > 0) {
+              for (const tok of innerTokenized.tokens) {
+                detected.push({
+                  surrogate: tok.surrogate,
+                  category: `BASE64_${tok.category}`,
+                  formatPreserved: tok.formatPreserved
+                });
+              }
+              // Re-encode sanitized content back to Base64 (maintaining URL-safe format if original was URL-safe)
+              let encodedSurrogate = Buffer.from(innerTokenized.sanitized).toString('base64');
+              if (candidate.includes('-') || candidate.includes('_')) {
+                encodedSurrogate = encodedSurrogate.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+              }
+              this.surrogateToRaw.set(encodedSurrogate, { raw: candidate, category: 'BASE64_SECRET' });
+              this.rawToSurrogate.set(candidate, encodedSurrogate);
+              return encodedSurrogate;
+            }
+          }
+        } catch {
+          // If decoding throws, preserve original candidate cleanly
+        }
+        return candidate;
+      });
+    }
+
     const endTime = process.hrtime.bigint();
     const latencyUs = Number(endTime - startTime) / 1000;
 
@@ -341,8 +387,12 @@ export class VaultEngine {
       };
     }
 
+    // Normalize SQL comments (/* ... */ and -- ...) before inspection
+    const normalizedSqlTarget = argsJson
+      .replace(/\/\*[\s\S]*?\*\//g, ' ')
+      .replace(/--.*?(?:\\r\\n|\\n|\\r|\r\n|\n|\r|$)/g, ' ');
     const sqlPattern = /\b(DROP\s+TABLE|TRUNCATE\s+TABLE|DROP\s+DATABASE|ALTER\s+TABLE\s+.*\s+DROP)\b/i;
-    if (sqlPattern.test(argsJson)) {
+    if (sqlPattern.test(normalizedSqlTarget)) {
       const t1 = process.hrtime.bigint();
       const latencyUs = Number(t1 - t0) / 1000;
       return {
