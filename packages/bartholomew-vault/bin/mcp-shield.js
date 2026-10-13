@@ -213,6 +213,12 @@ child.on('error', (err) => {
   process.exit(1);
 });
 
+if (child.stdin) {
+  child.stdin.on('error', () => {
+    // Gracefully handle broken pipe if child exits prematurely
+  });
+}
+
 child.on('exit', (code) => {
   process.exit(code || 0);
 });
