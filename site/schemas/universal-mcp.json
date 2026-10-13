@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bartholomew Universal MCP Tool Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "ast_firewall",
+        "secret_vault",
+        "keystone",
+        "universal_schema",
+        "compliance"
+      ]
+    },
+    "desc": {
+      "type": "string"
+    },
+    "latency_us": {
+      "type": "number"
+    },
+    "scope": {
+      "type": "string"
+    },
+    "inputSchema": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "name",
+    "category",
+    "desc",
+    "latency_us",
+    "scope"
+  ]
+}

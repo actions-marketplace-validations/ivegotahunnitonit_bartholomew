@@ -5,6 +5,7 @@ who have active enterprise procurement mandates and required penetration test ne
 """
 import json
 import urllib.request
+import urllib.parse
 import ssl
 from pathlib import Path
 from typing import Dict, Any, List
@@ -132,8 +133,49 @@ def verify_trust_center(url: str) -> Dict[str, Any]:
     except Exception as e:
         return {"live": False, "error": str(e)[:60]}
 
+def generate_tailored_pitch(candidate: Dict[str, Any]) -> Dict[str, str]:
+    """Generates an executive-ready, 3-sentence outreach pitch tailored to the prospect's risk vector."""
+    name = candidate["name"]
+    platform = candidate["platform"]
+    risk = candidate["risk_vector"]
+    
+    if "Healthcare" in candidate["vertical"] or "Clinical" in candidate["vertical"] or "PHI" in risk:
+        subject = f"{name} Trust Center + Autonomous EHR Tool Execution (Zero PHI Exfiltration)"
+        persona = "CISO / Head of Clinical AI Safety"
+        body = (
+            f"Hi team — saw {name}'s public {platform} Trust Center. "
+            f"As your clinical agents query EHR tools and suggest triage actions, we provide a sub-35µs in-process tokenization vault "
+            f"(Bartholomew Vault) that substitutes patient PHI and credentials with format-preserving surrogates before LLM dispatches. "
+            f"Tests and clinical queries execute cleanly locally without a single byte of raw patient data ever traversing to OpenAI/Anthropic."
+        )
+    elif "Legal" in candidate["vertical"]:
+        subject = f"{name} Trust Center + Attorney-Client Privilege Protection in Agent Tool Calls"
+        persona = "CISO / General Counsel / VP Security"
+        body = (
+            f"Hi team — saw {name}'s public {platform} Trust Center. "
+            f"When legal agents process confidential matter rooms, Bartholomew Vault tokenizes attorney-client work product and "
+            f"credentials in-process with zero network latency, while our AST firewall (Bartholomew Guard) guarantees hard invariant bounds on tool calls. "
+            f"Happy to share our 1-click SOC 2 evidence pack proving zero prompt exfiltration."
+        )
+    else:
+        subject = f"{name} Trust Center + In-Process Agent Execution Safeguards"
+        persona = "CISO / Head of AI Infrastructure"
+        body = (
+            f"Hi team — saw {name}'s active {platform} Trust Center. "
+            f"As your autonomous agents dispatch tool calls, Bartholomew provides sub-millisecond in-process AST gating and "
+            f"vaultless credential tokenization (<35µs) to prevent secret leakage and destructive execution loops before they dispatch. "
+            f"Integrates via a 1-line MCP proxy or IDE extension with signed RFC 8785 Merkle receipts for {platform} audits."
+        )
+        
+    return {
+        "target_persona": persona,
+        "subject_line": subject,
+        "email_body": body
+    }
+
 def build_buyer_profile(candidate: Dict[str, Any]) -> Dict[str, Any]:
     tc_status = verify_trust_center(candidate["trust_center"])
+    pitch = generate_tailored_pitch(candidate)
     
     # Construct exact procurement alignment package
     intake_url = (
@@ -157,12 +199,43 @@ def build_buyer_profile(candidate: Dict[str, Any]) -> Dict[str, Any]:
         "readiness_score": 98 if tc_status.get("live") else 85,
         "procurement_urgency": "HIGH — Public trust center actively subjected to enterprise buyer audits",
         "recommended_package": "$15,000 Fleet Enterprise Invariant Audit" if "Series" in candidate["funding"] else "$3,500 Startup Agent Audit",
+        "tailored_pitch": pitch,
         "intake_url": intake_url
     }
 
+def export_campaign_markdown(profiles: List[Dict[str, Any]], out_path: Path):
+    """Exports a ready-to-execute outreach campaign document."""
+    lines = [
+        "# Bartholomew High-Intent Outreach Campaign Pack",
+        "> Generated from live Drata / Vanta Trust Center Intelligence.",
+        "",
+        "---",
+        ""
+    ]
+    for p in profiles:
+        pitch = p["tailored_pitch"]
+        lines.extend([
+            f"## {p['name']} ({p['domain']})",
+            f"* **Vertical**: {p['vertical']} | **Funding**: {p['funding_stage']}",
+            f"* **Platform**: {p['compliance_platform']} ({p['trust_center_url']})",
+            f"* **Recommended Package**: `{p['recommended_package']}`",
+            f"* **Target Persona**: **{pitch['target_persona']}**",
+            f"* **Subject Line**: `{pitch['subject_line']}`",
+            "",
+            "**Copy-Paste Pitch:**",
+            "```text",
+            pitch["email_body"],
+            "```",
+            f"* **Intake Link**: [{p['name']} Custom Portal]({p['intake_url']})",
+            "",
+            "---",
+            ""
+        ])
+    out_path.write_text("\n".join(lines), encoding="utf-8")
+
 def main():
     print("=" * 80)
-    print(" BARTHOLOMEW HIGH-INTENT BUYER DISCOVERY ENGINE")
+    print(" BARTHOLOMEW HIGH-INTENT BUYER DISCOVERY & OUTREACH ENGINE")
     print(" Scanning Vanta & Drata Public Trust Centers for Enterprise AI Buyers...")
     print("=" * 80)
     
@@ -175,9 +248,14 @@ def main():
         print(f"    --> Trust Center: {status_tag} {p['trust_center_url']} | Readiness: {p['readiness_score']}/100")
         
     OUTPUT_FILE.write_text(json.dumps(profiles, indent=2), encoding="utf-8")
+    
+    campaign_md = DATA_DIR / "outreach_campaign_ready.md"
+    export_campaign_markdown(profiles, campaign_md)
+    
     print("-" * 80)
     print(f"[OK] Successfully built {len(profiles)} high-intent buyer profiles.")
-    print(f"[OK] Saved to: {OUTPUT_FILE}")
+    print(f"[OK] JSON Saved to:     {OUTPUT_FILE}")
+    print(f"[OK] Campaign Saved to: {campaign_md}")
     print("=" * 80)
 
 if __name__ == "__main__":

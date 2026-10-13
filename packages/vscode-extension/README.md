@@ -1,16 +1,48 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="80" height="80" alt="Bartholomew Logo" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="80" height="80" alt="Bartholomew Guard Logo" />
 </p>
 
-# Bartholomew Guard — Agentic Runtime Protection (Cursor, Claude Code, Windsurf, VS Code)
+# Bartholomew Guard - Agentic Runtime Protection (Cursor, Claude Code, Windsurf, VS Code)
 
 > **The in-process execution firewall for autonomous coding agents.**  
 > Intercepts destructive commands, prevents API key leaks, and caps agent spend in **under 35 microseconds** before code touches your operating system.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.4-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
-[![PyPI](https://img.shields.io/badge/PyPI-btp--guard%20v6.4.4-blue)](https://pypi.org/project/btp-guard/)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.5-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Keystone-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Vault-0ea5e9)](https://open-vsx.org/extension/Bartholomew/bartholomew-vault)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Enterprise Support](https://img.shields.io/badge/Enterprise-Audit%20%26%20SLAs-10b981)](https://bartholomew.info/enterprise)
+[![Enterprise](https://img.shields.io/badge/Enterprise-Audit%20%26%20SLAs-10b981)](https://bartholomew.info)
+
+---
+
+## The Bartholomew Extension Trinity Overview
+
+Bartholomew operates as a unified, three-tier developer runtime security suite across Cursor, Windsurf, Claude Code, Copilot, and VS Code:
+
+```
+[ Phase 1: Context Input ]       [ Phase 2: Authorization Scope ]       [ Phase 3: Runtime Execution ]
+   Bartholomew Vault                 Bartholomew Keystone                    Bartholomew Guard
+   In-Process PII & Secret           Cryptographic Clearance Passkeys        Sub-35µs In-Process AST
+   Tokenization (<35µs)              & Spend Ceiling Governor                Invariant Gate & Sentinel
+```
+
+1. **Bartholomew Vault** (`Bartholomew.bartholomew-vault`): Zero-latency PII, HIPAA PHI, and credential tokenization. Replaces live keys, emails, and SSNs with format-preserving surrogates before cloud LLM transmission, detokenizing just-in-time for local test runs.
+2. **Bartholomew Keystone** (`Bartholomew.bartholomew-keystone`): Signed Non-Human Identity (NHI) clearance passkeys. Enforces authorized filesystem directories, whitelisted CLI tools, and hard $25/day session spend caps.
+3. **Bartholomew Guard** (`Bartholomew.bartholomew-guard-vscode` - This Extension): Deterministic in-process AST execution gateway. Evaluates bash, python, and MCP tool payloads fail-closed in under 35 microseconds to block destructive operations (`rm -rf`, `DROP TABLE`, reverse shells).
+
+### 1-Click Terminal Installation for the Full Trinity
+
+```bash
+# In Cursor:
+cursor --install-extension Bartholomew.bartholomew-guard-vscode
+cursor --install-extension Bartholomew.bartholomew-keystone
+cursor --install-extension Bartholomew.bartholomew-vault
+
+# In VS Code:
+code --install-extension Bartholomew.bartholomew-guard-vscode
+code --install-extension Bartholomew.bartholomew-keystone
+code --install-extension Bartholomew.bartholomew-vault
+```
 
 ---
 
@@ -47,55 +79,22 @@ To build genuine trust, we state clearly what is **outside the enforcement bound
 
 ### Option A: From VS Code / Cursor Sidebar
 1. Click the **Bartholomew Shield** icon in your activity bar.
-2. Click **`[ Run 60-Second Live Security Probe]`**.
-3. Watch the animated in-process probe test safe vs. blocked execution with SHA-256 receipts.
+2. Click **`[ Run 60-Second Live Security Probe ]`**.
+3. Watch as a test payload is generated, evaluated, and blocked fail-closed in under 35 microseconds with a signed cryptographic audit receipt.
 
-### Option B: From Any Terminal
+### Option B: From the Terminal
 ```bash
-python -m btp_guard.cli prove
-# Or run the trust boundary demo:
-python -m btp_guard.demo_trust_boundary
+# Verify security policy
+python -m btp_guard.cli check
+
+# Run an agent tool under the deterministic sandbox
+python -m btp_guard.cli run -- npm test
 ```
 
 ---
 
-## Editions & Licensing
+## Enterprise Support & Trust Center
 
-| Tier | Deployment | Features |
-| :--- | :--- | :--- |
-| **Community Edition** | Open Source (Apache-2.0) | Local deterministic AST invariant gate, secret scrubber, tamper-evident audit ledger, VS Code / Cursor extension. |
-| **Enterprise Edition** | Commercial / Managed | Centralized policy distribution, SIEM/telemetry streaming, multi-agent identity verification, enterprise SLA and compliance evidence packs. |
-
--> **[Request Enterprise Security Audit & Licensing](https://bartholomew.info/enterprise)** or contact `security@bartholomew.info`.
-
----
-
-## Supported Autonomous Runtimes
-
-- **Cursor**
-- **Claude Code**
-- **Windsurf**
-- **Cline**
-- **Aider**
-- **OpenHands**
-- **Smolagents**
-- **CrewAI & AutoGen**
-- **Ollama / vLLM local harnesses**
-
----
-
-## Quickstart
-
-```bash
-# 1. Install CLI
-pip install btp-guard
-
-# 2. Immunize your workspace (creates .btp/policy.yaml and git hook)
-btp-guard immunize
-
-# 3. Verify protection
-btp-guard prove
-```
-
-Website: [https://bartholomew.info](https://bartholomew.info)  
-Documentation: [Reproducible Trust Boundary Demo](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/REPRODUCIBLE_DEMO.md)
+- **Repository**: [https://github.com/ivegotahunnitonit/bartholomew](https://github.com/ivegotahunnitonit/bartholomew)
+- **Live Trust Center**: [https://bartholomew.info](https://bartholomew.info)
+- **Security Contact**: `help@bartholomew.info`

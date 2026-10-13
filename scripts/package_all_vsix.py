@@ -156,6 +156,12 @@ def pack_package(pkg_dir, package_id, display_name, description):
 if __name__ == "__main__":
     root = Path(__file__).resolve().parent.parent
     pack_package(
+        root / "packages" / "bartholomew-vault",
+        "bartholomew-vault",
+        "Bartholomew Vault - In-Process Data & PII Tokenizer (Cursor, Claude, Copilot)",
+        "Sub-millisecond in-process credential, PHI, and PII tokenization with just-in-time OS detokenization for Cursor, Claude Code, Windsurf, Copilot, and VS Code.",
+    )
+    pack_package(
         root / "packages" / "bartholomew-keystone",
         "bartholomew-keystone",
         "Bartholomew Keystone - AI Agent Capabilities & Passkeys (Cursor, Claude)",

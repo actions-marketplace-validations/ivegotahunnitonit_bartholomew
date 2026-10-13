@@ -2,15 +2,47 @@
   <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/keystone_logo.png" width="80" height="80" alt="Bartholomew Keystone Logo" />
 </p>
 
-# Bartholomew Keystone — Cryptographic Agent Passkeys & Spend Governor
+# Bartholomew Keystone - Cryptographic Agent Passkeys & Spend Governor
 
 > **Issue deterministic, signed capability passkeys for autonomous AI coding agents in Cursor, Claude Code, Windsurf, and VS Code.**  
 > Restricts file writes, system commands, and financial spend to explicit policy bounds in **under 15 microseconds**.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.4.3-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.5-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
 [![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Guard-brightgreen)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
+[![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Vault-0ea5e9)](https://open-vsx.org/extension/Bartholomew/bartholomew-vault)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo%20--%2030%20Days-10b981)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
+[![Team Pilot](https://img.shields.io/badge/Team%20Pilot-%24199%2Fmo-10b981)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)
+
+---
+
+## The Bartholomew Extension Trinity Overview
+
+Bartholomew operates as a unified, three-tier developer runtime security suite across Cursor, Windsurf, Claude Code, Copilot, and VS Code:
+
+```
+[ Phase 1: Context Input ]       [ Phase 2: Authorization Scope ]       [ Phase 3: Runtime Execution ]
+   Bartholomew Vault                 Bartholomew Keystone                    Bartholomew Guard
+   In-Process PII & Secret           Cryptographic Clearance Passkeys        Sub-35µs In-Process AST
+   Tokenization (<35µs)              & Spend Ceiling Governor                Invariant Gate & Sentinel
+```
+
+1. **Bartholomew Vault** (`Bartholomew.bartholomew-vault`): Zero-latency PII, HIPAA PHI, and credential tokenization. Replaces live keys, emails, and SSNs with format-preserving surrogates before cloud LLM transmission, detokenizing just-in-time for local test runs.
+2. **Bartholomew Keystone** (`Bartholomew.bartholomew-keystone` - This Extension): Signed Non-Human Identity (NHI) clearance passkeys. Enforces authorized filesystem directories, whitelisted CLI tools, and hard $25/day session spend caps.
+3. **Bartholomew Guard** (`Bartholomew.bartholomew-guard-vscode`): Deterministic in-process AST execution gateway. Evaluates bash, python, and MCP tool payloads fail-closed in under 35 microseconds to block destructive operations (`rm -rf`, `DROP TABLE`, reverse shells).
+
+### 1-Click Terminal Installation for the Full Trinity
+
+```bash
+# In Cursor:
+cursor --install-extension Bartholomew.bartholomew-guard-vscode
+cursor --install-extension Bartholomew.bartholomew-keystone
+cursor --install-extension Bartholomew.bartholomew-vault
+
+# In VS Code:
+code --install-extension Bartholomew.bartholomew-guard-vscode
+code --install-extension Bartholomew.bartholomew-keystone
+code --install-extension Bartholomew.bartholomew-vault
+```
 
 ---
 
@@ -34,43 +66,24 @@ Before an agent writes a file, executes a terminal command, or triggers a billab
 
 ## What Keystone Does NOT Protect (Explicit Scope Boundary)
 
-- - **Code Quality**: Keystone does not evaluate whether code written inside allowed paths is optimal or bug-free.
-- - **Prompt Accuracy**: Keystone does not police general conversation text.
-- - **Manual Human Actions**: Keystone enforces bounds on autonomous agents operating through IDE tools or MCP protocols.
+- **Code Quality**: Keystone does not evaluate whether code written inside allowed paths is optimal or bug-free.
+- **Prompt Accuracy**: Keystone does not police general conversation text.
+- **Manual Human Actions**: Keystone enforces bounds on autonomous agents operating through IDE tools or MCP protocols.
 
 ---
 
-## How to Verify It Is Active (In 5 Seconds)
+## Commands
 
-1. Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`).
-2. Run: **`Keystone: Open Passkey Dashboard & Capability Monitor`**.
-3. In the interactive probe box, test any command (`rm -rf /`, `cat .env`, `npm test`) and see the sub-15µs verdict and receipt hash.
-
----
-
-## Pricing: Free for Developers, Built for Teams
-
-| Tier | Price | What You Get |
-| :--- | :--- | :--- |
-| **Developer Edition** | **Free Forever** (MIT) | Local capability passkeys, interactive dashboard, spend capping, tamper-evident logs. |
-| **30-Day Team Pilot** | **$199 / month** *(or $950 one-time)* | Up to 10 engineers. Centralized passkey policy sync, multi-seat key rings, weekly CISO/SOC2 compliance dossier, 30-min onboarding kickoff, 100% money-back guarantee. |
-
--> **[Start a 30-Day Team Pilot ($199/mo)](https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605)** or learn more at [bartholomew.info](https://bartholomew.info/#pricing) or email `founders@bartholomew.info`.
+- `Keystone: Issue Agent Capability Passkey`: Generates signed non-human identity clearance tokens for agent sessions.
+- `Keystone: Inspect Active Clearance`: View authorized directories, spend ceilings, and whitelisted tools.
+- `Keystone: Revoke Session Passkey`: Instantly invalidates all active clearance tokens.
+- `Keystone: Validate Action Against Active Passkey`: Evaluates test payloads against active policy in <15 microseconds.
+- `Keystone: View Cryptographic Audit Receipts`: Displays immutable HMAC receipts of evaluated actions.
 
 ---
 
-## Quickstart
+## Enterprise Support & Trust Center
 
-```bash
-# 1. Install companion CLI
-pip install btp-guard
-
-# 2. Issue a Developer Sandbox passkey in your workspace
-btp-guard keystone issue --preset developer
-
-# 3. Verify active passkey
-btp-guard keystone verify
-```
-
-Website: [https://bartholomew.info](https://bartholomew.info)  
-Full Guide: [Reproducible Trust Boundary Demo](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/REPRODUCIBLE_DEMO.md)
+- **Repository**: [https://github.com/ivegotahunnitonit/bartholomew](https://github.com/ivegotahunnitonit/bartholomew)
+- **Live Trust Center**: [https://bartholomew.info](https://bartholomew.info)
+- **Security Contact**: `help@bartholomew.info`

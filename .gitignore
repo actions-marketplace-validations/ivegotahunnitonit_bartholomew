@@ -210,9 +210,8 @@ bartholomew_pr_audit.json
 
 BARTHOLOMEW_*.json
 *.jsonl
-# Internal Multi-Agent Configurations & Marketing Site
+# Internal Multi-Agent Configurations
 .agents/
-site/
 huggingface-space/
 Formula/
 docs/*PROSPECT*
