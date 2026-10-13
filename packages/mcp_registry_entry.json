@@ -2,17 +2,18 @@
   "$schema": "https://modelcontextprotocol.io/schema.json",
   "name": "bartholomew-sentinel",
   "displayName": "Bartholomew Protocol Execution Sentinel",
-  "description": "Sub-35us AST execution firewall, zero-trust gating, and cryptographic proof verification for AI agents and swarms.",
-  "version": "5.4.23",
-  "license": "MIT",
+  "description": "Sub-35µs AST execution firewall, zero-trust MCP proxy shield, and cryptographic proof verification for AI agents and swarms.",
+  "version": "6.5.5",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bartholomew-ai/bartholomew.git"
+    "url": "https://github.com/ivegotahunnitonit/bartholomew.git",
+    "directory": "packages/mcp-proxy-guard"
   },
   "homepage": "https://bartholomew.info",
   "discovery": {
     "manifestUrl": "https://bartholomew.info/.well-known/mcp.json",
-    "protocol": "BTP/5.4"
+    "protocol": "BTP/6.5.5"
   },
   "transports": {
     "http": {
@@ -20,10 +21,11 @@
       "method": "POST"
     },
     "stdio": {
-      "command": "python",
+      "command": "npx",
       "args": [
-        "-m",
-        "mcp_server.server"
+        "-y",
+        "@bartholomew/vault",
+        "mcp-shield"
       ]
     }
   },
@@ -47,6 +49,30 @@
           },
           "required": [
             "tool_name"
+          ]
+        }
+      },
+      {
+        "name": "btp_keystone_evaluate",
+        "description": "Evaluates candidate agent tool action against active Keystone passkey clearance scopes (<35µs)",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "action_type": {
+              "type": "string",
+              "enum": ["COMMAND_EXEC", "FILE_WRITE", "FILE_READ", "FINANCIAL_SPEND", "NETWORK_QUERY"]
+            },
+            "target": {
+              "type": "string"
+            },
+            "spend_usd": {
+              "type": "number",
+              "default": 0.0
+            }
+          },
+          "required": [
+            "action_type",
+            "target"
           ]
         }
       }
