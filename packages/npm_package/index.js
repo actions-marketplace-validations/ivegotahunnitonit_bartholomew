@@ -183,8 +183,10 @@ export function scrubSensitiveCredentials(data) {
   const PATTERNS = [
     { regex: /sk-proj-[A-Za-z0-9_\-]{20,}/g, repl: "[REDACTED_OPENAI_KEY_BTP]" },
     { regex: /sk-ant-[A-Za-z0-9_\-]{20,}/g, repl: "[REDACTED_ANTHROPIC_KEY_BTP]" },
+    { regex: /sk_live_[A-Za-z0-9_\-]{16,}/g, repl: "[REDACTED_STRIPE_KEY_BTP]" },
     { regex: /AKIA[0-9A-Z]{16}/g, repl: "[REDACTED_AWS_KEY_BTP]" },
-    { regex: /ghp_[A-Za-z0-9]{36}/g, repl: "[REDACTED_GITHUB_KEY_BTP]" }
+    { regex: /ghp_[A-Za-z0-9]{36}/g, repl: "[REDACTED_GITHUB_KEY_BTP]" },
+    { regex: /postgres(?:ql)?:\/\/[^:]+:([^@]+)@/g, repl: "postgresql://postgres:[REDACTED_DB_PASS_BTP]@" }
   ];
 
   let str = typeof data === 'string' ? data : JSON.stringify(data);
