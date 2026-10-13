@@ -66,7 +66,30 @@ To establish rigorous security boundaries, the following are explicitly outside 
 
 ## Quickstart
 
-### Installation
+### 1. IDE Extensions (Cursor, Windsurf, Claude Code, VS Code)
+
+Install the complete 3-phase security pipeline in a single command:
+
+```bash
+# Unified Bartholomew Trinity Extension Pack (Guard + Keystone + Vault)
+cursor --install-extension Bartholomew.bartholomew-trinity
+```
+
+Available on [Open VSX Registry](https://open-vsx.org/extension/Bartholomew/bartholomew-trinity).
+
+### 2. 1-Click MCP Auto-Shield Wizard
+
+Harden your existing Claude Desktop or Cursor MCP servers against arbitrary code execution, SQL drop attacks, and credential leakage:
+
+```bash
+# Auto-detects Claude Desktop / Cursor config, creates .bak backup, and wraps servers
+npx @bartholomew/vault mcp-shield --install
+
+# Audit active configuration security posture
+npx @bartholomew/vault mcp-shield --audit
+```
+
+### 3. Python & Node.js SDKs
 
 ```bash
 # Python SDK & CLI
@@ -76,13 +99,19 @@ pip install btp-guard
 npm install btp-guard
 ```
 
-### Local Workspace Policy Initialization
+### 4. Workspace Policy & Keystone Passkey Clearance
 
-Initialize workspace security policies and pre-commit AST verification:
+Initialize repository invariants and issue an agent capability passkey:
 
 ```bash
 # Initialize local repository invariants
 btp-guard arm
+
+# Issue 30-day scoped Keystone passkey with spend ceiling
+python -m btp_guard.cli keystone issue --budget 50.0
+
+# Inspect active passkey clearance status (<35µs dispatch)
+python -m btp_guard.cli keystone status
 
 # Verify workspace files and policies
 btp-guard check --all
@@ -90,8 +119,9 @@ btp-guard check --all
 
 This configures:
 - `.btp/policy.yaml`: Declarative workspace execution invariants and spend limits.
+- `.btp/keystone.json`: Cryptographically signed agent capability passkey token.
 - Git Pre-Commit Hook: Prevents credential leaks and destructive commands prior to git commits.
-- Machine-readable context files for local IDE agent integration.
+- Client-Side Verifier: Audit SOC 2 Type II evidence packages offline at [bartholomew.info/verify](https://bartholomew.info/verify).
 
 ---
 
