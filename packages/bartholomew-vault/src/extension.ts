@@ -9,8 +9,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 import { VaultEngine } from './vault_engine';
+import { VaultViewProvider } from './vault_view_provider';
 
 let vaultEngine: VaultEngine;
+let vaultViewProvider: VaultViewProvider;
 let statusBarItem: vscode.StatusBarItem;
 let totalTokensVaulted = 0;
 let lastScannedClipboard = '';
@@ -18,6 +20,16 @@ let clipboardSentinelTimer: NodeJS.Timeout | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
   vaultEngine = new VaultEngine();
+
+  // Register Activity Bar Webview View Provider
+  vaultViewProvider = new VaultViewProvider(
+    context.extensionUri,
+    vaultEngine,
+    () => totalTokensVaulted
+  );
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(VaultViewProvider.viewType, vaultViewProvider)
+  );
 
   // Create Status Bar Item
   statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 102);
@@ -366,9 +378,12 @@ function startClipboardSentinel(context: vscode.ExtensionContext) {
 
 function updateStatusBar() {
   if (!statusBarItem) return;
-  statusBarItem.text = `$(shield) BTP Vault: ${totalTokensVaulted} Vaulted`;
+  statusBarItem.text = `$(lock) Vault: ${totalTokensVaulted} Vaulted`;
   statusBarItem.color = '#38bdf8';
   statusBarItem.tooltip = 'Bartholomew Vault: In-Process PII & Secret Tokenizer Active (<35µs)';
+  if (vaultViewProvider) {
+    vaultViewProvider.refresh();
+  }
 }
 
 function generateComplianceSummaryMarkdown(dossier: any): string {

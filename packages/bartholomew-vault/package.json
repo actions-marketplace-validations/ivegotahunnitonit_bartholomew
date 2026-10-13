@@ -86,6 +86,24 @@
         "icon": "$(zap)"
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "bartholomew-vault",
+          "title": "Bartholomew Vault",
+          "icon": "icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "bartholomew-vault": [
+        {
+          "type": "webview",
+          "id": "vault.dashboardView",
+          "name": "Bartholomew Vault Control"
+        }
+      ]
+    },
     "configuration": {
       "title": "Bartholomew Vault",
       "properties": {

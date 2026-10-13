@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="24" height="24" fill="none">
+  <!-- Outer Cybernetic Hexagon Vault Shell -->
+  <polygon points="18,3 32,11 32,25 18,33 4,25 4,11" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="currentColor" fill-opacity="0.15"/>
+  
+  <!-- Outer Concentric Dial Ring -->
+  <circle cx="18" cy="18" r="10.5" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 1.5"/>
+  
+  <!-- Vault Door Gear Teeth / Locking Lugs -->
+  <rect x="16.5" y="6" width="3" height="2.5" rx="0.5" fill="currentColor"/>
+  <rect x="16.5" y="27.5" width="3" height="2.5" rx="0.5" fill="currentColor"/>
+  <rect x="6" y="16.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+  <rect x="27.5" y="16.5" width="2.5" height="3" rx="0.5" fill="currentColor"/>
+  <rect x="8.5" y="9.5" width="2.5" height="2.5" rx="0.5" transform="rotate(45 9.75 10.75)" fill="currentColor"/>
+  <rect x="25" y="9.5" width="2.5" height="2.5" rx="0.5" transform="rotate(-45 26.25 10.75)" fill="currentColor"/>
+  <rect x="8.5" y="24" width="2.5" height="2.5" rx="0.5" transform="rotate(-45 9.75 25.25)" fill="currentColor"/>
+  <rect x="25" y="24" width="2.5" height="2.5" rx="0.5" transform="rotate(45 26.25 25.25)" fill="currentColor"/>
+
+  <!-- Heavy Left Vault Hinge Brackets -->
+  <path d="M5 13.5H9.5V15.5H5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M5 20.5H9.5V22.5H5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- Inner Vault Safe Chamber Rim -->
+  <circle cx="18" cy="18" r="7.5" stroke="currentColor" stroke-width="1.5"/>
+  
+  <!-- Central Glowing Vault Keyhole -->
+  <path d="M18 13.2C16.45 13.2 15.2 14.45 15.2 16C15.2 17.15 15.9 18.15 16.3 18.7L15.6 22.8H20.4L19.7 18.7C20.1 18.15 20.8 17.15 20.8 16C20.8 14.45 19.55 13.2 18 13.2Z" fill="currentColor"/>
+</svg>
