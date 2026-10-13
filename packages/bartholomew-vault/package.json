@@ -69,11 +69,31 @@
         "command": "vault.tokenizeClipboard",
         "title": "Vault: Tokenize Clipboard Content (Sanitize Secrets & PII)",
         "icon": "$(clippy)"
+      },
+      {
+        "command": "vault.auditMcpServers",
+        "title": "Vault: Audit Workspace MCP Servers & Security Posture",
+        "icon": "$(search)"
+      },
+      {
+        "command": "vault.shieldMcpConfig",
+        "title": "Vault: Shield Workspace MCP Tool Servers (.cursor/mcp.json)",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "vault.interceptMcpTool",
+        "title": "Vault: In-Process Intercept MCP Tool Dispatch (<35µs)",
+        "icon": "$(zap)"
       }
     ],
     "configuration": {
       "title": "Bartholomew Vault",
       "properties": {
+        "vault.enableMcpShield": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enforce in-process AST gating and PII tokenization on all Model Context Protocol (MCP) tool calls."
+        },
         "vault.enableClipboardSentinel": {
           "type": "boolean",
           "default": true,

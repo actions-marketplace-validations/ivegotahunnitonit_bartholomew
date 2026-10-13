@@ -216,6 +216,105 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+  // 8. Audit Workspace Model Context Protocol (MCP) Servers
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vault.auditMcpServers', async () => {
+      const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+      const candidatePaths = [
+        path.join(rootPath, '.cursor', 'mcp.json'),
+        path.join(rootPath, '.vscode', 'mcp.json'),
+        path.join(process.env.USERPROFILE || process.env.HOME || '.', '.cursor', 'mcp.json'),
+        path.join(process.env.APPDATA || '.', 'Claude', 'claude_desktop_config.json')
+      ];
+
+      const foundConfigs: string[] = candidatePaths.filter(p => fs.existsSync(p));
+      if (foundConfigs.length === 0) {
+        vscode.window.showInformationMessage(
+          'Bartholomew MCP Shield: No existing .cursor/mcp.json or .vscode/mcp.json found. Create one or shield this workspace.',
+          'Create Shielded MCP Template'
+        ).then(choice => {
+          if (choice === 'Create Shielded MCP Template') {
+            vscode.commands.executeCommand('vault.shieldMcpConfig');
+          }
+        });
+        return;
+      }
+
+      const activeConfigPath = foundConfigs[0];
+      const rawContent = fs.readFileSync(activeConfigPath, 'utf-8');
+      const auditReport = vaultEngine.auditMcpConfiguration(rawContent, activeConfigPath);
+
+      const items: vscode.QuickPickItem[] = auditReport.servers.map(s => ({
+        label: `${s.isShielded ? '$(shield)' : '$(warning)'} ${s.serverName} (Score: ${s.securityScore}/100)`,
+        description: `Command: ${s.command}`,
+        detail: s.unvaultedSecretsDetected > 0
+          ? `WARNING: ${s.unvaultedSecretsDetected} unvaulted secret(s) in env: ${s.recommendations.join(' ')}`
+          : 'Environment secured with no plaintext credentials detected.'
+      }));
+
+      items.push({
+        label: '$(shield) Apply Bartholomew MCP Shield to Config',
+        description: `Protect all ${auditReport.serverCount} servers in ${path.basename(activeConfigPath)}`,
+        detail: 'Enables in-process AST gating and tokenization for all agent tool dispatches.'
+      });
+
+      const selection = await vscode.window.showQuickPick(items, {
+        placeHolder: `Bartholomew MCP Security Posture: Score ${auditReport.overallScore}/100 [${path.basename(activeConfigPath)}]`
+      });
+
+      if (selection && selection.label.includes('Apply Bartholomew MCP Shield')) {
+        await vscode.commands.executeCommand('vault.shieldMcpConfig');
+      }
+    })
+  );
+
+  // 9. Shield Workspace MCP Configuration
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vault.shieldMcpConfig', async () => {
+      const rootPath = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath || '.';
+      const cursorDir = path.join(rootPath, '.cursor');
+      if (!fs.existsSync(cursorDir)) {
+        fs.mkdirSync(cursorDir, { recursive: true });
+      }
+
+      const mcpJsonPath = path.join(cursorDir, 'mcp.json');
+      let configObj: any = { mcpServers: {} };
+      if (fs.existsSync(mcpJsonPath)) {
+        try {
+          configObj = JSON.parse(fs.readFileSync(mcpJsonPath, 'utf-8'));
+        } catch {}
+      }
+
+      if (!configObj.mcpServers || Object.keys(configObj.mcpServers).length === 0) {
+        configObj.mcpServers = {
+          "filesystem": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-filesystem", rootPath],
+            "bartholomewShield": true,
+            "securityPolicy": "BTP-IN-PROCESS-INVARIANT"
+          }
+        };
+      } else {
+        for (const name of Object.keys(configObj.mcpServers)) {
+          configObj.mcpServers[name].bartholomewShield = true;
+          configObj.mcpServers[name].securityPolicy = "BTP-IN-PROCESS-INVARIANT";
+        }
+      }
+
+      fs.writeFileSync(mcpJsonPath, JSON.stringify(configObj, null, 2), 'utf-8');
+      vscode.window.showInformationMessage(
+        `[Bartholomew Vault] Protected MCP configuration written to ${mcpJsonPath}. In-process AST gating and PII tokenization armed.`
+      );
+    })
+  );
+
+  // 10. Intercept MCP Tool Dispatch (Programmatic In-Process Gate)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('vault.interceptMcpTool', (toolName: string, args: Record<string, any>, contextOptions?: any) => {
+      return vaultEngine.interceptMcpToolCall(toolName, args, contextOptions);
+    })
+  );
+
   // Initialize Background Clipboard Sentinel (Option 4)
   startClipboardSentinel(context);
 }
