@@ -1,0 +1,646 @@
+"""
+Generate Drata Partnership Proposal Presentation & PDF
+======================================================
+Compiles an executive-ready, highly aesthetic presentation document into HTML
+and renders a PDF via headless Microsoft Edge.
+"""
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+OUTPUT_HTML = BASE_DIR / "DRATA_PARTNERSHIP_PROPOSAL.html"
+OUTPUT_PDF = BASE_DIR / "DRATA_PARTNERSHIP_PROPOSAL.pdf"
+
+HTML_CONTENT = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drata x Bartholomew | Strategic AI Agent Compliance Partnership</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+
+    @page {
+      size: letter landscape;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0b1120;
+      color: #f1f5f9;
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .slide {
+      width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+      padding: 48px 56px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #0b1120 0%, #0f172a 60%, #022c22 100%);
+    }
+
+    .slide:last-child {
+      page-break-after: auto;
+    }
+
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 14px;
+      margin-bottom: 24px;
+    }
+
+    .slide-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #38bdf8;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .deck-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .deck-brand span.drata {
+      color: #38bdf8;
+    }
+
+    .deck-brand span.bart {
+      color: #10b981;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 14px;
+      font-size: 0.72rem;
+      color: #64748b;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.7rem;
+      font-weight: 900;
+      line-height: 1.15;
+      color: #ffffff;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 18px;
+      letter-spacing: -0.01em;
+    }
+
+    p.subtitle {
+      font-size: 1.15rem;
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 840px;
+      margin-bottom: 24px;
+    }
+
+    /* Grids & Cards */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 22px 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .card.emerald {
+      border-color: rgba(16, 185, 129, 0.35);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(6, 78, 59, 0.2) 100%);
+    }
+
+    .card.cyan {
+      border-color: rgba(56, 189, 248, 0.35);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(12, 74, 110, 0.2) 100%);
+    }
+
+    .card.amber {
+      border-color: rgba(245, 158, 11, 0.35);
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.85) 0%, rgba(120, 53, 15, 0.2) 100%);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .card-body {
+      font-size: 0.84rem;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      align-self: flex-start;
+      text-transform: uppercase;
+    }
+
+    .badge.emerald {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .badge.cyan {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge.amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin-top: 10px;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.05);
+      text-align: left;
+      padding: 10px 14px;
+      color: #cbd5e1;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .accent-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .highlight-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #10b981;
+    }
+
+    .check-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .check-list li {
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .check-list li span.dot {
+      color: #10b981;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: COVER -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Strategic Technology Partnership Proposal</div>
+      <div class="deck-brand">
+        <span class="drata">DRATA</span> x <span class="bart">BARTHOLOMEW</span>
+      </div>
+    </div>
+    <div class="slide-content">
+      <div class="badge emerald">Autonomous AI Agent Governance & Continuous Compliance</div>
+      <h1>Extending Drata’s Trust Platform to Autonomous Coding Agents</h1>
+      <p class="subtitle">
+        Bridging the critical compliance blind spot created by Cursor, Claude Code, and autonomous developer swarms with in-process, sub-35-microsecond deterministic evidence generation.
+      </p>
+      <div class="grid-3" style="max-width: 900px; margin-top: 12px;">
+        <div class="card emerald">
+          <div class="card-title">Zero-Egress Attestation</div>
+          <div class="card-body">Guaranteed replacement of HIPAA PHI and production credentials before reaching cloud LLMs.</div>
+        </div>
+        <div class="card cyan">
+          <div class="card-title">Deterministic Tool Invariants</div>
+          <div class="card-body">Sub-35µs AST execution firewall blocking destructive commands (DROP TABLE, rm -rf).</div>
+        </div>
+        <div class="card amber">
+          <div class="card-title">Turnkey Drata Ingestion</div>
+          <div class="card-body">Automated export of SHA-256 Merkle compliance dossiers mapped directly to SOC 2 & HIPAA controls.</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>CONFIDENTIAL · PREPARED FOR DRATA STRATEGIC PARTNERSHIPS</div>
+      <div>OCTOBER 2026 · BTP PROTOCOL v6.5.5</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: THE PROBLEM -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Market Dynamics & Compliance Dilemma</div>
+      <div class="deck-brand">
+        <span class="drata">DRATA</span> x <span class="bart">BARTHOLOMEW</span>
+      </div>
+    </div>
+    <div class="slide-content">
+      <h2>The Enterprise Crisis: Autonomous Agents in Regulated Workspaces</h2>
+      <p class="subtitle" style="margin-bottom: 20px;">
+        Drata's customers are rapidly adopting AI coding tools (Cursor, Claude Code, Windsurf, Copilot). However, security teams and auditors face three critical unmonitored failure modes.
+      </p>
+      <div class="grid-3">
+        <div class="card amber">
+          <div class="badge amber">Failure Mode 1</div>
+          <div class="card-title">Unchecked Data & PII Egress</div>
+          <div class="card-body">
+            Developers inadvertently transmit real customer PII, patient health information (PHI), and API secrets directly into Anthropic/OpenAI prompt contexts.
+            <br><br>
+            <strong>Auditor Impact:</strong> Direct violation of SOC 2 CC6.7 and HIPAA § 164.312 confidentiality mandates.
+          </div>
+        </div>
+        <div class="card amber">
+          <div class="badge amber">Failure Mode 2</div>
+          <div class="card-title">Untracked Tool & CLI Exploitation</div>
+          <div class="card-body">
+            Agents executing terminal scripts or MCP tools can execute destructive commands due to hallucination or prompt injection (e.g., dropping database tables, deleting branches).
+            <br><br>
+            <strong>Auditor Impact:</strong> Failure of SOC 2 CC6.6 boundary protection and change management controls.
+          </div>
+        </div>
+        <div class="card amber">
+          <div class="badge amber">Failure Mode 3</div>
+          <div class="card-title">Ephemeral Non-Human Identity</div>
+          <div class="card-body">
+            Agents operate with broad user permissions but lack persistent identity, signed capability scopes, or tamper-evident execution ledgers.
+            <br><br>
+            <strong>Auditor Impact:</strong> Lack of accountability and attribution under SOC 2 CC6.1 logical access controls.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>CHALLENGE: TRADITIONAL MDM AND CLOUD SCANNERS HAVE ZERO RUNTIME VISIBILITY INTO LOCAL AGENT PROCESSES</div>
+      <div>PAGE 2</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: WHAT WE OFFER DRATA -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">The Joint Value Proposition</div>
+      <div class="deck-brand">
+        <span class="drata">DRATA</span> x <span class="bart">BARTHOLOMEW</span>
+      </div>
+    </div>
+    <div class="slide-content">
+      <h2>What Bartholomew Offers Drata: The In-Process Runtime Layer</h2>
+      <p class="subtitle" style="margin-bottom: 20px;">
+        Bartholomew provides Drata with the industry’s first deterministic Agentic Runtime Protection (ARP) integration, generating continuous compliance evidence right on developer endpoints.
+      </p>
+      <div class="grid-3">
+        <div class="card emerald">
+          <div class="badge emerald">Endpoint Telemetry</div>
+          <div class="card-title">In-Process Tokenization Vault</div>
+          <div class="card-body">
+            Intercepts prompts in local RAM (<35µs). Replaces credentials and PII with format-preserving surrogates before prompts leave the IDE.
+            <ul class="check-list">
+              <li><span class="dot">✓</span> Zero data leaks to third-party LLMs</li>
+              <li><span class="dot">✓</span> JIT local detokenization for test runs</li>
+              <li><span class="dot">✓</span> Continuous evidence of zero secret egress</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card cyan">
+          <div class="badge cyan">Execution Gate</div>
+          <div class="card-title">Polyglot AST Invariant Shield</div>
+          <div class="card-body">
+            Wraps terminal executions and MCP server stdio pipes. Destructive actions are blocked fail-closed before execution reaches the OS kernel.
+            <ul class="check-list">
+              <li><span class="dot">✓</span> Blocks DROP TABLE, rm -rf, reverse shells</li>
+              <li><span class="dot">✓</span> Ephemeral HMAC capability passkeys</li>
+              <li><span class="dot">✓</span> Atomic SQLite WAL-mode replay defense</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card emerald">
+          <div class="badge emerald">Drata Evidence Stream</div>
+          <div class="card-title">Automated Merkle Dossier Export</div>
+          <div class="card-body">
+            One-click or CLI export (<code>mcp-shield export-compliance</code>) producing structured, cryptographic audit dossiers mapped to Drata controls.
+            <ul class="check-list">
+              <li><span class="dot">✓</span> SHA-256 Merkle root verification</li>
+              <li><span class="dot">✓</span> Tamper-evident ledger of all tool actions</li>
+              <li><span class="dot">✓</span> Auto-synced to Drata Evidence Locker</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>RESULT: DRATA BECOMES THE FIRST COMPLIANCE PLATFORM TO GOVERN AUTONOMOUS AI CODING AGENTS</div>
+      <div>PAGE 3</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: CONTROL MAPPING -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Regulatory & Framework Mapping</div>
+      <div class="deck-brand">
+        <span class="drata">DRATA</span> x <span class="bart">BARTHOLOMEW</span>
+      </div>
+    </div>
+    <div class="slide-content">
+      <h2>Seamless Mapping into Drata Controls</h2>
+      <p class="subtitle" style="margin-bottom: 16px;">
+        Bartholomew attestation dossiers plug directly into Drata's standard SOC 2 and HIPAA automated tests.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Drata Standard Control</th>
+            <th>Compliance Objective</th>
+            <th>Bartholomew Verification Mechanism</th>
+            <th>Auditor Evidence Format</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="accent-val">SOC 2 CC6.1</td>
+            <td>Logical Access Control & Least Privilege</td>
+            <td>Signed ephemeral HMAC-SHA256 capability passkeys scoping agent execution paths.</td>
+            <td><span class="highlight-pill">Cryptographic Passkey Log (.btp/audit.log)</span></td>
+          </tr>
+          <tr>
+            <td class="accent-val">SOC 2 CC6.6</td>
+            <td>Boundary Protection & Invariant Gating</td>
+            <td>Sub-35µs polyglot AST execution firewall gating shell and MCP database tool mutations.</td>
+            <td><span class="highlight-pill">Fail-Closed Interception Ledger</span></td>
+          </tr>
+          <tr>
+            <td class="accent-val">SOC 2 CC6.7</td>
+            <td>Data Transmission Confidentiality</td>
+            <td>Format-preserving surrogate tokenization preventing credentials & PII from leaving memory.</td>
+            <td><span class="highlight-pill">Zero-Egress Surrogacy Proofs</span></td>
+          </tr>
+          <tr>
+            <td class="accent-val">HIPAA § 164.312(a)(1)</td>
+            <td>Unique Non-Human Identity & Access Control</td>
+            <td>Single-use token tracking with atomic SQLite WAL primary key constraints.</td>
+            <td><span class="highlight-pill">Consumed Nonce Database (.db)</span></td>
+          </tr>
+          <tr>
+            <td class="accent-val">HIPAA § 164.312(b)</td>
+            <td>Audit Controls & Cryptographic Integrity</td>
+            <td>Continuous Merkle tree hash-chaining of all intercepted actions and runtime verdicts.</td>
+            <td><span class="highlight-pill">Signed SHA-256 Merkle Dossier</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="slide-footer">
+      <div>ZERO MANUAL AUDIT SCREENSHOTS · 100% AUTOMATED CONTINUOUS EVIDENCE</div>
+      <div>PAGE 4</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: WHAT WE ARE ASKING FOR -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Partnership Structure & Reciprocal Asks</div>
+      <div class="deck-brand">
+        <span class="drata">DRATA</span> x <span class="bart">BARTHOLOMEW</span>
+      </div>
+    </div>
+    <div class="slide-content">
+      <h2>The Partnership Structure: Mutual Asks & Mutual Wins</h2>
+      <p class="subtitle" style="margin-bottom: 20px;">
+        A high-velocity collaboration enabling Drata to lead the AI governance category while expanding Bartholomew's enterprise adoption.
+      </p>
+      <div class="grid-2">
+        <div class="card cyan">
+          <div class="badge cyan">What We Offer Drata</div>
+          <div class="card-title">Immediate Product & Go-To-Market Value</div>
+          <ul class="check-list">
+            <li><span class="dot">✓</span> <strong>First-to-Market AI Agent Governance:</strong> Drata becomes the only automated compliance platform capable of continuously monitoring Cursor & Claude Code.</li>
+            <li><span class="dot">✓</span> <strong>Pre-Built Native Integration:</strong> Zero backend development required from Drata engineering; Bartholomew exports directly to Drata Evidence Locker API.</li>
+            <li><span class="dot">✓</span> <strong>Enterprise Upsell Driver:</strong> Enables Drata sales reps to unblock deals stalled by CISO fears over autonomous coding agents.</li>
+            <li><span class="dot">✓</span> <strong>Verified Open-VSX Distribution:</strong> Ready-to-deploy extensions with 14,000+ public downloads and sub-35µs performance.</li>
+          </ul>
+        </div>
+        <div class="card emerald">
+          <div class="badge emerald">What We Request From Drata</div>
+          <div class="card-title">Partnership Support & Ecosystem Access</div>
+          <ul class="check-list">
+            <li><span class="dot">✓</span> <strong>Drata Marketplace Listing:</strong> Featured inclusion in the Drata Integration Directory under "AI Governance & Agent Security".</li>
+            <li><span class="dot">✓</span> <strong>Auditor Acceptance Review:</strong> Joint review with Drata's Audit Alliance (e.g. Schellman, Coalfire) to formally validate Bartholomew Merkle dossiers as continuous evidence.</li>
+            <li><span class="dot">✓</span> <strong>Joint Design Partner Program:</strong> Intro to 5 mutual enterprise customers piloting Cursor or Claude Code for a 30-day joint case study.</li>
+            <li><span class="dot">✓</span> <strong>Co-Marketing Webinar:</strong> Joint content campaign: <em>"How Regulated Engineering Teams Can Safely Deploy AI Coding Agents."</em></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>WIN-WIN: DRATA CAPTURES THE AI GOVERNANCE NARRATIVE · BARTHOLOMEW GAINS AUDIT DISTRIBUTION</div>
+      <div>PAGE 5</div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: 30-DAY ACTION PLAN -->
+  <section class="slide">
+    <div class="slide-header">
+      <div class="slide-tag">Implementation Roadmap</div>
+      <div class="deck-brand">
+        <span class="drata">DRATA</span> x <span class="bart">BARTHOLOMEW</span>
+      </div>
+    </div>
+    <div class="slide-content">
+      <h2>30-Day Execution Roadmap</h2>
+      <p class="subtitle" style="margin-bottom: 24px;">
+        A rapid, low-overhead path to announce our integration and begin joint customer pilots.
+      </p>
+      <div class="grid-4">
+        <div class="card">
+          <div class="badge cyan">Days 1 - 7</div>
+          <div class="card-title">API Sandbox Sync</div>
+          <div class="card-body">
+            Test Bartholomew dossier export against Drata Evidence Locker sandbox API. Validate schema mapping and automated upload.
+          </div>
+        </div>
+        <div class="card">
+          <div class="badge cyan">Days 8 - 14</div>
+          <div class="card-title">Auditor Alignment</div>
+          <div class="card-body">
+            Present sample Merkle dossiers to Drata's auditor-partner network to confirm automated acceptance for SOC 2 Type II evidence.
+          </div>
+        </div>
+        <div class="card emerald">
+          <div class="badge emerald">Days 15 - 24</div>
+          <div class="card-title">Joint Pilot (3 Cohorts)</div>
+          <div class="card-body">
+            Deploy Bartholomew across 3 Drata enterprise customers piloting Cursor. Verify zero-leakage and automated evidence capture.
+          </div>
+        </div>
+        <div class="card emerald">
+          <div class="badge emerald">Days 25 - 30</div>
+          <div class="card-title">Public Launch</div>
+          <div class="card-body">
+            Publish Drata Marketplace integration, joint press release, and co-branded case study: "Air-Gapped Agent Governance".
+          </div>
+        </div>
+      </div>
+      <div class="card emerald" style="margin-top: 24px; padding: 18px 24px; flex-direction: row; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="font-weight: 800; font-size: 1.05rem; color: #fff;">Ready for Immediate Technical Demonstration</div>
+          <div style="font-size: 0.8rem; color: #94a3b8;">Full working CLI, SQLite replay store, and live demo script ready for evaluation today.</div>
+        </div>
+        <div style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #34d399; font-weight: 700;">
+          contact@bartholomew.info · bartholomew.info
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <div>THANK YOU · LOOKING FORWARD TO BUILDING THE FUTURE OF AI AGENT COMPLIANCE TOGETHER</div>
+      <div>PAGE 6</div>
+    </div>
+  </section>
+
+</body>
+</html>
+"""
+
+def generate_pdf():
+    print("[*] Writing HTML presentation template...")
+    with open(OUTPUT_HTML, "w", encoding="utf-8") as f:
+        f.write(HTML_CONTENT)
+    print(f"[+] Written {OUTPUT_HTML}")
+
+    edge_paths = [
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe"
+    ]
+    edge_exe = None
+    for p in edge_paths:
+        if os.path.exists(p):
+            edge_exe = p
+            break
+
+    if not edge_exe:
+        print("[!] Microsoft Edge executable not found in standard paths.")
+        return False
+
+    print(f"[*] Rendering PDF via headless Edge ({edge_exe})...")
+    cmd = [
+        edge_exe,
+        "--headless",
+        "--disable-gpu",
+        f"--print-to-pdf={str(OUTPUT_PDF)}",
+        "--no-pdf-header-footer",
+        str(OUTPUT_HTML)
+    ]
+    res = subprocess.run(cmd, capture_output=True, text=True)
+    if res.returncode != 0:
+        print(f"[!] Error rendering PDF: {res.stderr}")
+        return False
+
+    if OUTPUT_PDF.exists() and OUTPUT_PDF.stat().st_size > 0:
+        print(f"[+] SUCCESS! Generated presentation PDF ({OUTPUT_PDF.stat().st_size} bytes): {OUTPUT_PDF}")
+        return True
+    else:
+        print("[!] PDF output file is missing or empty.")
+        return False
+
+if __name__ == "__main__":
+    success = generate_pdf()
+    sys.exit(0 if success else 1)
