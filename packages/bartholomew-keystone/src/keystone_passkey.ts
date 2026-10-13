@@ -37,6 +37,20 @@ export interface KeystoneScope {
   env?: {
     deny_keys?: string[];
   };
+  tools?: {
+    allow_tools?: string[];
+    allow_operations?: string[];
+    deny_tools?: string[];
+  };
+  invocation_limits?: {
+    max_uses?: number;
+    allow_repeat?: boolean;
+    max_payload_bytes?: number;
+  };
+  destinations?: {
+    allow_destinations?: string[];
+    deny_destinations?: string[];
+  };
 }
 
 export interface KeystonePasskey {
@@ -52,7 +66,7 @@ export interface KeystonePasskey {
 
 export interface ClearanceResult {
   verdict: 'ALLOW' | 'DENY';
-  status: 'CLEARANCE_GRANTED' | 'OUT_OF_SCOPE' | 'PASSKEY_EXPIRED' | 'INVALID_SIGNATURE';
+  status: 'CLEARANCE_GRANTED' | 'OUT_OF_SCOPE' | 'PASSKEY_EXPIRED' | 'PASSKEY_REVOKED' | 'LIMIT_EXCEEDED' | 'INVALID_SIGNATURE';
   reason: string;
   latency_us: number;
   rule_id: string;
@@ -73,9 +87,36 @@ export interface ClearanceReceipt {
 export class KeystoneEngine {
   private signingSecret: string;
   private receiptHistory: ClearanceReceipt[] = [];
+  private revokedPasskeys: Map<string, { timestamp: string; reason: string }> = new Map();
+  private invocationCounts: Map<string, number> = new Map();
 
   constructor(signingSecret?: string) {
     this.signingSecret = signingSecret || 'keystone-root-dev-authority';
+  }
+
+  /**
+   * Revoke an active passkey immediately.
+   */
+  public revokePasskey(passkeyId: string, reason: string): boolean {
+    this.revokedPasskeys.set(passkeyId, {
+      timestamp: new Date().toISOString(),
+      reason: reason || 'Administrative revocation'
+    });
+    return true;
+  }
+
+  /**
+   * Check whether a passkey has been revoked.
+   */
+  public isRevoked(passkeyId: string): boolean {
+    return this.revokedPasskeys.has(passkeyId);
+  }
+
+  /**
+   * Get total invocation count for a passkey.
+   */
+  public getInvocationCount(passkeyId: string): number {
+    return this.invocationCounts.get(passkeyId) || 0;
   }
 
   /**
@@ -121,6 +162,8 @@ export class KeystoneEngine {
    * Verifies the cryptographic signature and timestamp of a passkey.
    */
   public verifyPasskey(passkey: KeystonePasskey): boolean {
+    if (this.isRevoked(passkey.passkey_id)) return false;
+
     const now = new Date().getTime();
     const expiry = new Date(passkey.expires_at).getTime();
     if (now > expiry) return false;
@@ -190,20 +233,57 @@ export class KeystoneEngine {
   ): ClearanceResult {
     const start = process.hrtime.bigint();
 
-    // 1. Signature & Expiration Check
-    if (!this.verifyPasskey(passkey)) {
+    // 0. Explicit Revocation Check
+    if (this.isRevoked(passkey.passkey_id)) {
       const end = process.hrtime.bigint();
-      const reason = 'Passkey signature is invalid or clearance has expired.';
+      const reason = `Passkey '${passkey.passkey_id}' has been cryptographically revoked.`;
       const { receipt_hash } = this.generateReceipt(passkey, actionType, target, 'DENY', reason);
       return {
         verdict: 'DENY',
-        status: 'INVALID_SIGNATURE',
+        status: 'PASSKEY_REVOKED',
+        reason,
+        latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+        rule_id: 'KEYSTONE-REVOKED-001',
+        receipt_hash
+      };
+    }
+
+    // 1. Signature & Expiration Check
+    if (!this.verifyPasskey(passkey)) {
+      const end = process.hrtime.bigint();
+      const now = new Date().getTime();
+      const expiry = new Date(passkey.expires_at).getTime();
+      const isExpired = now > expiry;
+      const status = isExpired ? 'PASSKEY_EXPIRED' : 'INVALID_SIGNATURE';
+      const reason = isExpired ? 'Passkey clearance has expired.' : 'Passkey signature is invalid.';
+      const { receipt_hash } = this.generateReceipt(passkey, actionType, target, 'DENY', reason);
+      return {
+        verdict: 'DENY',
+        status,
         reason,
         latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
         rule_id: 'KEYSTONE-001',
         receipt_hash
       };
     }
+
+    // 1b. Invocation Count Limit Check
+    const count = (this.invocationCounts.get(passkey.passkey_id) || 0) + 1;
+    const maxUses = passkey.scopes.invocation_limits?.max_uses;
+    if (maxUses !== undefined && count > maxUses) {
+      const end = process.hrtime.bigint();
+      const reason = `Passkey usage ceiling exceeded (${count} > ${maxUses}).`;
+      const { receipt_hash } = this.generateReceipt(passkey, actionType, target, 'DENY', reason);
+      return {
+        verdict: 'DENY',
+        status: 'LIMIT_EXCEEDED',
+        reason,
+        latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+        rule_id: 'KEYSTONE-INVOCATION-CEILING',
+        receipt_hash
+      };
+    }
+    this.invocationCounts.set(passkey.passkey_id, count);
 
     const scopes = passkey.scopes;
     const targetNorm = target.toLowerCase();
@@ -410,6 +490,197 @@ export class KeystoneEngine {
       reason,
       latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
       rule_id: 'KEYSTONE-PASS-000',
+      receipt_hash
+    };
+  }
+
+  /**
+   * Validates fine-grained MCP tool invocations against capability bounds:
+   * tool name, operation, payload size, invocation count, and destination.
+   */
+  public evaluateMcpToolAction(
+    passkey: KeystonePasskey,
+    toolName: string,
+    args: Record<string, any> = {},
+    destination?: string,
+    payloadSizeBytes?: number
+  ): ClearanceResult {
+    const start = process.hrtime.bigint();
+
+    // 0. Explicit Revocation Check
+    if (this.isRevoked(passkey.passkey_id)) {
+      const end = process.hrtime.bigint();
+      const reason = `Passkey '${passkey.passkey_id}' has been cryptographically revoked.`;
+      const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'DENY', reason);
+      return {
+        verdict: 'DENY',
+        status: 'PASSKEY_REVOKED',
+        reason,
+        latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+        rule_id: 'KEYSTONE-REVOKED-001',
+        receipt_hash
+      };
+    }
+
+    // 1. Signature & Expiration Check
+    if (!this.verifyPasskey(passkey)) {
+      const end = process.hrtime.bigint();
+      const now = new Date().getTime();
+      const expiry = new Date(passkey.expires_at).getTime();
+      const status = now > expiry ? 'PASSKEY_EXPIRED' : 'INVALID_SIGNATURE';
+      const reason = now > expiry ? 'Passkey clearance has expired.' : 'Passkey signature is invalid.';
+      const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'DENY', reason);
+      return {
+        verdict: 'DENY',
+        status,
+        reason,
+        latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+        rule_id: 'KEYSTONE-001',
+        receipt_hash
+      };
+    }
+
+    const scopes = passkey.scopes;
+
+    // 2. Invocation Limits & Repeat Prevention
+    const count = (this.invocationCounts.get(passkey.passkey_id) || 0) + 1;
+    const maxUses = scopes.invocation_limits?.max_uses;
+    if (maxUses !== undefined && count > maxUses) {
+      const end = process.hrtime.bigint();
+      const reason = `Passkey invocation count ${count} exceeds allowed ceiling ${maxUses}.`;
+      const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'DENY', reason);
+      return {
+        verdict: 'DENY',
+        status: 'LIMIT_EXCEEDED',
+        reason,
+        latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+        rule_id: 'KEYSTONE-TOOL-INVOCATIONS',
+        receipt_hash
+      };
+    }
+
+    // Check payload size
+    const maxBytes = scopes.invocation_limits?.max_payload_bytes;
+    const actualBytes = payloadSizeBytes !== undefined ? payloadSizeBytes : Buffer.byteLength(JSON.stringify(args || {}));
+    if (maxBytes !== undefined && actualBytes > maxBytes) {
+      const end = process.hrtime.bigint();
+      const reason = `Payload size ${actualBytes} bytes exceeds maximum limit ${maxBytes} bytes.`;
+      const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'DENY', reason);
+      return {
+        verdict: 'DENY',
+        status: 'LIMIT_EXCEEDED',
+        reason,
+        latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+        rule_id: 'KEYSTONE-PAYLOAD-CEILING',
+        receipt_hash
+      };
+    }
+
+    // 3. Tool allowlist / denylist
+    const toolScope = scopes.tools;
+    if (toolScope) {
+      if (toolScope.deny_tools && toolScope.deny_tools.includes(toolName)) {
+        const end = process.hrtime.bigint();
+        const reason = `Tool '${toolName}' is explicitly denied by passkey clearance.`;
+        const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'DENY', reason);
+        return {
+          verdict: 'DENY',
+          status: 'OUT_OF_SCOPE',
+          reason,
+          latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+          rule_id: 'KEYSTONE-TOOL-DENIED',
+          receipt_hash
+        };
+      }
+
+      if (toolScope.allow_tools && toolScope.allow_tools.length > 0) {
+        if (!toolScope.allow_tools.includes('*') && !toolScope.allow_tools.includes(toolName)) {
+          const end = process.hrtime.bigint();
+          const reason = `Tool '${toolName}' is not in authorized tool allowlist [${toolScope.allow_tools.join(', ')}].`;
+          const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'DENY', reason);
+          return {
+            verdict: 'DENY',
+            status: 'OUT_OF_SCOPE',
+            reason,
+            latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+            rule_id: 'KEYSTONE-TOOL-ALLOWLIST',
+            receipt_hash
+          };
+        }
+      }
+
+      // Operation check if operation is provided in args
+      const op = args.operation || args.action || args.method;
+      if (op && toolScope.allow_operations && toolScope.allow_operations.length > 0) {
+        if (!toolScope.allow_operations.includes(op)) {
+          const end = process.hrtime.bigint();
+          const reason = `Operation '${op}' is not in authorized operations [${toolScope.allow_operations.join(', ')}].`;
+          const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', `${toolName}:${op}`, 'DENY', reason);
+          return {
+            verdict: 'DENY',
+            status: 'OUT_OF_SCOPE',
+            reason,
+            latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+            rule_id: 'KEYSTONE-OP-ALLOWLIST',
+            receipt_hash
+          };
+        }
+      }
+    }
+
+    // 4. Destination Constraints
+    if (destination && scopes.destinations) {
+      if (scopes.destinations.deny_destinations) {
+        for (const deniedDest of scopes.destinations.deny_destinations) {
+          if (destination.toLowerCase().includes(deniedDest.toLowerCase())) {
+            const end = process.hrtime.bigint();
+            const reason = `Destination '${destination}' is denied by passkey policy.`;
+            const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', destination, 'DENY', reason);
+            return {
+              verdict: 'DENY',
+              status: 'OUT_OF_SCOPE',
+              reason,
+              latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+              rule_id: 'KEYSTONE-DEST-DENIED',
+              receipt_hash
+            };
+          }
+        }
+      }
+
+      if (scopes.destinations.allow_destinations && scopes.destinations.allow_destinations.length > 0) {
+        const allowed = scopes.destinations.allow_destinations.some(d => {
+          if (d === '*') return true;
+          const prefix = d.endsWith('*') ? d.slice(0, -1).toLowerCase() : d.toLowerCase();
+          return destination.toLowerCase().startsWith(prefix) || destination.toLowerCase().includes(prefix);
+        });
+        if (!allowed) {
+          const end = process.hrtime.bigint();
+          const reason = `Destination '${destination}' is not in authorized destination allowlist.`;
+          const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', destination, 'DENY', reason);
+          return {
+            verdict: 'DENY',
+            status: 'OUT_OF_SCOPE',
+            reason,
+            latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+            rule_id: 'KEYSTONE-DEST-SCOPE',
+            receipt_hash
+          };
+        }
+      }
+    }
+
+    this.invocationCounts.set(passkey.passkey_id, count);
+
+    const end = process.hrtime.bigint();
+    const reason = `Tool '${toolName}' execution verified within capability passkey bounds.`;
+    const { receipt_hash } = this.generateReceipt(passkey, 'MCP_TOOL_EXEC', toolName, 'ALLOW', reason);
+    return {
+      verdict: 'ALLOW',
+      status: 'CLEARANCE_GRANTED',
+      reason,
+      latency_us: Number(Number(end - start) / 1000).toFixed(2) as any,
+      rule_id: 'KEYSTONE-TOOL-PASS-000',
       receipt_hash
     };
   }

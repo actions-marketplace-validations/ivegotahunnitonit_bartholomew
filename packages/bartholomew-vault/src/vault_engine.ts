@@ -29,11 +29,67 @@ export interface VaultAuditReceipt {
   conformance: string;
 }
 
+export type DataSensitivityLabel = 'PUBLIC' | 'INTERNAL' | 'CONFIDENTIAL' | 'SECRET';
+
+export const SENSITIVITY_LATTICE_RANK: Record<DataSensitivityLabel, number> = {
+  PUBLIC: 0,
+  INTERNAL: 1,
+  CONFIDENTIAL: 2,
+  SECRET: 3
+};
+
+export interface InformationFlowOrigin {
+  dataId: string;
+  label: DataSensitivityLabel;
+  originSource: string;
+  timestamp: number;
+  metadata?: Record<string, any>;
+}
+
+export interface DestinationPolicyRule {
+  ruleId: string;
+  destinationPattern: string;
+  maxAllowedSensitivity: DataSensitivityLabel;
+  allowlistedTools?: string[];
+}
+
+export interface InformationFlowVerdict {
+  allowed: boolean;
+  verdict: 'PERMIT' | 'DENY';
+  reason: string;
+  dataId: string;
+  effectiveSensitivity: DataSensitivityLabel;
+  destination: string;
+  ruleMatched?: string;
+  taintTrace: string[];
+}
+
 export class VaultEngine {
   // Volatile in-memory bidirectional maps
   private rawToSurrogate: Map<string, string> = new Map();
   private surrogateToRaw: Map<string, { raw: string; category: string }> = new Map();
   private auditHistory: VaultAuditReceipt[] = [];
+
+  // Information-Flow Tracking & Egress Policies
+  private taintRegistry: Map<string, InformationFlowOrigin> = new Map();
+  private derivationGraph: Map<string, string[]> = new Map();
+  private destinationPolicies: DestinationPolicyRule[] = [
+    {
+      ruleId: 'DEFAULT_PUBLIC_EGRESS',
+      destinationPattern: '.*public.*|.*external.*|.*internet.*|https?://(?!internal\\.).*',
+      maxAllowedSensitivity: 'PUBLIC'
+    },
+    {
+      ruleId: 'DEFAULT_INTERNAL_EGRESS',
+      destinationPattern: '.*internal.*|mcp://local-.*|https?://internal\\..*',
+      maxAllowedSensitivity: 'INTERNAL'
+    },
+    {
+      ruleId: 'DEFAULT_SECURE_ENCLAVE',
+      destinationPattern: '.*enclave.*|.*vault.*|mcp://secure-vault',
+      maxAllowedSensitivity: 'SECRET'
+    }
+  ];
 
   // Luhn Check Algorithm for credit card validity
   private static isValidLuhn(digits: string): boolean {
@@ -541,5 +597,175 @@ export class VaultEngine {
       servers: serverSummaries,
       timestamp: new Date().toISOString()
     };
+  }
+
+  /**
+   * Information-Flow Tracking: Explicitly tags data with sensitivity label and origin.
+   */
+  public tagDataOrigin(
+    dataId: string,
+    label: DataSensitivityLabel,
+    originSource: string,
+    metadata?: Record<string, any>
+  ): InformationFlowOrigin {
+    const origin: InformationFlowOrigin = {
+      dataId,
+      label,
+      originSource,
+      timestamp: Date.now(),
+      metadata
+    };
+    this.taintRegistry.set(dataId, origin);
+    return origin;
+  }
+
+  /**
+   * Information-Flow Tracking: Propagates taint across data transformations using lattice supremum (max).
+   * join(L1, L2) = max(L1, L2)
+   */
+  public propagateTaint(
+    sourceIds: string[],
+    derivedDataId: string,
+    derivedOriginSource = 'derived:transformation'
+  ): InformationFlowOrigin {
+    let maxRank = 0;
+    let maxLabel: DataSensitivityLabel = 'PUBLIC';
+    const traceSources: string[] = [];
+
+    for (const sid of sourceIds) {
+      traceSources.push(sid);
+      const parent = this.taintRegistry.get(sid);
+      if (parent) {
+        const rank = SENSITIVITY_LATTICE_RANK[parent.label] ?? 0;
+        if (rank > maxRank) {
+          maxRank = rank;
+          maxLabel = parent.label;
+        }
+      }
+    }
+
+    this.derivationGraph.set(derivedDataId, traceSources);
+
+    const derivedOrigin: InformationFlowOrigin = {
+      dataId: derivedDataId,
+      label: maxLabel,
+      originSource: derivedOriginSource,
+      timestamp: Date.now(),
+      metadata: { sources: sourceIds, supremumRank: maxRank }
+    };
+    this.taintRegistry.set(derivedDataId, derivedOrigin);
+    return derivedOrigin;
+  }
+
+  /**
+   * Retrieve the full provenance taint trace for a piece of data.
+   */
+  public getTaintTrace(dataId: string): string[] {
+    const trace: string[] = [dataId];
+    const queue = [dataId];
+    const visited = new Set<string>();
+
+    while (queue.length > 0) {
+      const curr = queue.shift()!;
+      if (visited.has(curr)) continue;
+      visited.add(curr);
+      const parents = this.derivationGraph.get(curr) || [];
+      for (const p of parents) {
+        if (!trace.includes(p)) trace.push(p);
+        queue.push(p);
+      }
+    }
+    return trace;
+  }
+
+  /**
+   * Evaluates if data can be transmitted to a specific egress destination or tool based on sensitivity labels.
+   */
+  public evaluateDestinationEgress(
+    dataId: string,
+    destination: string,
+    toolName?: string
+  ): InformationFlowVerdict {
+    const entry = this.taintRegistry.get(dataId);
+    const effectiveSensitivity: DataSensitivityLabel = entry ? entry.label : 'PUBLIC';
+    const effectiveRank = SENSITIVITY_LATTICE_RANK[effectiveSensitivity];
+    const trace = this.getTaintTrace(dataId);
+
+    // Find matching destination policy
+    for (const policy of this.destinationPolicies) {
+      const reg = new RegExp(policy.destinationPattern, 'i');
+      if (reg.test(destination)) {
+        // Check tool allowlist if specified
+        if (toolName && policy.allowlistedTools && policy.allowlistedTools.length > 0) {
+          if (!policy.allowlistedTools.includes(toolName) && !policy.allowlistedTools.includes('*')) {
+            return {
+              allowed: false,
+              verdict: 'DENY',
+              reason: `Tool '${toolName}' not authorized for destination rule '${policy.ruleId}'`,
+              dataId,
+              effectiveSensitivity,
+              destination,
+              ruleMatched: policy.ruleId,
+              taintTrace: trace
+            };
+          }
+        }
+
+        const maxAllowedRank = SENSITIVITY_LATTICE_RANK[policy.maxAllowedSensitivity];
+        if (effectiveRank > maxAllowedRank) {
+          return {
+            allowed: false,
+            verdict: 'DENY',
+            reason: `Data sensitivity '${effectiveSensitivity}' exceeds destination '${destination}' maximum allowable clearance '${policy.maxAllowedSensitivity}' (Rule: ${policy.ruleId})`,
+            dataId,
+            effectiveSensitivity,
+            destination,
+            ruleMatched: policy.ruleId,
+            taintTrace: trace
+          };
+        }
+
+        return {
+          allowed: true,
+          verdict: 'PERMIT',
+          reason: `Egress allowed under policy '${policy.ruleId}' (${effectiveSensitivity} <= ${policy.maxAllowedSensitivity})`,
+          dataId,
+          effectiveSensitivity,
+          destination,
+          ruleMatched: policy.ruleId,
+          taintTrace: trace
+        };
+      }
+    }
+
+    // Default fail-closed if confidential or secret and no explicit policy matches
+    if (effectiveRank >= SENSITIVITY_LATTICE_RANK.CONFIDENTIAL) {
+      return {
+        allowed: false,
+        verdict: 'DENY',
+        reason: `Default Fail-Closed: No matching destination policy found for ${effectiveSensitivity} data to destination '${destination}'`,
+        dataId,
+        effectiveSensitivity,
+        destination,
+        taintTrace: trace
+      };
+    }
+
+    return {
+      allowed: true,
+      verdict: 'PERMIT',
+      reason: `Default permissive for public/internal data without explicit blocking policy`,
+      dataId,
+      effectiveSensitivity,
+      destination,
+      taintTrace: trace
+    };
+  }
+
+  /**
+   * Register a custom destination policy rule
+   */
+  public registerDestinationPolicy(rule: DestinationPolicyRule): void {
+    this.destinationPolicies.unshift(rule);
   }
 }
