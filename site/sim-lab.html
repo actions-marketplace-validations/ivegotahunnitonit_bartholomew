@@ -1217,7 +1217,7 @@
           <span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.4); padding:2px 7px; border-radius:4px; font-weight:700;">ZERO CLOUD EGRESS</span>
         </div>
         <div style="font-family:var(--font-mono); font-size:0.75rem; color:var(--text-muted); display:flex; align-items:center; gap:12px;">
-          <span>Engine: <code style="color:#38bdf8;">VaultEngine.tokenize() v6.5.4</code></span>
+          <span>Engine: <code style="color:#38bdf8;">VaultEngine.tokenize() v6.5.5</code></span>
           <a href="https://open-vsx.org/extension/Bartholomew/bartholomew-vault" target="_blank" style="color:#38bdf8; text-decoration:none; font-weight:700; border:1px solid rgba(56,189,248,0.3); padding:2px 8px; border-radius:4px; background:rgba(56,189,248,0.08);">Open VSX Registry</a>
         </div>
       </div>
@@ -1259,6 +1259,7 @@
           <button class="mode-tab-btn" id="btn-vault-preset-hipaa" onclick="selectVaultPreset('hipaa')" style="padding:6px 12px; font-size:0.75rem; color:#c084fc; border-color:rgba(192,132,252,0.4);">HIPAA Patient PHI / SSN</button>
           <button class="mode-tab-btn" id="btn-vault-preset-pci" onclick="selectVaultPreset('pci')" style="padding:6px 12px; font-size:0.75rem; color:#f43f5e; border-color:rgba(244,63,94,0.4);">PCI-DSS Credit Card PAN</button>
           <button class="mode-tab-btn" id="btn-vault-preset-aws" onclick="selectVaultPreset('aws')" style="padding:6px 12px; font-size:0.75rem; color:#38bdf8; border-color:rgba(56,189,248,0.4);">AWS IAM Secret Keys</button>
+          <button class="mode-tab-btn" id="btn-vault-preset-mcp" onclick="selectVaultPreset('mcp')" style="padding:6px 12px; font-size:0.75rem; color:#a855f7; border-color:rgba(168,85,247,0.4);">MCP Tool Call Payload</button>
         </div>
       </div>
 
@@ -3475,7 +3476,21 @@ export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 export AWS_DEFAULT_REGION="us-east-1"
 export GITHUB_TOKEN="` + canaryGhp + `"
-aws s3 sync ./dist s3://prod-customer-artifacts-vault/`
+aws s3 sync ./dist s3://prod-customer-artifacts-vault/`,
+      mcp: `// Model Context Protocol (MCP) JSON-RPC Tool Call Payload
+{
+  "jsonrpc": "2.0",
+  "method": "tools/call",
+  "params": {
+    "name": "query_database",
+    "arguments": {
+      "connection_url": "postgres://corp_admin:SuperP@ssw0rd9912!@db-prod.internal.corp:5432/customer_billing_db",
+      "query": "SELECT * FROM patients WHERE ssn = '987-65-4320';",
+      "authorization": "Bearer ` + canaryStripe + `"
+    }
+  },
+  "id": 1
+}`
     };
 
     let currentVaultTokenMap = [];
@@ -3604,7 +3619,7 @@ aws s3 sync ./dist s3://prod-customer-artifacts-vault/`
         const complianceObj = {
           dossier_id: "btp-vault-" + fastHash(Date.now().toString()),
           spec: "BTP-VAULT-2026.1",
-          engine: "Bartholomew Vault v6.5.4",
+          engine: "Bartholomew Vault v6.5.5",
           timestamp: new Date().toISOString(),
           intercepted_entities: detected.length,
           framework_attestations: {

@@ -1,8 +1,11 @@
 {
   "name": "bartholomew-vault",
   "displayName": "Bartholomew Vault - In-Process Data & PII Tokenizer",
-  "description": "BTP v6.5.4 Sub-millisecond in-process data, credential, and PII tokenization vault for AI coding assistants (Cursor, Claude Code, Windsurf, Copilot, VS Code). Prevents sensitive customer data and secrets from leaking to cloud LLMs with just-in-time local test detokenization.",
-  "version": "6.5.4",
+  "description": "BTP v6.5.5 Sub-millisecond in-process data, credential, and PII tokenization vault with MCP Safety Shield for AI coding assistants (Cursor, Claude Code, Windsurf, Copilot, VS Code). Prevents sensitive customer data, credentials, and tool exploit payloads from reaching cloud LLMs.",
+  "version": "6.5.5",
+  "bin": {
+    "mcp-shield": "./bin/mcp-shield.js"
+  },
   "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "Apache-2.0",
