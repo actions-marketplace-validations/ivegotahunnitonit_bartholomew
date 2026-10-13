@@ -36,6 +36,9 @@ def ensure_package_ready(pkg_dir):
     with open(pkg_json_path, "r", encoding="utf-8") as f:
         pkg_json = json.load(f)
 
+    if "extensionPack" in pkg_json:
+        return None
+
     scripts = pkg_json.get("scripts", {})
     if "compile" not in scripts and "build" not in scripts:
         raise FileNotFoundError(
@@ -90,6 +93,9 @@ def pack_package(pkg_dir, package_id, display_name, description):
   <Default Extension=".ts" ContentType="video/mp2t"/>
 </Types>"""
 
+    ext_pack_val = ",".join(vinfo.get("extensionPack", []))
+    executes_code = "false" if ext_pack_val else "true"
+
     vsixmanifest_xml = f"""<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
@@ -102,11 +108,11 @@ def pack_package(pkg_dir, package_id, display_name, description):
     <Properties>
       <Property Id="Microsoft.VisualStudio.Code.Engine" Value="^1.80.0" />
       <Property Id="Microsoft.VisualStudio.Code.ExtensionDependencies" Value="" />
-      <Property Id="Microsoft.VisualStudio.Code.ExtensionPack" Value="" />
+      <Property Id="Microsoft.VisualStudio.Code.ExtensionPack" Value="{ext_pack_val}" />
       <Property Id="Microsoft.VisualStudio.Code.ExtensionKind" Value="workspace" />
       <Property Id="Microsoft.VisualStudio.Code.LocalizedLanguages" Value="" />
       <Property Id="Microsoft.VisualStudio.Code.EnabledApiProposals" Value="" />
-      <Property Id="Microsoft.VisualStudio.Code.ExecutesCode" Value="true" />
+      <Property Id="Microsoft.VisualStudio.Code.ExecutesCode" Value="{executes_code}" />
       <Property Id="Microsoft.VisualStudio.Services.Links.Source" Value="https://github.com/ivegotahunnitonit/bartholomew.git" />
       <Property Id="Microsoft.VisualStudio.Services.Links.Getstarted" Value="https://github.com/ivegotahunnitonit/bartholomew.git" />
       <Property Id="Microsoft.VisualStudio.Services.Links.GitHub" Value="https://github.com/ivegotahunnitonit/bartholomew.git" />
@@ -172,4 +178,10 @@ if __name__ == "__main__":
         "bartholomew-guard-vscode",
         "Bartholomew AI Agent Guard - Security & Guardrails (Cursor, Claude, Copilot)",
         "Zero-trust firewall & security guardrails for AI agents. Prevents dangerous commands, secret exfiltration, and destructive file deletion in Cursor, Claude Desktop, and VS Code.",
+    )
+    pack_package(
+        root / "packages" / "bartholomew-trinity",
+        "bartholomew-trinity",
+        "Bartholomew Trinity - Complete AI Agent Security Suite (Cursor, Claude, VS Code)",
+        "Complete 3-phase developer runtime security suite for Cursor, Claude Code, Windsurf, Copilot, and VS Code. Installs Bartholomew Guard, Keystone, and Vault in 1 click.",
     )

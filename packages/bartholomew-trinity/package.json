@@ -1,0 +1,64 @@
+{
+  "name": "bartholomew-trinity",
+  "displayName": "Bartholomew Trinity - Complete AI Agent Security Suite",
+  "description": "BTP v6.5.5 Complete 3-phase developer runtime security suite for Cursor, Claude Code, Windsurf, Copilot, and VS Code. Installs Bartholomew Guard (AST Gate), Bartholomew Keystone (Clearance Passkeys), and Bartholomew Vault (In-Process PII & MCP Shield) in 1 click.",
+  "version": "6.5.5",
+  "publisher": "bartholomew",
+  "icon": "icon.png",
+  "license": "Apache-2.0",
+  "categories": [
+    "Extension Packs",
+    "Linters",
+    "Other"
+  ],
+  "keywords": [
+    "security",
+    "ai",
+    "agents",
+    "guardrails",
+    "cursor",
+    "claude-code",
+    "windsurf",
+    "copilot",
+    "mcp",
+    "vault",
+    "keystone",
+    "zero-trust",
+    "hipaa",
+    "pci-dss"
+  ],
+  "extensionPack": [
+    "Bartholomew.bartholomew-guard-vscode",
+    "Bartholomew.bartholomew-keystone",
+    "Bartholomew.bartholomew-vault"
+  ],
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivegotahunnitonit/bartholomew.git",
+    "directory": "packages/bartholomew-trinity"
+  },
+  "galleryBanner": {
+    "color": "#070b14",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/Security-Trinity%20v6.5.5-10b981",
+      "href": "https://bartholomew.info",
+      "description": "Trinity Security Suite"
+    },
+    {
+      "url": "https://img.shields.io/badge/Latency-Sub--35%C2%B5s-brightgreen",
+      "href": "https://bartholomew.info",
+      "description": "Sub-35us In-Process Latency"
+    },
+    {
+      "url": "https://img.shields.io/badge/Extensions-Guard%20%7C%20Keystone%20%7C%20Vault-blue",
+      "href": "https://bartholomew.info",
+      "description": "3-Phase Pipeline"
+    }
+  ]
+}
