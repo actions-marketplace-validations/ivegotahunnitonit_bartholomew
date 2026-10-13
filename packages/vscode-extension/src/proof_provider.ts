@@ -626,6 +626,29 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45), 0 0 22px rgba(244, 63, 94, 0.55);
       transform: translateY(-1px);
     }
+    .btn-enterprise-header {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(14, 165, 233, 0.08) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #38bdf8;
+      padding: 5px 12px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+    .btn-enterprise-header:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.32) 0%, rgba(14, 165, 233, 0.22) 100%);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 0 16px rgba(56, 189, 248, 0.45);
+      transform: translateY(-1px);
+    }
     .brand-info {
       display: flex;
       flex-direction: column;
@@ -1531,6 +1554,10 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       <button class="btn-disarm-header" style="${!isArmed ? 'display:none;' : ''}" onclick="disarmWorkspace()" id="btnDisarmHeader" title="1-Click: Disarm Bartholomew Guard (Temporary bypass)">
         <span>Disarm</span>
       </button>
+      <button class="btn-enterprise-header" onclick="openEnterpriseDocs()" title="Open Enterprise Security Audit &amp; SOC 2 Compliance Portal">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>Enterprise Audit</span>
+      </button>
       <div class="status-beacon ${statusClass}">
         <div class="beacon-bartholomew-emblem">
           <div class="beacon-wave"></div>
@@ -1758,10 +1785,11 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
           <div class="panel-card-title" style="margin-bottom:2px;">Cryptographic Execution Ledger</div>
           <div class="panel-card-desc" style="margin-bottom:0;">Every agent action evaluation is signed with an immutable SHA-256 Merkle receipt for CISO and SOC 2 audits.</div>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
           <button class="btn-secondary" onclick="refreshAuditTrail()" style="padding:5px 12px; font-size:11px;">Refresh Audit Trail</button>
           <button class="btn-secondary" onclick="verifyMerkleReceipts()" style="padding:5px 12px; font-size:11px;">Verify Merkle Receipts</button>
           <button class="btn-secondary" onclick="exportAuditDossier()" style="padding:5px 12px; font-size:11px;">Export Audit Dossier</button>
+          <button class="btn-secondary" onclick="openEnterpriseDocs()" style="padding:5px 12px; font-size:11px; background:rgba(56, 189, 248, 0.14); border:1px solid rgba(56, 189, 248, 0.45); color:#38bdf8; font-weight:700;" title="Open Enterprise Security Audit Portal">Enterprise Audit Portal &rarr;</button>
         </div>
       </div>
 
@@ -2094,6 +2122,11 @@ export function getWebviewContent(telemetry: ProofTelemetry, rootPath: string, e
       showToast('Generating signed SOC 2 audit dossier...');
     }
 
+    function openEnterpriseDocs() {
+      vscode.postMessage({ command: 'openEnterpriseDocs' });
+      showToast('Opening Enterprise Security Audit Portal...');
+    }
+
     function openPilotEnrollment() {
       vscode.postMessage({ command: 'openExternalUrl', url: 'https://bartholomew.info/enterprise' });
       vscode.postMessage({ command: 'copyReceipt', receipt: 'https://bartholomew.info/enterprise' });
@@ -2255,6 +2288,8 @@ export class BartholomewProofViewProvider implements vscode.WebviewViewProvider 
         vscode.commands.executeCommand('bartholomew.validatePolicy');
       } else if (message.command === 'exportAuditDossier') {
         vscode.commands.executeCommand('bartholomew.exportAuditDossier');
+      } else if (message.command === 'openEnterpriseDocs') {
+        vscode.commands.executeCommand('bartholomew.openEnterpriseDocs');
       } else if (message.command === 'openExternalUrl') {
         if (message.url) {
           vscode.env.openExternal(vscode.Uri.parse(message.url));

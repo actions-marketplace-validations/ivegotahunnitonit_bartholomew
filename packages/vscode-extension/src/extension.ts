@@ -859,18 +859,11 @@ context.subscriptions.push(
   });
   context.subscriptions.push(upgradeProCmd);
 
+  // Enterprise Documentation & Audit Command (accessible from Activity Bar webview & security menu)
   const openEnterpriseDocsCmd = vscode.commands.registerCommand('bartholomew.openEnterpriseDocs', () => {
     vscode.env.openExternal(vscode.Uri.parse('https://bartholomew.info/enterprise'));
   });
   context.subscriptions.push(openEnterpriseDocsCmd);
-  // Dedicated Status Bar Item: Enterprise Portal
-  const enterpriseStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 99);
-  enterpriseStatusBar.text = '$(shield) Enterprise Audit';
-  enterpriseStatusBar.tooltip = 'Bartholomew Enterprise Agent Security Audit & Compliance';
-  enterpriseStatusBar.command = 'bartholomew.openEnterpriseDocs';
-  enterpriseStatusBar.color = '#38bdf8';
-  enterpriseStatusBar.show();
-  context.subscriptions.push(enterpriseStatusBar);
 
 
   // 2. Poll local daemon or files for real-time telemetry

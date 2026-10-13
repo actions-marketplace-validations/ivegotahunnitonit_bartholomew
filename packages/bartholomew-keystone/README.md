@@ -7,7 +7,7 @@
 > **Issue deterministic, signed capability passkeys for autonomous AI coding agents in Cursor, Claude Code, Windsurf, and VS Code.**  
 > Restricts file writes, system commands, and financial spend to explicit policy bounds in **under 15 microseconds**.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.3-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.4-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
 [![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Guard-brightgreen)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Vault-0ea5e9)](https://open-vsx.org/extension/Bartholomew/bartholomew-vault)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)

@@ -7,7 +7,7 @@
 > **Sub-millisecond in-process credential, PHI, and PII tokenization with just-in-time OS detokenization for Cursor, Claude Code, Windsurf, Copilot, and VS Code.**  
 > Enables developers and autonomous agents to inspect production databases, logs, and sensitive payloads with zero raw secret exfiltration to cloud LLMs.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.3-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-vault)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.4-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-vault)
 [![Companion](https://img.shields.io/badge/Companion-Bartholomew%20Guard-brightgreen)](https://open-vsx.org/extension/Bartholomew/bartholomew-guard-vscode)
 [![Keystone](https://img.shields.io/badge/Companion-Bartholomew%20Keystone-blue)](https://open-vsx.org/extension/Bartholomew/bartholomew-keystone)
 [![Compliance](https://img.shields.io/badge/Compliance-HIPAA%20%7C%20PCI--DSS%20%7C%20SOC%202-blue?style=flat-square)](https://bartholomew.info)
