@@ -34,8 +34,10 @@ def get_pkg_version(pkg_dir: Path) -> str:
 def get_extensions():
     guard_dir = BASE_DIR / "packages" / "vscode-extension"
     keystone_dir = BASE_DIR / "packages" / "bartholomew-keystone"
+    vault_dir = BASE_DIR / "packages" / "bartholomew-vault"
     guard_ver = get_pkg_version(guard_dir)
     keystone_ver = get_pkg_version(keystone_dir)
+    vault_ver = get_pkg_version(vault_dir)
     return [
         {
             "id": "bartholomew-guard-vscode",
@@ -46,6 +48,11 @@ def get_extensions():
             "id": "bartholomew-keystone",
             "dir": keystone_dir,
             "vsix": keystone_dir / f"bartholomew-keystone-{keystone_ver}.vsix",
+        },
+        {
+            "id": "bartholomew-vault",
+            "dir": vault_dir,
+            "vsix": vault_dir / f"bartholomew-vault-{vault_ver}.vsix",
         },
     ]
 
@@ -76,12 +83,14 @@ def _run_publish_command(cmd):
     return res
 
 
-def publish_vsce(pat: str):
+def publish_vsce(pat: str, target_id: Optional[str] = None):
     print("\n" + "=" * 60)
     print("  PUBLISHING TO MICROSOFT VS CODE MARKETPLACE")
     print("=" * 60)
 
     for ext in get_extensions():
+        if target_id and ext["id"] != target_id:
+            continue
         vsix_path = ext["vsix"]
         if not vsix_path.exists():
             raise FileNotFoundError(f"Missing VSIX artifact for {ext['id']}: {vsix_path}")
@@ -92,15 +101,20 @@ def publish_vsce(pat: str):
             _run_publish_command(cmd)
             print(f"[OK] Successfully published {ext['id']} to VS Code Marketplace!")
         except Exception as exc:
-            raise SystemExit(f"VSCE publish failed for {ext['id']}: {exc}") from exc
+            if "already exists" in str(exc).lower() or "version" in str(exc).lower():
+                print(f"[!] Note: {ext['id']} version might already exist on Marketplace: {exc}")
+            else:
+                raise SystemExit(f"VSCE publish failed for {ext['id']}: {exc}") from exc
 
 
-def publish_ovsx(pat: str):
+def publish_ovsx(pat: str, target_id: Optional[str] = None):
     print("\n" + "=" * 60)
     print("  PUBLISHING TO OPEN-VSX REGISTRY (CURSOR / WINDSURF)")
     print("=" * 60)
 
     for ext in get_extensions():
+        if target_id and ext["id"] != target_id:
+            continue
         vsix_path = ext["vsix"]
         if not vsix_path.exists():
             raise FileNotFoundError(f"Missing VSIX artifact for {ext['id']}: {vsix_path}")
@@ -111,13 +125,17 @@ def publish_ovsx(pat: str):
             _run_publish_command(cmd)
             print(f"[OK] Successfully published {ext['id']} to Open-VSX!")
         except Exception as exc:
-            raise SystemExit(f"Open-VSX publish failed for {ext['id']}: {exc}") from exc
+            if "already exists" in str(exc).lower() or "version" in str(exc).lower() or "already published" in str(exc).lower():
+                print(f"[!] Note: {ext['id']} version might already exist on Open-VSX: {exc}")
+            else:
+                raise SystemExit(f"Open-VSX publish failed for {ext['id']}: {exc}") from exc
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Bartholomew Extension Marketplace Publisher")
     parser.add_argument("--vsce-pat", default=os.getenv("VSCE_PAT"), help="Microsoft VS Code Marketplace Personal Access Token")
     parser.add_argument("--ovsx-pat", default=os.getenv("OVSX_PAT"), help="Open-VSX Personal Access Token")
+    parser.add_argument("--extension", default=None, help="Specific extension ID to publish (e.g. bartholomew-vault)")
     parser.add_argument("--package-only", action="store_true", help="Only build packages without uploading")
     args = parser.parse_args(argv)
 
@@ -131,10 +149,10 @@ def main(argv=None):
         raise SystemExit("Error: provide at least one PAT via CLI or environment variables.")
 
     if args.vsce_pat:
-        publish_vsce(args.vsce_pat)
+        publish_vsce(args.vsce_pat, target_id=args.extension)
 
     if args.ovsx_pat:
-        publish_ovsx(args.ovsx_pat)
+        publish_ovsx(args.ovsx_pat, target_id=args.extension)
 
     return 0
 

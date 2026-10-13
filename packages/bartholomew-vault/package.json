@@ -1,0 +1,128 @@
+{
+  "name": "bartholomew-vault",
+  "displayName": "Bartholomew Vault - In-Process Data & PII Tokenizer",
+  "description": "BTP v6.5.3 Sub-millisecond in-process data, credential, and PII tokenization vault for AI coding assistants (Cursor, Claude Code, Windsurf, Copilot, VS Code). Prevents sensitive customer data and secrets from leaking to cloud LLMs with just-in-time local test detokenization.",
+  "version": "6.5.3",
+  "publisher": "bartholomew",
+  "icon": "icon.png",
+  "license": "Apache-2.0",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "categories": [
+    "Other",
+    "Linters",
+    "Machine Learning"
+  ],
+  "keywords": [
+    "ai",
+    "tokenization",
+    "pii",
+    "hipaa",
+    "pci-dss",
+    "security",
+    "cursor",
+    "claude",
+    "claude-code",
+    "copilot",
+    "windsurf",
+    "redaction",
+    "vault",
+    "mcp",
+    "guardrails",
+    "zero-trust"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "vault.tokenizeSelection",
+        "title": "Vault: Tokenize Selected Text / PII (In-Process)",
+        "icon": "$(lock)"
+      },
+      {
+        "command": "vault.detokenizeSelection",
+        "title": "Vault: Detokenize Selection (Authorized View)",
+        "icon": "$(unlock)"
+      },
+      {
+        "command": "vault.inspectVault",
+        "title": "Vault: Inspect Active In-Memory Token Mappings",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "vault.clearVault",
+        "title": "Vault: Flush In-Memory Surrogates",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "vault.exportComplianceReport",
+        "title": "Vault: Export Drata / Vanta HIPAA & SOC 2 Proof Dossier",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "vault.testDispatch",
+        "title": "Vault: Test Just-In-Time Detokenized OS Execution",
+        "icon": "$(play)"
+      }
+    ],
+    "configuration": {
+      "title": "Bartholomew Vault",
+      "properties": {
+        "vault.autoTokenizeMCP": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically tokenize sensitive records in MCP tool responses."
+        },
+        "vault.formatPreserving": {
+          "type": "boolean",
+          "default": true,
+          "description": "Maintain format-preserving pseudonyms (emails look like emails, SSNs look like SSNs)."
+        },
+        "vault.enforceJITDetokenize": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detokenize in-memory only during local process execution."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node ../vscode-extension/node_modules/typescript/bin/tsc -p ./",
+    "build": "node ../vscode-extension/node_modules/typescript/bin/tsc -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "typescript": "^5.3.0"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivegotahunnitonit/bartholomew.git",
+    "directory": "packages/bartholomew-vault"
+  },
+  "galleryBanner": {
+    "color": "#070b14",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/Latency-Sub--35%C2%B5s-brightgreen",
+      "href": "https://bartholomew.info",
+      "description": "Sub-35us In-Process Vaulting"
+    },
+    {
+      "url": "https://img.shields.io/badge/Compliance-HIPAA%20%7C%20PCI--DSS-blue",
+      "href": "https://bartholomew.info",
+      "description": "Regulatory Conformance"
+    },
+    {
+      "url": "https://img.shields.io/badge/Detokenization-Just--In--Time%20OS-blueviolet",
+      "href": "https://bartholomew.info",
+      "description": "Round-Trip Process Binding"
+    }
+  ]
+}

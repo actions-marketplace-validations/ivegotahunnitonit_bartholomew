@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="vBgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#030712"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="vCardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c192c" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#050d1a" stop-opacity="0.95"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="emeraldGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="520" fill="url(#vBgGrad)" rx="12"/>
+  <rect width="898" height="518" x="1" y="1" fill="none" stroke="#1e293b" stroke-width="1.5" rx="11"/>
+
+  <!-- Top Bar -->
+  <g transform="translate(24, 24)">
+    <circle cx="20" cy="20" r="16" fill="url(#cyanGlow)"/>
+    <!-- Vault Lock Icon -->
+    <path d="M 15 17 L 15 14 C 15 11.2 17.2 9 20 9 C 22.8 9 25 11.2 25 14 L 25 17 M 13 17 L 27 17 C 28.1 17 29 17.9 29 19 L 29 27 C 29 28.1 28.1 29 27 29 L 13 29 C 11.9 29 11 28.1 11 27 L 11 19 C 11 17.9 11.9 17 13 17 Z M 20 21 L 20 25" fill="none" stroke="#040914" stroke-width="2.2" stroke-linecap="round"/>
+    <text x="50" y="20" fill="#f8fafc" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto" font-size="16" font-weight="700">BARTHOLOMEW VAULT</text>
+    <text x="50" y="38" fill="#94a3b8" font-family="Consolas, monospace" font-size="11">IN-PROCESS PII &amp; CREDENTIAL TOKENIZER // ZERO-LATENCY JIT OS DETOKENIZATION</text>
+
+    <!-- Armed Status Pill -->
+    <rect x="650" y="8" width="200" height="28" rx="14" fill="#082f49" stroke="#38bdf8" stroke-width="1"/>
+    <circle cx="666" cy="22" r="4" fill="#38bdf8"/>
+    <text x="678" y="26" fill="#38bdf8" font-family="Consolas, monospace" font-size="11" font-weight="700">[VAULT: ARMED &amp; SEALED]</text>
+  </g>
+
+  <!-- Metric Overview Cards -->
+  <g transform="translate(24, 86)">
+    <!-- Active Vault Surrogates -->
+    <rect width="202" height="88" rx="8" fill="url(#vCardGrad)" stroke="#1e293b"/>
+    <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">ACTIVE SURROGATES</text>
+    <text x="16" y="58" fill="#38bdf8" font-family="Consolas, monospace" font-size="20" font-weight="700">8 TOKENS</text>
+    <text x="16" y="76" fill="#34d399" font-family="Consolas, monospace" font-size="10">Format-Preserving Active</text>
+
+    <!-- In-Process Latency -->
+    <g transform="translate(216, 0)">
+      <rect width="202" height="88" rx="8" fill="url(#vCardGrad)" stroke="#1e293b"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">IN-PROCESS LATENCY</text>
+      <text x="16" y="58" fill="#a7f3d0" font-family="Consolas, monospace" font-size="20" font-weight="700">18.4 &micro;s</text>
+      <text x="16" y="76" fill="#64748b" font-family="Consolas, monospace" font-size="10">Zero cloud API roundtrips</text>
+    </g>
+
+    <!-- JIT OS Dispatches -->
+    <g transform="translate(432, 0)">
+      <rect width="202" height="88" rx="8" fill="url(#vCardGrad)" stroke="#1e293b"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">JIT TEST DISPATCHES</text>
+      <text x="16" y="58" fill="#c084fc" font-family="Consolas, monospace" font-size="20" font-weight="700">14 EXECS</text>
+      <text x="16" y="76" fill="#64748b" font-family="Consolas, monospace" font-size="10">Kernel RAM unmasking</text>
+    </g>
+
+    <!-- Compliance Dossier -->
+    <g transform="translate(648, 0)">
+      <rect width="204" height="88" rx="8" fill="url(#vCardGrad)" stroke="#1e293b"/>
+      <text x="16" y="24" fill="#64748b" font-family="Consolas, monospace" font-size="10" font-weight="700">COMPLIANCE ATTESTATION</text>
+      <text x="16" y="58" fill="#34d399" font-family="Consolas, monospace" font-size="18" font-weight="700">SOC 2 / HIPAA</text>
+      <text x="16" y="76" fill="#38bdf8" font-family="Consolas, monospace" font-size="10">RFC 8785 Ed25519 Sealed</text>
+    </g>
+  </g>
+
+  <!-- Live Tokenization Inspection Terminal Window -->
+  <g transform="translate(24, 196)">
+    <rect width="852" height="296" rx="8" fill="#040812" stroke="#1e293b"/>
+
+    <!-- Terminal Header Bar -->
+    <rect width="852" height="34" rx="8" fill="#091222"/>
+    <circle cx="20" cy="17" r="5" fill="#f43f5e" opacity="0.8"/>
+    <circle cx="36" cy="17" r="5" fill="#f59e0b" opacity="0.8"/>
+    <circle cx="52" cy="17" r="5" fill="#10b981" opacity="0.8"/>
+    <text x="75" y="22" fill="#64748b" font-family="Consolas, monospace" font-size="11">IN-PROCESS VAULT ENGINE &bull; REAL-TIME REDACTION &amp; JIT TEST RUNNER</text>
+    <text x="710" y="22" fill="#38bdf8" font-family="Consolas, monospace" font-size="10">[FEED: ACTIVE]</text>
+
+    <!-- Code Block 1: Outbound to Cloud LLM -->
+    <g transform="translate(20, 52)">
+      <text x="0" y="0" fill="#94a3b8" font-family="Consolas, monospace" font-size="11" font-weight="700">[OUTBOUND PROMPT TO CLOUD LLM (CURSOR / CLAUDE / COPILOT)]</text>
+      <rect y="10" width="812" height="66" rx="6" fill="#060c18" stroke="#1e293b"/>
+      <text x="16" y="34" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">const client = new HealthCorpClient({</text>
+      <text x="16" y="52" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">  apiKey: <tspan fill="#38bdf8">"sk-proj-BTP_VAULT_AD9D1CEB"</tspan>, patientEmail: <tspan fill="#38bdf8">"anon-2fbdb8fa@btp-vault.internal"</tspan>, ssn: <tspan fill="#38bdf8">"999-01-BTP9"</tspan></text>
+      <text x="16" y="68" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">});</text>
+      <text x="610" y="34" fill="#34d399" font-family="Consolas, monospace" font-size="10">[RAW SECRETS / PII: 0% EXPOSED]</text>
+    </g>
+
+    <!-- Divider Arrow -->
+    <g transform="translate(426, 148)">
+      <circle cx="0" cy="0" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5"/>
+      <path d="M -4 -4 L 0 0 L 4 -4 M 0 -4 L 0 4" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- Code Block 2: In-Process Local Execution / CLI -->
+    <g transform="translate(20, 180)">
+      <text x="0" y="0" fill="#94a3b8" font-family="Consolas, monospace" font-size="11" font-weight="700">[LOCAL EXECUTION &amp; CLI DETOKENIZATION (SUB-PROCESS / TEST DISPATCH)]</text>
+      <rect y="10" width="812" height="72" rx="6" fill="#060c18" stroke="#1e293b"/>
+      <text x="16" y="34" fill="#cbd5e1" font-family="Consolas, monospace" font-size="11">$ npm test -- test/integration_triage.spec.ts</text>
+      <text x="16" y="52" fill="#34d399" font-family="Consolas, monospace" font-size="11">[JIT RESTORE] Decrypted 3 surrogates in child process kernel memory (0.04ms)</text>
+      <text x="16" y="70" fill="#64748b" font-family="Consolas, monospace" font-size="11">PASS test/integration_triage.spec.ts (100% assertions succeeded, zero live keys sent to LLM)</text>
+    </g>
+  </g>
+</svg>
