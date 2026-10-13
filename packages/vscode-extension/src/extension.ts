@@ -531,7 +531,7 @@ rules:
     // 6. Update status bar & refresh webview
     statusBarItem.text = `$(shield-check) Bartholomew: ARMED`;
     statusBarItem.color = '#34d399';
-    statusBarItem.tooltip = `Bartholomew Guard (v6.4.4) — Workspace Linked & Armed (Fail-Closed AST Invariants + Keystone Passkey)`;
+    statusBarItem.tooltip = `Bartholomew Guard (v6.5.3) — Workspace Linked & Armed (Fail-Closed AST Invariants + Keystone Passkey)`;
     proofProvider.refresh();
 
     vscode.window.showInformationMessage(
@@ -574,7 +574,7 @@ rules:
 
     statusBarItem.text = `$(shield-slash) Bartholomew: DISARMED`;
     statusBarItem.color = '#f43f5e';
-    statusBarItem.tooltip = `Bartholomew Guard (v6.4.4) — Workspace DISARMED. Deterministic AST invariants are in temporary bypass mode. Click to Re-Arm.`;
+    statusBarItem.tooltip = `Bartholomew Guard (v6.5.3) — Workspace DISARMED. Deterministic AST invariants are in temporary bypass mode. Click to Re-Arm.`;
     proofProvider.refresh();
 
     vscode.window.showWarningMessage(
@@ -733,7 +733,7 @@ rules:
     if (isDisarmed) {
       statusBarItem.text = `$(shield-slash) Bartholomew: DISARMED`;
       statusBarItem.color = '#f43f5e';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.4) — Workspace DISARMED. Click for Security Menu to Re-Arm.`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.5.3) — Workspace DISARMED. Click for Security Menu to Re-Arm.`;
       return;
     }
     const hasPolicy = fs.existsSync(path.join(btpDir, 'policy.yaml')) || fs.existsSync(path.join(rootPath, 'policy.yaml'));
@@ -741,15 +741,15 @@ rules:
     if (hasPolicy && hasPasskey) {
       statusBarItem.text = `$(shield-check) Bartholomew: ARMED`;
       statusBarItem.color = '#34d399';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.4) — ARMED (Fail-Closed AST Invariants + Keystone Passkey)`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.5.3) — ARMED (Fail-Closed AST Invariants + Keystone Passkey)`;
     } else if (hasPolicy || hasPasskey) {
       statusBarItem.text = `$(shield) Bartholomew: PARTIAL`;
       statusBarItem.color = '#fbbf24';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.4) — Partially Armed. Click to fully Link & Arm.`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.5.3) — Partially Armed. Click to fully Link & Arm.`;
     } else {
       statusBarItem.text = `$(shield) Bartholomew: Standby`;
       statusBarItem.color = '#94a3b8';
-      statusBarItem.tooltip = `Bartholomew Guard (v6.4.4) — Workspace Not Armed. Click to Link & Arm.`;
+      statusBarItem.tooltip = `Bartholomew Guard (v6.5.3) — Workspace Not Armed. Click to Link & Arm.`;
     }
   }
 
@@ -775,9 +775,12 @@ rules:
       { label: '$(verified) Immunize Workspace (1-Click)', description: 'Arm .cursorrules, .windsurfrules, and CLAUDE.md', action: 'bartholomew.protectWorkspace' },
       { label: '$(file-code) Export SOC 2 & EU AI Act Dossier', description: 'Generate machine-signed audit dossier with Merkle proofs', action: 'bartholomew.exportAuditDossier' },
       { label: '$(key) Issue Keystone Capability Passkey', description: 'Generate Ed25519 passkey with $25 daily autonomous spend limit', action: 'bartholomew.issueKeystonePasskey' },
+      { label: '$(lock) Vault: Tokenize Selected Text / PII', description: 'Convert live credentials & PHI to format-preserving surrogates', action: 'vault.tokenizeSelection' },
+      { label: '$(unlock) Vault: Detokenize Selection (Authorized View)', description: 'Restore live values in active document buffer', action: 'vault.detokenizeSelection' },
+      { label: '$(file-submodule) Vault: Export Drata / Vanta Proof Dossier', description: '1-Click verifiable JSON proof of zero PII transmission', action: 'vault.exportComplianceReport' },
       { label: '$(clippy) Copy Agent Context Rules', description: 'Copy system prompts for Cursor, Windsurf, Claude Code, Gemini', action: 'bartholomew.copyModelContext' }
     ];
-    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.4.4)' });
+    const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.5.3)' });
     if (picked && picked.action) {
       vscode.commands.executeCommand(picked.action);
     }

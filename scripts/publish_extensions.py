@@ -126,7 +126,7 @@ def publish_ovsx(pat: str, target_id: Optional[str] = None):
             print(f"[OK] Successfully published {ext['id']} to Open-VSX!")
         except Exception as exc:
             if "already exists" in str(exc).lower() or "version" in str(exc).lower() or "already published" in str(exc).lower():
-                print(f"[!] Note: {ext['id']} version might already exist on Open-VSX: {exc}")
+                print(f"[!] Note: {ext['id']} is already published on Open-VSX.")
             else:
                 raise SystemExit(f"Open-VSX publish failed for {ext['id']}: {exc}") from exc
 
