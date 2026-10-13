@@ -64,11 +64,21 @@
         "command": "vault.testDispatch",
         "title": "Vault: Test Just-In-Time Detokenized OS Execution",
         "icon": "$(play)"
+      },
+      {
+        "command": "vault.tokenizeClipboard",
+        "title": "Vault: Tokenize Clipboard Content (Sanitize Secrets & PII)",
+        "icon": "$(clippy)"
       }
     ],
     "configuration": {
       "title": "Bartholomew Vault",
       "properties": {
+        "vault.enableClipboardSentinel": {
+          "type": "boolean",
+          "default": true,
+          "description": "Proactive Clipboard Sentinel: scans clipboard for unvaulted credentials and suggests 1-click tokenization before prompt dispatch."
+        },
         "vault.autoTokenizeMCP": {
           "type": "boolean",
           "default": true,

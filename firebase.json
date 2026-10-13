@@ -35,6 +35,10 @@
       {
         "source": "/cloud",
         "destination": "/control-plane.html"
+      },
+      {
+        "source": "/sim",
+        "destination": "/sim-lab.html"
       }
     ]
   }
