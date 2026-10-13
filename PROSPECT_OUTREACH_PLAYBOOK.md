@@ -54,38 +54,38 @@ When a prospect responds, do not pitch features. Ask these 6 questions to identi
 
 ## 3. The 30-Prospect Outreach Tracker
 
-| # | Company Name | Contact Name | Title | Tooling Used | Date Contacted | Status | Primary Objection / Feedback | Next Action |
-| :- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | Target 1 | | VP Engineering | Cursor + Postgres | | Pending | | |
-| 2 | Target 2 | | Head of Platform | Claude Code + AWS | | Pending | | |
-| 3 | Target 3 | | Product Security | MCP Tools | | Pending | | |
-| 4 | Target 4 | | CTO | Windsurf | | Pending | | |
-| 5 | Target 5 | | Staff SecEng | Cursor | | Pending | | |
-| 6 | Target 6 | | VP Engineering | Agent Swarms | | Pending | | |
-| 7 | Target 7 | | Head of Platform | Custom MCP | | Pending | | |
-| 8 | Target 8 | | CTO | LangGraph | | Pending | | |
-| 9 | Target 9 | | Product Security | Cursor | | Pending | | |
-| 10| Target 10 | | VP Engineering | Claude Code | | Pending | | |
-| 11| Target 11 | | CTO | Custom Agents | | Pending | | |
-| 12| Target 12 | | Head of Platform | Cursor + DB | | Pending | | |
-| 13| Target 13 | | Sec Lead | MCP Stdio | | Pending | | |
-| 14| Target 14 | | VP Engineering | Windsurf | | Pending | | |
-| 15| Target 15 | | CTO | Cursor | | Pending | | |
-| 16| Target 16 | | Head of Platform | Dev Tools | | Pending | | |
-| 17| Target 17 | | Product Security | AI Agents | | Pending | | |
-| 18| Target 18 | | VP Engineering | Claude Code | | Pending | | |
-| 19| Target 19 | | CTO | AutoGen / Crew | | Pending | | |
-| 20| Target 20 | | Head of Sec | Cursor | | Pending | | |
-| 21| Target 21 | | VP Engineering | MCP Tools | | Pending | | |
-| 22| Target 22 | | CTO | Windsurf | | Pending | | |
-| 23| Target 23 | | Platform Lead | Staging DBs | | Pending | | |
-| 24| Target 24 | | VP Engineering | Cursor | | Pending | | |
-| 25| Target 25 | | Product Security | Claude Code | | Pending | | |
-| 26| Target 26 | | CTO | Internal Agents | | Pending | | |
-| 27| Target 27 | | Head of Platform | AI Infra | | Pending | | |
-| 28| Target 28 | | Sec Lead | Dev Environment | | Pending | | |
-| 29| Target 29 | | VP Engineering | Cursor | | Pending | | |
-| 30| Target 30 | | CTO | Full Agent Stack | | Pending | | |
+| # | Company Name | Contact Title | Stack / Surface | Attack Vector & Exposure | Outreach Hook | Status |
+| :- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | **E2B** | Head of Platform / Security | Agent sandboxes, MCP stdio runtimes | Agent sandbox escape, credential persistence across sessions | In-process AST gating and capability passkeys inside E2B agent micro-VMs | Target |
+| 2 | **PostHog** | VP Engineering / Infra Lead | Cursor, Claude Code, ClickHouse, Postgres | Agent writing un-scoped SQL or altering schemas via developer IDEs | Hard AST blocking of `DROP TABLE` / destructive queries in local MCP proxy | Target |
+| 3 | **Modal Labs** | Head of Security / Staff SecEng | Serverless Python, Agent tool execution | Untrusted agent payloads attempting egress or environment variable dumping | Sub-35µs zero-latency secret tokenization before process execution | Target |
+| 4 | **Braintrust** | CTO / Head of Security | LLM Proxy, Agent evals, MCP connectors | Prompt injection breaking through system prompts to trigger privileged tools | Cryptographic Keystone passkeys with SQLite replay prevention | Target |
+| 5 | **Supabase** | Head of Platform / DB Security | Official Supabase MCP server, Postgres | Agent connecting via MCP executing destructive DDL (`DROP/TRUNCATE`) | Direct MCP proxy guard on Supabase MCP server stdio channel | Target |
+| 6 | **Neon** | VP Engineering / Product Security | Neon MCP Server, Serverless Postgres | Agent branch mutations or data exfiltration across development databases | In-process capabilities gating write operations without cloud latency | Target |
+| 7 | **Warp** | Head of Security / VP Engineering | Agentic terminal, autonomous shell execution | Destructive shell command injection (`rm -rf`, piped curls, credential exfiltration) | Kernel/in-process AST gating of shell command execution | Target |
+| 8 | **CrewAI** | CTO / Head of Engineering | Multi-agent swarms, autonomous tool dispatch | Cascading tool hallucination and unauthorized file system writes | Scoped capability passkeys passed to subagents with auto-expiration | Target |
+| 9 | **LangChain** | Head of Platform / Security | LangGraph, LangSmith, MCP integrations | Autonomous agent executing privileged database or API mutations | Zero-egress AST boundary wrapping standard MCP client stdio | Target |
+| 10| **Mintlify** | CTO / VP Engineering | AI documentation agents, GitHub sync bots | Automated PR bots writing unsanitized scripts or leaking workspace secrets | In-process secret masking and integrity attestation on repo edits | Target |
+| 11| Replit | Head of Security / Agent Infra | Agent workspaces, cloud containers | Agent privilege escalation in multi-tenant dev environments | Container sandbox AST supervisor | Pending |
+| 12| Cognition (Devin) | Head of Platform / Security | Full-stack autonomous software agents | Devin executing unauthorized git force pushes or external network curls | Single-use Keystone passkeys for privileged tool dispatch | Pending |
+| 13| Poolside | VP Engineering / SecEng | Local code generation models, internal IDE | Model hallucinations executing destructive system modifications | In-process tokenizer and POSIX AST blocker | Pending |
+| 14| Augment Code | Head of Security / Platform Lead | Enterprise code assistant, codebase indexing | Enterprise source code exfiltration or unsanitized AST evaluation | In-memory zero-egress secret tokenization | Pending |
+| 15| Sourcegraph (Cody) | VP Engineering / Head of Security | Cody agent, enterprise repo context | Cross-repo data leakage and arbitrary MCP tool invocation | Hard MCP stdio interceptor with capabilities manifest | Pending |
+| 16| Continue.dev | Lead Architect / Security Lead | Open source VS Code / JetBrains agent | Local LLM calling unverified CLI tools in developer terminal | Local BTP daemon checking AST in <35 microseconds | Pending |
+| 17| Cursor (Anysphere) | Head of Security / Platform | Cursor Composer, MCP server integration | Composer executing destructive commands during long generation loops | In-process proxy blocking schema drops & shell escapes | Pending |
+| 18| Factory.ai | CTO / VP Engineering | Autonomous Droids, SDLC automation | Autonomous PR droids deploying vulnerable or malicious code changes | Merkle-signed tamper-evident audit receipts for agent runs | Pending |
+| 19| Magic.dev | Head of Platform / SecOps | Ultra-long context coding models, agent VMs | Unconstrained tool invocations during multi-file refactoring | Capabilities matrix with atomic budget controls | Pending |
+| 20| Decagon | VP Engineering / Head of Trust | Enterprise customer service agents, live DBs | Agent executing unauthorized CRM/DB mutations under adversarial input | Deterministic schema and action gating before database driver | Pending |
+| 21| Sierra | Head of Platform / Staff SecEng | Conversational enterprise agents, API tools | Agent hallucinating API parameter values with administrative privileges | Schema parameter validation with cryptographic attestation | Pending |
+| 22| Resend | VP Engineering / Infra | AI email agents, API key infrastructure | Leakage of customer API keys through agent terminal contexts | In-process regex and entropy secret masking | Pending |
+| 23| Vercel | Head of Security / AI SDK Lead | Vercel AI SDK, AI tool calling, Serverless | Edge function tool calls executing unauthorized database queries | Zero-latency in-process proxy for AI SDK tool execution | Pending |
+| 24| Prisma | VP Engineering / Platform | Prisma ORM, Accelerate, Pulse, AI tools | AI agent modifying schema.prisma or running destructive migrations | AST gating of DDL statements (`DROP`, `ALTER`, `TRUNCATE`) | Pending |
+| 25| Drizzle | Lead Maintainer / SecOps | Drizzle ORM, Turso / libSQL MCP | Agent executing unbounded raw SQL queries | AST evaluation of SQL queries before libSQL execution | Pending |
+| 26| PlanetScale | VP Engineering / DB Platform | Branching MySQL, AI DB tooling | Accidental schema drops across non-branch development targets | Single-use passkey verification for schema mutation tools | Pending |
+| 27| Inngest | CTO / Head of Platform | Durable execution for AI workflows | Agent workflow step replaying sensitive actions without authorization | Atomic SQLite replay protection preventing passkey reuse | Pending |
+| 28| Temporal | Head of Developer Experience | Workflow orchestration for AI agents | Runaway agent activities spawning uncontrolled child workers | Keystone passkey scoping with depth and count budgets | Pending |
+| 29| Trigger.dev | Founder / Head of Engineering | Background jobs & AI tasks | Long-running background agent leaking environment secrets | Process environment tokenization with zero egress | Pending |
+| 30| Daytona | CTO / Head of Platform | Development environment management | Autonomous agent escaping isolated workspace containers | Host-level AST interceptor for agent command lines | Pending |
 
 ---
 
@@ -97,6 +97,7 @@ When a prospect responds, do not pitch features. Ask these 6 questions to identi
 | **"We don't have budget for this."** | Low perceived urgency. | *"Understood. If you're open to it, we can run our $1,000 3-day assessment to map your high-risk agent vectors before you allocate tooling budget."* |
 | **"Will this slow down our developers?"** | Latency fear. | *"No cloud roundtrip. Bartholomew evaluates in-process in <35 microseconds. Developer workflows see zero perceptible latency."* |
 | **"We can't add another vendor right now."** | Procurement block. | *"The core MCP Shield and demo are open source. We can structure this as an assessment with no ongoing vendor dependency."* |
+| **"We use Docker containers for isolation."** | Sandbox vs tool boundary confusion. | *"Containers stop host escapes, but they don't stop the agent inside the container from dropping your staging database or exfiltrating your database URL. That requires an in-process tool gate."* |
 
 ---
 
@@ -106,3 +107,133 @@ At Day 30, evaluate strictly based on signed commitments and payments:
 - **Strong Signal**: 2 paid engagements ($2,000+ collected) or 1 paid pilot + recurring commitment. Continue and build what they use.
 - **Mixed Signal**: Clear acknowledgment of risk, but procurement or trust is blocked. Consider embedded partnership.
 - **Pivot / Shutdown Signal**: 30 qualified approaches and demonstrations yield zero purchases and zero introductions to budget owners. Stop development and pivot to a new project.
+
+---
+
+## 6. Ready-to-Send Outreach Drafts for Top 5 Targets
+
+### Draft 1: To E2B (Head of Platform / Security)
+```text
+Subject: In-process tool boundary inside E2B agent sandboxes
+
+Hi [Name],
+
+Saw the rapid adoption of E2B for autonomous coding sandboxes.
+
+One pattern we're seeing across teams running agents in sandboxes: while the VM contains host escapes, the agent inside still has unconstrained access to mounted secrets, environment variables, and connected databases.
+
+We built an in-process execution boundary (Bartholomew) that sits on the stdio channel of agent tools. It deterministically blocks destructive commands (DROP TABLE, shell escapes, secret leakage) in under 35 microseconds without leaving the process.
+
+We have a 10-second reproducible demo showing prompt injection bypassing prompt instructions to execute DDL, and our in-process AST gate stopping it cold.
+
+Would this be interesting to test inside your sandbox execution environments?
+
+Best,
+Itsub Alemayehu
+Founder, Bartholomew
+https://github.com/ivegotahunnitonit/bartholomew
+```
+
+### Draft 2: To PostHog (VP of Engineering / Infra Lead)
+```text
+Subject: Guardrailing Cursor / Claude Code database access
+
+Hi [Name],
+
+Love PostHog's transparency around internal AI engineering adoption.
+
+As more engineers give Cursor or Claude Code direct access to local/staging databases and internal APIs, a common concern is accidental schema mutations or unvetted queries when an agent misinterprets a prompt.
+
+We built an open-source MCP stdio proxy (Bartholomew) that enforces an in-process AST boundary. When an agent attempts a DROP TABLE or destructive DDL, it gets blocked in <35µs and generates a cryptographically signed Merkle audit receipt.
+
+No cloud round-trips, no developer latency.
+
+Would you be open to seeing our 10-second live test script?
+
+Best,
+Itsub Alemayehu
+Founder, Bartholomew
+https://github.com/ivegotahunnitonit/bartholomew
+```
+
+### Draft 3: To Modal Labs (Head of Security / Staff SecEng)
+```text
+Subject: Zero-latency secret tokenization for agent tool dispatch
+
+Hi [Name],
+
+Modal's execution speed is best-in-class, especially for AI container dispatch.
+
+When developers run agentic tool execution on Modal, one exposure vector is agents attempting environment variable exfiltration or unauthorized file reads when processing untrusted context.
+
+We developed an in-process execution guard that tokenizes environment variables before process launch with zero outbound network egress, coupled with capability passkeys that reject tool replays via atomic SQLite.
+
+Everything runs in-process in <35 microseconds.
+
+Open to seeing a 10-second CLI demonstration of the boundary in action?
+
+Best,
+Itsub Alemayehu
+Founder, Bartholomew
+https://github.com/ivegotahunnitonit/bartholomew
+```
+
+### Draft 4: To Braintrust (CTO / Head of Product Security)
+```text
+Subject: Enforcing in-process capabilities for agent evaluations
+
+Hi [Name],
+
+Following Braintrust's work on AI evaluation harnesses and LLM proxies.
+
+When evaluating autonomous agents executing live tools (DB queries, bash execution), software teams need deterministic boundaries ensuring an adversarial eval case doesn't execute out-of-scope mutations.
+
+We built Bartholomew Keystone: single-use cryptographic capability passkeys with in-process SQLite replay prevention and AST query gating. If an agent tries to replay an authorized passkey or drop a schema, it is blocked immediately with a signed audit log.
+
+Would love to share our 4-scenario acceptance test if this aligns with your agent evaluation security roadmap.
+
+Best,
+Itsub Alemayehu
+Founder, Bartholomew
+https://github.com/ivegotahunnitonit/bartholomew
+```
+
+### Draft 5: To Supabase (Head of Platform / DB Security)
+```text
+Subject: Hard boundary on the Supabase MCP Server
+
+Hi [Name],
+
+The new Supabase MCP server is a huge unlock for Cursor and Claude Code users.
+
+However, giving coding agents direct stdio access to Postgres creates immediate risk: prompt injection or hallucinated migrations can fire DROP TABLE or TRUNCATE on connected databases.
+
+We built an open-process MCP shield (`packages/bartholomew-vault/bin/mcp-shield.js`) that wraps standard MCP server stdio streams. It parses SQL AST in-process in <35 microseconds, permitting legitimate queries while deterministically rejecting destructive DDL.
+
+We put together an open-source demo script running all 4 validation checks locally.
+
+Happy to send over the GitHub link or run through a 2-minute demo if relevant.
+
+Best,
+Itsub Alemayehu
+Founder, Bartholomew
+https://github.com/ivegotahunnitonit/bartholomew
+```
+
+---
+
+## 7. 3-Minute Live Demo Cheat Sheet (For Screening Calls)
+
+When a prospect agrees to a brief Zoom/Huddle or asks for proof:
+
+1. **Minute 1: The Context (Terminal Open)**
+   - *"When you give Cursor or Claude Code an MCP tool or database connection, system prompts like 'don't drop tables' fail under adversarial input or complex multi-turn context."*
+2. **Minute 2: Run the Live Demo Command**
+   - Run: `node examples/demo_mcp_shield_live.js`
+   - Point out the 4 passing scenarios in the terminal output:
+     - Scenario 1: Legitimate query `SELECT * FROM users` -> PERMITTED (<35µs).
+     - Scenario 2: Adversarial query `DROP TABLE users` -> BLOCKED (<35µs AST intercept).
+     - Scenario 3: Unauthorized replay attack with same passkey -> REJECTED (atomic SQLite replay guard).
+     - Scenario 4: Credential injection test -> TOKENIZED (zero egress).
+3. **Minute 3: The Offer & Close**
+   - *"We deliver this as a 3-day fixed-scope boundary assessment for $1,000 where we map all agent tool vectors in your repos and generate a cryptographic audit report, or a 14-day implementation pilot for $3,500 that wraps your staging MCP servers with zero developer latency. Which of those addresses your current risk faster?"*
