@@ -29,7 +29,7 @@ We built an in-process execution boundary (Bartholomew) that deterministically s
 
 Are you currently relying on system prompts to stop agents from executing destructive commands, or do you have an in-process gate between the agent and your databases/APIs?
 
-Happy to share our 10-second open-source demo script if this is on your security radar.
+Happy to share our 10-second open-source demo command if this is on your security radar.
 
 Best,
 Itsub Alemayehu
@@ -56,7 +56,7 @@ When a prospect responds, do not pitch features. Ask these 6 questions to identi
 
 | # | Company Name | Contact Title | Stack / Surface | Attack Vector & Exposure | Outreach Hook | Status |
 | :- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | **E2B** | Head of Platform / Security | Agent sandboxes, MCP stdio runtimes | Agent sandbox escape, credential persistence across sessions | In-process AST gating and capability passkeys inside E2B agent micro-VMs | Target |
+| 1 | **E2B** | Head of Platform / Security | Agent sandboxes, MCP stdio | Sandbox breakout, credential persistence across sessions | In-process AST gating and capability passkeys inside E2B agent micro-VMs | Target |
 | 2 | **PostHog** | VP Engineering / Infra Lead | Cursor, Claude Code, ClickHouse, Postgres | Agent writing un-scoped SQL or altering schemas via developer IDEs | Hard AST blocking of `DROP TABLE` / destructive queries in local MCP proxy | Target |
 | 3 | **Modal Labs** | Head of Security / Staff SecEng | Serverless Python, Agent tool execution | Untrusted agent payloads attempting egress or environment variable dumping | Sub-35µs zero-latency secret tokenization before process execution | Target |
 | 4 | **Braintrust** | CTO / Head of Security | LLM Proxy, Agent evals, MCP connectors | Prompt injection breaking through system prompts to trigger privileged tools | Cryptographic Keystone passkeys with SQLite replay prevention | Target |
@@ -93,7 +93,7 @@ When a prospect responds, do not pitch features. Ask these 6 questions to identi
 
 | Prospect Objection | Root Cause | Tactical Response |
 | :--- | :--- | :--- |
-| **"System prompts are enough to stop the agent."** | False sense of security. | *"Run our 10-second demo (`node examples/demo_mcp_shield_live.js`). We show prompt injection bypassing system prompts to drop tables, while our AST gate stops it in <35µs."* |
+| **"System prompts are enough to stop the agent."** | False sense of security. | *"Run our 10-second demo (`npx @bartholomew/mcp-shield demo`). We show prompt injection bypassing system prompts to drop tables, while our AST gate stops it in <35µs."* |
 | **"We don't have budget for this."** | Low perceived urgency. | *"Understood. If you're open to it, we can run our $1,000 3-day assessment to map your high-risk agent vectors before you allocate tooling budget."* |
 | **"Will this slow down our developers?"** | Latency fear. | *"No cloud roundtrip. Bartholomew evaluates in-process in <35 microseconds. Developer workflows see zero perceptible latency."* |
 | **"We can't add another vendor right now."** | Procurement block. | *"The core MCP Shield and demo are open source. We can structure this as an assessment with no ongoing vendor dependency."* |
@@ -124,7 +124,8 @@ One pattern we're seeing across teams running agents in sandboxes: while the VM 
 
 We built an in-process execution boundary (Bartholomew) that sits on the stdio channel of agent tools. It deterministically blocks destructive commands (DROP TABLE, shell escapes, secret leakage) in under 35 microseconds without leaving the process.
 
-We have a 10-second reproducible demo showing prompt injection bypassing prompt instructions to execute DDL, and our in-process AST gate stopping it cold.
+You can verify the 4 core scenarios in 10 seconds right now:
+  npx @bartholomew/mcp-shield demo
 
 Would this be interesting to test inside your sandbox execution environments?
 
@@ -146,7 +147,8 @@ As more engineers give Cursor or Claude Code direct access to local/staging data
 
 We built an open-source MCP stdio proxy (Bartholomew) that enforces an in-process AST boundary. When an agent attempts a DROP TABLE or destructive DDL, it gets blocked in <35µs and generates a cryptographically signed Merkle audit receipt.
 
-No cloud round-trips, no developer latency.
+No cloud round-trips, no developer latency. You can run the live test locally:
+  npx @bartholomew/mcp-shield demo
 
 Would you be open to seeing our 10-second live test script?
 
@@ -168,7 +170,8 @@ When developers run agentic tool execution on Modal, one exposure vector is agen
 
 We developed an in-process execution guard that tokenizes environment variables before process launch with zero outbound network egress, coupled with capability passkeys that reject tool replays via atomic SQLite.
 
-Everything runs in-process in <35 microseconds.
+Everything runs in-process in <35 microseconds:
+  npx @bartholomew/mcp-shield demo
 
 Open to seeing a 10-second CLI demonstration of the boundary in action?
 
@@ -188,7 +191,8 @@ Following Braintrust's work on AI evaluation harnesses and LLM proxies.
 
 When evaluating autonomous agents executing live tools (DB queries, bash execution), software teams need deterministic boundaries ensuring an adversarial eval case doesn't execute out-of-scope mutations.
 
-We built Bartholomew Keystone: single-use cryptographic capability passkeys with in-process SQLite replay prevention and AST query gating. If an agent tries to replay an authorized passkey or drop a schema, it is blocked immediately with a signed audit log.
+We built Bartholomew Keystone: single-use cryptographic capability passkeys with in-process SQLite replay prevention and AST query gating. If an agent tries to replay an authorized passkey or drop a schema, it is blocked immediately with a signed audit log:
+  npx @bartholomew/mcp-shield demo
 
 Would love to share our 4-scenario acceptance test if this aligns with your agent evaluation security roadmap.
 
@@ -208,9 +212,8 @@ The new Supabase MCP server is a huge unlock for Cursor and Claude Code users.
 
 However, giving coding agents direct stdio access to Postgres creates immediate risk: prompt injection or hallucinated migrations can fire DROP TABLE or TRUNCATE on connected databases.
 
-We built an open-process MCP shield (`packages/bartholomew-vault/bin/mcp-shield.js`) that wraps standard MCP server stdio streams. It parses SQL AST in-process in <35 microseconds, permitting legitimate queries while deterministically rejecting destructive DDL.
-
-We put together an open-source demo script running all 4 validation checks locally.
+We built an open-process MCP shield (`packages/bartholomew-vault/bin/mcp-shield.js`) that wraps standard MCP server stdio streams. It parses SQL AST in-process in <35 microseconds, permitting legitimate queries while deterministically rejecting destructive DDL:
+  npx @bartholomew/mcp-shield demo
 
 Happy to send over the GitHub link or run through a 2-minute demo if relevant.
 
@@ -229,7 +232,7 @@ When a prospect agrees to a brief Zoom/Huddle or asks for proof:
 1. **Minute 1: The Context (Terminal Open)**
    - *"When you give Cursor or Claude Code an MCP tool or database connection, system prompts like 'don't drop tables' fail under adversarial input or complex multi-turn context."*
 2. **Minute 2: Run the Live Demo Command**
-   - Run: `node examples/demo_mcp_shield_live.js`
+   - Run: `node packages/bartholomew-vault/bin/mcp-shield.js demo` (or `npx @bartholomew/mcp-shield demo`)
    - Point out the 4 passing scenarios in the terminal output:
      - Scenario 1: Legitimate query `SELECT * FROM users` -> PERMITTED (<35µs).
      - Scenario 2: Adversarial query `DROP TABLE users` -> BLOCKED (<35µs AST intercept).

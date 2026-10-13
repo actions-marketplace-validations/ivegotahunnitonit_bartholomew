@@ -63,15 +63,15 @@ To maintain technical integrity, Bartholomew explicitly defines what is protecte
 
 ## 4. How to Verify in 10 Seconds (Reproducible Demo)
 
-Your engineering team can independently verify the enforcement boundary right now:
+Your engineering team can independently verify the enforcement boundary right now in your terminal:
 
 ```bash
-# Clone the repository
-git clone https://github.com/ivegotahunnitonit/bartholomew.git
-cd bartholomew
+# Option 1: Instant CLI execution
+npx @bartholomew/mcp-shield demo
 
-# Run the self-contained live interception challenge
-node examples/demo_mcp_shield_live.js
+# Option 2: Run directly from local clone
+node packages/bartholomew-vault/bin/mcp-shield.js demo
+# or: node examples/demo_mcp_shield_live.js
 ```
 
 **Expected Result**: All 4 scenarios execute locally in <500ms, proving fail-closed blocking, replay invalidation, and credential tokenization without external cloud dependencies.
@@ -83,4 +83,5 @@ node examples/demo_mcp_shield_live.js
 - **Organization**: Bartholomew Sovereign Trust Authority
 - **Technical Lead**: Itsub Alemayehu
 - **Email**: help@bartholomew.info
-- **Direct Engagement Booking**: https://bartholomew.info/audit
+- **Repository**: https://github.com/ivegotahunnitonit/bartholomew
+- **Live Portal**: https://bartholomew.info
