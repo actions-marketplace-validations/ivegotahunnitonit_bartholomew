@@ -2,12 +2,12 @@
   <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/images/logo.png" width="80" height="80" alt="Bartholomew Logo" />
 </p>
 
-# Bartholomew Trinity - Complete AI Agent Security Suite
+# Trinity — Complete AI Agent Security Suite
 
 > **1-Click installation of the entire Bartholomew runtime security pipeline for Cursor, Claude Code, Windsurf, Copilot, and VS Code.**  
 > Protects filesystems, blocks destructive commands, tokenizes sensitive data, and enforces spend ceilings across autonomous coding agents.
 
-[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.5-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-trinity)
+[![Open VSX](https://img.shields.io/badge/Open%20VSX-v6.5.6-purple?logo=eclipseide)](https://open-vsx.org/extension/Bartholomew/bartholomew-trinity)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-green.svg)](LICENSE.md)
 [![Compliance](https://img.shields.io/badge/Compliance-HIPAA%20%7C%20PCI--DSS%20%7C%20SOC%202-blue)](https://bartholomew.info)
 [![Latency](https://img.shields.io/badge/Latency-Sub--35%C2%B5s%20In--Process-brightgreen)](https://bartholomew.info)

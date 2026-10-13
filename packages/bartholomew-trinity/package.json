@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-trinity",
-  "displayName": "Bartholomew Trinity - Complete AI Agent Security Suite",
-  "description": "BTP v6.5.5 Complete 3-phase developer runtime security suite for Cursor, Claude Code, Windsurf, Copilot, and VS Code. Installs Bartholomew Guard (AST Gate), Bartholomew Keystone (Clearance Passkeys), and Bartholomew Vault (In-Process PII & MCP Shield) in 1 click.",
-  "version": "6.5.5",
+  "displayName": "Trinity — Complete AI Agent Security Suite (Cursor, Claude, Copilot)",
+  "description": "BTP v6.5.6 Complete 3-phase developer runtime security suite for Cursor, Claude Code, Windsurf, Copilot, and VS Code. Installs Bartholomew Guard (AST Gate), Bartholomew Keystone (Clearance Passkeys), and Bartholomew Vault (In-Process PII & MCP Shield) in 1 click.",
+  "version": "6.5.6",
   "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "Apache-2.0",
@@ -46,7 +46,7 @@
   },
   "badges": [
     {
-      "url": "https://img.shields.io/badge/Security-Trinity%20v6.5.5-10b981",
+      "url": "https://img.shields.io/badge/Security-Trinity%20v6.5.6-10b981",
       "href": "https://bartholomew.info",
       "description": "Trinity Security Suite"
     },

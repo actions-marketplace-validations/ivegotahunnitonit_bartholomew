@@ -182,6 +182,6 @@ if __name__ == "__main__":
     pack_package(
         root / "packages" / "bartholomew-trinity",
         "bartholomew-trinity",
-        "Bartholomew Trinity - Complete AI Agent Security Suite (Cursor, Claude, VS Code)",
+        "Trinity — Complete AI Agent Security Suite (Cursor, Claude, Copilot)",
         "Complete 3-phase developer runtime security suite for Cursor, Claude Code, Windsurf, Copilot, and VS Code. Installs Bartholomew Guard, Keystone, and Vault in 1 click.",
     )
