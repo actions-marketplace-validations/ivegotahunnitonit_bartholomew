@@ -322,7 +322,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     </div>
     <div class="slide-footer">
       <div>CONFIDENTIAL · PREPARED FOR DRATA STRATEGIC PARTNERSHIPS</div>
-      <div>OCTOBER 2026 · BTP PROTOCOL v6.5.5</div>
+      <div>OCTOBER 2026 · BTP PROTOCOL v6.5.6 · 100% RECALL · 140K OPS/SEC</div>
     </div>
   </section>
 
@@ -479,6 +479,18 @@ HTML_CONTENT = """<!DOCTYPE html>
             <td>Unique Non-Human Identity & Access Control</td>
             <td>Single-use token tracking with atomic SQLite WAL primary key constraints.</td>
             <td><span class="highlight-pill">Consumed Nonce Database (.db)</span></td>
+          </tr>
+          <tr>
+            <td class="accent-val">SOC 2 CC6.8</td>
+            <td>Malicious Software & Obfuscated Code Defense</td>
+            <td>In-process AST gate with recursive base64 decoding (100% recall on 500 red-team vectors).</td>
+            <td><span class="highlight-pill">100% Red-Team Attestation Dossier</span></td>
+          </tr>
+          <tr>
+            <td class="accent-val">SOC 2 CC8.1</td>
+            <td>Authorized Change Management & Safe Commit</td>
+            <td>RFC 8785 Ed25519 verifiable PR security passports for automated autonomous code generation.</td>
+            <td><span class="highlight-pill">Cryptographic PR Attestation Receipts</span></td>
           </tr>
           <tr>
             <td class="accent-val">HIPAA § 164.312(b)</td>
