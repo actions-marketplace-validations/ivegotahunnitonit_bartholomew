@@ -57,6 +57,12 @@ const DANGEROUS_SHELL_PATTERNS = [
     rule: "BTP-SEC-001",
     alternative: () => "echo '[BTP-SHIELD] Secret file masked. Access variables via process.env.'",
     hint: "Do not dump .env credentials to stdout. Access variables securely via environment context."
+  },
+  {
+    regex: /\b(?:echo|printf)\s+.*\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:sh|bash|zsh|eval)\b|\b(?:bash|sh|zsh)\s+-c\s+["']?\$\(.*?base64\s+(?:-d|--decode).*?\)["']?/i,
+    rule: "BTP-OBF-001",
+    alternative: () => "echo '[BTP-SHIELD] Obfuscated base64 subshell execution blocked.'",
+    hint: "Piping decoded base64 directly into a shell interpreter is prohibited by BTP obfuscation invariants."
   }
 ];
 
@@ -677,6 +683,8 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
         /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/)/i.test(cmd) ||
         /\b(nc|netcat)\s+.*-e\b/i.test(cmd) ||
         /\/dev\/tcp\/\d+/i.test(cmd) ||
+        /\b(?:echo|printf)\s+.*\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:sh|bash|zsh|eval)\b/i.test(cmd) ||
+        /\b(?:bash|sh|zsh)\s+-c\s+["']?\$\(.*?base64\s+(?:-d|--decode).*?\)["']?/i.test(cmd) ||
         /(?:169\.254\.169\.254|metadata\.google\.internal)/i.test(cmd)) {
       const t1 = process.hrtime.bigint();
       return {

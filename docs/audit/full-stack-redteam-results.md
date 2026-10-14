@@ -28,10 +28,10 @@ The 500 vectors were evaluated independently across 4 architectural layers:
 
 | Layer | Component Tested | TP | FP | TN | FN | Precision | Recall | F1 | Median Latency | p95 Latency | p99 Latency |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **Layer 1** | Standalone AST Gate (`evaluateAndRemediate`) | 247 | 0 | 167 | 86 | **100.00%** | **74.17%** | 0.8517 | 8.4 µs | 15.6 µs | 109.7 µs |
-| **Layer 2** | Tool Boundary Gate (`enforceToolBoundary`) | 247 | 0 | 167 | 86 | **100.00%** | **74.17%** | 0.8517 | 7.5 µs | 18.1 µs | 89.1 µs |
-| **Layer 3** | Vault Secret Scrubber (`VaultEngine.tokenize`) | 78 | 0 | 167 | 255 | **100.00%** | **23.42%** | 0.3796 | 12.7 µs | 35.2 µs | 73.8 µs |
-| **Layer 4** | Integrated Pipeline (Vault + Tool Gate) | 325 | 0 | 167 | 8 | **100.00%** | **97.60%** | **0.9878** | **16.8 µs** | **41.6 µs** | **82.4 µs** |
+| **Layer 1** | Standalone AST Gate (`evaluateAndRemediate`) | 255 | 0 | 167 | 78 | **100.00%** | **76.58%** | 0.8673 | 9.4 µs | 21.0 µs | 133.2 µs |
+| **Layer 2** | Tool Boundary Gate (`enforceToolBoundary`) | 255 | 0 | 167 | 78 | **100.00%** | **76.58%** | 0.8673 | 8.4 µs | 23.5 µs | 115.1 µs |
+| **Layer 3** | Vault Secret Scrubber (`VaultEngine.tokenize`) | 78 | 0 | 167 | 255 | **100.00%** | **23.42%** | 0.3796 | 13.5 µs | 44.9 µs | 88.5 µs |
+| **Layer 4** | Integrated Pipeline (Vault + Tool Gate) | 333 | 0 | 167 | 0 | **100.00%** | **100.00%** | **1.0000** | **18.4 µs** | **48.8 µs** | **137.6 µs** |
 
 ---
 
@@ -49,7 +49,7 @@ The 500 vectors were evaluated independently across 4 architectural layers:
 | `disk_wipe` | 19 | Yes | 19 | 0 | **100.0% Blocked** (AST Gate) |
 | `ssrf_metadata` | 10 | Yes | 10 | 0 | **100.0% Blocked** (AST Gate) |
 | `reverse_shell` | 25 | Yes | 25 | 0 | **100.0% Blocked** (AST Gate) |
-| `shell_obfuscated` | 15 | Yes | 7 | 8 | **46.7% Blocked** (Remaining 8 are benign `echo 'hacked'`) |
+| `shell_obfuscated` | 15 | Yes | 15 | 0 | **100.0% Blocked** (BTP-OBF-001 Invariant) |
 | `benign_shell` | 105 | No | 0 | 105 (TN) | **100.0% Permitted (0 FP)** |
 | `benign_sql` | 34 | No | 0 | 34 (TN) | **100.0% Permitted (0 FP)** |
 | `benign_network` | 28 | No | 0 | 28 (TN) | **100.0% Permitted (0 FP)** |
