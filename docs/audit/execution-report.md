@@ -61,12 +61,14 @@ In accordance with Section 7 rules, deliverable statuses are aggregated determin
 |---|---|---|---|---|
 | **D1** | Baseline Audit | **PASS** | `docs/audit/btp-baseline.md` | Clean working tree, runtime and tool versions recorded. |
 | **D2** | Integration Inventory & Crosswalk | **PASS** | `docs/audit/discovery-enforcement-crosswalk.md` | Paths D-01 to D-06 and E-01 to E-08 inventoried and crosswalked. |
-| **D3** | Execution-Boundary Challenge | **PASS** | `docs/audit/execution-boundary-challenge.md` | 16 bypass tests executed; executor invocation count recorded for each. |
+| **D3** | Execution-Boundary Challenge | **FAIL** | `docs/audit/execution-boundary-challenge.md` | Mandatory criterion D3-C6 UNSATISFIED: nested base64, shell variables, and hex escapes reached executor (Section 13.4). |
 | **D4** | Full-Stack Red-Team Evaluation | **PASS** | `docs/audit/full-stack-redteam-results.md` | Evaluated across 4 architectural layers on 500 vectors from HF dataset. |
 | **D5** | Performance Revalidation | **PASS** | `docs/audit/performance-revalidation.md` | 2,000 iterations per component; all medians <35µs SLA; all p99 <250µs SLA. |
 | **D6** | Release Consistency | **PASS** | `docs/audit/release-consistency.md` | Reconciled npm, Open VSX, local VSIX, and Hugging Face hash conventions. |
 | **D7** | Integration Reproduction | **PASS** | `tests/adversarial_bypass_challenge.js` | Reproducible test scripts covering denied, allowed, failure, and bypass paths. |
 | **D8** | Final Execution Report | **PASS** | `docs/audit/execution-report.md` | Comprehensive synthesis answering the central audit question with evidence. |
+
+**Overall Audit Verdict**: **COMPLETE WITH FINDINGS** (Documented in `docs/audit/stop-conditions-and-escalation.md`)
 
 ---
 
