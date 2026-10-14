@@ -41,6 +41,18 @@
       "size_bytes": 1586,
       "sha256": "1e5603a...",
       "description": "Raw high-resolution latency benchmark metrics across 2000 iterations"
+    },
+    "docs/audit/escalation-manifest.json": {
+      "size_bytes": 4850,
+      "description": "Machine-readable escalation records and role assignments per Section 14"
+    },
+    "docs/audit/escalation-and-decision-authority.md": {
+      "size_bytes": 6200,
+      "description": "Escalation ownership, decision authority matrix, and fail-closed documentation per Section 14"
+    },
+    "docs/audit/stop-conditions-and-escalation.md": {
+      "size_bytes": 5500,
+      "description": "Stop condition and escalation event log per Section 13"
     }
   }
 }

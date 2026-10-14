@@ -174,9 +174,21 @@ Benchmarked via `tests/benchmark_complete_path.js` across 2,000 iterations per c
 3. **Defense-in-Depth Container Recommendation**:
    - Explicitly document in deployment architecture that in-process AST gating must be supplemented with OS-level sandboxing (e.g., Docker, seccomp, gVisor) to protect against uninstrumented raw subprocess spawning and raw disk writes.
 
+## 9. Escalation Ownership & Governance (Section 14 Compliance)
+
+In accordance with Section 14 rules, default provisional assignments and unassigned human roles are documented as follows:
+- **Audit Lead**: Autonomous Security Validation Agent (`PROVISIONAL_OPERATOR`).
+- **Evidence Custodian**: Autonomous Security Validation Agent (`PROVISIONAL_OPERATOR`).
+- **Security Decision Owner**: **`UNASSIGNED`** (Authorized human reviewer required for risk acceptance and post-stop resumption).
+- **Release Owner**: **`UNASSIGNED`** (Authorized human authority required for external release publication).
+- **Implementation Owner**: **`UNASSIGNED`** (Engineering team responsible for patching defects).
+
+**Fail-Closed Governance Invariant**:
+The autonomous agent is not a human authority and cannot waive security-critical stop conditions, approve mandatory exclusions, or accept residual risk. Four formal escalation records are tracked in [`docs/audit/escalation-manifest.json`](file:///c:/Users/User/.gemini/antigravity/scratch/autonomous-circularity-network/docs/audit/escalation-manifest.json), with ESC-BTP-20261014-001 (SEV-1 obfuscation bypass) remaining **OPEN** pending authorized human review.
+
 ---
 
-## 9. Reproducibility Instructions
+## 10. Reproducibility Instructions
 
 To reproduce all findings independently on a clean environment:
 

@@ -1,0 +1,169 @@
+{
+  "audit_protocol": "Bartholomew Trust Protocol (BTP)",
+  "protocol_version": "6.5.6",
+  "baseline_commit": "5467fb65b26045f2f323da433df414ae125566a7",
+  "generated_at": "2026-10-14T06:20:00Z",
+  "ownership_roles": {
+    "audit_lead": {
+      "assigned": true,
+      "name": "Autonomous Security Validation Agent",
+      "type": "PROVISIONAL_OPERATOR",
+      "authority": "Coordinate audit scope, execute authorized tests, preserve evidence, calculate metrics, author findings"
+    },
+    "evidence_custodian": {
+      "assigned": true,
+      "name": "Autonomous Security Validation Agent",
+      "type": "PROVISIONAL_OPERATOR",
+      "authority": "Generate cryptographic hashes, maintain audit evidence directory, record execution traces"
+    },
+    "security_decision_owner": {
+      "assigned": false,
+      "name": "UNASSIGNED",
+      "type": "AUTHORIZED_HUMAN_REVIEWER",
+      "authority": "Accept security risk, approve mandatory criterion exclusions, authorize post-stop resumption"
+    },
+    "release_owner": {
+      "assigned": false,
+      "name": "UNASSIGNED",
+      "type": "AUTHORIZED_HUMAN_RELEASE_AUTHORITY",
+      "authority": "Authorize external publication, push release tags, publish to registries"
+    },
+    "implementation_owner": {
+      "assigned": false,
+      "name": "UNASSIGNED",
+      "type": "ENGINEERING_TEAM",
+      "authority": "Implement source fixes and policy enhancements"
+    }
+  },
+  "escalations": [
+    {
+      "escalation_id": "ESC-BTP-20261014-001",
+      "finding_id": "FIND-BTP-OBFUSCATION-BYPASS",
+      "severity": "SEV-1",
+      "triggering_stop_condition": "Section 13.2 #1 (Unexpected execution on protected path) / Section 13.4",
+      "affected_deliverable_ids": [
+        "D3"
+      ],
+      "affected_execution_path_ids": [
+        "E-01",
+        "E-02",
+        "E-07"
+      ],
+      "repository_commit": "5467fb65b26045f2f323da433df414ae125566a7",
+      "timestamp_utc": "2026-10-14T06:07:36Z",
+      "evidence_references": [
+        "docs/audit/bypass-matrix.md",
+        "docs/audit/execution-boundary-challenge.md",
+        "audit_evidence/20261014_fullstack_validation/bypass_matrix.json"
+      ],
+      "escalation_owner_role": "Audit Lead",
+      "assigned_owner": "Autonomous Security Validation Agent (Provisional Audit Lead)",
+      "security_decision_owner": "UNASSIGNED",
+      "notification_status": "PENDING_HUMAN_REVIEW",
+      "current_test_state": "STOPPED_AFFECTED_ROUTE",
+      "required_decision": "Formal review of demonstrated obfuscation bypasses (nested base64, shell variables, hex escapes) and authorization of remediation plan",
+      "decision": "PENDING",
+      "decision_maker": "UNASSIGNED",
+      "decision_timestamp_utc": null,
+      "resume_conditions": "Implement iterative base64 decode and hex escape normalization; independently verify on a new run ID with zero downstream executor invocations; obtain explicit authorization from Security Decision Owner",
+      "remediation_owner": "Implementation Owner (UNASSIGNED)",
+      "verification_requirements": "Independent re-run of tests/adversarial_bypass_challenge.js with executorCalls verified at strictly 0 on all obfuscation variants",
+      "closure_status": "OPEN"
+    },
+    {
+      "escalation_id": "ESC-BTP-20261014-002",
+      "finding_id": "FIND-BTP-SUBPROCESS-BYPASS",
+      "severity": "SEV-2",
+      "triggering_stop_condition": "Section 13.2 #7 (Execution path outside in-process proxy boundary)",
+      "affected_deliverable_ids": [
+        "D3"
+      ],
+      "affected_execution_path_ids": [
+        "E-08"
+      ],
+      "repository_commit": "5467fb65b26045f2f323da433df414ae125566a7",
+      "timestamp_utc": "2026-10-14T06:07:36Z",
+      "evidence_references": [
+        "docs/audit/execution-boundary-challenge.md",
+        "docs/audit/enforcement-path-inventory.md"
+      ],
+      "escalation_owner_role": "Audit Lead",
+      "assigned_owner": "Autonomous Security Validation Agent (Provisional Audit Lead)",
+      "security_decision_owner": "UNASSIGNED",
+      "notification_status": "PENDING_HUMAN_REVIEW",
+      "current_test_state": "DOCUMENTED_ARCHITECTURAL_LIMITATION",
+      "required_decision": "Acceptance of architectural boundary: in-process gate does not intercept unwrapped child_process.spawn; formal guidance requiring OS-level sandboxing (Docker/seccomp)",
+      "decision": "PENDING",
+      "decision_maker": "UNASSIGNED",
+      "decision_timestamp_utc": null,
+      "resume_conditions": "Architectural limitation documented in deployment guidelines; no further in-process test required",
+      "remediation_owner": "Security Architecture Owner (UNASSIGNED)",
+      "verification_requirements": "Architectural documentation verification",
+      "closure_status": "OPEN"
+    },
+    {
+      "escalation_id": "ESC-BTP-20261014-003",
+      "finding_id": "FIND-BTP-DATASET-HASH-MISMATCH",
+      "severity": "SEV-3",
+      "triggering_stop_condition": "Section 13.5 (Evidence and Integrity Stop Rules - Artifact Identification)",
+      "affected_deliverable_ids": [
+        "D4",
+        "D6"
+      ],
+      "affected_execution_path_ids": [
+        "D-01"
+      ],
+      "repository_commit": "5467fb65b26045f2f323da433df414ae125566a7",
+      "timestamp_utc": "2026-10-14T06:00:00Z",
+      "evidence_references": [
+        "docs/audit/release-consistency.md",
+        "audit_evidence/20261014_fullstack_validation/sample_500_hash.json",
+        "docs/audit/evidence-manifest.json"
+      ],
+      "escalation_owner_role": "Evidence Custodian",
+      "assigned_owner": "Autonomous Security Validation Agent (Provisional Evidence Custodian)",
+      "security_decision_owner": "UNASSIGNED",
+      "notification_status": "NOT_NOTIFIED",
+      "current_test_state": "RESOLVED_LOCAL_TRACKING",
+      "required_decision": "Document that cad39281ed... is the Git commit SHA-1 of the HF repository and bd1c998ae... is the true SHA-256 of the 500-vector dataset shard sample",
+      "decision": "RESOLVED_PROVISIONALLY",
+      "decision_maker": "Autonomous Security Validation Agent",
+      "decision_timestamp_utc": "2026-10-14T06:05:00Z",
+      "resume_conditions": "Dual hash tracking established in release consistency and evidence manifests",
+      "remediation_owner": "Audit Lead",
+      "verification_requirements": "Independent hash check against sample_500.jsonl",
+      "closure_status": "PROVISIONALLY_RESOLVED"
+    },
+    {
+      "escalation_id": "ESC-BTP-20261014-004",
+      "finding_id": "FIND-BTP-OPENVSX-VAULT-PUBLISH",
+      "severity": "SEV-4",
+      "triggering_stop_condition": "Section 13.6 (External Dependency - Publication Token Unavailable)",
+      "affected_deliverable_ids": [
+        "D6"
+      ],
+      "affected_execution_path_ids": [
+        "D-04"
+      ],
+      "repository_commit": "a6ec74f",
+      "timestamp_utc": "2026-10-14T05:40:00Z",
+      "evidence_references": [
+        "packages/bartholomew-vault/bartholomew-vault-6.5.6.vsix",
+        "docs/audit/release-consistency.md"
+      ],
+      "escalation_owner_role": "Release Owner",
+      "assigned_owner": "UNASSIGNED",
+      "security_decision_owner": "UNASSIGNED",
+      "notification_status": "NOT_NOTIFIED",
+      "current_test_state": "LOCAL_VERIFIED_PENDING_PUBLISH",
+      "required_decision": "Human release authority to supply Open VSX API token and authorize publication of itsubsolomon.bartholomew-vault",
+      "decision": "PENDING",
+      "decision_maker": "UNASSIGNED",
+      "decision_timestamp_utc": null,
+      "resume_conditions": "Provide token and invoke npx ovsx publish",
+      "remediation_owner": "Release Owner (UNASSIGNED)",
+      "verification_requirements": "Verify package availability on open-vsx.org registry",
+      "closure_status": "OPEN"
+    }
+  ]
+}
