@@ -17,16 +17,34 @@ import { rfc8785Canonicalize } from './index.js';
 
 const DANGEROUS_SHELL_PATTERNS = [
   {
-    regex: /\brm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive)\s+(\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/])/i,
+    regex: /\b(rm\s+.*--no-preserve-root\b|rm\s+(?:-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive|-r\s+-f|-f\s+-r)\s+(?:\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/]|\/(?:boot|usr|var|etc|bin|sbin|lib|opt|sys|dev|root)\b)|shred\s+.*(?:\/|\/(?:boot|usr|var|etc|bin|sbin|lib|opt|sys|dev|root)\b)|child_process.*(?:exec|spawn|fork).*(?:rm|shred|dd|mkfs))/i,
     rule: "BTP-AST-001",
-    alternative: (cmd) => cmd.replace(/\brm\s+-[^\s]+\s+.*$/, "rm -rf ./tmp/btp_sandbox/*"),
-    hint: "Target relative workspace directory './tmp/btp_sandbox' instead of root filesystem."
+    alternative: (cmd) => "rm -rf ./tmp/btp_sandbox/*",
+    hint: "Target relative workspace directory './tmp/btp_sandbox' instead of root or system filesystem."
   },
   {
     regex: /(curl|wget)\s+([^\s|]+)\s*\|\s*(bash|sh|zsh)/i,
     rule: "BTP-AST-003",
     alternative: (cmd) => "curl -fsSL https://trusted.org/script.sh -o ./tmp/script.sh && sha256sum ./tmp/script.sh && bash ./tmp/script.sh",
     hint: "Use two-stage verified download with SHA-256 checksum instead of direct pipe-to-shell."
+  },
+  {
+    regex: /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/)/i,
+    rule: "BTP-AST-004",
+    alternative: () => "echo '[BTP-SHIELD] Low-level block device manipulation blocked.'",
+    hint: "Direct disk formatting or device wiping blocked by BTP storage safety invariant."
+  },
+  {
+    regex: /\b(nc|netcat)\s+.*-e\b|\/dev\/tcp\/\d+/i,
+    rule: "BTP-NET-001",
+    alternative: () => "echo '[BTP-SHIELD] Outbound interactive reverse shell blocked.'",
+    hint: "Reverse shell execution blocked by BTP network egress invariant."
+  },
+  {
+    regex: /(?:169\.254\.169\.254|metadata\.google\.internal)/i,
+    rule: "BTP-NET-002",
+    alternative: () => "echo '[BTP-SHIELD] Cloud instance metadata retrieval blocked.'",
+    hint: "Cloud metadata service endpoints are protected from SSRF and credential extraction."
   },
   {
     regex: /git\s+push\s+.*--force\b(?!\-with\-lease)/i,
@@ -44,7 +62,7 @@ const DANGEROUS_SHELL_PATTERNS = [
 
 const DANGEROUS_SQL_PATTERNS = [
   {
-    regex: /^\s*DELETE\s+FROM\s+(\w+)\s*;?\s*$/i,
+    regex: /^\s*DELETE\s+FROM\s+(\w+)(?:\s+WHERE\s+(?:1\s*=\s*1|true|'1'\s*=\s*'1'))?\s*;?\s*$/i,
     rule: "BTP-SQL-001",
     alternative: (query) => {
       const match = query.match(/^\s*DELETE\s+FROM\s+(\w+)/i);
@@ -52,6 +70,18 @@ const DANGEROUS_SQL_PATTERNS = [
       return `DELETE FROM ${tbl} WHERE id IS NULL; -- [BTP-HEALED: Injected WHERE constraint]`;
     },
     hint: "Add a targeted WHERE clause with identifier limits to prevent unbounded table deletion."
+  },
+  {
+    regex: /^\s*UPDATE\s+(\w+)\s+SET\s+(?:(?!WHERE).)*(?:WHERE\s+(?:1\s*=\s*1|true|'1'\s*=\s*'1'))?\s*;?\s*$/i,
+    rule: "BTP-SQL-004",
+    alternative: (query) => {
+      const match = query.match(/^\s*UPDATE\s+(\w+)\s+SET\s+(.*?)(?:;|$)/i);
+      if (match) {
+        return `UPDATE ${match[1]} SET ${match[2]} WHERE id IS NULL; -- [BTP-HEALED: Injected WHERE constraint]`;
+      }
+      return query;
+    },
+    hint: "Unbounded UPDATE without a specific WHERE predicate blocked by BTP database integrity guard."
   },
   {
     regex: /;\s*(DROP|TRUNCATE|ALTER)\s+(TABLE|DATABASE)\b/i,
@@ -643,17 +673,19 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
         cmd += " " + expanded;
       }
     }
-    if (/\brm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive)\s+(\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/])/i.test(cmd) ||
+    if (/\b(rm\s+.*--no-preserve-root\b|rm\s+(?:-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive|-r\s+-f|-f\s+-r)\s+(?:\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/]|\/(?:boot|usr|var|etc|bin|sbin|lib|opt|sys|dev|root)\b)|shred\s+.*(?:\/|\/(?:boot|usr|var|etc|bin|sbin|lib|opt|sys|dev|root)\b)|child_process.*(?:exec|spawn|fork).*(?:rm|shred|dd|mkfs))/i.test(cmd) ||
+        /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/)/i.test(cmd) ||
         /\b(nc|netcat)\s+.*-e\b/i.test(cmd) ||
-        /\/dev\/tcp\/\d+/i.test(cmd)) {
+        /\/dev\/tcp\/\d+/i.test(cmd) ||
+        /(?:169\.254\.169\.254|metadata\.google\.internal)/i.test(cmd)) {
       const t1 = process.hrtime.bigint();
       return {
         allowed: false,
         verdict: "DENY",
         tool_name: toolName,
         rule_id: "BTP-MCP-INV-001",
-        reason: "Destructive unconstrained root deletion or reverse shell detected",
-        remediation_hint: "Target relative workspace directory instead of root filesystem.",
+        reason: "Destructive system modification, disk wipe, reverse shell, or SSRF metadata access detected",
+        remediation_hint: "Target relative workspace directory instead of root filesystem or low-level devices.",
         safe_alternative: "rm -rf ./tmp/btp_sandbox/*",
         latency_us: Number(Number(t1 - t0) / 1000).toFixed(1)
       };
@@ -664,15 +696,17 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
   const isSql = /sql|query|db|database/i.test(nameLower);
   if (isSql || (toolInput && (toolInput.query || toolInput.sql))) {
     const sql = (toolInput && (toolInput.query || toolInput.sql)) || inputStr;
-    if (/\b(DROP|TRUNCATE)\s+(TABLE|DATABASE)\b/i.test(sql)) {
+    if (/\b(DROP|TRUNCATE)\s+(TABLE|DATABASE)\b/i.test(sql) ||
+        /^\s*DELETE\s+FROM\s+\w+(?:\s+WHERE\s+(?:1\s*=\s*1|true|'1'\s*=\s*'1'))?\s*;?\s*$/i.test(sql) ||
+        /^\s*UPDATE\s+\w+\s+SET\s+(?:(?!WHERE).)*(?:WHERE\s+(?:1\s*=\s*1|true|'1'\s*=\s*'1'))?\s*;?\s*$/i.test(sql)) {
       const t1 = process.hrtime.bigint();
       return {
         allowed: false,
         verdict: "DENY",
         tool_name: toolName,
         rule_id: "BTP-MCP-INV-002",
-        reason: "Destructive SQL DDL (DROP/TRUNCATE) mutation blocked",
-        remediation_hint: "Avoid dropping tables; use targeted UPDATE or soft delete with WHERE clause.",
+        reason: "Destructive SQL DDL or unbounded mutation (DROP/TRUNCATE/DELETE/UPDATE) blocked",
+        remediation_hint: "Avoid dropping tables; use targeted UPDATE or soft delete with specific WHERE clause.",
         safe_alternative: "SELECT 'DDL_MUTATION_PREVENTED';",
         latency_us: Number(Number(t1 - t0) / 1000).toFixed(1)
       };

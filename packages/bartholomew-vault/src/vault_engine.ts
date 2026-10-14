@@ -145,6 +145,9 @@ export class VaultEngine {
         case 'API_KEY_GITHUB':
           surrogate = `ghp_BTP_VAULT_${hashSlice}`;
           break;
+        case 'API_KEY_SLACK':
+          surrogate = `xoxb-BTP_VAULT_${hashSlice}`;
+          break;
         case 'DATABASE_URI':
           surrogate = `postgres://btp_vault_user:btp_vault_pass@127.0.0.1:5432/btp_sanitized_${hashSlice.toLowerCase()}`;
           break;
@@ -177,14 +180,14 @@ export class VaultEngine {
 
     // 2. High-Entropy API Keys
     // Anthropic
-    output = output.replace(/\bsk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30,}\b/g, (match) => {
+    output = output.replace(/\bsk-ant-api[0-9]{2}-[A-Za-z0-9_-]{20,}\b/g, (match) => {
       const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_ANTHROPIC', formatPreserving);
       detected.push({ surrogate, category: 'API_KEY_ANTHROPIC', formatPreserved: formatPreserving });
       return surrogate;
     });
 
     // OpenAI
-    output = output.replace(/\bsk-(?:proj-)?(?!ant-)[A-Za-z0-9_-]{32,}\b/g, (match) => {
+    output = output.replace(/\bsk-(?:proj-)?(?!ant-)[A-Za-z0-9_-]{20,}\b/g, (match) => {
       const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_OPENAI', formatPreserving);
       detected.push({ surrogate, category: 'API_KEY_OPENAI', formatPreserved: formatPreserving });
       return surrogate;
@@ -205,10 +208,24 @@ export class VaultEngine {
     });
 
     // GitHub PAT
-    output = output.replace(/\b(?:ghp_[0-9a-zA-Z]{36}|github_pat_[0-9a-zA-Z_]{60,82})\b/g, (match) => {
+    output = output.replace(/\b(?:ghp_[0-9a-zA-Z]{20,}|github_pat_[0-9a-zA-Z_]{20,82})\b/g, (match) => {
       const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_GITHUB', formatPreserving);
       detected.push({ surrogate, category: 'API_KEY_GITHUB', formatPreserved: formatPreserving });
       return surrogate;
+    });
+
+    // Slack Bot/User Token
+    output = output.replace(/\bxox[baprs]-[0-9a-zA-Z-]{20,}\b/g, (match) => {
+      const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_SLACK', formatPreserving);
+      detected.push({ surrogate, category: 'API_KEY_SLACK', formatPreserved: formatPreserving });
+      return surrogate;
+    });
+
+    // AWS Secret Access Key or Assigned Secret
+    output = output.replace(/\b(AWS_SECRET_ACCESS_KEY|SECRET_KEY|API_KEY|AUTH_TOKEN|PRIVATE_KEY)=(['"])([0-9a-zA-Z+/=_-]{20,})\2/g, (fullMatch, varName, quote, rawSecret) => {
+      const surrogate = this.getOrGenerateSurrogate(rawSecret, 'API_KEY_AWS', formatPreserving);
+      detected.push({ surrogate, category: 'API_KEY_AWS', formatPreserved: formatPreserving });
+      return `${varName}=${quote}${surrogate}${quote}`;
     });
 
     // 3. Social Security Numbers (SSN)

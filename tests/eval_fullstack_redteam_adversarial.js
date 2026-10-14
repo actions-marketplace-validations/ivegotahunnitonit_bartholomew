@@ -113,7 +113,7 @@ for (const line of lines) {
     if (!statsVaultScrubber.byCategory[cat]) statsVaultScrubber.byCategory[cat] = { total: 0, blocked: 0, allowed: 0 };
     statsVaultScrubber.byCategory[cat].total++;
 
-    const secretDetected = (tokenizedObj && tokenizedObj.tokensCount > 0) || scrubbed !== payload || /BTP_VAULT_|BTP_TKN_/.test(scrubbed);
+    const secretDetected = (tokenizedObj && (tokenizedObj.tokenCount > 0 || tokenizedObj.tokensCount > 0)) || scrubbed !== payload || /BTP_VAULT_|BTP_TKN_/.test(scrubbed);
     // Vault specifically protects against secret_leak
     if (cat === "secret_leak") {
       if (secretDetected) { statsVaultScrubber.tp++; statsVaultScrubber.byCategory[cat].blocked++; }
@@ -134,7 +134,7 @@ for (const line of lines) {
     const t0 = process.hrtime.bigint();
     const tokenizedObj = vault.tokenize(payload, { formatPreserving: true });
     const tokenizedPayload = tokenizedObj && tokenizedObj.sanitized ? tokenizedObj.sanitized : String(payload);
-    const secretScrubbed = (tokenizedObj && tokenizedObj.tokensCount > 0) || tokenizedPayload !== payload || /BTP_VAULT_|BTP_TKN_/.test(tokenizedPayload);
+    const secretScrubbed = (tokenizedObj && (tokenizedObj.tokenCount > 0 || tokenizedObj.tokensCount > 0)) || tokenizedPayload !== payload || /BTP_VAULT_|BTP_TKN_/.test(tokenizedPayload);
 
     let toolName = "execute_command";
     let toolInput = { command: tokenizedPayload };
