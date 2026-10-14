@@ -12,7 +12,7 @@
 |---|---|---|---|---|
 | `btp-guard` (npm) | 6.5.6 | 6.5.6 | Published on npm | None (Active: 6.5.6) |
 | `bartholomew-vault` (npm) | 6.5.6 | 6.5.6 | Published on npm | None (Active: 6.5.6) |
-| `bartholomew-guard-vscode` (Open VSX) | 6.5.6 | 6.5.5 | Published: 6.5.5 (15,401 downloads) | Bump `package.json` to 6.5.6 and publish vsix |
+| `bartholomew-guard-vscode` (Open VSX) | 6.5.6 | 6.5.6 | Built: 6.5.6 (Ready for publish) | Publish vsix to Open VSX Registry |
 | `site/.well-known/agent-manifest.json` | 6.5.6 | 6.5.6 | Synchronized in repo | Deploy site |
 | `site/agent-manifest.json` | 6.5.6 | 6.5.6 | Synchronized in repo | Deploy site |
 | `site/.well-known/mcp.json` | 6.5.6 | 6.5.6 | Synchronized in repo | Deploy site |
