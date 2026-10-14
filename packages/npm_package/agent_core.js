@@ -85,8 +85,17 @@ export function evaluateAndRemediate(actionType, payload, context = {}) {
   let ruleId = "BTP-OK";
 
   if (typeUpper.includes("SHELL") || typeUpper.includes("CMD") || typeUpper.includes("EXEC") || typeUpper.includes("TERMINAL") || typeUpper.includes("BASH")) {
+    let evalCmd = original;
+    const b64Match = evalCmd.match(/(?:echo|printf)\s+["']?([A-Za-z0-9+/=]{8,})["']?\s*\|\s*base64\s+(-d|--decode)/i);
+    if (b64Match) {
+      try { evalCmd += " " + Buffer.from(b64Match[1], 'base64').toString('utf8'); } catch (_) {}
+    }
+    const pyB64 = evalCmd.match(/b64decode\(["']([A-Za-z0-9+/=]{8,})["']\)/i);
+    if (pyB64) {
+      try { evalCmd += " " + Buffer.from(pyB64[1], 'base64').toString('utf8'); } catch (_) {}
+    }
     for (const p of DANGEROUS_SHELL_PATTERNS) {
-      if (p.regex.test(original)) {
+      if (p.regex.test(evalCmd)) {
         healed = true;
         safeAlternative = p.alternative(original);
         hint = p.hint;
@@ -550,7 +559,15 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
   // 1. Destructive Shell Invariant (BTP-MCP-INV-001)
   const isShell = /bash|sh|exec|terminal|run_command|execute_command|cmd/i.test(nameLower);
   if (isShell || (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine))) {
-    const cmd = (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine)) || inputStr;
+    let cmd = (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine)) || inputStr;
+    const b64Match = cmd.match(/(?:echo|printf)\s+["']?([A-Za-z0-9+/=]{8,})["']?\s*\|\s*base64\s+(-d|--decode)/i);
+    if (b64Match) {
+      try { cmd += " " + Buffer.from(b64Match[1], 'base64').toString('utf8'); } catch (_) {}
+    }
+    const pyB64 = cmd.match(/b64decode\(["']([A-Za-z0-9+/=]{8,})["']\)/i);
+    if (pyB64) {
+      try { cmd += " " + Buffer.from(pyB64[1], 'base64').toString('utf8'); } catch (_) {}
+    }
     if (/\brm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive)\s+(\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/])/i.test(cmd) ||
         /\b(nc|netcat)\s+.*-e\b/i.test(cmd) ||
         /\/dev\/tcp\/\d+/i.test(cmd)) {

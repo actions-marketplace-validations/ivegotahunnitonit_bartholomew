@@ -1,7 +1,7 @@
 {
   "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
   "name": "bartholomew-mcp-security-gate",
-  "version": "6.5.5",
+  "version": "6.5.6",
   "description": "Model Context Protocol (MCP) in-process execution firewall, AST invariant gate, and cryptographic capability passkey validator for Claude Desktop, Cursor, Windsurf, and custom agent swarms.",
   "transport": "stdio",
   "vendor": {

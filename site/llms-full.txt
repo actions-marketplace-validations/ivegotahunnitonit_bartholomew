@@ -1,4 +1,4 @@
-# Bartholomew Trust Protocol (BTP v6.4.4) — Technical Reference for Autonomous Agents & Swarms
+# Bartholomew Trust Protocol (BTP v6.5.6) — Technical Reference for Autonomous Agents & Swarms
 
 ## Quick Links & Manifests
 - Website: https://bartholomew.info

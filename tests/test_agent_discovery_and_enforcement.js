@@ -204,8 +204,24 @@ async function runEndToEndDiscoveryAndEnforcementSuite() {
     `Receipt: ${auditReport.audit_receipt.slice(0, 32)}...`
   );
 
+  // --------------------------------------------------------------------------
+  // Scenario 11: Obfuscated Base64 Shell Command Intercepted & Denied
+  // --------------------------------------------------------------------------
+  const obfuscatedCmd = enforceToolBoundary('execute_command', {
+    command: "echo 'cm0gLXJmIC8=' | base64 -d | sh"
+  });
+  const obfuscatedBlocked = obfuscatedCmd.allowed === false &&
+    obfuscatedCmd.verdict === 'DENY' &&
+    obfuscatedCmd.rule_id === 'BTP-MCP-INV-001';
+
+  record(
+    'Scenario 11: Obfuscated base64 shell attack unpacked and denied deterministically',
+    obfuscatedBlocked,
+    `Rule: ${obfuscatedCmd.rule_id}, Latency: ${obfuscatedCmd.latency_us}µs`
+  );
+
   console.log('\n' + '='.repeat(75));
-  console.log(`TOTAL TEST RESULTS: ${passed} / ${passed + failed} SCENARIOS PASSED (100.00%)`);
+  console.log(`TOTAL TEST RESULTS: ${passed} / ${passed + failed} SCENARIOS PASSED (${((passed / (passed + failed)) * 100).toFixed(2)}%)`);
   console.log('='.repeat(75));
 
   if (failed > 0) {

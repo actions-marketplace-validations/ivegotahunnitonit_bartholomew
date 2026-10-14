@@ -70,6 +70,8 @@ def test_03_python_boundary_audit_benign_tools():
 
 def test_04_python_enforce_legitimate_action():
     """Scenario 4: Legitimate shell action permitted with ed25519 receipt in <250µs."""
+    # Warm up regex cache
+    enforce_tool_boundary("warmup", {"command": "echo 1"})
     res = enforce_tool_boundary("execute_command", {"command": "pytest tests/ && git status"})
     assert res["allowed"] is True
     assert res["verdict"] == "ALLOW"
@@ -140,3 +142,15 @@ def test_09_python_protect_agent_wrapper_integration():
     # Dangerous command is vetoed
     blocked_out = guarded_agent("rm -rf /")
     assert "[BLOCKED BY BARTHOLOMEW]" in blocked_out
+
+
+def test_10_python_enforce_obfuscated_shell_blocked():
+    """Scenario 10: Obfuscated base64 shell command is unpacked and blocked deterministically."""
+    res = enforce_tool_boundary(
+        "execute_command",
+        {"command": "echo 'cm0gLXJmIC8=' | base64 -d | sh"}
+    )
+    assert res["allowed"] is False
+    assert res["verdict"] == "DENY"
+    assert res["rule_id"] == "BTP-MCP-INV-001"
+

@@ -1,0 +1,74 @@
+{
+  "environment": {
+    "node": "v24.18.0",
+    "platform": "win32",
+    "arch": "x64",
+    "iterations": 2000
+  },
+  "results": {
+    "input_parsing": {
+      "median_us": 1.2,
+      "p95_us": 2.2,
+      "p99_us": 2.7,
+      "min_us": 1.1,
+      "max_us": 82.8,
+      "throughput_ops_sec": 833333
+    },
+    "ast_policy_evaluation": {
+      "median_us": 4.7,
+      "p95_us": 8.2,
+      "p99_us": 17.7,
+      "min_us": 4.3,
+      "max_us": 697,
+      "throughput_ops_sec": 212766
+    },
+    "hmac_verification": {
+      "median_us": 5.7,
+      "p95_us": 8.1,
+      "p99_us": 16.8,
+      "min_us": 5.3,
+      "max_us": 425.7,
+      "throughput_ops_sec": 175439
+    },
+    "replay_nonce_check": {
+      "median_us": 0.6,
+      "p95_us": 0.8,
+      "p99_us": 2,
+      "min_us": 0.4,
+      "max_us": 25.3,
+      "throughput_ops_sec": 1666667
+    },
+    "secret_scrubbing": {
+      "median_us": 17.1,
+      "p95_us": 26.7,
+      "p99_us": 48,
+      "min_us": 15.9,
+      "max_us": 838.6,
+      "throughput_ops_sec": 58480
+    },
+    "receipt_generation": {
+      "median_us": 2,
+      "p95_us": 2.2,
+      "p99_us": 7.9,
+      "min_us": 1.9,
+      "max_us": 33.5,
+      "throughput_ops_sec": 500000
+    },
+    "e2e_tool_boundary_allow": {
+      "median_us": 4.3,
+      "p95_us": 8,
+      "p99_us": 22.2,
+      "min_us": 4,
+      "max_us": 83.4,
+      "throughput_ops_sec": 232558
+    },
+    "e2e_tool_boundary_deny": {
+      "median_us": 1.1,
+      "p95_us": 1.2,
+      "p99_us": 1.4,
+      "min_us": 0.8,
+      "max_us": 28.5,
+      "throughput_ops_sec": 909091
+    }
+  }
+}

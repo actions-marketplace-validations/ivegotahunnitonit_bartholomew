@@ -135,6 +135,7 @@ import re
 import hashlib
 import time
 import secrets
+import base64
 from datetime import datetime, timezone
 
 BTP_CAPABILITY_MANIFEST: Dict[str, Any] = {
@@ -339,6 +340,20 @@ def enforce_tool_boundary(tool_name: str, tool_input: Any, options: Optional[Dic
 
     if is_shell or cmd_val:
         cmd = cmd_val or input_str
+        b64_m = re.search(r'(?:echo|printf)\s+["\']?([A-Za-z0-9+/=]{8,})["\']?\s*\|\s*base64\s+(-d|--decode)', cmd, re.I)
+        if b64_m:
+            try:
+                decoded = base64.b64decode(b64_m.group(1)).decode('utf-8', errors='ignore')
+                cmd = f"{cmd} {decoded}"
+            except Exception:
+                pass
+        py_b64 = re.search(r'b64decode\(["\']([A-Za-z0-9+/=]{8,})["\']\)', cmd, re.I)
+        if py_b64:
+            try:
+                decoded = base64.b64decode(py_b64.group(1)).decode('utf-8', errors='ignore')
+                cmd = f"{cmd} {decoded}"
+            except Exception:
+                pass
         if _RE_SHELL_BREAKOUT.search(cmd) or _RE_SHELL_NETCAT.search(cmd) or _RE_SHELL_DEVTCP.search(cmd):
             t1 = time.perf_counter_ns()
             latency_us = round((t1 - t0) / 1000.0, 1)
