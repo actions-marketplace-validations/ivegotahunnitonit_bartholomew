@@ -11,12 +11,12 @@
 
 | Artifact / Registry Target | Expected Identifier / Version | Observed State | Classification | Evidence & Details |
 |---|---|---|---|---|
-| **Git Repository HEAD** | `5467fb65` | `5467fb65b26045f2f323da433df414ae125566a7` | **LOCAL_VERIFIED** | Clean working tree; tracks `origin/main` |
+| **Git Repository HEAD** | Current main | Working tree clean | **LOCAL_VERIFIED** | Tracks `origin/main` |
 | **npm Package** | `btp-guard@6.5.6` | `btp-guard@6.5.6` | **EXTERNALLY_VERIFIED** | Published on npm registry; version 6.5.6 |
-| **VS Code Extension (VSIX)** | `bartholomew-guard-vscode-6.5.6.vsix` | File present (1,402,123 bytes) | **LOCAL_VERIFIED** | Compiled package with publisher `itsubsolomon` |
-| **Vault Extension (VSIX)** | `bartholomew-vault-6.5.6.vsix` | File present (1,980,105 bytes) | **LOCAL_VERIFIED** | Compiled package with publisher `itsubsolomon` |
-| **Open VSX Extension (Guard)** | `itsubsolomon/bartholomew-guard-vscode@6.5.6` | Published v6.5.6 | **EXTERNALLY_VERIFIED** | Verified active on open-vsx.org |
-| **Open VSX Extension (Vault)** | `itsubsolomon/bartholomew-vault@6.5.6` | VSIX ready; pending token | **LOCAL_VERIFIED** | Package built; awaiting user publish token |
+| **VS Code Extension (Guard)** | `bartholomew-guard-vscode-6.5.6` | Manifest v6.5.6 | **LOCAL_VERIFIED** | Aligned with verified Open VSX publisher `bartholomew` |
+| **VS Code Extension (Vault)** | `bartholomew-vault-6.5.6` | Manifest v6.5.6 | **LOCAL_VERIFIED** | Aligned with verified Open VSX publisher `bartholomew` |
+| **Open VSX Extension (Guard)** | `Bartholomew/bartholomew-guard-vscode` | Published v6.5.5 | **EXTERNALLY_VERIFIED** | Verified active on open-vsx.org under namespace `Bartholomew` |
+| **Open VSX Extension (Vault)** | `Bartholomew/bartholomew-vault` | Published v6.5.5 | **EXTERNALLY_VERIFIED** | Verified active on open-vsx.org under namespace `Bartholomew` |
 | **Hugging Face Dataset Commit** | `cad39281ed9746dee40e5451239d784a8d32726b` | HF Git Commit SHA-1 | **EXTERNALLY_VERIFIED** | Verified commit hash of the HF repository |
 | **Dataset Shard File SHA-256** | `cad39281ed...` (previously reported as SHA-256) | `bd1c998ae513d4b4a24bf497237da401b0bc994a5e4e1ff1c5d2e1f6f28b893f` | **MISMATCH** | Historical report confused Git commit hash with data file SHA-256 |
 | **Web Landing Page** | `https://bartholomew.info` | Reachable | **EXTERNALLY_VERIFIED** | Active public endpoint |
@@ -32,5 +32,7 @@
 - **Classification**: `MISMATCH` on hashing convention documentation; `EXTERNALLY_VERIFIED` on repository data identity.
 
 ### B. Extension Publisher Alignment
-- **Historical Defect**: Prior commits referenced publisher ID `bartholomew` in the extension manifest, whereas the Open VSX registered namespace is `itsubsolomon`.
-- **Current State**: Reconciled and fixed in commits `54b9981` and `a6ec74f`. Both local manifests and VSIX packages reflect `itsubsolomon`.
+- **Historical Defect**: Prior commits mistakenly changed the publisher ID to `itsubsolomon` in `packages/vscode-extension/package.json` and `packages/bartholomew-vault/package.json`.
+- **Live Registry Truth**: Live inspection of the Open VSX registry API confirms that `https://open-vsx.org/api/itsubsolomon` returns 404, while the verified publisher namespace is `Bartholomew` (`publisher: "bartholomew"`), which actively hosts `Bartholomew/bartholomew-guard-vscode` and `Bartholomew/bartholomew-vault`. (Note: `itsubsolomon` is the publisher namespace for the Azure DevOps extension, not Open VSX).
+- **Current State**: Reconciled and restored publisher ID to `bartholomew` in both extension manifests to align with Open VSX.
+- **Release Status**: Open VSX currently hosts v6.5.5. Publication of the local v6.5.6 updates requires human release authorization with an Open VSX personal access token.

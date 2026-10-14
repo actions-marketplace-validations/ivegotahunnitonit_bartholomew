@@ -6,7 +6,7 @@
   "bin": {
     "mcp-shield": "./bin/mcp-shield.js"
   },
-  "publisher": "itsubsolomon",
+  "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "Apache-2.0",
   "activationEvents": [

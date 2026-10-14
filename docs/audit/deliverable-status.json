@@ -265,7 +265,7 @@
           "mandatory": true,
           "status": "SATISFIED",
           "evidence_valid": true,
-          "evidence": "btp-guard@6.5.6 verified on npm; bartholomew-guard-vscode-6.5.6.vsix built with publisher itsubsolomon"
+          "evidence": "btp-guard@6.5.6 verified on npm; bartholomew-guard-vscode-6.5.6 manifest aligned with Open VSX publisher bartholomew"
         },
         {
           "id": "D6-C4",
