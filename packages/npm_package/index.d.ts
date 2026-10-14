@@ -247,3 +247,42 @@ export function guardUniversalAgentTool<T extends (...args: any[]) => any>(
 export function guardVercelAITool<T extends object>(toolDef: T, options?: any): T;
 export function guardLangChainJsTool<T extends object>(toolInstance: T, options?: any): T;
 
+export const BTP_CAPABILITY_MANIFEST: Record<string, any>;
+
+export interface BoundaryAuditResult {
+  audited_at: string;
+  protocol_version: string;
+  boundary_verdict: string;
+  total_tools_audited: number;
+  vulnerable_tools_count: number;
+  findings: Array<{
+    tool_name: string;
+    category: string;
+    risk_level: string;
+    threats: string[];
+    unshielded_boundary: boolean;
+    recommended_guard: string;
+    integration_recipe: Record<string, any>;
+  }>;
+  recommendation: string;
+  audit_receipt: string;
+  deterministic: boolean;
+}
+
+export interface EnforceBoundaryResult {
+  allowed: boolean;
+  verdict: "ALLOW" | "DENY" | "HOLD_FOR_APPROVAL";
+  tool_name: string;
+  rule_id?: string;
+  reason?: string;
+  remediation_hint?: string;
+  safe_alternative?: string | null;
+  approval_token?: string;
+  merkle_turn_receipt?: string;
+  latency_us: string;
+  tool_input?: any;
+}
+
+export function auditToolBoundary(tools?: any[], options?: any): BoundaryAuditResult;
+export function enforceToolBoundary(toolName: string, toolInput: any, options?: any): EnforceBoundaryResult;
+

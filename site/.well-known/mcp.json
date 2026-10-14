@@ -21,6 +21,23 @@
   },
   "tools": [
     {
+      "name": "btp_audit_tool_boundary",
+      "description": "Deterministic security audit tool for AI agents. Audits workspace tools (bash, database, files) for missing execution boundaries and returns machine-readable Bartholomew guard recommendations and verification evidence.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "tools": {
+            "type": "array",
+            "description": "List of available tool names or tool definitions to audit",
+            "items": { "type": "object" }
+          }
+        },
+        "required": [
+          "tools"
+        ]
+      }
+    },
+    {
       "name": "btp_protect_tool_call",
       "description": "Evaluates proposed tool call arguments in-process (<35us) against destructive execution, SQL mutations, and prompt injections, emitting structured remediation hints if denied.",
       "inputSchema": {

@@ -741,7 +741,7 @@ export {
   verifyAuditPack
 } from './audit_vault.js';
 
-// Export Agent-Centric Core Engine (BTP v6.3.0)
+// Export Agent-Centric Core Engine (BTP v6.5.6)
 export {
   evaluateAndRemediate,
   createAgentDelegationPassport,
@@ -750,7 +750,10 @@ export {
   sanitizeAgentContext,
   guardUniversalAgentTool,
   guardVercelAITool,
-  guardLangChainJsTool
+  guardLangChainJsTool,
+  BTP_CAPABILITY_MANIFEST,
+  auditToolBoundary,
+  enforceToolBoundary
 } from './agent_core.js';
 
 // Export Llama.cpp & Ollama Local AI Gateway (BTP v6.3.0)
