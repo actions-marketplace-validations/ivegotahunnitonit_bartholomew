@@ -553,20 +553,95 @@ export function auditToolBoundary(tools = [], options = {}) {
 
 export function enforceToolBoundary(toolName, toolInput, options = {}) {
   const t0 = process.hrtime.bigint();
+
+  // Fail-closed input boundary check (BTP-INV-INPUT-001)
+  if (toolInput === null || toolInput === undefined) {
+    const t1 = process.hrtime.bigint();
+    return {
+      allowed: false,
+      verdict: "DENY",
+      tool_name: toolName,
+      rule_id: "BTP-INV-INPUT-001",
+      reason: "Null or undefined tool input payload rejected (fail-closed)",
+      remediation_hint: "Provide a valid tool input object or parameter map.",
+      safe_alternative: "Provide valid parameters",
+      latency_us: Number(Number(t1 - t0) / 1000).toFixed(1)
+    };
+  }
+
   const inputStr = typeof toolInput === 'object' && toolInput !== null ? JSON.stringify(toolInput) : String(toolInput || "");
   const nameLower = (toolName || "").toLowerCase();
 
   // 1. Destructive Shell Invariant (BTP-MCP-INV-001)
   const isShell = /bash|sh|exec|terminal|run_command|execute_command|cmd/i.test(nameLower);
   if (isShell || (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine))) {
-    let cmd = (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine)) || inputStr;
-    const b64Match = cmd.match(/(?:echo|printf)\s+["']?([A-Za-z0-9+/=]{8,})["']?\s*\|\s*base64\s+(-d|--decode)/i);
-    if (b64Match) {
-      try { cmd += " " + Buffer.from(b64Match[1], 'base64').toString('utf8'); } catch (_) {}
+    let rawCmd = (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine)) || inputStr;
+    let cmd = typeof rawCmd === 'string' ? rawCmd : (typeof rawCmd === 'object' && rawCmd !== null ? JSON.stringify(rawCmd) : String(rawCmd || ""));
+
+    // A. Iterative Base64 Pre-Unpacking (recursion depth up to 3)
+    let b64Target = cmd;
+    for (let depth = 0; depth < 3; depth++) {
+      let candidate = null;
+      const b64Match = b64Target.match(/(?:echo|printf)\s+["']?([A-Za-z0-9+/=]{8,})["']?\s*\|\s*base64\s+(-d|--decode)/i) ||
+                       b64Target.match(/base64\s+(-d|--decode).*?["']?([A-Za-z0-9+/=]{8,})["']?/i);
+      if (b64Match) {
+        candidate = b64Match[1] || b64Match[2];
+      } else {
+        const directMatch = b64Target.trim().match(/^[A-Za-z0-9+/=]{8,}$/);
+        if (directMatch) {
+          candidate = directMatch[0];
+        }
+      }
+
+      if (candidate) {
+        try {
+          const decoded = Buffer.from(candidate, 'base64').toString('utf8');
+          cmd += " " + decoded;
+          b64Target = decoded;
+        } catch (_) { break; }
+      } else {
+        break;
+      }
     }
-    const pyB64 = cmd.match(/b64decode\(["']([A-Za-z0-9+/=]{8,})["']\)/i);
-    if (pyB64) {
-      try { cmd += " " + Buffer.from(pyB64[1], 'base64').toString('utf8'); } catch (_) {}
+
+    // B. Iterative Python b64decode Pre-Unpacking
+    let pyTarget = cmd;
+    for (let depth = 0; depth < 3; depth++) {
+      const pyB64 = pyTarget.match(/b64decode\(["']([A-Za-z0-9+/=]{8,})["']\)/i);
+      if (pyB64) {
+        try {
+          const decoded = Buffer.from(pyB64[1], 'base64').toString('utf8');
+          cmd += " " + decoded;
+          pyTarget = decoded;
+        } catch (_) { break; }
+      } else {
+        break;
+      }
+    }
+
+    // C. Hexadecimal (\xHH) and Octal (\0NNN) Character Normalization
+    if (cmd.includes('\\x')) {
+      try {
+        const unescapedHex = cmd.replace(/\\x([0-9a-fA-F]{2})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+        cmd += " " + unescapedHex;
+      } catch (_) {}
+    }
+
+    // D. Dynamic Shell Variable Expansion ($VAR, ${VAR}, VAR=val)
+    if (cmd.includes('=')) {
+      const varMap = {};
+      const assignRegex = /(?:^|[;\s&|])([a-zA-Z_][a-zA-Z0-9_]*)=(?:"([^"]*)"|'([^']*)'|([^'";\s&|]+))/g;
+      let m;
+      while ((m = assignRegex.exec(cmd)) !== null) {
+        varMap[m[1]] = m[2] !== undefined ? m[2] : (m[3] !== undefined ? m[3] : m[4]);
+      }
+      if (Object.keys(varMap).length > 0) {
+        let expanded = cmd;
+        for (const [v, val] of Object.entries(varMap)) {
+          expanded = expanded.replace(new RegExp(`\\$${v}\\b|\\$\\{${v}\\}`, 'g'), val);
+        }
+        cmd += " " + expanded;
+      }
     }
     if (/\brm\s+(-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive)\s+(\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/])/i.test(cmd) ||
         /\b(nc|netcat)\s+.*-e\b/i.test(cmd) ||

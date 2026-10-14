@@ -151,7 +151,8 @@ function recordTest(testId, family, name, input, expectedOutcome, actualOutcome,
   const resC3 = btpProtectedGateway("run_command", { command: nestedB64 });
   recordTest("C-03", "OBFUSCATION", "Nested multi-stage base64", nestedB64,
     "BLOCKED_BEFORE_EXECUTOR", resC3.executor_called ? "EXECUTED_UNEXPECTEDLY" : "BLOCKED_BEFORE_EXECUTOR",
-    executorCalls, resC3.executor_called ? "BYPASSED_PROTECTION" : "VERIFIED", "Multi-stage base64 evades single-stage regex pre-unpacker");
+    executorCalls, resC3.executor_called ? "BYPASSED_PROTECTION" : "VERIFIED",
+    resC3.executor_called ? "Multi-stage base64 evades single-stage regex pre-unpacker" : "Iterative base64 unpacking detected and stopped nested rm -rf / before executor");
 
   // C-04: Shell variable concatenation ($A$B)
   resetExecutor();
@@ -159,7 +160,8 @@ function recordTest(testId, family, name, input, expectedOutcome, actualOutcome,
   const resC4 = btpProtectedGateway("run_command", { command: varConcat });
   recordTest("C-04", "OBFUSCATION", "Shell variable concatenation", varConcat,
     "BLOCKED_BEFORE_EXECUTOR", resC4.executor_called ? "EXECUTED_UNEXPECTEDLY" : "BLOCKED_BEFORE_EXECUTOR",
-    executorCalls, resC4.executor_called ? "BYPASSED_PROTECTION" : "VERIFIED", "Dynamic shell variables evade static string pattern matching");
+    executorCalls, resC4.executor_called ? "BYPASSED_PROTECTION" : "VERIFIED",
+    resC4.executor_called ? "Dynamic shell variables evade static string pattern matching" : "Dynamic shell variable expansion resolved $A$B into rm -rf / and blocked before executor");
 
   // C-05: Hex escape sequence
   resetExecutor();
@@ -167,7 +169,8 @@ function recordTest(testId, family, name, input, expectedOutcome, actualOutcome,
   const resC5 = btpProtectedGateway("run_command", { command: hexEscape });
   recordTest("C-05", "OBFUSCATION", "Hex escape sequence", hexEscape,
     "BLOCKED_BEFORE_EXECUTOR", resC5.executor_called ? "EXECUTED_UNEXPECTEDLY" : "BLOCKED_BEFORE_EXECUTOR",
-    executorCalls, resC5.executor_called ? "BYPASSED_PROTECTION" : "VERIFIED", "Hex-encoded ASCII escapes not decoded prior to AST regex");
+    executorCalls, resC5.executor_called ? "BYPASSED_PROTECTION" : "VERIFIED",
+    resC5.executor_called ? "Hex-encoded ASCII escapes not decoded prior to AST regex" : "Hex-encoded character normalization decoded \\x72\\x6d... to rm -rf / and blocked before executor");
 }
 
 // ----------------------------------------------------------------------------
@@ -244,11 +247,14 @@ function recordTest(testId, family, name, input, expectedOutcome, actualOutcome,
     executorCalls, "VERIFIED", "Numeric input coerced to string and permitted safely");
 }
 
-fs.writeFileSync("audit_evidence/20261014_fullstack_validation/bypass_matrix.json", JSON.stringify({
+const matrixPayload = JSON.stringify({
   tested_at: new Date().toISOString(),
   total_attack_vectors: challengeResults.length,
   results: challengeResults
-}, null, 2));
+}, null, 2);
+
+fs.writeFileSync("audit_evidence/20261014_fullstack_validation/bypass_matrix.json", matrixPayload);
+fs.writeFileSync("audit_evidence/20261014_fullstack_validation/bypass_matrix_postfix.json", matrixPayload);
 
 console.log("=".repeat(75));
 console.log("EXECUTION-BOUNDARY BYPASS CHALLENGE RESULTS");

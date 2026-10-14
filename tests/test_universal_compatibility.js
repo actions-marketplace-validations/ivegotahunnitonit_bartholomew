@@ -105,11 +105,11 @@ async function runUniversalCompatibilitySuite() {
     assert(malformedRes.isError === false && mockExecutorInvocations === 1,
       'Scenario 7: Malformed null MCP input handled without crash');
 
-    // 8. Bypass resistance on nested base64 (Documented limitation)
+    // 8. Bypass resistance on nested base64 (Remediated: Iterative Unpacker)
     resetExecutor();
     const nestedRes = await adapter.handleCallToolRequest({ params: { name: "run_command", arguments: { command: "echo 'Y20wZ0xYSm1JQzg9' | base64 -d | base64 -d | sh" } } });
-    assert(nestedRes._executor_called === true && mockExecutorInvocations === 1,
-      'Scenario 8: Nested base64 evasion confirmed as verified limitation on MCP adapter');
+    assert(nestedRes.isError === true && nestedRes._btp_verdict === "DENY" && mockExecutorInvocations === 0,
+      'Scenario 8: Nested base64 evasion blocked before executor on MCP adapter');
 
     // 9. Fail-closed on missing executor
     const brokenAdapter = new MCPAdapter(null);
@@ -123,7 +123,7 @@ async function runUniversalCompatibilitySuite() {
     testResults.adapters_evaluated.push({
       adapter_name: "MCPAdapter",
       runtime_format: "JSON-RPC 2.0 (mcp_stdio_proxy)",
-      status: "VERIFIED_WITH_LIMITATIONS",
+      status: "VERIFIED_HARDENED",
       allowed_executor_calls: 1,
       denied_executor_calls: 0
     });
@@ -170,12 +170,12 @@ async function runUniversalCompatibilitySuite() {
     const malformedRes = await adapter.handleToolCall(malformedCall);
     assert(malformedRes._executor_called === true, 'Scenario 7: Malformed argument string parsed gracefully as raw argument');
 
-    // 8. Bypass attempt
+    // 8. Bypass attempt (Remediated: Variable Expansion)
     resetExecutor();
     const bypassCall = { id: "call_bypass", type: "function", function: { name: "run_command", arguments: JSON.stringify({ command: "A=rm; B=' -rf /'; $A$B" }) } };
     const bypassRes = await adapter.handleToolCall(bypassCall);
-    assert(bypassRes._executor_called === true && mockExecutorInvocations === 1,
-      'Scenario 8: Variable concatenation evasion confirmed on OpenAI tool adapter');
+    assert(bypassRes._btp_blocked === true && mockExecutorInvocations === 0,
+      'Scenario 8: Variable concatenation evasion blocked before executor on OpenAI tool adapter');
 
     // 9. Fail-closed
     resetExecutor();
@@ -190,7 +190,7 @@ async function runUniversalCompatibilitySuite() {
     testResults.adapters_evaluated.push({
       adapter_name: "OpenAIToolAdapter",
       runtime_format: "OpenAI / Claude Tool-Calling Format",
-      status: "VERIFIED_WITH_LIMITATIONS",
+      status: "VERIFIED_HARDENED",
       allowed_executor_calls: 1,
       denied_executor_calls: 0
     });
@@ -254,15 +254,16 @@ async function runUniversalCompatibilitySuite() {
     assert(approvalThrew && mockExecutorInvocations === 0,
       'Scenario 6: Approval-required LangChain tool held with ZERO invocations');
 
-    // 8. Bypass resistance on hex escape
+    // 8. Bypass resistance on hex escape (Remediated: Character Normalization)
     resetExecutor();
-    let hexExecuted = false;
+    let hexThrew = false;
     try {
-      await wrappedTool._call({ command: "printf '\\x72\\x6d...' | sh" });
-      hexExecuted = true;
-    } catch (_) {}
-    assert(hexExecuted && mockExecutorInvocations === 1,
-      'Scenario 8: Hex escape evasion confirmed on LangChain wrapper');
+      await wrappedTool._call({ command: "printf '\\x72\\x6d\\x20\\x2d\\x72\\x66\\x20\\x2f' | sh" });
+    } catch (_) {
+      hexThrew = true;
+    }
+    assert(hexThrew && mockExecutorInvocations === 0,
+      'Scenario 8: Hex escape evasion blocked before executor on LangChain wrapper');
 
     // 10. Consistency check
     assert(threw === true, 'Scenario 10: Policy decision consistent with MCP and OpenAI adapters');
@@ -270,7 +271,7 @@ async function runUniversalCompatibilitySuite() {
     testResults.adapters_evaluated.push({
       adapter_name: "LangChainFrameworkAdapter",
       runtime_format: "LangChain / LlamaIndex / CrewAI Tool Wrapper",
-      status: "VERIFIED_WITH_LIMITATIONS",
+      status: "VERIFIED_HARDENED",
       allowed_executor_calls: 1,
       denied_executor_calls: 0
     });

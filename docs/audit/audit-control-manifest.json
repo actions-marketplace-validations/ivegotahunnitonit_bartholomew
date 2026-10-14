@@ -141,7 +141,9 @@
       ],
       "resume_conditions": "Implement iterative base64 decode and hex escape normalization; independently verify on a new run ID with zero downstream executor invocations; obtain explicit authorization from Security Decision Owner",
       "remediation_owner": "Implementation Owner (UNASSIGNED)",
-      "verification_refs": [],
+      "verification_refs": [
+        "audit_evidence/20261014_fullstack_validation/bypass_matrix_postfix.json"
+      ],
       "closure_status": "OPEN"
     },
     {
@@ -273,8 +275,38 @@
     },
     "audit_evidence/universal_compatibility_results.json": {
       "description": "Machine-readable results from the 35-assertion universal compatibility test suite"
+    },
+    "audit_evidence/20261014_fullstack_validation/bypass_matrix_postfix.json": {
+      "description": "Post-fix verification run of the execution boundary bypass matrix showing 0 executor calls on C-03, C-04, C-05"
+    },
+    "packages/npm_package/process_shim.js": {
+      "description": "Runtime process shim intercepting child_process methods for uninstrumented runtimes"
+    },
+    "tests/test_process_shim.js": {
+      "description": "Unit test suite verifying process shim interception"
     }
   },
+  "post_fix_runs": [
+    {
+      "run_id": "RUN-BTP-20261014-POSTFIX-001",
+      "timestamp_utc": "2026-10-14T08:08:00Z",
+      "target_finding_ref": "FIND-BTP-OBFUSCATION-BYPASS",
+      "target_escalation_ref": "ESC-BTP-20261014-001",
+      "remediated_files": [
+        "packages/npm_package/agent_core.js",
+        "packages/npm_package/process_shim.js"
+      ],
+      "verification_evidence_ref": "audit_evidence/20261014_fullstack_validation/bypass_matrix_postfix.json",
+      "test_suite": "tests/adversarial_bypass_challenge.js",
+      "outcome": {
+        "C-03_nested_base64": { "executor_invocations": 0, "verdict": "VERIFIED", "outcome": "BLOCKED_BEFORE_EXECUTOR" },
+        "C-04_shell_variables": { "executor_invocations": 0, "verdict": "VERIFIED", "outcome": "BLOCKED_BEFORE_EXECUTOR" },
+        "C-05_hex_escapes": { "executor_invocations": 0, "verdict": "VERIFIED", "outcome": "BLOCKED_BEFORE_EXECUTOR" },
+        "F-01_null_input": { "executor_invocations": 0, "verdict": "VERIFIED", "outcome": "BLOCKED_BEFORE_EXECUTOR" }
+      },
+      "signoff_status": "AWAITING_HUMAN_SECURITY_DECISION"
+    }
+  ],
   "signoff": {
     "signoff_status": "PENDING",
     "audit_closure_state": "COMPLETE_WITH_FINDINGS",
