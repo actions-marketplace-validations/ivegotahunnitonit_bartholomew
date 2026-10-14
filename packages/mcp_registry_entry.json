@@ -3,7 +3,7 @@
   "name": "bartholomew-sentinel",
   "displayName": "Bartholomew Protocol Execution Sentinel",
   "description": "Sub-35µs AST execution firewall, zero-trust MCP proxy shield, and cryptographic proof verification for AI agents and swarms.",
-  "version": "6.5.5",
+  "version": "6.5.6",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   "homepage": "https://bartholomew.info",
   "discovery": {
     "manifestUrl": "https://bartholomew.info/.well-known/mcp.json",
-    "protocol": "BTP/6.5.5"
+    "protocol": "BTP/6.5.6"
   },
   "transports": {
     "http": {
