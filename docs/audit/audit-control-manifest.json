@@ -264,6 +264,15 @@
     },
     "docs/audit/escalation-and-decision-authority.md": {
       "description": "Section 14 governance and role definitions"
+    },
+    "docs/architecture/universal-adapter-contract.md": {
+      "description": "Model-agnostic adapter contract and lifecycle specification"
+    },
+    "docs/architecture/universal-compatibility-matrix.md": {
+      "description": "Universal runtime integration matrix and setup guide"
+    },
+    "audit_evidence/universal_compatibility_results.json": {
+      "description": "Machine-readable results from the 35-assertion universal compatibility test suite"
     }
   },
   "signoff": {
