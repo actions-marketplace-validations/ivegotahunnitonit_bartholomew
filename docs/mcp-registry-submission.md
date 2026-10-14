@@ -7,13 +7,13 @@
 * **Server Name**: `bartholomew-sentinel` (`btp-guard`)
 * **Display Name**: `Bartholomew AI Security Gate & Execution Sentinel`
 * **Category**: `Security` / `Governance & Verification` / `Developer Tools`
-* **Version**: `5.4.6`
-* **Repository**: [https://github.com/bartholomew-ai/bartholomew](https://github.com/bartholomew-ai/bartholomew)
+* **Version**: `6.5.6`
+* **Repository**: [https://github.com/ivegotahunnitonit/bartholomew](https://github.com/ivegotahunnitonit/bartholomew)
 * **npm**: [https://www.npmjs.com/package/btp-guard](https://www.npmjs.com/package/btp-guard)
-* **PyPI**: [https://pypi.org/project/btp-guard/5.4.6/](https://pypi.org/project/btp-guard/5.4.6/)
-* **Live Discovery**: [https://acn-26670.web.app/.well-known/mcp.json](https://acn-26670.web.app/.well-known/mcp.json)
+* **PyPI**: [https://pypi.org/project/btp-guard/](https://pypi.org/project/btp-guard/)
+* **Live Discovery**: [https://bartholomew.info/.well-known/mcp.json](https://bartholomew.info/.well-known/mcp.json)
 * **License**: Apache-2.0
-* **Description**: `Sub-35µs deterministic in-process AST execution firewall and cryptographic proof verification protocol (BTP v5.4.6) for Claude Desktop, Cursor, Windsurf, and autonomous agent swarms.`
+* **Description**: `Sub-35µs deterministic in-process AST execution firewall and cryptographic proof verification protocol (BTP v6.5.6) for Claude Desktop, Cursor, Windsurf, ElizaOS, and autonomous agent swarms.`
 
 ---
 
