@@ -269,6 +269,13 @@ from src.dispatch_seam import (
     extract_evaluated_payloads,
 )
 
+from .agent_protector import (
+    protect_agent,
+    BTP_CAPABILITY_MANIFEST,
+    audit_tool_boundary,
+    enforce_tool_boundary
+)
+
 __all__ = [
     "Guard",
     "protect_agent",
@@ -279,8 +286,10 @@ __all__ = [
     "extract_evaluated_payloads",
     "BartholomewTrustAuthority",
     "IndependentTrustVerifier",
-                                ]
-
-from .agent_protector import protect_agent
+    "BTP_CAPABILITY_MANIFEST",
+    "audit_tool_boundary",
+    "enforce_tool_boundary",
+]
 
 from .universal_schema_adapter import UniversalSchemaAdapter
+
