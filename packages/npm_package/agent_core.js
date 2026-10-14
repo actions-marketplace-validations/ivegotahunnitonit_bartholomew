@@ -449,7 +449,7 @@ export function auditToolBoundary(tools = [], options = {}) {
     const nameLower = name.toLowerCase();
 
     // Check if tool touches shell execution
-    if (/bash|sh|shell|exec|terminal|run_command|execute_command|cmd/i.test(nameLower) || /command|shell|exec|terminal/i.test(desc)) {
+    if (/(^|_|\b)(bash|sh|zsh|shell|terminal|run_command|execute_command|exec_cmd|cmd)($|_|\b)/i.test(nameLower) || /\b(bash shell|terminal command|execute shell|arbitrary shell)\b/i.test(desc)) {
       findings.push({
         tool_name: name,
         category: "SHELL_EXECUTION",
@@ -469,7 +469,7 @@ export function auditToolBoundary(tools = [], options = {}) {
       });
     }
     // Check if tool touches SQL / Database execution
-    else if (/sql|db|database|query|postgres|sqlite|mysql/i.test(nameLower) || /database|query|sql/i.test(desc)) {
+    else if (/(^|_|\b)(sql|db|database|query_database|run_sql|sqlite|postgres|mysql)($|_|\b)/i.test(nameLower) || /\b(database|sql query|relational db)\b/i.test(desc)) {
       findings.push({
         tool_name: name,
         category: "DATABASE_EXECUTION",
@@ -488,7 +488,7 @@ export function auditToolBoundary(tools = [], options = {}) {
       });
     }
     // Check if tool touches file read/write
-    else if (/read_file|write_file|edit_file|fs_|file_system/i.test(nameLower) || /read file|write file|filesystem/i.test(desc)) {
+    else if (/(^|_|\b)(file|read_file|write_file|edit_file|fs|filesystem)($|_|\b)/i.test(nameLower) || /\b(read file|write file|filesystem|file content)\b/i.test(desc)) {
       findings.push({
         tool_name: name,
         category: "FILESYSTEM_ACCESS",
@@ -506,7 +506,7 @@ export function auditToolBoundary(tools = [], options = {}) {
       });
     }
     // Check if tool performs web browsing / scraping / external network
-    else if (/web_search|browse|fetch_url|http|curl|request/i.test(nameLower) || /scrape|fetch url|search the web/i.test(desc)) {
+    else if (/(^|_|\b)(web|browse|scrape|fetch_url|http|curl|request|url)($|_|\b)/i.test(nameLower) || /\b(web search|scrape|fetch url|http request)\b/i.test(desc)) {
       findings.push({
         tool_name: name,
         category: "NETWORK_AND_INPUT",

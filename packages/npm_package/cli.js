@@ -36,7 +36,7 @@ import fs from 'fs';
 import path from 'path';
 import os from 'os';
 import { fileURLToPath } from 'url';
-import { scrubSensitiveCredentials, verifyTurnReceiptChaining, rfc8785Canonicalize, evaluateWorkspaceSecurity, getModelContextPrompt, immunizeProject, harmonizeUniversalSchema, validateToolPayload, exportToolSchema, detectSchemaFormat, generateAuditPack, verifyAuditPack } from './index.js';
+import { scrubSensitiveCredentials, verifyTurnReceiptChaining, rfc8785Canonicalize, evaluateWorkspaceSecurity, getModelContextPrompt, immunizeProject, harmonizeUniversalSchema, validateToolPayload, exportToolSchema, detectSchemaFormat, generateAuditPack, verifyAuditPack, BTP_CAPABILITY_MANIFEST, auditToolBoundary, enforceToolBoundary } from './index.js';
 import crypto from 'crypto';
 import { exec, execSync } from 'child_process';
 
@@ -1758,7 +1758,125 @@ function runAuditCli(subArgs) {
   }
 }
 
+function runDiscoverCli(subArgs = []) {
+  const jsonMode = subArgs.includes('--json');
+  if (jsonMode) {
+    console.log(JSON.stringify(BTP_CAPABILITY_MANIFEST, null, 2));
+    return;
+  }
+  printBanner();
+  console.log(`${BOLD}[BTP AGENT-TO-AGENT DISCOVERY MANIFEST]${RESET}`);
+  console.log('='.repeat(65));
+  console.log(`  Protocol:      ${CYAN}${BTP_CAPABILITY_MANIFEST.protocol} (v${BTP_CAPABILITY_MANIFEST.version})${RESET}`);
+  console.log(`  Description:   ${DIM}${BTP_CAPABILITY_MANIFEST.description}${RESET}\n`);
+  console.log(`${BOLD}Supported Boundaries:${RESET}`);
+  BTP_CAPABILITY_MANIFEST.supported_boundaries.forEach(b => console.log(`  • ${GREEN}${b}${RESET}`));
+  console.log(`\n${BOLD}Covered Threat Vectors:${RESET}`);
+  BTP_CAPABILITY_MANIFEST.covered_threats.forEach(t => console.log(`  • ${YELLOW}${t}${RESET}`));
+  console.log(`\n${BOLD}Known Limitations (Honest Disclosure):${RESET}`);
+  BTP_CAPABILITY_MANIFEST.known_limitations.forEach(l => console.log(`  • ${DIM}${l}${RESET}`));
+  console.log(`\n${BOLD}Deterministic Performance SLA:${RESET}`);
+  console.log(`  • Typical Latency : ${GREEN}< ${BTP_CAPABILITY_MANIFEST.deterministic_guarantees.typical_latency_us} µs${RESET}`);
+  console.log(`  • Max Latency     : ${GREEN}< ${BTP_CAPABILITY_MANIFEST.deterministic_guarantees.max_latency_us} µs${RESET}`);
+  console.log(`  • Cloud Invariant : Zero LLM/Cloud Dependency (${GREEN}100% In-Process${RESET})`);
+  console.log(`\n${BOLD}Discoverable Tools for Autonomous Agents:${RESET}`);
+  BTP_CAPABILITY_MANIFEST.discovery_tools.forEach((t, i) => {
+    console.log(`  ${i + 1}. ${CYAN}${t.name}${RESET}: ${t.description}`);
+  });
+  console.log(`\nFor machine-readable JSON: ${BOLD}npx btp-guard discover --json${RESET}\n`);
+}
+
+function runAuditBoundaryCli(subArgs = []) {
+  printBanner();
+  console.log(`${BOLD}[BTP TOOL EXECUTION BOUNDARY AUDITOR]${RESET}`);
+  console.log('='.repeat(65));
+
+  let toolsToAudit = [];
+  const toolsArgIdx = subArgs.findIndex(a => a.startsWith('--tools='));
+  if (toolsArgIdx !== -1) {
+    try {
+      toolsToAudit = JSON.parse(subArgs[toolsArgIdx].slice(8));
+    } catch (e) {
+      console.error(`${RED}Invalid JSON in --tools argument:${RESET} ${e.message}`);
+    }
+  }
+
+  // Check --names=bash,query_database,read_file
+  const namesArg = subArgs.find(a => a.startsWith('--names='));
+  if (namesArg) {
+    const list = namesArg.slice(8).split(',').map(s => s.trim()).filter(Boolean);
+    list.forEach(name => toolsToAudit.push({ name, description: `Agent execution tool: ${name}` }));
+  }
+
+  // Check --file=tools.json
+  const fileArg = subArgs.find(a => a.startsWith('--file='));
+  if (fileArg) {
+    const fpath = fileArg.slice(7);
+    if (fs.existsSync(fpath)) {
+      try {
+        const raw = JSON.parse(fs.readFileSync(fpath, 'utf8'));
+        const arr = Array.isArray(raw) ? raw : (raw.tools || Object.keys(raw.mcpServers || {}));
+        arr.forEach(item => {
+          if (typeof item === 'string') toolsToAudit.push({ name: item, description: item });
+          else toolsToAudit.push(item);
+        });
+      } catch (e) {
+        console.error(`${RED}Error parsing file '${fpath}':${RESET} ${e.message}`);
+      }
+    }
+  }
+
+  if (toolsToAudit.length === 0) {
+    const cursorMcpPath = path.join(process.cwd(), '.cursor', 'mcp.json');
+    if (fs.existsSync(cursorMcpPath)) {
+      try {
+        const parsed = JSON.parse(fs.readFileSync(cursorMcpPath, 'utf8'));
+        if (parsed.mcpServers) {
+          Object.keys(parsed.mcpServers).forEach(serverName => {
+            toolsToAudit.push({ name: serverName, description: `MCP Server: ${parsed.mcpServers[serverName].command || ''}` });
+          });
+        }
+      } catch (e) {}
+    }
+  }
+
+  if (toolsToAudit.length === 0) {
+    toolsToAudit = [
+      { name: 'execute_command', description: 'Execute bash commands' },
+      { name: 'query_database', description: 'Run database SQL queries' },
+      { name: 'read_file', description: 'Read files from disk' }
+    ];
+    console.log(`${DIM}Auditing standard agent tool boundaries...${RESET}\n`);
+  }
+
+  const result = auditToolBoundary(toolsToAudit);
+  const isVulnerable = result.boundary_verdict === 'UNSHIELDED_VULNERABILITY_DETECTED';
+  console.log(`Audit Verdict: ${isVulnerable ? RED + BOLD : GREEN}${result.boundary_verdict}${RESET}`);
+  console.log(`Tools Audited: ${result.total_tools_audited} | Vulnerable: ${result.vulnerable_tools_count}\n`);
+
+  result.findings.forEach(f => {
+    console.log(`  [!] ${BOLD}${f.tool_name}${RESET} (${YELLOW}${f.category}${RESET}) - Risk: ${RED}${f.risk_level}${RESET}`);
+    console.log(`      Threats: ${f.threats.join(', ')}`);
+    console.log(`      Recommended Guard: ${CYAN}${f.recommended_guard}${RESET}`);
+    if (f.integration_recipe && f.integration_recipe.mcp_json_wrapper) {
+      console.log(`      Recipe: ${GREEN}${f.integration_recipe.mcp_json_wrapper}${RESET}`);
+    }
+    console.log('');
+  });
+
+  console.log(`${BOLD}Recommendation:${RESET} ${result.recommendation}`);
+  console.log(`Audit Receipt:  ${DIM}${result.audit_receipt}${RESET}\n`);
+}
+
 switch (command) {
+  case 'discover':
+  case 'manifest':
+    runDiscoverCli(args.slice(1));
+    break;
+  case 'audit-boundary':
+  case 'audit-tools':
+    runAuditBoundaryCli(args.slice(1));
+    break;
   case 'benchmark':
     runBenchmark(args.slice(1));
     break;
