@@ -764,7 +764,7 @@ export {
   createGuardedLlamaProxy
 } from './llamacpp.js';
 
-// Export Universal Adapters & Framework Helper Hooks (BTP v6.5.6)
+// Export Universal Adapters & Framework Helper Hooks (BTP v6.5.7)
 export {
   normalizeActionRequest,
   MCPAdapter,
@@ -778,4 +778,13 @@ export {
   createAutoGenPreFilter,
   createOpenHandsHook
 } from './universal_adapters.js';
+
+// Export Microsoft AutoGen & Semantic Kernel Middleware (BTP v6.5.7)
+export {
+  MicrosoftAutoGenMiddleware,
+  MicrosoftSemanticKernelMiddleware,
+  createMicrosoftAutoGenHook,
+  createMicrosoftSemanticKernelFilter
+} from './microsoft_adapters.js';
+
 

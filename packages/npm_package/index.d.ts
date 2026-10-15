@@ -286,3 +286,48 @@ export interface EnforceBoundaryResult {
 export function auditToolBoundary(tools?: any[], options?: any): BoundaryAuditResult;
 export function enforceToolBoundary(toolName: string, toolInput: any, options?: any): EnforceBoundaryResult;
 
+export class MicrosoftAutoGenMiddleware {
+  constructor(options?: any);
+  processMessageBeforeSend(sender: any, recipient: any, message: any): {
+    proceed: boolean;
+    intercepted: boolean;
+    message?: any;
+    error?: string;
+    verdict?: string;
+    rule_id?: string;
+    merkle_turn_receipt?: string;
+  };
+  interceptCodeExecution(code: string, language?: string, agentContext?: any): Promise<{
+    exitCode: number;
+    output?: string;
+    allowed: boolean;
+    verdict: string;
+    rule_id?: string;
+    merkle_turn_receipt?: string;
+  }>;
+  verifyGroupChatConsensus(speakers: any[], plannedAction: any): {
+    consensusAllowed: boolean;
+    verdict: string;
+    receipt?: string;
+  };
+}
+
+export class MicrosoftSemanticKernelMiddleware {
+  constructor(options?: any);
+  onFunctionInvocation(context: any, next?: (ctx: any) => Promise<any>): Promise<any>;
+  onPromptRendering(context: any, next?: (ctx: any) => Promise<any>): Promise<any>;
+}
+
+export function createMicrosoftAutoGenHook(options?: any): {
+  process_message_before_send: (sender: any, recipient: any, message: any) => any;
+  intercept_code_execution: (code: string, lang?: string, ctx?: any) => Promise<any>;
+  middleware: MicrosoftAutoGenMiddleware;
+};
+
+export function createMicrosoftSemanticKernelFilter(options?: any): {
+  onFunctionInvocation: (ctx: any, next?: (ctx: any) => Promise<any>) => Promise<any>;
+  onPromptRendering: (ctx: any, next?: (ctx: any) => Promise<any>) => Promise<any>;
+  middleware: MicrosoftSemanticKernelMiddleware;
+};
+
+

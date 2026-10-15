@@ -28,6 +28,10 @@
       "import": "./elizaos_plugin.js",
       "default": "./elizaos_plugin.js"
     },
+    "./microsoft": {
+      "import": "./microsoft_adapters.js",
+      "default": "./microsoft_adapters.js"
+    },
     "./package.json": "./package.json"
   },
   "type": "module",
@@ -77,6 +81,7 @@
     "vault_client.js",
     "token_store.js",
     "universal_adapters.js",
+    "microsoft_adapters.js",
     "process_shim.js",
     "elizaos_plugin.js",
     "README.md",
