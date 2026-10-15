@@ -1,44 +1,43 @@
-name: 'Bartholomew Agent Guard CI/CD Audit'
-description: 'Zero-trust AST safety gate, prompt injection detection, and 20-vector red-team audit for autonomous agent directives.'
-author: 'Bartholomew Sovereign Trust Authority'
+name: 'Bartholomew Keystone Security Guard'
+description: 'In-process sub-35µs AST safety gate, secret scrubber, and compliance validator for AI agent repositories.'
+author: 'Bartholomew Security'
 branding:
   icon: 'shield'
-  color: 'green'
+  color: 'blue'
 
 inputs:
-  scan-paths:
-    description: 'Comma-separated file paths or glob patterns to audit (e.g. .cursorrules, CLAUDE.md, GEMINI.md)'
+  enforce:
+    description: 'Enforcement mode (fail-closed or audit-only)'
     required: false
-    default: '.cursorrules, CLAUDE.md, GEMINI.md, .cursor/rules, copilot-instructions.md, .agents'
-  fail-on-exploit:
-    description: 'Whether to fail the CI build if vulnerabilities or prompt injections are found'
+    default: 'fail-closed'
+  export-audit:
+    description: 'Export SOC 2 / ISO 27001 compliance audit receipt'
     required: false
     default: 'true'
-  output-format:
-    description: 'Output format (markdown, json, summary)'
-    required: false
-    default: 'markdown'
-
-outputs:
-  score:
-    description: 'Resilience score out of 100'
-  passed:
-    description: 'Whether the agent directives passed zero-trust invariant checks'
-  merkle-root:
-    description: 'RFC 8785 Ed25519 canonical Merkle root hash for the audit'
 
 runs:
   using: 'composite'
   steps:
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
       with:
-        python-version: '3.11'
+        node-version: '>=18'
 
-    - name: Run Bartholomew Agent Guard Audit
+    - name: Run Bartholomew Auto-Pilot Audit
       shell: bash
-      env:
-        SCAN_PATHS: ${{ inputs.scan-paths }}
-        FAIL_ON_EXPLOIT: ${{ inputs.fail-on-exploit }}
       run: |
-        python ${{ github.action_path }}/scripts/run_ci_agent_audit.py
+        npx --yes btp-guard intel --json > btp_intel_report.json
+        npx --yes btp-guard scan-deps
+        if [ "${{ inputs.export-audit }}" = "true" ]; then
+          npx --yes btp-guard audit-export BARTHOLOMEW_SOC2_AUDIT.md
+        fi
+
+    - name: Verify Posture Gate
+      shell: bash
+      run: |
+        SCORE=$(node -e "const r = JSON.parse(require('fs').readFileSync('btp_intel_report.json')); console.log(r.score || 0);")
+        echo "Bartholomew Workspace Posture Score: $SCORE / 100"
+        if [ "$SCORE" -lt 75 ] && [ "${{ inputs.enforce }}" = "fail-closed" ]; then
+          echo "::error::Bartholomew Security Gate Failed: Repository posture score ($SCORE) is below required 75 threshold."
+          exit 1
+        fi

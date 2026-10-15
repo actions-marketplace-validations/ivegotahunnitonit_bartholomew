@@ -742,7 +742,24 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
     }
   }
 
-  // 4. Require Approval condition (optional policy)
+  // 4. Prompt Injection & Instruction Override Firewall (BTP-MCP-INV-004)
+  if (/(ignore|disregard)\s+(all\s+|your\s+)?(previous|prior|above|earlier)\s+instructions?/i.test(inputStr) ||
+      /(you are now|act as|pretend (you are|to be))\s+(an?\s+)?(uncensored|DAN|evil|jailbroken)/i.test(inputStr) ||
+      /forget\s+(everything|all)\s+(above|before|you were told)/i.test(inputStr)) {
+    const t1 = process.hrtime.bigint();
+    return {
+      allowed: false,
+      verdict: "DENY",
+      tool_name: toolName,
+      rule_id: "BTP-MCP-INV-004",
+      reason: "Direct prompt injection, instruction override, or persona hijacking detected in tool payload",
+      remediation_hint: "Provide domain-relevant tool inputs without adversarial control sequences.",
+      safe_alternative: null,
+      latency_us: Number(Number(t1 - t0) / 1000).toFixed(1)
+    };
+  }
+
+  // 5. Require Approval condition (optional policy)
   if (options.requireApprovalFor && options.requireApprovalFor.includes(toolName)) {
     const t1 = process.hrtime.bigint();
     return {
