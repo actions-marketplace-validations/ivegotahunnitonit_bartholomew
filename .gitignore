@@ -230,3 +230,5 @@ scripts/outreach_tracker.py
 
 scripts/audit_fulfillment_engine.py
 scripts/generate_1500_targets.py
+tests/*.json
+tests/fixtures/adversarial_regressions/
