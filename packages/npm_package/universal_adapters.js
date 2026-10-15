@@ -375,3 +375,69 @@ export class UniversalBTPDispatcher {
     };
   }
 }
+
+/**
+ * 7. Framework Helper Hooks (LangGraph, CrewAI, AutoGen, OpenHands)
+ */
+export function createLangGraphToolNode(tools = [], options = {}) {
+  const adapter = new LangChainFrameworkAdapter(options);
+  const guardedTools = tools.map(t => adapter.wrapTool(t));
+  return {
+    tools: guardedTools,
+    invoke: async (state) => {
+      const toolCall = state.toolCall || state.pending_tool || {};
+      const decision = enforceToolBoundary(toolCall.name || 'unknown_tool', toolCall.args || {}, options);
+      if (!decision.allowed) {
+        return {
+          ...state,
+          error: `[BTP VETO] ${decision.rule_id}: ${decision.reason}`,
+          status: 'BLOCKED',
+          verdict: decision.verdict
+        };
+      }
+      return { ...state, status: 'ALLOWED', verdict: 'ALLOW' };
+    }
+  };
+}
+
+export function createCrewAIStepCallback(options = {}) {
+  return function btpCrewAIStepCallback(stepOutput) {
+    const raw = typeof stepOutput === 'object' ? JSON.stringify(stepOutput) : String(stepOutput);
+    const decision = enforceToolBoundary('crewai_step', { output: raw }, options);
+    if (!decision.allowed) {
+      throw new Error(`[BTP VETO] CrewAI step halted by ${decision.rule_id}: ${decision.reason}`);
+    }
+    return true;
+  };
+}
+
+export function createAutoGenPreFilter(options = {}) {
+  return function btpAutoGenFilter(recipient, messages, sender, config) {
+    const lastMsg = messages && messages.length > 0 ? messages[messages.length - 1] : {};
+    const content = typeof lastMsg.content === 'string' ? lastMsg.content : JSON.stringify(lastMsg);
+    const decision = enforceToolBoundary('autogen_message', { content }, options);
+    return {
+      proceed: decision.allowed,
+      verdict: decision.verdict,
+      reason: decision.reason
+    };
+  };
+}
+
+export function createOpenHandsHook(options = {}) {
+  return async function btpOpenHandsHook(event) {
+    if (event.action === 'run' || event.action === 'command' || event.action === 'tool') {
+      const payload = event.args || { command: event.command };
+      const decision = enforceToolBoundary(event.action, payload, options);
+      if (!decision.allowed) {
+        return {
+          status: 'REJECTED',
+          rule_id: decision.rule_id,
+          reason: decision.reason
+        };
+      }
+    }
+    return { status: 'APPROVED' };
+  };
+}
+

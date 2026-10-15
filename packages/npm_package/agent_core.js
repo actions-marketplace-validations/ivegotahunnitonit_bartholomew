@@ -610,8 +610,10 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
 
   // 1. Destructive Shell Invariant (BTP-MCP-INV-001)
   const isShell = /bash|sh|exec|terminal|run_command|execute_command|cmd/i.test(nameLower);
-  if (isShell || (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine))) {
-    let rawCmd = (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine)) || inputStr;
+  const hasShellField = Boolean(toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine || toolInput.script || toolInput.targetFile || toolInput.path || toolInput.file));
+  const hasDestructivePayload = /\b(rm\s+-[a-zA-Z]*f|mkfs|dd\s+if=|curl\s+.*\|\s*(?:ba)?sh)\b/i.test(inputStr);
+  if (isShell || hasShellField || hasDestructivePayload) {
+    let rawCmd = (toolInput && (toolInput.command || toolInput.cmd || toolInput.CommandLine || toolInput.script || toolInput.targetFile)) || inputStr;
     let cmd = typeof rawCmd === 'string' ? rawCmd : (typeof rawCmd === 'object' && rawCmd !== null ? JSON.stringify(rawCmd) : String(rawCmd || ""));
 
     // A. Iterative Base64 Pre-Unpacking (recursion depth up to 3)

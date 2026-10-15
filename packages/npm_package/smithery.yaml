@@ -1,0 +1,12 @@
+name: btp-guard
+description: In-process AST tool guardrails, zero-leakage tokenization, and capability passkey governance for MCP agents.
+version: 6.5.6
+repository: https://github.com/ivegotahunnitonit/bartholomew
+startCommand:
+  type: stdio
+  config:
+    command: npx
+    args:
+      - "-y"
+      - "btp-guard"
+      - "mcp"

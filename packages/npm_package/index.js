@@ -763,3 +763,19 @@ export {
   inspectAndFilterResponse,
   createGuardedLlamaProxy
 } from './llamacpp.js';
+
+// Export Universal Adapters & Framework Helper Hooks (BTP v6.5.6)
+export {
+  normalizeActionRequest,
+  MCPAdapter,
+  OpenAIToolAdapter,
+  LangChainFrameworkAdapter,
+  MediatedProcessAdapter,
+  MultiAgentDelegationAdapter,
+  UniversalBTPDispatcher,
+  createLangGraphToolNode,
+  createCrewAIStepCallback,
+  createAutoGenPreFilter,
+  createOpenHandsHook
+} from './universal_adapters.js';
+

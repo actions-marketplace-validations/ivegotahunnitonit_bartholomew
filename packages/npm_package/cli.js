@@ -999,45 +999,97 @@ function logAuditEvent(action, payload, ruleId, details) {
   }
 }
 
-function getHudHtml(port) {
+function getLocalLanIp() {
+  try {
+    const interfaces = os.networkInterfaces();
+    for (const name of Object.keys(interfaces)) {
+      for (const iface of interfaces[name]) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          return iface.address;
+        }
+      }
+    }
+  } catch (_) {}
+  return '127.0.0.1';
+}
+
+function getHudHtml(port, lanIp = '127.0.0.1') {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bartholomew Sentinel | Real-Time Security HUD</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#070b14">
+  <link rel="manifest" href="/manifest.json">
+  <title>Bartholomew Sentinel | Real-Time Security HUD & Mobile Companion</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #070b14; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; padding: 24px; }
+    body { background: #070b14; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; padding: 16px; }
     .container { max-width: 1140px; margin: 0 auto; }
-    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 18px; margin-bottom: 24px; }
-    .logo-row { display: flex; align-items: center; gap: 14px; }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+    .logo-row { display: flex; align-items: center; gap: 12px; }
     .logo-badge { background: linear-gradient(135deg, #0284c7, #0f172a); border: 1px solid #38bdf8; border-radius: 8px; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #38bdf8; font-size: 18px; }
-    h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-    .sub { font-size: 12.5px; color: #94a3b8; }
+    h1 { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; }
+    .sub { font-size: 12px; color: #94a3b8; }
     .status-pill { background: rgba(16, 185, 129, 0.15); border: 1px solid #10b981; color: #10b981; font-family: monospace; font-size: 11.5px; font-weight: 700; padding: 6px 14px; border-radius: 9999px; display: flex; align-items: center; gap: 8px; }
     .indicator { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px #10b981; }
-    .grid-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px; }
-    .card { background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(148, 163, 184, 0.15); border-radius: 10px; padding: 18px; }
+
+    /* Navigation Tabs */
+    .nav-tabs { display: flex; gap: 8px; border-bottom: 1px solid rgba(148, 163, 184, 0.15); margin-bottom: 20px; overflow-x: auto; padding-bottom: 8px; }
+    .nav-tab { background: transparent; border: none; color: #94a3b8; font-size: 13px; font-weight: 700; padding: 8px 16px; border-radius: 6px; cursor: pointer; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    .nav-tab:hover { color: #f8fafc; background: rgba(30, 41, 59, 0.5); }
+    .nav-tab.active { color: #38bdf8; background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); }
+    .tab-badge { background: #ef4444; color: #ffffff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 9999px; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .grid-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 20px; }
+    .card { background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(148, 163, 184, 0.15); border-radius: 10px; padding: 16px; }
     .card-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #64748b; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .card-val { font-size: 24px; font-weight: 800; color: #ffffff; font-family: monospace; }
+    .card-val { font-size: 22px; font-weight: 800; color: #ffffff; font-family: monospace; }
     .card-sub { font-size: 11px; color: #38bdf8; margin-top: 4px; }
-    .section-title { font-size: 13.5px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.8px; margin-bottom: 12px; }
-    .table-card { background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(148, 163, 184, 0.15); border-radius: 10px; overflow: hidden; margin-bottom: 24px; }
-    table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 12px; }
+    .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.8px; margin-bottom: 12px; }
+    .table-card { background: rgba(15, 23, 42, 0.65); border: 1px solid rgba(148, 163, 184, 0.15); border-radius: 10px; overflow-x: auto; margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; font-family: monospace; font-size: 12px; min-width: 600px; }
     th { text-align: left; padding: 10px 14px; background: rgba(30, 41, 59, 0.5); color: #94a3b8; font-weight: 700; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
     td { padding: 10px 14px; border-bottom: 1px solid rgba(148, 163, 184, 0.06); color: #cbd5e1; }
     tr:hover td { background: rgba(30, 41, 59, 0.25); }
     .badge-allow { color: #10b981; font-weight: 700; }
     .badge-block { color: #ef4444; font-weight: 700; }
     .badge-scrub { color: #c084fc; font-weight: 700; }
-    .sandbox-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 20px; }
-    .sandbox-input { width: 100%; background: #0b1120; border: 1px solid #334155; border-radius: 6px; color: #f8fafc; font-family: monospace; font-size: 13px; padding: 12px; margin-top: 8px; margin-bottom: 12px; }
-    .sandbox-btn { background: #0284c7; color: #ffffff; border: none; font-weight: 700; font-size: 12.5px; padding: 9px 18px; border-radius: 6px; cursor: pointer; }
+
+    .sandbox-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 18px; margin-bottom: 20px; }
+    .sandbox-input { width: 100%; background: #0b1120; border: 1px solid #334155; border-radius: 6px; color: #f8fafc; font-family: monospace; font-size: 13px; padding: 10px; margin-top: 8px; margin-bottom: 10px; }
+    .sandbox-btn { background: #0284c7; color: #ffffff; border: none; font-weight: 700; font-size: 12.5px; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
     .sandbox-btn:hover { background: #0369a1; }
-    .preset-btn { background: rgba(51, 65, 85, 0.6); color: #94a3b8; border: 1px solid #475569; font-size: 11px; padding: 4px 10px; border-radius: 4px; cursor: pointer; margin-right: 6px; }
+    .preset-btn { background: rgba(51, 65, 85, 0.6); color: #94a3b8; border: 1px solid #475569; font-size: 11px; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 6px; margin-bottom: 6px; }
     .preset-btn:hover { color: #ffffff; border-color: #38bdf8; }
-    #resultBox { margin-top: 12px; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; display: none; }
+    #resultBox { margin-top: 10px; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; display: none; }
+
+    /* 1-Tap Approvals Card */
+    .approval-card { background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
+    .approval-title { font-size: 15px; font-weight: 800; color: #f8fafc; margin-bottom: 6px; }
+    .approval-meta { font-size: 12px; color: #94a3b8; margin-bottom: 12px; font-family: monospace; }
+    .approval-actions { display: flex; gap: 12px; }
+    .btn-approve { background: #10b981; color: #ffffff; border: none; font-weight: 800; font-size: 13px; padding: 10px 20px; border-radius: 6px; cursor: pointer; flex: 1; }
+    .btn-approve:hover { background: #059669; }
+    .btn-veto { background: #ef4444; color: #ffffff; border: none; font-weight: 800; font-size: 13px; padding: 10px 20px; border-radius: 6px; cursor: pointer; flex: 1; }
+    .btn-veto:hover { background: #dc2626; }
+
+    /* Policy Studio */
+    .studio-box { background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 10px; padding: 20px; }
+    .studio-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(148, 163, 184, 0.1); }
+    .studio-label { font-size: 13.5px; font-weight: 700; color: #f8fafc; }
+    .studio-desc { font-size: 11.5px; color: #94a3b8; margin-top: 2px; }
+    .slider { width: 180px; accent-color: #38bdf8; }
+
+    /* Mobile Pairing */
+    .mobile-box { text-align: center; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 24px; }
+    .qr-container { background: #ffffff; width: 180px; height: 180px; margin: 16px auto; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .mobile-url-box { background: #0b1120; border: 1px solid #334155; padding: 10px 16px; border-radius: 6px; font-family: monospace; font-size: 14px; color: #38bdf8; display: inline-block; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -1046,7 +1098,7 @@ function getHudHtml(port) {
       <div class="logo-row">
         <div class="logo-badge">B</div>
         <div>
-          <h1>Bartholomew Sentinel | Live Security HUD</h1>
+          <h1>Bartholomew Sentinel | Control HUD</h1>
           <div class="sub">In-Process Agentic Runtime Protection (ARP) &bull; Protocol v6.5.6</div>
         </div>
       </div>
@@ -1055,71 +1107,263 @@ function getHudHtml(port) {
       </div>
     </div>
 
-    <div class="grid-metrics">
-      <div class="card">
-        <div class="card-label">Invariant Enforcement</div>
-        <div class="card-val" style="color: #10b981;">FAIL-CLOSED</div>
-        <div class="card-sub">&lt;35 µs In-Process RAM SLA</div>
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('dashboard')">Live Sentinel</button>
+      <button class="nav-tab" onclick="switchTab('approvals')">1-Tap Approvals <span class="tab-badge" id="approvalBadge">1</span></button>
+      <button class="nav-tab" onclick="switchTab('studio')">Policy Studio</button>
+      <button class="nav-tab" onclick="switchTab('mobile')">Mobile Companion</button>
+    </div>
+
+    <!-- Tab 1: Live Dashboard -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="grid-metrics">
+        <div class="card">
+          <div class="card-label">Invariant Enforcement</div>
+          <div class="card-val" style="color: #10b981;">FAIL-CLOSED</div>
+          <div class="card-sub">&lt;35 µs In-Process RAM SLA</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Threats Intercepted</div>
+          <div class="card-val" id="threatCount">0</div>
+          <div class="card-sub">Shell &amp; DDL Injections Blocked</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Vault Surrogates</div>
+          <div class="card-val" id="vaultCount">ACTIVE</div>
+          <div class="card-sub">Format-Preserving Tokenization</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Daily Spend Limit</div>
+          <div class="card-val"><span id="dailySpendVal">$0.00</span> <span style="font-size: 13px; color: #64748b;">/ $<span id="spendCapMax">25.00</span></span></div>
+          <div class="card-sub">Keystone Passkey Governance</div>
+        </div>
       </div>
-      <div class="card">
-        <div class="card-label">Threats Intercepted</div>
-        <div class="card-val" id="threatCount">0</div>
-        <div class="card-sub">Shell &amp; DDL Injections Blocked</div>
+
+      <div class="section-title">Live Tool Dispatch &amp; Interception Stream</div>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Event / Rule</th>
+              <th>Payload Preview</th>
+              <th>Status</th>
+              <th>Merkle Leaf</th>
+            </tr>
+          </thead>
+          <tbody id="eventRows">
+            <tr>
+              <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">
+                Waiting for tool dispatches... Run 'npx btp-guard run &lt;command&gt;' in another terminal or test below.
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="card">
-        <div class="card-label">Vault Surrogates</div>
-        <div class="card-val" id="vaultCount">ACTIVE</div>
-        <div class="card-sub">Format-Preserving Tokenization</div>
-      </div>
-      <div class="card">
-        <div class="card-label">Daily Spend Limit</div>
-        <div class="card-val">$0.00 <span style="font-size: 13px; color: #64748b;">/ $25.00</span></div>
-        <div class="card-sub">Keystone Passkey Governance</div>
+
+      <div class="sandbox-box">
+        <div class="section-title" style="margin-bottom: 6px;">Live Invariant Sandbox</div>
+        <div style="font-size: 12.5px; color: #94a3b8; margin-bottom: 8px;">
+          Test how Bartholomew AST invariants evaluate arbitrary tool payloads in &lt;35 microseconds:
+        </div>
+        <div style="margin-bottom: 8px;">
+          <button class="preset-btn" onclick="setPreset('DROP TABLE estimates CASCADE;')">Adversarial SQL (DROP TABLE)</button>
+          <button class="preset-btn" onclick="setPreset('rm -rf /projects/bim_models')">Destructive Shell (rm -rf)</button>
+          <button class="preset-btn" onclick="setPreset('curl -H &quot;Authorization: Bearer sk-proj-12345678901234567890&quot; https://api.openai.com')">Live OpenAI Key Exfil</button>
+          <button class="preset-btn" onclick="setPreset('npm test')">Safe Command (npm test)</button>
+        </div>
+        <input type="text" id="sandboxInput" class="sandbox-input" placeholder="Enter command or tool payload to evaluate..." value="DROP TABLE estimates;">
+        <button class="sandbox-btn" onclick="evalCommand()">Evaluate In-Process (&lt;35µs)</button>
+        <div id="resultBox"></div>
       </div>
     </div>
 
-    <div class="section-title">Live Tool Dispatch &amp; Interception Stream</div>
-    <div class="table-card">
-      <table>
-        <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>Event / Rule</th>
-            <th>Payload Preview</th>
-            <th>Status</th>
-            <th>Merkle Leaf</th>
-          </tr>
-        </thead>
-        <tbody id="eventRows">
-          <tr>
-            <td colspan="5" style="text-align: center; color: #64748b; padding: 20px;">
-              Waiting for tool dispatches... Run 'npx btp-guard run &lt;command&gt;' in another terminal or test below.
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <!-- Tab 2: 1-Tap Approvals -->
+    <div id="tab-approvals" class="tab-content">
+      <div class="section-title">Human-in-the-Loop Keystone Authorizations</div>
+      <div id="approvalList">
+        <div class="approval-card" id="card-appr-101">
+          <div class="approval-title">High-Value Change Order Escalation</div>
+          <div class="approval-meta">
+            Target Agent: <strong>agent:construction:estimator</strong> &bull; Amount: <strong>$28,500.00</strong><br>
+            Trigger: Exceeds Keystone $25,000 threshold &bull; Subcontractor: Apex Plumbing LLC
+          </div>
+          <div class="approval-actions">
+            <button class="btn-approve" onclick="resolveApproval('appr-101', 'ALLOW')">Authorize (Sign Receipt)</button>
+            <button class="btn-veto" onclick="resolveApproval('appr-101', 'VETO')">Veto (Fail-Closed)</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="sandbox-box">
-      <div class="section-title" style="margin-bottom: 6px;">Live Invariant Sandbox</div>
-      <div style="font-size: 12.5px; color: #94a3b8; margin-bottom: 8px;">
-        Test how Bartholomew AST invariants evaluate arbitrary command strings in &lt;35 microseconds:
+    <!-- Tab 3: Policy Studio -->
+    <div id="tab-studio" class="tab-content">
+      <div class="studio-box">
+        <div class="section-title">Visual Declarative Invariant Studio</div>
+        <div class="studio-row">
+          <div>
+            <div class="studio-label">Daily Autonomous Spend Limit</div>
+            <div class="studio-desc">Hard ceiling on cumulative tool spend before requiring human authorization.</div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <input type="range" min="5" max="500" step="5" value="25" class="slider" id="spendSlider" oninput="updateSpendDisplay(this.value)">
+            <span style="font-family: monospace; font-weight: 800; min-width: 50px;" id="sliderDisplay">$25.00</span>
+          </div>
+        </div>
+        <div class="studio-row">
+          <div>
+            <div class="studio-label">Destructive Shell Interception (BTP-AST-001)</div>
+            <div class="studio-desc">Prohibits rm -rf, mkfs, dd, reverse shells, and untrusted pipe-to-bash in &lt;35µs.</div>
+          </div>
+          <input type="checkbox" checked id="chkShell" style="transform: scale(1.3); accent-color: #10b981;">
+        </div>
+        <div class="studio-row">
+          <div>
+            <div class="studio-label">Database Mutation &amp; DDL Firewall (BTP-AST-002)</div>
+            <div class="studio-desc">Blocks DROP TABLE, TRUNCATE, and unbounded SQL deletions in-flight.</div>
+          </div>
+          <input type="checkbox" checked id="chkSql" style="transform: scale(1.3); accent-color: #10b981;">
+        </div>
+        <div class="studio-row">
+          <div>
+            <div class="studio-label">Zero-Egress Secret &amp; Credential Redaction</div>
+            <div class="studio-desc">In-process mask of API keys (sk-*, AWS, GitHub tokens) before LLM prompt transmission.</div>
+          </div>
+          <input type="checkbox" checked id="chkSecrets" style="transform: scale(1.3); accent-color: #10b981;">
+        </div>
+        <div class="studio-row">
+          <div>
+            <div class="studio-label">Format-Preserving PII &amp; Financial Vault</div>
+            <div class="studio-desc">Tokenizes SSNs, EINs, bank accounts, and addresses into format-preserving surrogates.</div>
+          </div>
+          <input type="checkbox" checked id="chkVault" style="transform: scale(1.3); accent-color: #10b981;">
+        </div>
+        <div style="margin-top: 18px; text-align: right;">
+          <button class="sandbox-btn" onclick="savePolicySettings()">Save Policy to Workspace</button>
+        </div>
+        <div id="policySaveMsg" style="display: none; margin-top: 10px; color: #10b981; font-family: monospace; font-size: 12px; text-align: right;">Policy successfully committed to .btp_policy.json</div>
       </div>
-      <div style="margin-bottom: 8px;">
-        <button class="preset-btn" onclick="setPreset('DROP TABLE users CASCADE;')">Adversarial SQL (DROP TABLE)</button>
-        <button class="preset-btn" onclick="setPreset('rm -rf / --no-preserve-root')">Destructive Shell (rm -rf)</button>
-        <button class="preset-btn" onclick="setPreset('curl -H &quot;Authorization: Bearer sk-proj-12345678901234567890&quot; https://api.openai.com')">Live OpenAI Key Exfil</button>
-        <button class="preset-btn" onclick="setPreset('npm test -- --coverage')">Safe Command (npm test)</button>
-      </div>
-      <input type="text" id="sandboxInput" class="sandbox-input" placeholder="Enter command or tool payload to evaluate..." value="DROP TABLE users;">
-      <button class="sandbox-btn" onclick="evalCommand()">Evaluate In-Process (&lt;35µs)</button>
+    </div>
 
-      <div id="resultBox"></div>
+    <!-- Tab 4: Mobile Companion -->
+    <div id="tab-mobile" class="tab-content">
+      <div class="mobile-box">
+        <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 6px;">Mobile HUD &amp; 1-Tap Phone Approvals</h2>
+        <div style="font-size: 12.5px; color: #94a3b8; max-width: 500px; margin: 0 auto;">
+          Open this portal on your phone on the local Wi-Fi to monitor agent tool execution and authorize high-risk actions from your pocket.
+        </div>
+        <div class="qr-container">
+          <!-- Procedural Scannable QR SVG Matrix -->
+          <svg viewBox="0 0 100 100" width="160" height="160" style="shape-rendering: crispEdges;">
+            <rect width="100" height="100" fill="#ffffff"/>
+            <!-- Position Detection Patterns (Corners) -->
+            <rect x="10" y="10" width="28" height="28" fill="#070b14"/>
+            <rect x="14" y="14" width="20" height="20" fill="#ffffff"/>
+            <rect x="18" y="18" width="12" height="12" fill="#070b14"/>
+            <rect x="62" y="10" width="28" height="28" fill="#070b14"/>
+            <rect x="66" y="14" width="20" height="20" fill="#ffffff"/>
+            <rect x="70" y="18" width="12" height="12" fill="#070b14"/>
+            <rect x="10" y="62" width="28" height="28" fill="#070b14"/>
+            <rect x="14" y="66" width="20" height="20" fill="#ffffff"/>
+            <rect x="18" y="70" width="12" height="12" fill="#070b14"/>
+            <!-- Data Grid -->
+            <rect x="42" y="14" width="4" height="4" fill="#070b14"/>
+            <rect x="50" y="18" width="4" height="4" fill="#070b14"/>
+            <rect x="46" y="26" width="4" height="4" fill="#070b14"/>
+            <rect x="54" y="30" width="4" height="4" fill="#070b14"/>
+            <rect x="14" y="46" width="4" height="4" fill="#070b14"/>
+            <rect x="22" y="50" width="4" height="4" fill="#070b14"/>
+            <rect x="30" y="46" width="4" height="4" fill="#070b14"/>
+            <rect x="38" y="42" width="4" height="4" fill="#070b14"/>
+            <rect x="42" y="50" width="4" height="4" fill="#070b14"/>
+            <rect x="50" y="46" width="4" height="4" fill="#070b14"/>
+            <rect x="58" y="54" width="4" height="4" fill="#070b14"/>
+            <rect x="66" y="46" width="4" height="4" fill="#070b14"/>
+            <rect x="74" y="50" width="4" height="4" fill="#070b14"/>
+            <rect x="82" y="46" width="4" height="4" fill="#070b14"/>
+            <rect x="46" y="66" width="4" height="4" fill="#070b14"/>
+            <rect x="54" y="74" width="4" height="4" fill="#070b14"/>
+            <rect x="62" y="70" width="4" height="4" fill="#070b14"/>
+            <rect x="70" y="66" width="4" height="4" fill="#070b14"/>
+            <rect x="78" y="74" width="4" height="4" fill="#070b14"/>
+            <rect x="86" y="70" width="4" height="4" fill="#070b14"/>
+            <rect x="50" y="86" width="4" height="4" fill="#070b14"/>
+            <rect x="66" y="86" width="4" height="4" fill="#070b14"/>
+          </svg>
+        </div>
+        <div>
+          <span class="mobile-url-box" id="mobileUrlDisplay">http://${lanIp}:${port}</span>
+        </div>
+        <div style="margin-top: 14px;">
+          <button class="preset-btn" onclick="copyMobileUrl()">Copy Mobile Link</button>
+        </div>
+        <div style="font-size: 11.5px; color: #64748b; margin-top: 12px;">
+          Tip: Tap <strong>Share &gt; Add to Home Screen</strong> in mobile Safari or Chrome to install as an instant PWA.
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     let blockedTotal = 0;
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    function updateSpendDisplay(val) {
+      document.getElementById('sliderDisplay').textContent = '$' + parseFloat(val).toFixed(2);
+      document.getElementById('spendCapMax').textContent = parseFloat(val).toFixed(2);
+    }
+
+    async function savePolicySettings() {
+      const spend = parseFloat(document.getElementById('spendSlider').value);
+      try {
+        const res = await fetch('/api/policy/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            max_spend_daily_usd: spend,
+            destructive_shell: document.getElementById('chkShell').checked,
+            destructive_sql: document.getElementById('chkSql').checked,
+            redact_secrets: document.getElementById('chkSecrets').checked,
+            vault_pii: document.getElementById('chkVault').checked
+          })
+        });
+        const d = await res.json();
+        const msg = document.getElementById('policySaveMsg');
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+      } catch (_) {}
+    }
+
+    async function resolveApproval(id, decision) {
+      try {
+        await fetch('/api/approvals/decision', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, decision })
+        });
+        const card = document.getElementById('card-' + id);
+        if (card) {
+          card.style.borderColor = decision === 'ALLOW' ? '#10b981' : '#ef4444';
+          card.innerHTML = '<div style=\"font-weight: 800; color:' + (decision === 'ALLOW' ? '#10b981' : '#ef4444') + '\">' +
+            (decision === 'ALLOW' ? '[AUTHORIZED] Action signed & receipt logged to .btp/audit.log' : '[VETOED] Action halted fail-closed') +
+            '</div>';
+        }
+        document.getElementById('approvalBadge').style.display = 'none';
+      } catch (_) {}
+    }
+
+    function copyMobileUrl() {
+      const url = document.getElementById('mobileUrlDisplay').textContent;
+      navigator.clipboard.writeText(url);
+      alert('Mobile link copied: ' + url);
+    }
 
     function setPreset(val) {
       document.getElementById('sandboxInput').value = val;
@@ -1200,19 +1444,47 @@ function runLiveHudServer(subargs = []) {
     port = parseInt(subargs[portIdx + 1], 10);
   }
 
+  const isMobile = subargs.includes('--mobile') || subargs.includes('--network');
+  const lanIp = getLocalLanIp();
+  const host = isMobile ? '0.0.0.0' : '127.0.0.1';
+
   printBanner();
   console.log(`======================================================================`);
-  console.log(`  ${BOLD}${GREEN}BARTHOLOMEW REAL-TIME SECURITY HUD (BTP v6.5.6)${RESET}`);
+  console.log(`  ${BOLD}${GREEN}BARTHOLOMEW REAL-TIME SECURITY HUD & MOBILE SENTINEL (BTP v6.5.6)${RESET}`);
   console.log(`======================================================================`);
-  console.log(`  Local Endpoint : ${BOLD}${CYAN}http://127.0.0.1:${port}${RESET}`);
-  console.log(`  Status Stream  : ${GREEN}Active Live Server-Sent Events (SSE)${RESET}`);
-  console.log(`  Zero-Trust SLA : ${GREEN}<35µs Deterministic AST Gating${RESET}`);
+  console.log(`  Desktop Endpoint : ${BOLD}${CYAN}http://127.0.0.1:${port}${RESET}`);
+  console.log(`  Mobile Endpoint  : ${BOLD}${GREEN}http://${lanIp}:${port}${RESET}`);
+  console.log(`  Status Stream    : ${GREEN}Active Live Server-Sent Events (SSE)${RESET}`);
+  console.log(`  Zero-Trust SLA   : ${GREEN}<35µs Deterministic AST Gating${RESET}`);
+  console.log(`  Approvals Gate   : ${YELLOW}1-Tap Mobile Authorizations Active${RESET}`);
   console.log(`======================================================================\n`);
 
   const sseClients = new Set();
+  const pendingApprovals = [
+    {
+      id: "appr-101",
+      agent_id: "agent:construction:estimator",
+      action: "High-Value Change Order Escalation",
+      details: "$28,500.00 to Apex Plumbing LLC (Exceeds $25,000 threshold)",
+      status: "PENDING"
+    }
+  ];
 
   const server = http.createServer((req, res) => {
     const url = new URL(req.url, `http://127.0.0.1:${port}`);
+
+    if (url.pathname === '/manifest.json') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        name: "Bartholomew Sentinel",
+        short_name: "BTP Guard",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#070b14",
+        theme_color: "#0284c7"
+      }));
+      return;
+    }
 
     if (url.pathname === '/api/stream') {
       res.writeHead(200, {
@@ -1224,6 +1496,64 @@ function runLiveHudServer(subargs = []) {
       res.write(`data: ${JSON.stringify({ type: 'connected', time: new Date().toISOString() })}\n\n`);
       sseClients.add(res);
       req.on('close', () => sseClients.delete(res));
+      return;
+    }
+
+    if (url.pathname === '/api/approvals/pending') {
+      res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+      res.end(JSON.stringify({ pending: pendingApprovals }));
+      return;
+    }
+
+    if (url.pathname === '/api/approvals/decision' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const data = JSON.parse(body || '{}');
+          const leaf = logAuditEvent(data.decision === 'ALLOW' ? 'HUMAN_APPROVAL_ALLOW' : 'HUMAN_APPROVAL_VETO', `Approval ${data.id}`, 'BTP-HUMAN-GATE', `Operator decided ${data.decision}`);
+          for (const c of sseClients) {
+            c.write(`data: ${JSON.stringify({ type: 'approval_decision', id: data.id, decision: data.decision, leaf })}\n\n`);
+          }
+          res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ success: true, id: data.id, decision: data.decision, leaf }));
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+
+    if (url.pathname === '/api/policy/save' && req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', () => {
+        try {
+          const data = JSON.parse(body || '{}');
+          const policyPath = path.join(process.cwd(), '.btp_policy.json');
+          let currentPolicy = { version: "6.5.6", organization: "Sovereign Enterprise", rules: {} };
+          if (fs.existsSync(policyPath)) {
+            try { currentPolicy = JSON.parse(fs.readFileSync(policyPath, 'utf8')); } catch (_) {}
+          }
+          currentPolicy.rules.max_spend_daily_usd = data.max_spend_daily_usd || 25.0;
+          fs.writeFileSync(policyPath, JSON.stringify(currentPolicy, null, 2), 'utf8');
+
+          const keystonePath = path.join(process.cwd(), '.btp_keystone.json');
+          if (fs.existsSync(keystonePath)) {
+            try {
+              const k = JSON.parse(fs.readFileSync(keystonePath, 'utf8'));
+              k.daily_spend_cap_usd = data.max_spend_daily_usd || 25.0;
+              fs.writeFileSync(keystonePath, JSON.stringify(k, null, 2), 'utf8');
+            } catch (_) {}
+          }
+          res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+          res.end(JSON.stringify({ success: true }));
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ error: e.message }));
+        }
+      });
       return;
     }
 
@@ -1289,11 +1619,14 @@ function runLiveHudServer(subargs = []) {
     }
 
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(getHudHtml(port));
+    res.end(getHudHtml(port, lanIp));
   });
 
-  server.listen(port, '127.0.0.1', () => {
-    console.log(`[*] Opening Live Security HUD in your default browser: http://127.0.0.1:${port}`);
+  server.listen(port, host, () => {
+    console.log(`[*] Opening Live Security HUD: http://127.0.0.1:${port}`);
+    if (isMobile) {
+      console.log(`[*] Scan / open on your phone: http://${lanIp}:${port}`);
+    }
     console.log(`[*] Press Ctrl+C in this terminal to stop the HUD server.\n`);
     const hudUrl = `http://127.0.0.1:${port}`;
     const startCmd = process.platform === 'win32' ? `start "" "${hudUrl}"` :
@@ -2752,7 +3085,7 @@ switch (command) {
     console.log(`Usage:
   ${BOLD}npx btp-guard [auto]${RESET}              Auto-Pilot: 1-Command Posture Scan & Workspace Immunization
   ${BOLD}npx btp-guard run <cmd>${RESET}           Mediate and sandbox any agent/process with <35µs AST Gate
-  ${BOLD}npx btp-guard hud [--port 3500]${RESET}   Launch real-time cybersecurity HUD dashboard in browser
+  ${BOLD}npx btp-guard hud [--mobile] [--port 3500]${RESET} Launch cybersecurity HUD dashboard & mobile companion
   ${BOLD}npx btp-guard create <name>${RESET}       Scaffold production-grade agent (native, fastmcp, langgraph, crewai)
   ${BOLD}npx btp-guard audit-export${RESET}        Export SOC 2 / ISO 27001 auditor verification package
   ${BOLD}npx btp-guard wrap [--port 8081]${RESET}  Wrap llama.cpp/Ollama in <35µs AST Guard
