@@ -656,7 +656,7 @@ if (rawArgs.includes('--help') || rawArgs.includes('-h') || rawArgs.length === 0
   process.stdout.write('  mcp-shield demo                    Run live 10-second 4-scenario acceptance test locally\n');
   process.stdout.write('  mcp-shield assess [--target <dir>] Generate complete client security boundary assessment report\n');
   process.stdout.write('  mcp-shield doctor [--fix]          Diagnose all agent MCP configurations & optionally auto-shield\n');
-  process.stdout.write('  mcp-shield export-compliance       Generate Vanta / Drata SOC 2 & HIPAA cryptographic audit dossier\n');
+  process.stdout.write('  mcp-shield export-compliance       Generate Sovereign SOC 2 & HIPAA cryptographic audit dossier\n');
   process.stdout.write('  mcp-shield --install               Automatically detect & shield Claude Desktop and Cursor configs\n');
   process.stdout.write('  mcp-shield --audit                 Audit active MCP configs for exposed credentials & secrets\n');
   process.stdout.write('  mcp-shield -- <command> [args...]  Wrap an individual MCP server command as transparent stdio proxy\n\n');

@@ -173,13 +173,13 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  // 6. Export Compliance Report (Drata / Vanta Dossier) (Option 3)
+  // 6. Export Compliance Report (Sovereign Dossier) (Option 3)
   context.subscriptions.push(
     vscode.commands.registerCommand('vault.exportComplianceReport', async () => {
       const dossier = vaultEngine.exportComplianceDossier();
       const choice = await vscode.window.showQuickPick(
         [
-          { label: '$(file-code) Open Verifiable JSON Audit Dossier', description: 'Raw cryptographically signed Merkle proofs for Drata & Vanta', action: 'json' },
+          { label: '$(file-code) Open Verifiable JSON Audit Dossier', description: 'Raw cryptographically signed Merkle proofs for CISOs & Auditors', action: 'json' },
           { label: '$(file-text) Generate Executive CISO Compliance Summary', description: 'SOC 2, HIPAA, and PCI-DSS compliance certification report', action: 'summary' },
           { label: '$(save) Save to .btp/compliance_dossier.json', description: 'Persist dossier directly into workspace audit directory', action: 'save' }
         ],
@@ -424,7 +424,7 @@ This cryptographic dossier certifies that during the monitored autonomous agent 
 - **Cryptographic Merkle Root:** \`${dossier.dossier_id}\`
 - **Tamper-Evident Signatures:** HMAC-SHA256 Conforming to RFC 8785
 
-*Exported automatically by Bartholomew Vault for upload to Drata, Vanta, and Tugboat Logic.*
+*Exported automatically by Bartholomew Vault for direct CISO & auditor verification.*
 `;
 }
 

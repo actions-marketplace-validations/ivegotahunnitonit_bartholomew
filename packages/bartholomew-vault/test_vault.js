@@ -13,16 +13,21 @@ function runSuite() {
 
   const engine = new VaultEngine();
 
+  const mockOpenAi = ['sk', 'proj', 'MOCKTESTINGKEY0000000000000000000000'].join('-');
+  const mockAnthropic = ['sk', 'ant', 'api03', 'MOCKTESTINGKEY00000000000000000000'].join('-');
+  const mockStripe = ['sk', 'live', 'MOCKTESTINGKEY0000000000000000'].join('_');
+  const mockAws = ['AKIA', 'IOSFODNN7EXAMPLE'].join('');
+
   // Test Payload containing secrets and PII
   const samplePayload = `
-    const openAiKey = process.env.TEST_OPENAI_KEY || "TESTING_CANARY_OPENAI_KEY_MOCK_12345";
-    const anthropicKey = process.env.TEST_ANTHROPIC_KEY || "TESTING_CANARY_ANTHROPIC_KEY_MOCK_12345";
-    const stripeKey = process.env.TEST_STRIPE_KEY || "TESTING_CANARY_STRIPE_KEY_MOCK_12345";
-    const awsKey = process.env.TEST_AWS_KEY || "TESTING_CANARY_AWS_KEY_MOCK_12345";
+    const openAiKey = "${mockOpenAi}";
+    const anthropicKey = "${mockAnthropic}";
+    const stripeKey = "${mockStripe}";
+    const awsKey = "${mockAws}";
     const dbUrl = "postgres://test_user:CanarySecretPass123@127.0.0.1:5432/patient_records";
-    const patientSsn = "000-12-3456";
-    const patientCc = "0000-0000-0000-0000";
-    const patientEmail = "patient.sample@healthcorp.test";
+    const patientSsn = "123-45-6789";
+    const patientCc = "4242-4242-4242-4242";
+    const patientEmail = "patient.smith@healthcorp.internal";
   `;
 
   // 1. In-Process Tokenization & Latency Benchmark
@@ -34,8 +39,9 @@ function runSuite() {
   console.log(`    Audit Digest: ${result.auditDigest.substring(0, 16)}...`);
 
   assert.strictEqual(result.tokenCount, 8, 'Expected exactly 8 sensitive items to be tokenized.');
-  assert.ok(!result.sanitized.includes('SuperSecretPass123'), 'Plaintext DB password must be scrubbed!');
-  assert.ok(!result.sanitized.includes('sk-proj-998877'), 'Plaintext OpenAI key must be scrubbed!');
+  assert.ok(!result.sanitized.includes('CanarySecretPass123'), 'Plaintext DB password must be scrubbed!');
+  assert.ok(!result.sanitized.includes(mockOpenAi), 'Plaintext OpenAI key must be scrubbed!');
+  assert.ok(!result.sanitized.includes(mockStripe), 'Plaintext Stripe key must be scrubbed!');
   assert.ok(!result.sanitized.includes('123-45-6789'), 'Plaintext SSN must be scrubbed!');
   assert.ok(!result.sanitized.includes('4242-4242-4242-4242'), 'Plaintext credit card must be scrubbed!');
   assert.ok(!result.sanitized.includes('patient.smith@healthcorp.internal'), 'Plaintext email must be scrubbed!');
@@ -73,8 +79,8 @@ function runSuite() {
   assert.strictEqual(restored, samplePayload, 'Full detokenization must restore exact original payload!');
   console.log('    [PASS] Full round-trip detokenization restored original payload 100% cleanly.');
 
-  // 5. Compliance Dossier Generation (Drata / Vanta Audit Evidence)
-  console.log('\n[5] Generating Compliance Audit Dossier for Drata / Vanta...');
+  // 5. Compliance Dossier Generation (Sovereign Audit Evidence)
+  console.log('\n[5] Generating Sovereign Compliance Audit Dossier for CISOs & Auditors...');
   const dossier = engine.exportComplianceDossier();
   console.log(`    Dossier ID:             ${dossier.dossier_id}`);
   console.log(`    Zero Leakage Attested:  ${dossier.zero_leakage_attestation}`);

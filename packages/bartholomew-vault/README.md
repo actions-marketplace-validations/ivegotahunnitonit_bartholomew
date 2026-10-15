@@ -89,7 +89,7 @@ Vault provides native interception for MCP tools and configurations:
 - **MCP Tool Interception & Auditing**: Audits MCP configurations and enforces sub-35µs guardrails on tool arguments.
 - **HIPAA, PCI-DSS & SOC 2 Compliance**: Keeps raw patient health information (PHI) and cardholder data off model training datasets and LLM provider log servers.
 - **Bi-Directional Mapping**: Seamless detokenization for authorized developers via the command palette.
-- **Drata & Vanta Compliance Proof Export**: 1-click generation of cryptographic JSON audit reports proving zero plaintext PII was transmitted during agent sessions.
+- **Sovereign Compliance Proof Export**: 1-click generation of cryptographic JSON audit reports proving zero plaintext PII was transmitted during agent sessions.
 - **Compatible with the Bartholomew Trinity**: Works hand-in-hand with Bartholomew Guard (AST Gate) and Bartholomew Keystone (Capability Passkeys).
 
 ---
@@ -103,7 +103,7 @@ Vault provides native interception for MCP tools and configurations:
 - `Vault: Audit MCP Servers Configuration`: Audits active MCP configs for plaintext secrets.
 - `Vault: Shield MCP Configuration File`: Replaces raw tokens in MCP server configs with environment variables.
 - `Vault: Intercept MCP Tool Call`: In-process invariant validation for MCP tool payloads.
-- `Vault: Export Drata / Vanta HIPAA & SOC 2 Proof Dossier`: Generates verifiable JSON proof of zero-leakage compliance.
+- `Vault: Export Sovereign HIPAA & SOC 2 Proof Dossier`: Generates verifiable JSON proof of zero-leakage compliance.
 
 ---
 

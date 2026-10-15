@@ -60,7 +60,7 @@
       },
       {
         "command": "vault.exportComplianceReport",
-        "title": "Vault: Export Drata / Vanta HIPAA & SOC 2 Proof Dossier",
+        "title": "Vault: Export Sovereign HIPAA & SOC 2 Proof Dossier",
         "icon": "$(shield)"
       },
       {

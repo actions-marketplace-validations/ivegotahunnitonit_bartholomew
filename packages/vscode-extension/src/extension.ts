@@ -777,7 +777,7 @@ rules:
       { label: '$(key) Issue Keystone Capability Passkey', description: 'Generate Ed25519 passkey with $25 daily autonomous spend limit', action: 'bartholomew.issueKeystonePasskey' },
       { label: '$(lock) Vault: Tokenize Selected Text / PII', description: 'Convert live credentials & PHI to format-preserving surrogates', action: 'vault.tokenizeSelection' },
       { label: '$(unlock) Vault: Detokenize Selection (Authorized View)', description: 'Restore live values in active document buffer', action: 'vault.detokenizeSelection' },
-      { label: '$(file-submodule) Vault: Export Drata / Vanta Proof Dossier', description: '1-Click verifiable JSON proof of zero PII transmission', action: 'vault.exportComplianceReport' },
+      { label: '$(file-submodule) Vault: Export Sovereign Proof Dossier', description: '1-Click verifiable JSON proof of zero PII transmission for Auditors', action: 'vault.exportComplianceReport' },
       { label: '$(clippy) Copy Agent Context Rules', description: 'Copy system prompts for Cursor, Windsurf, Claude Code, Gemini', action: 'bartholomew.copyModelContext' }
     ];
     const picked = await vscode.window.showQuickPick(items, { title: 'Bartholomew Agent Security Control Plane (v6.5.3)' });

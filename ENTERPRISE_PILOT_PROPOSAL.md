@@ -65,7 +65,7 @@ We propose a structured, 30-day enterprise validation pilot designed to give CIS
 | **Week 1** | **Baseline Assessment & Automated Shielding** | Run `npx mcp-shield doctor` across cohort. Audit all active MCP servers (Postgres, SQLite, GitHub, Filesystem). Automatically inject in-process protection. |
 | **Week 2** | **Zero-Egress Data & PII Tokenization** | Activate Bartholomew Vault format-preserving surrogates. Verify that production API keys and customer records are replaced in RAM before LLM dispatch. |
 | **Week 3** | **Capability Scoping & Nonce Replay Enforcement** | Deploy ephemeral Keystone passkeys with $25/day spending caps and single-use atomic SQLite replay verification (`.btp/consumed_nonces.db`). |
-| **Week 4** | **Executive Audit Dossier & CISO Sign-Off** | Generate automated Vanta / Drata cryptographic compliance dossiers (`npx mcp-shield export-compliance`) signed with SHA-256 Merkle roots. |
+| **Week 4** | **Executive Audit Dossier & CISO Sign-Off** | Generate automated sovereign cryptographic compliance dossiers (`npx mcp-shield export-compliance`) signed with SHA-256 Merkle roots and direct auditor clearance. |
 
 ---
 

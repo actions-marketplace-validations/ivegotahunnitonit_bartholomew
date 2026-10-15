@@ -163,7 +163,7 @@ console.log('Tokens Conserved:', result.tokens_conserved);
 
 ### 4. Compliance Evidence Pack Export (`generateAuditPack`)
 
-Generate machine-readable JSON dossiers for Vanta and Drata:
+Generate machine-readable sovereign JSON dossiers for CISOs, regulators, and auditors:
 
 ```typescript
 import { generateAuditPack, verifyAuditPack } from 'btp-guard';
@@ -194,7 +194,7 @@ console.log('Cryptographically Valid:', verification.ok); // true
 
 ## Enterprise & SOC 2 Certification
 
-For independent 48-hour AST invariant auditing, Vanta/Drata Trust Center evidence packs, and enterprise clearance:
+For independent 48-hour AST invariant auditing, sovereign continuous compliance evidence packs, and enterprise clearance:
 - Portal: [https://bartholomew.info/enterprise](https://bartholomew.info/enterprise)
 - Security Contact: `security@bartholomew.info`
 - Founder & Architecture Inquiries: `itsub@bartholomew.info`

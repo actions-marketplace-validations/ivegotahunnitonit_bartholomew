@@ -1,6 +1,6 @@
 """
 Bartholomew High-Intent Buyer Discovery Engine
-Identifies B2B AI startups using Vanta, Drata, or SafeBase Trust Centers
+Identifies B2B AI startups with public Enterprise Trust Centers
 who have active enterprise procurement mandates and required penetration test needs.
 """
 import json
@@ -20,7 +20,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Viz.ai",
         "domain": "viz.ai",
         "trust_center": "https://trust.viz.ai",
-        "platform": "Drata",
+        "platform": "Enterprise Trust Center",
         "vertical": "Clinical Healthcare AI (FDA Cleared)",
         "risk_vector": "PHI exposure, clinical triage tool execution, HIPAA compliance mandates",
         "funding": "$150M+ (Series D)",
@@ -30,7 +30,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Corti.ai",
         "domain": "corti.ai",
         "trust_center": "https://trust.corti.ai",
-        "platform": "Drata",
+        "platform": "Enterprise Trust Center",
         "vertical": "Emergency Medicine & Clinical AI",
         "risk_vector": "Audio prompt injection, EHR tool mutation, medical triage invariants",
         "funding": "$60M (Series B)",
@@ -40,7 +40,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Adept.ai",
         "domain": "adept.ai",
         "trust_center": "https://trust.adept.ai",
-        "platform": "Drata",
+        "platform": "Enterprise Trust Center",
         "vertical": "General Intelligence & Browser Computer Use",
         "risk_vector": "Headless browser DOM injection, unauthorized checkout, credential exfil",
         "funding": "$415M (Series B)",
@@ -50,7 +50,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Tribble.ai",
         "domain": "tribble.ai",
         "trust_center": "https://trust.tribble.ai",
-        "platform": "Drata",
+        "platform": "Enterprise Trust Center",
         "vertical": "GTM & Enterprise Sales Agents",
         "risk_vector": "CRM database mutations, email spoofing, unauthorized client data access",
         "funding": "$12M (Series A)",
@@ -60,7 +60,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Union.ai",
         "domain": "union.ai",
         "trust_center": "https://trust.union.ai",
-        "platform": "Vanta",
+        "platform": "Enterprise Trust Center",
         "vertical": "AI Orchestration & Infrastructure (Flyte)",
         "risk_vector": "Kubernetes cluster breakouts, arbitrary container execution, cloud secrets",
         "funding": "$29M (Series A)",
@@ -70,7 +70,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "File.ai",
         "domain": "file.ai",
         "trust_center": "https://trust.file.ai",
-        "platform": "Vanta",
+        "platform": "Enterprise Trust Center",
         "vertical": "Financial Documents & Accounting AI",
         "risk_vector": "GL ledger tampering, financial statement hallucination, banking credentials",
         "funding": "$10M (Series Seed)",
@@ -80,7 +80,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Handbook AI",
         "domain": "handbookai.io",
         "trust_center": "https://trust.handbookai.io",
-        "platform": "Vanta",
+        "platform": "Enterprise Trust Center",
         "vertical": "Enterprise Knowledge & Policy Agents",
         "risk_vector": "Internal policy bypass, sensitive HR data leakage, prompt injection",
         "funding": "$8M (Series Seed)",
@@ -90,7 +90,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Harvey AI",
         "domain": "harvey.ai",
         "trust_center": "https://trust.harvey.ai",
-        "platform": "Vanta / SafeBase",
+        "platform": "Enterprise Trust Center",
         "vertical": "Legal & Professional Services AI",
         "risk_vector": "Attorney-client privilege breaches, legal work-product leaks, court filings",
         "funding": "$300M+ (Series C, Sequoia/OpenAI)",
@@ -100,7 +100,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Hebbia AI",
         "domain": "hebbia.ai",
         "trust_center": "https://trust.hebbia.ai",
-        "platform": "Vanta",
+        "platform": "Enterprise Trust Center",
         "vertical": "Finance & M&A Due Diligence Agents",
         "risk_vector": "Deal room data leakage, SEC disclosure bypass, financial model tampering",
         "funding": "$130M (Series B, a16z)",
@@ -110,7 +110,7 @@ HIGH_INTENT_CANDIDATES = [
         "name": "Sierra AI",
         "domain": "sierra.ai",
         "trust_center": "https://trust.sierra.ai",
-        "platform": "Vanta",
+        "platform": "Enterprise Trust Center",
         "vertical": "Enterprise Conversational Agents",
         "risk_vector": "Customer account hijacking, payment tool breakout, brand impersonation",
         "funding": "$175M (Series B, Greenoaks/Benchmark)",
@@ -143,7 +143,7 @@ def generate_tailored_pitch(candidate: Dict[str, Any]) -> Dict[str, str]:
         subject = f"{name} Trust Center + Autonomous EHR Tool Execution (Zero PHI Exfiltration)"
         persona = "CISO / Head of Clinical AI Safety"
         body = (
-            f"Hi team — saw {name}'s public {platform} Trust Center. "
+            f"Hi team — saw {name}'s public Trust Center. "
             f"As your clinical agents query EHR tools and suggest triage actions, we provide a sub-35µs in-process tokenization vault "
             f"(Bartholomew Vault) that substitutes patient PHI and credentials with format-preserving surrogates before LLM dispatches. "
             f"Tests and clinical queries execute cleanly locally without a single byte of raw patient data ever traversing to OpenAI/Anthropic."
@@ -152,7 +152,7 @@ def generate_tailored_pitch(candidate: Dict[str, Any]) -> Dict[str, str]:
         subject = f"{name} Trust Center + Attorney-Client Privilege Protection in Agent Tool Calls"
         persona = "CISO / General Counsel / VP Security"
         body = (
-            f"Hi team — saw {name}'s public {platform} Trust Center. "
+            f"Hi team — saw {name}'s public Trust Center. "
             f"When legal agents process confidential matter rooms, Bartholomew Vault tokenizes attorney-client work product and "
             f"credentials in-process with zero network latency, while our AST firewall (Bartholomew Guard) guarantees hard invariant bounds on tool calls. "
             f"Happy to share our 1-click SOC 2 evidence pack proving zero prompt exfiltration."
@@ -161,10 +161,10 @@ def generate_tailored_pitch(candidate: Dict[str, Any]) -> Dict[str, str]:
         subject = f"{name} Trust Center + In-Process Agent Execution Safeguards"
         persona = "CISO / Head of AI Infrastructure"
         body = (
-            f"Hi team — saw {name}'s active {platform} Trust Center. "
+            f"Hi team — saw {name}'s active Trust Center. "
             f"As your autonomous agents dispatch tool calls, Bartholomew provides sub-millisecond in-process AST gating and "
             f"vaultless credential tokenization (<35µs) to prevent secret leakage and destructive execution loops before they dispatch. "
-            f"Integrates via a 1-line MCP proxy or IDE extension with signed RFC 8785 Merkle receipts for {platform} audits."
+            f"Integrates via a 1-line MCP proxy or IDE extension with signed RFC 8785 Merkle receipts for auditor sign-offs."
         )
         
     return {
@@ -207,7 +207,7 @@ def export_campaign_markdown(profiles: List[Dict[str, Any]], out_path: Path):
     """Exports a ready-to-execute outreach campaign document."""
     lines = [
         "# Bartholomew High-Intent Outreach Campaign Pack",
-        "> Generated from live Drata / Vanta Trust Center Intelligence.",
+        "> Generated from live enterprise Trust Center and procurement intelligence.",
         "",
         "---",
         ""
@@ -236,7 +236,7 @@ def export_campaign_markdown(profiles: List[Dict[str, Any]], out_path: Path):
 def main():
     print("=" * 80)
     print(" BARTHOLOMEW HIGH-INTENT BUYER DISCOVERY & OUTREACH ENGINE")
-    print(" Scanning Vanta & Drata Public Trust Centers for Enterprise AI Buyers...")
+    print(" Scanning Enterprise Public Trust Centers for AI Buyers...")
     print("=" * 80)
     
     profiles = []
