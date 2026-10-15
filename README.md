@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="packages/vscode-extension/icon.png" width="130" alt="Bartholomew Shield Logo" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/packages/vscode-extension/icon.png" width="130" alt="Bartholomew Shield Logo" />
 </p>
 
 # Bartholomew Guard — In-Process Agentic Execution Gateway
@@ -8,13 +8,13 @@
 > Intercepts destructive commands, prevents secret exfiltration, and enforces budget invariants in **sub-millisecond execution overhead (< 0.1 ms - < 1 ms)** before tool calls execute.
 
 <!-- BTP Status Badges -->
-[![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](docs/mcp_tool_registry_v6.json)
-[![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen?style=flat-square)](tests/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
+[![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/mcp_tool_registry_v6.json)
+[![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen?style=flat-square)](https://github.com/ivegotahunnitonit/bartholomew/tree/main/tests)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/mcp_tool_registry_v6.json)
 [![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
-[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.5.9-cb3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.5.10-cb3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/ivegotahunnitonit/bartholomew/blob/main/LICENSE)
 [![Enterprise Support](https://img.shields.io/badge/Enterprise-Audit%20%26%20SLAs-10b981)](https://bartholomew.info/enterprise)
 
 ---
@@ -307,5 +307,5 @@ For enterprise licensing, deployment assistance, and compliance audits:
 
 ## License
 
-Bartholomew core libraries and CLI tools are open source and licensed under the [Apache License 2.0](LICENSE).  
+Bartholomew core libraries and CLI tools are open source and licensed under the [Apache License 2.0](https://github.com/ivegotahunnitonit/bartholomew/blob/main/LICENSE).  
 Enterprise extensions, centralized telemetry collectors, and managed audit services are licensed under the Bartholomew Commercial License Agreement.
