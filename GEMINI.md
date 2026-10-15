@@ -1,7 +1,7 @@
 # autonomous-circularity-network - Gemini Project Context
 
 <!-- BARTHOLOMEW_GUARD_ACTIVE: DO NOT REMOVE -->
-## Bartholomew Keystone Security Invariants (BTP v5.4)
+## Bartholomew Keystone Security Invariants (BTP v6.5.6)
 This repository is armed with **Bartholomew Keystone Guard** for autonomous agent safety.
 - **AST Gating Active**: Destructive shell operations, secret leakage, and unauthorized system access are blocked in-process (<35µs).
 - **Safe Code Generation**: Always use environment variables for sensitive parameters. Never hardcode live keys.
