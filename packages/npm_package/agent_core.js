@@ -29,10 +29,10 @@ const DANGEROUS_SHELL_PATTERNS = [
     hint: "Use two-stage verified download with SHA-256 checksum instead of direct pipe-to-shell."
   },
   {
-    regex: /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/)/i,
+    regex: /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*|mem|kmem|port|nvram)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/|devmem2\b|flashrom\b)/i,
     rule: "BTP-AST-004",
-    alternative: () => "echo '[BTP-SHIELD] Low-level block device manipulation blocked.'",
-    hint: "Direct disk formatting or device wiping blocked by BTP storage safety invariant."
+    alternative: () => "echo '[BTP-SHIELD] Low-level block device or physical memory manipulation blocked.'",
+    hint: "Direct disk formatting, raw memory writing, or device wiping blocked by BTP storage & hardware safety invariant."
   },
   {
     regex: /\b(nc|netcat)\s+.*-e\b|\/dev\/tcp\/\d+/i,
@@ -682,7 +682,7 @@ export function enforceToolBoundary(toolName, toolInput, options = {}) {
       }
     }
     if (/\b(rm\s+.*--no-preserve-root\b|rm\s+(?:-[a-zA-Z]*r[a-zA-Z]*f|-[a-zA-Z]*f[a-zA-Z]*r|--recursive|-r\s+-f|-f\s+-r)\s+(?:\/|\/\*|~|\$HOME|[a-zA-Z]:[\\\/]|\/(?:boot|usr|var|etc|bin|sbin|lib|opt|sys|dev|root)\b)|shred\s+.*(?:\/|\/(?:boot|usr|var|etc|bin|sbin|lib|opt|sys|dev|root)\b)|child_process.*(?:exec|spawn|fork).*(?:rm|shred|dd|mkfs))/i.test(cmd) ||
-        /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/)/i.test(cmd) ||
+        /\b(dd\s+.*of=\/dev\/(?:[svh]d[a-z0-9]+|nvme[0-9]+n[0-9]+|mmcblk[0-9]+|vda[0-9]*|mem|kmem|port|nvram)|mkfs(?:\.[a-z0-9]+)?\s+\/dev\/|devmem2\b|flashrom\b)/i.test(cmd) ||
         /\b(nc|netcat)\s+.*-e\b/i.test(cmd) ||
         /\/dev\/tcp\/\d+/i.test(cmd) ||
         /\b(?:echo|printf)\s+.*\|\s*base64\s+(?:-d|--decode)\s*\|\s*(?:sh|bash|zsh|eval)\b/i.test(cmd) ||
