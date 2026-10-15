@@ -116,7 +116,7 @@ We propose a structured, 30-day technical evaluation to validate Bartholomew ins
 
 ## 5. Ready-to-Send Outreach Messages
 
-### A. Direct Email to Founders (Syed Fazle Rahman & Sandeep Panda)
+### A. Direct Email (To: `hello@buildful.ai`)
 **Subject**: Zero-overhead sandbox protection & verified PR badges for Buildful.ai
 
 > Hi Fazle and Sandeep,
