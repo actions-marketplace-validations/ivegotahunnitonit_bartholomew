@@ -330,4 +330,34 @@ export function createMicrosoftSemanticKernelFilter(options?: any): {
   middleware: MicrosoftSemanticKernelMiddleware;
 };
 
+export class GoogleGenAIMiddleware {
+  constructor(options?: any);
+  interceptFunctionCall(functionCall: { name: string; args: any }, agentContext?: any): {
+    allowed: boolean;
+    verdict: string;
+    rule_id?: string;
+    reason?: string;
+    merkle_turn_receipt?: string;
+    error?: string;
+    sanitizedArgs?: any;
+  };
+  wrapToolFunction<T extends (...args: any[]) => any>(toolFn: T, name?: string): (...args: Parameters<T>) => Promise<any>;
+}
+
+export class LlamaIndexMiddleware {
+  constructor(options?: any);
+  interceptWorkflowStep(stepName: string, stepInput: any): {
+    proceed: boolean;
+    verdict: string;
+    rule_id?: string;
+    reason?: string;
+    merkle_turn_receipt?: string;
+  };
+  wrapTool<T extends object>(tool: T): T;
+}
+
+export function createGoogleGenAIMiddleware(options?: any): GoogleGenAIMiddleware;
+export function createLlamaIndexWorkflowMiddleware(options?: any): LlamaIndexMiddleware;
+
+
 

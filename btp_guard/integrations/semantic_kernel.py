@@ -21,6 +21,43 @@ class SemanticKernelBTPFilter:
         self.strict_mode = strict_mode
         self.invocations = []
 
+    def kernel_function(self, fn: Callable[..., Any]) -> Callable[..., Any]:
+        """Decorator for Semantic Kernel functions to enforce sub-35us AST validation."""
+        import functools
+        from ..authorization_gate import AuthorizationGate
+        from ..secret_masker import SecretMasker
+        
+        func_name = getattr(fn, "__name__", "kernel_function")
+        gate = AuthorizationGate(policy={"strict": self.strict_mode, "allow_destructive": False})
+        masker = SecretMasker()
+
+        @functools.wraps(fn)
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
+            call_dict = {k: str(v) for k, v in kwargs.items()}
+            cmd_str = " ".join(str(a) for a in args) + " " + " ".join(f"{k}={v}" for k, v in call_dict.items())
+
+            action = {
+                "agent_id": "semantic-kernel-agent",
+                "action_type": func_name,
+                "payload": {
+                    "command": cmd_str,
+                    "query": cmd_str,
+                    **call_dict
+                }
+            }
+            res = gate.evaluate(action)
+            if res.get("verdict") == "DENY":
+                rule_id = res.get("rule_id", "BTP-SHELL-001")
+                reason = res.get("reason", "Action blocked")
+                raise PermissionError(f"[{rule_id}] Semantic Kernel action blocked by Bartholomew: {reason}")
+
+            result = fn(*args, **kwargs)
+            if isinstance(result, str):
+                return masker.mask(result)
+            return result
+
+        return wrapper
+
     async def on_function_invocation(self, context: Any, next_fn: Callable) -> Any:
         """Invoked before and after every Semantic Kernel function execution."""
         func = getattr(context, "function", None)

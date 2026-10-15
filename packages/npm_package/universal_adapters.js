@@ -441,3 +441,142 @@ export function createOpenHandsHook(options = {}) {
   };
 }
 
+/**
+ * 8. Google GenAI / Gemini Agent Middleware (BTP v6.5.9)
+ * Intercepts @google/genai function declarations and model tool calls
+ */
+export class GoogleGenAIMiddleware {
+  constructor(options = {}) {
+    this.options = {
+      strictAst: true,
+      blockDestructiveCommands: true,
+      redactSecrets: true,
+      maxExecutionLatencyUs: 35,
+      ...options
+    };
+    this.auditLog = [];
+  }
+
+  /**
+   * Intercept and evaluate a Gemini function call before execution
+   */
+  interceptFunctionCall(functionCall, agentContext = {}) {
+    const fnName = functionCall?.name || 'gemini_tool';
+    const fnArgs = functionCall?.args || {};
+
+    const decision = enforceToolBoundary(fnName, fnArgs, this.options);
+
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      framework: 'google_genai',
+      tool: fnName,
+      allowed: decision.allowed,
+      verdict: decision.verdict,
+      rule_id: decision.rule_id || null,
+      reason: decision.reason || null,
+      merkle_turn_receipt: decision.merkle_turn_receipt
+    };
+    this.auditLog.push(logEntry);
+
+    if (!decision.allowed) {
+      return {
+        allowed: false,
+        verdict: 'VETO',
+        rule_id: decision.rule_id,
+        reason: decision.reason,
+        merkle_turn_receipt: decision.merkle_turn_receipt,
+        error: `[BTP VETO] Execution halted by ${decision.rule_id}: ${decision.reason}`
+      };
+    }
+
+    return {
+      allowed: true,
+      verdict: 'ALLOW',
+      merkle_turn_receipt: decision.merkle_turn_receipt,
+      sanitizedArgs: decision.sanitized_payload || fnArgs
+    };
+  }
+
+  /**
+   * Decorator/Wrapper for Gemini function implementations
+   */
+  wrapToolFunction(toolFn, name = null) {
+    const fnName = name || toolFn.name || 'gemini_tool';
+    const self = this;
+
+    return async function btpGuardedGenAIFunction(args) {
+      const evaluation = self.interceptFunctionCall({ name: fnName, args });
+      if (!evaluation.allowed) {
+        throw new Error(evaluation.error);
+      }
+      return await toolFn(evaluation.sanitizedArgs || args);
+    };
+  }
+}
+
+/**
+ * 9. LlamaIndex Workflow Middleware (BTP v6.5.9)
+ * Intercepts LlamaIndex agent workflow steps and tool boundaries
+ */
+export class LlamaIndexMiddleware {
+  constructor(options = {}) {
+    this.options = {
+      strictAst: true,
+      blockDestructiveCommands: true,
+      redactSecrets: true,
+      ...options
+    };
+    this.auditLog = [];
+  }
+
+  interceptWorkflowStep(stepName, stepInput) {
+    const rawPayload = typeof stepInput === 'object' ? stepInput : { input: String(stepInput) };
+    const decision = enforceToolBoundary(stepName, rawPayload, this.options);
+
+    const logEntry = {
+      timestamp: new Date().toISOString(),
+      framework: 'llamaindex_workflow',
+      step: stepName,
+      allowed: decision.allowed,
+      verdict: decision.verdict,
+      merkle_turn_receipt: decision.merkle_turn_receipt
+    };
+    this.auditLog.push(logEntry);
+
+    return {
+      proceed: decision.allowed,
+      verdict: decision.verdict,
+      rule_id: decision.rule_id || null,
+      reason: decision.reason || null,
+      merkle_turn_receipt: decision.merkle_turn_receipt
+    };
+  }
+
+  wrapTool(tool) {
+    const toolName = tool?.metadata?.name || tool?.name || 'llamaindex_tool';
+    const originalCall = tool?.call?.bind(tool) || tool?.invoke?.bind(tool);
+    const self = this;
+
+    return {
+      ...tool,
+      metadata: tool?.metadata || { name: toolName },
+      call: async (args) => {
+        const decision = enforceToolBoundary(toolName, typeof args === 'object' ? args : { input: args }, self.options);
+        if (!decision.allowed) {
+          throw new Error(`[BTP VETO] LlamaIndex tool execution halted: ${decision.reason}`);
+        }
+        return await originalCall(decision.sanitized_payload || args);
+      }
+    };
+  }
+}
+
+export function createGoogleGenAIMiddleware(options = {}) {
+  return new GoogleGenAIMiddleware(options);
+}
+
+export function createLlamaIndexWorkflowMiddleware(options = {}) {
+  return new LlamaIndexMiddleware(options);
+}
+
+

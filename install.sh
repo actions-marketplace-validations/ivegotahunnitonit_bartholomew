@@ -40,11 +40,12 @@ fi
 if [ -d ".git" ]; then
     echo -e "[*] Arming current workspace with Bartholomew security invariants..."
     mkdir -p .btp
-    cat << 'EOF' > .btp/invariants.json
+    ARMED_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    cat << EOF > .btp/invariants.json
 {
   "protocol_version": "BTP v6.5.8",
   "organization": "Sovereign Enterprise",
-  "armed_at": "INSTALL_TIME",
+  "armed_at": "${ARMED_DATE}",
   "enforcement_mode": "fail-closed",
   "max_execution_latency_us": 35,
   "rules": {

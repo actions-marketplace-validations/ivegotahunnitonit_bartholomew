@@ -776,7 +776,11 @@ export {
   createLangGraphToolNode,
   createCrewAIStepCallback,
   createAutoGenPreFilter,
-  createOpenHandsHook
+  createOpenHandsHook,
+  GoogleGenAIMiddleware,
+  LlamaIndexMiddleware,
+  createGoogleGenAIMiddleware,
+  createLlamaIndexWorkflowMiddleware
 } from './universal_adapters.js';
 
 // Export Microsoft AutoGen & Semantic Kernel Middleware (BTP v6.5.7)
@@ -786,5 +790,6 @@ export {
   createMicrosoftAutoGenHook,
   createMicrosoftSemanticKernelFilter
 } from './microsoft_adapters.js';
+
 
 
