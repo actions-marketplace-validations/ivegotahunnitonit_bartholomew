@@ -45,8 +45,8 @@ def run_demo():
         {"command": "cat /sys/class/net/eth0/statistics/rx_bytes", "frequency_ghz": 12.2},
         subsystem="starlink_ku_downlink"
     )
-    print(f"  -> Verdict: {res1['verdict']} | Latency: {res1['latency_us']} µs (SLA < 35µs)")
-    print(f"  -> Merkle Flight Receipt: {res1['merkle_receipt'][:38]}...")
+    print(f"  -> Verdict: {res1['verdict']} | Latency: {res1['latency_us']} µs (in-process RAM gate)")
+    print(f"  -> Merkle Flight Receipt: {res1['merkle_receipt'][:38]}... (Ed25519 Verified: {guard.verify_flight_receipt(res1['flight_receipt'])})")
     assert res1["allowed"] is True
 
     # -------------------------------------------------------------------------

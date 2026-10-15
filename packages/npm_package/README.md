@@ -1,7 +1,7 @@
 # btp-guard
 
-> **Sub-35µs In-Process Execution Firewall & Deterministic AST Safety Gate for Autonomous Agents**  
-> *Bartholomew Trust Protocol (BTP v6.4.6) — Node.js & TypeScript (Zero External Dependencies)*
+> **Sub-Millisecond In-Process Execution Firewall & Deterministic AST Safety Gate for Autonomous Agents**  
+> *Bartholomew Trust Protocol (BTP v6.5.9) — Node.js & TypeScript (Zero External Dependencies)*
 
 [![npm version](https://img.shields.io/npm/v/btp-guard?style=flat-square&color=38bdf8)](https://www.npmjs.com/package/btp-guard)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-emerald.svg?style=flat-square)](https://opensource.org/licenses/Apache-2.0)
@@ -13,9 +13,9 @@
 
 ## What is Bartholomew Guard?
 
-**Bartholomew Guard** (`btp-guard`) is a high-performance in-process security gateway and invariant compiler for autonomous AI agents, tool callers, and swarms (Vercel AI SDK, LangChain.js, LangGraph.js, Claude Code, Cursor, Windsurf, Ollama).
+**Bartholomew Guard** (`btp-guard`) is a high-performance in-process security gateway and invariant compiler for autonomous AI agents, tool callers, and swarms (Google GenAI, LlamaIndex, AutoGen, Semantic Kernel, Vercel AI SDK, LangChain.js, Claude Code, Cursor, Windsurf, Ollama).
 
-It operates directly inside your Node.js runtime process memory before system calls reach the OS boundary. In **under 35 microseconds** with **zero GPU overhead**, Bartholomew:
+It operates directly inside your Node.js runtime process memory before system calls reach the OS boundary. With **sub-millisecond in-process latency** and **zero GPU overhead**, Bartholomew:
 - Intercepts and denies destructive commands (`rm -rf`, `DROP TABLE`, `mkfs`, fork bombs)
 - Scrubs in-flight credentials (`sk-*`, AWS tokens, private keys) before logging or egress
 - Enforces Non-Human Identity (NHI) capability passkeys and micro-spend caps ($5/action, $25/day)

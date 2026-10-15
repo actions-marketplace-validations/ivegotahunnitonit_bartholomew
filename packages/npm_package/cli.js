@@ -2869,10 +2869,10 @@ function runAuditBoundaryCli(subArgs = []) {
 function runTestDrive(subargs = []) {
   printBanner();
   console.log(`======================================================================`);
-  console.log(`  ${BOLD}${GREEN}BARTHOLOMEW INTERACTIVE ATTACK PLAYGROUND & TEST-DRIVE (BTP v6.5.6)${RESET}`);
+  console.log(`  ${BOLD}${GREEN}BARTHOLOMEW INTERACTIVE ATTACK PLAYGROUND & TEST-DRIVE (BTP v6.5.9)${RESET}`);
   console.log(`======================================================================`);
   console.log(`  Evaluating 5 adversarial agent attacks against deterministic AST gate.`);
-  console.log(`  Target Latency SLA: <35.0 µs in-process RAM gate (Zero-Cloud).`);
+  console.log(`  Target Latency SLA: Sub-millisecond in-process RAM gate (Zero-Cloud).`);
   console.log(`======================================================================\n`);
 
   const attacks = [
@@ -2960,12 +2960,14 @@ function runTestDrive(subargs = []) {
     }
   ];
 
+  const measuredLatencies = [];
   for (const atk of attacks) {
     const res = atk.fn();
+    measuredLatencies.push(Number(res.latencyUs));
     const leaf = crypto.createHash('sha256').update(atk.id + atk.payload).digest('hex').slice(0, 32);
     console.log(`[${atk.id}] ${BOLD}${atk.name}${RESET}`);
     console.log(`  Payload      : ${DIM}${atk.payload}${RESET}`);
-    console.log(`  Gate Latency : ${GREEN}${res.latencyUs} µs${RESET} (Deterministic <35µs SLA)`);
+    console.log(`  Gate Latency : ${GREEN}${res.latencyUs} µs${RESET} (measured, in-process)`);
     console.log(`  Verdict      : ${res.blocked ? RED + BOLD + 'FAIL-CLOSED VETO' : GREEN + 'ALLOWED'}${RESET} (${res.rule})`);
     console.log(`  Reason       : ${res.reason}`);
     console.log(`  Merkle Leaf  : 0x${leaf}...`);
@@ -2976,7 +2978,10 @@ function runTestDrive(subargs = []) {
   console.log(`  ${BOLD}${GREEN}TEST-DRIVE COMPLETE: 5/5 ATTACK VECTORS DETERMINISTICALLY NEUTRALIZED${RESET}`);
   console.log(`======================================================================`);
   console.log(`  Total Overhead   : 0 MB VRAM, 0 GPU, 0 Network Calls (100% In-Process)`);
-  console.log(`  Median Gate Time : <20 µs`);
+  const sortedLat = [...measuredLatencies].sort((a, b) => a - b);
+  const mid = Math.floor(sortedLat.length / 2);
+  const medianLat = sortedLat.length % 2 ? sortedLat[mid] : (sortedLat[mid - 1] + sortedLat[mid]) / 2;
+  console.log(`  Median Gate Time : ${medianLat.toFixed(2)} µs (measured this run; first calls include JIT warm-up)`);
   console.log(`  Audit Receipt    : .btp/audit.log updated with cryptographic proof.`);
   console.log(`======================================================================\n`);
 }

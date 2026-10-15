@@ -19,6 +19,12 @@ import re
 import copy
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
+try:
+    from cryptography.hazmat.primitives.asymmetric import ed25519
+    _HAS_ED25519 = True
+except ImportError:
+    _HAS_ED25519 = False
+
 class AerospaceViolationError(PermissionError):
     """Raised when an aerospace command or telemetry modification violates flight safety invariants."""
     def __init__(self, message: str, rule_id: str = "BTP-AERO-VETO", latency_us: float = 0.0):
@@ -49,7 +55,7 @@ class BtpSpaceXAerospaceGuard:
         self,
         node_id: str = "starlink-gateway-edge-01",
         strict_itar: bool = True,
-        max_allowable_latency_us: float = 35.0,
+        max_allowable_latency_us: float = 1000.0,
         enforce_telemetry_limits: bool = True,
     ):
         self.node_id = str(node_id)
@@ -58,6 +64,13 @@ class BtpSpaceXAerospaceGuard:
         self.enforce_telemetry_limits = bool(enforce_telemetry_limits)
         self.state_snapshots: Dict[str, bytes] = {}
         self.flight_receipt_log: List[Dict[str, Any]] = []
+
+        if _HAS_ED25519:
+            self._signing_key = ed25519.Ed25519PrivateKey.generate()
+            self.public_key_hex = self._signing_key.public_key().public_bytes_raw().hex()
+        else:
+            self._signing_key = None
+            self.public_key_hex = None
 
     def capture_snapshot(self, snapshot_id: str, state_data: Any) -> float:
         """
@@ -167,8 +180,18 @@ class BtpSpaceXAerospaceGuard:
             "payload_hash": hashlib.sha256(scrubbed_cmd.encode("utf-8")).hexdigest(),
             "status": "APPROVED"
         }
-        canonical_str = json.dumps(receipt_leaf, sort_keys=True, separators=(",", ":"))
-        merkle_receipt = "ed25519:aero:" + hashlib.sha256(canonical_str.encode("utf-8")).hexdigest()
+        canonical_bytes = json.dumps(receipt_leaf, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        if self._signing_key:
+            signature_bytes = self._signing_key.sign(canonical_bytes)
+            signature_hex = signature_bytes.hex()
+            receipt_leaf["signature"] = signature_hex
+            receipt_leaf["public_key"] = self.public_key_hex
+            merkle_receipt = f"ed25519:aero:{signature_hex[:32]}"
+        else:
+            digest_hex = hashlib.sha256(canonical_bytes).hexdigest()
+            receipt_leaf["digest"] = digest_hex
+            merkle_receipt = f"sha256:aero:{digest_hex[:32]}"
+
         receipt_leaf["receipt_id"] = merkle_receipt
         self.flight_receipt_log.append(receipt_leaf)
 
@@ -179,11 +202,26 @@ class BtpSpaceXAerospaceGuard:
             "latency_us": round(latency_us, 2),
             "merkle_receipt": merkle_receipt,
             "itar_scrubbed_count": itar_scrubs,
-            "node_id": self.node_id
+            "node_id": self.node_id,
+            "flight_receipt": receipt_leaf
         }
 
+    def verify_flight_receipt(self, receipt: Dict[str, Any]) -> bool:
+        """Cryptographically verifies an offline Ed25519 flight attestation receipt."""
+        if not _HAS_ED25519 or "signature" not in receipt or "public_key" not in receipt:
+            return False
+        try:
+            from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+            clean_leaf = {k: v for k, v in receipt.items() if k not in ("signature", "receipt_id", "public_key")}
+            canonical_bytes = json.dumps(clean_leaf, sort_keys=True, separators=(",", ":")).encode("utf-8")
+            pubkey = Ed25519PublicKey.from_public_bytes(bytes.fromhex(receipt["public_key"]))
+            pubkey.verify(bytes.fromhex(receipt["signature"]), canonical_bytes)
+            return True
+        except Exception:
+            return False
+
     def guard_telemetry_action(self, fn: Callable[..., Any], subsystem: str = "flight_software") -> Callable[..., Any]:
-        """Decorator for telemetry functions enforcing sub-35us invariant clearance."""
+        """Decorator for telemetry functions enforcing sub-millisecond invariant clearance."""
         func_name = getattr(fn, "__name__", "telemetry_action")
         self_guard = self
 
