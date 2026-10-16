@@ -2554,6 +2554,7 @@
     .gallery-item img {
       width: 100%;
       height: auto;
+      aspect-ratio: 16 / 9;
       display: block;
       object-fit: cover;
     }
@@ -4167,12 +4168,12 @@
               <img src="/assets/keystone_passkey_core.png" alt="" aria-hidden="true" loading="lazy">
               <div class="gallery-caption">Keystone Passkey Clearance &bull; Bounded Action Scopes</div>
             </a>
-            <a href="/assets/vault_tokenization_core.svg" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/vault_tokenization_core.svg', 'Bartholomew Vault Live Tokenization', 'Sub-35&micro;s In-Process Redaction &bull; Format-Preserving Surrogates &bull; JIT OS Detokenizer')" title="Click to enlarge view" aria-label="Enlarge Bartholomew Vault Live Tokenization">
+            <a href="/assets/vault_tokenization_core.png" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/vault_tokenization_core.png', 'Bartholomew Vault Live Tokenization', 'Sub-35&micro;s In-Process Redaction &bull; Format-Preserving Surrogates &bull; JIT OS Detokenizer')" title="Click to enlarge view" aria-label="Enlarge Bartholomew Vault Live Tokenization">
               <div class="gallery-zoom-badge">
                 <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
                 Click to Enlarge
               </div>
-              <img src="/assets/vault_tokenization_core.svg" alt="" aria-hidden="true" loading="lazy">
+              <img src="/assets/vault_tokenization_core.png" alt="" aria-hidden="true" loading="lazy" width="1200" height="693">
               <div class="gallery-caption">Bartholomew Vault Live Tokenization &bull; Sub-35 &micro;s Redaction &amp; JIT Dispatch</div>
             </a>
             <a href="/assets/model_bridge_core.png" target="_blank" rel="noreferrer" class="gallery-item" onclick="openImageLightbox(event, '/assets/model_bridge_core.png', 'Model Context Bridge View', 'Model Context Bridge &bull; Cursor, Claude, Copilot, Gemini')" title="Click to enlarge view" aria-label="Enlarge Model Context Bridge View">
@@ -5542,9 +5543,11 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', renderMcpTools);
+    } else {
       renderMcpTools();
-    });
+    }
   </script>
 
 </body>
