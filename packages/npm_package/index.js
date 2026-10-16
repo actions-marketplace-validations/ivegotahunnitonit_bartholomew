@@ -183,8 +183,10 @@ export function scrubSensitiveCredentials(data) {
   const PATTERNS = [
     { regex: /sk-proj-[A-Za-z0-9_\-]{20,}/g, repl: "[REDACTED_OPENAI_KEY_BTP]" },
     { regex: /sk-ant-[A-Za-z0-9_\-]{20,}/g, repl: "[REDACTED_ANTHROPIC_KEY_BTP]" },
+    { regex: /sk_live_[A-Za-z0-9_\-]{16,}/g, repl: "[REDACTED_STRIPE_KEY_BTP]" },
     { regex: /AKIA[0-9A-Z]{16}/g, repl: "[REDACTED_AWS_KEY_BTP]" },
-    { regex: /ghp_[A-Za-z0-9]{36}/g, repl: "[REDACTED_GITHUB_KEY_BTP]" }
+    { regex: /ghp_[A-Za-z0-9]{36}/g, repl: "[REDACTED_GITHUB_KEY_BTP]" },
+    { regex: /postgres(?:ql)?:\/\/[^:]+:([^@]+)@/g, repl: "postgresql://postgres:[REDACTED_DB_PASS_BTP]@" }
   ];
 
   let str = typeof data === 'string' ? data : JSON.stringify(data);
@@ -739,7 +741,7 @@ export {
   verifyAuditPack
 } from './audit_vault.js';
 
-// Export Agent-Centric Core Engine (BTP v6.3.0)
+// Export Agent-Centric Core Engine (BTP v6.5.6)
 export {
   evaluateAndRemediate,
   createAgentDelegationPassport,
@@ -748,7 +750,10 @@ export {
   sanitizeAgentContext,
   guardUniversalAgentTool,
   guardVercelAITool,
-  guardLangChainJsTool
+  guardLangChainJsTool,
+  BTP_CAPABILITY_MANIFEST,
+  auditToolBoundary,
+  enforceToolBoundary
 } from './agent_core.js';
 
 // Export Llama.cpp & Ollama Local AI Gateway (BTP v6.3.0)
@@ -758,3 +763,33 @@ export {
   inspectAndFilterResponse,
   createGuardedLlamaProxy
 } from './llamacpp.js';
+
+// Export Universal Adapters & Framework Helper Hooks (BTP v6.5.7)
+export {
+  normalizeActionRequest,
+  MCPAdapter,
+  OpenAIToolAdapter,
+  LangChainFrameworkAdapter,
+  MediatedProcessAdapter,
+  MultiAgentDelegationAdapter,
+  UniversalBTPDispatcher,
+  createLangGraphToolNode,
+  createCrewAIStepCallback,
+  createAutoGenPreFilter,
+  createOpenHandsHook,
+  GoogleGenAIMiddleware,
+  LlamaIndexMiddleware,
+  createGoogleGenAIMiddleware,
+  createLlamaIndexWorkflowMiddleware
+} from './universal_adapters.js';
+
+// Export Microsoft AutoGen & Semantic Kernel Middleware (BTP v6.5.7)
+export {
+  MicrosoftAutoGenMiddleware,
+  MicrosoftSemanticKernelMiddleware,
+  createMicrosoftAutoGenHook,
+  createMicrosoftSemanticKernelFilter
+} from './microsoft_adapters.js';
+
+
+

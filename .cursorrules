@@ -1,3 +1,16 @@
-# Bartholomew Guard Invariant Rules
-- Block destructive shell commands
-- Mask high-entropy secrets
+---
+description: Bartholomew Keystone Guard - Invariant Rules & AST Safety
+globs: *
+alwaysApply: true
+---
+
+# Bartholomew Keystone Guard Active Invariants
+
+This workspace is actively protected by Bartholomew Keystone Guard (BTP v6.0.0).
+All terminal executions, tool invocations, and filesystem writes are evaluated in-process (<35µs latency) against deterministic Abstract Syntax Tree (AST) safety invariants.
+
+## Safety Invariants Enforced:
+1. Destructive Command Gate (BTP-AST-001): Prohibit rm -rf /, rm -rf ~, mkfs, raw disk writes.
+2. In-Flight Secret & Credential Scrubber (BTP-SEC-001): Prohibit hardcoded API keys, dumping .env files.
+3. Pipe-to-Shell & Untrusted Downloads (BTP-AST-003): Prohibit curl|bash, wget|sh.
+4. Keystone Agent Capability Passkeys (BTP-KEY-001): Enforce approved directory writes and spend limits.

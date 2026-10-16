@@ -1,5 +1,56 @@
 # Bartholomew Guard — CHANGELOG
 
+## [v6.5.8] — 2026-10-15 (Microsoft Agentic Middleware & Standalone Zero-Trust Distribution)
+
+### 🚀 Microsoft Agentic Runtimes & Middleware
+- **Microsoft AutoGen In-Process Middleware**:
+  - Pre-send message sanitization, in-flight credential masking, and sub-35µs code execution gating (`intercept_code_execution`).
+  - Native GroupChat round-trip consensus check vetoing malicious multi-agent escalation loops.
+  - Merkle turn receipts committed to tamper-evident audit ledger on all approved tool executions.
+- **Microsoft Semantic Kernel Python & Node.js Middleware**:
+  - First-class function invocation filters (`intercept_function_invocation`) vetoing destructive shell, SQL DDL drops, and path escapes.
+  - In-process prompt rendering scanner blocking confidential PII and API keys from leaving host memory.
+  - Complete test suite in both Python and Node.js (`test_microsoft_middleware.js`).
+
+### 📦 Distribution, Standalone Installers & Compliance Automation
+- **Multi-Platform One-Line Installers**:
+  - Windows PowerShell standalone installer (`install.ps1`).
+  - Unix / Linux / macOS Bash standalone installer (`install.sh`).
+  - Automatic `.btp/invariants.json` workspace arming on clone or project directory initialization.
+- **Enterprise SOC 2 & HIPAA Cryptographic Dossier Generator**:
+  - Automated compliance evidence compilation script (`packages/npm_package/generate_compliance_pack.js`).
+  - Exports publication-grade, self-contained HTML and JSON compliance dossiers (`ENTERPRISE_SOC2_HIPAA_COMPLIANCE_DOSSIER.html` / `.json`).
+- **GitHub Action Marketplace Configuration**:
+  - Modernized `action.yml` for zero-friction PR code-diff AST scanning and Merkle verification.
+
+---
+
+## [v6.5.7] — 2026-10-14 (Enterprise OEM Licensing & Interactive Playground)
+
+### 🛡️ Enterprise Licensing & Test-Drive
+- **Enterprise OEM Leasing Framework**:
+  - Tiered OEM licensing and royalty architecture for enterprise agent builders and infrastructure providers.
+- **Interactive 5-Attack Test-Drive**:
+  - Added `npx btp-guard test-drive` command demonstrating real-time interception of shell bombs, SQL drops, PII leaks, credential exfiltration, and budget overruns.
+- **Standalone MCP Runner & Registry Sync**:
+  - Direct stdio MCP server execution with Smithery configuration support.
+
+---
+
+## [v6.5.6] — 2026-10-13 (Continuous Compliance & Sovereign Realtime Defense)
+
+### ⚡ Continuous Compliance & 100% Red-Team Recall
+- **Sub-35µs AST Gate & Zero-Egress Vault**:
+  - Achieved 100% detection and interception recall across 500 adversarial red-team vectors.
+  - Eliminated base64 subshell execution and evasion vectors.
+- **Industry Vertical Integrations**:
+  - Construction & critical infrastructure: Buildful.ai zero-trust integration architecture and live agent test suite (`examples/buildful_construction_agent/`).
+  - Compliance partnerships: Drata Continuous Compliance integration deck and live defense terminal.
+- **Realtime Mesh & Cross-Agent Discovery**:
+  - ElizaOS plugin and Agentverse discovery oracle with 2,000-iteration concurrency stress verification.
+
+---
+
 ## [v6.4.1] — 2026-10-04 (P0 Hardening & Security Release)
 
 ### Security & Release Hardening

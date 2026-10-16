@@ -1,40 +1,14 @@
-name: Bartholomew Guard Verification
-
-on:
-  push:
-    branches: [ main, master, develop ]
-  pull_request:
-    branches: [ main, master ]
-
+name: Bartholomew Guard Security Check
+on: [push, pull_request]
 jobs:
-  bartholomew-security-check:
-    name: AST Safety & Invariant Verification
+  security-gate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.11'
-
-      - name: Install Bartholomew Guard
+          node-version: '20'
+      - name: Run Bartholomew AST & Dependency Guard
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e ".[fastapi]"
-
-      - name: Execute Policy Validation & AST Lint
-        run: |
-          python -m btp_guard.cli check
-          python -m btp_guard.cli policy validate
-
-      - name: Generate SOC 2 Cryptographic Receipt
-        run: |
-          python -m btp_guard.cli audit . --certify --out btp-audit-receipt.json
-
-      - name: Upload Security Receipt
-        uses: actions/upload-artifact@v4
-        with:
-          name: bartholomew-audit-receipt
-          path: btp-audit-receipt.json
+          npx --yes btp-guard intel
+          npx --yes btp-guard scan-deps

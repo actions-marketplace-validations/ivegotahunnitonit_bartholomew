@@ -1,7 +1,7 @@
 {
   "schema_version": "2026-09-30",
   "protocol": "Bartholomew Trust Protocol (BTP)",
-  "protocol_version": "6.4.4",
+  "protocol_version": "6.5.6",
   "architecture": "Agentic Runtime Protection (ARP)",
   "website": "https://bartholomew.info",
   "discovery_endpoints": {

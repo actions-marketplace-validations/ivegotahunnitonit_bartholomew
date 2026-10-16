@@ -29,11 +29,67 @@ export interface VaultAuditReceipt {
   conformance: string;
 }
 
+export type DataSensitivityLabel = 'PUBLIC' | 'INTERNAL' | 'CONFIDENTIAL' | 'SECRET';
+
+export const SENSITIVITY_LATTICE_RANK: Record<DataSensitivityLabel, number> = {
+  PUBLIC: 0,
+  INTERNAL: 1,
+  CONFIDENTIAL: 2,
+  SECRET: 3
+};
+
+export interface InformationFlowOrigin {
+  dataId: string;
+  label: DataSensitivityLabel;
+  originSource: string;
+  timestamp: number;
+  metadata?: Record<string, any>;
+}
+
+export interface DestinationPolicyRule {
+  ruleId: string;
+  destinationPattern: string;
+  maxAllowedSensitivity: DataSensitivityLabel;
+  allowlistedTools?: string[];
+}
+
+export interface InformationFlowVerdict {
+  allowed: boolean;
+  verdict: 'PERMIT' | 'DENY';
+  reason: string;
+  dataId: string;
+  effectiveSensitivity: DataSensitivityLabel;
+  destination: string;
+  ruleMatched?: string;
+  taintTrace: string[];
+}
+
 export class VaultEngine {
   // Volatile in-memory bidirectional maps
   private rawToSurrogate: Map<string, string> = new Map();
   private surrogateToRaw: Map<string, { raw: string; category: string }> = new Map();
   private auditHistory: VaultAuditReceipt[] = [];
+
+  // Information-Flow Tracking & Egress Policies
+  private taintRegistry: Map<string, InformationFlowOrigin> = new Map();
+  private derivationGraph: Map<string, string[]> = new Map();
+  private destinationPolicies: DestinationPolicyRule[] = [
+    {
+      ruleId: 'DEFAULT_PUBLIC_EGRESS',
+      destinationPattern: '.*public.*|.*external.*|.*internet.*|https?://(?!internal\\.).*',
+      maxAllowedSensitivity: 'PUBLIC'
+    },
+    {
+      ruleId: 'DEFAULT_INTERNAL_EGRESS',
+      destinationPattern: '.*internal.*|mcp://local-.*|https?://internal\\..*',
+      maxAllowedSensitivity: 'INTERNAL'
+    },
+    {
+      ruleId: 'DEFAULT_SECURE_ENCLAVE',
+      destinationPattern: '.*enclave.*|.*vault.*|mcp://secure-vault',
+      maxAllowedSensitivity: 'SECRET'
+    }
+  ];
 
   // Luhn Check Algorithm for credit card validity
   private static isValidLuhn(digits: string): boolean {
@@ -89,6 +145,9 @@ export class VaultEngine {
         case 'API_KEY_GITHUB':
           surrogate = `ghp_BTP_VAULT_${hashSlice}`;
           break;
+        case 'API_KEY_SLACK':
+          surrogate = `xoxb-BTP_VAULT_${hashSlice}`;
+          break;
         case 'DATABASE_URI':
           surrogate = `postgres://btp_vault_user:btp_vault_pass@127.0.0.1:5432/btp_sanitized_${hashSlice.toLowerCase()}`;
           break;
@@ -121,14 +180,14 @@ export class VaultEngine {
 
     // 2. High-Entropy API Keys
     // Anthropic
-    output = output.replace(/\bsk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30,}\b/g, (match) => {
+    output = output.replace(/\bsk-ant-api[0-9]{2}-[A-Za-z0-9_-]{20,}\b/g, (match) => {
       const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_ANTHROPIC', formatPreserving);
       detected.push({ surrogate, category: 'API_KEY_ANTHROPIC', formatPreserved: formatPreserving });
       return surrogate;
     });
 
     // OpenAI
-    output = output.replace(/\bsk-(?:proj-)?(?!ant-)[A-Za-z0-9_-]{32,}\b/g, (match) => {
+    output = output.replace(/\bsk-(?:proj-)?(?!ant-)[A-Za-z0-9_-]{20,}\b/g, (match) => {
       const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_OPENAI', formatPreserving);
       detected.push({ surrogate, category: 'API_KEY_OPENAI', formatPreserved: formatPreserving });
       return surrogate;
@@ -149,10 +208,24 @@ export class VaultEngine {
     });
 
     // GitHub PAT
-    output = output.replace(/\b(?:ghp_[0-9a-zA-Z]{36}|github_pat_[0-9a-zA-Z_]{60,82})\b/g, (match) => {
+    output = output.replace(/\b(?:ghp_[0-9a-zA-Z]{20,}|github_pat_[0-9a-zA-Z_]{20,82})\b/g, (match) => {
       const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_GITHUB', formatPreserving);
       detected.push({ surrogate, category: 'API_KEY_GITHUB', formatPreserved: formatPreserving });
       return surrogate;
+    });
+
+    // Slack Bot/User Token
+    output = output.replace(/\bxox[baprs]-[0-9a-zA-Z-]{20,}\b/g, (match) => {
+      const surrogate = this.getOrGenerateSurrogate(match, 'API_KEY_SLACK', formatPreserving);
+      detected.push({ surrogate, category: 'API_KEY_SLACK', formatPreserved: formatPreserving });
+      return surrogate;
+    });
+
+    // AWS Secret Access Key or Assigned Secret
+    output = output.replace(/\b(AWS_SECRET_ACCESS_KEY|SECRET_KEY|API_KEY|AUTH_TOKEN|PRIVATE_KEY)=(['"])([0-9a-zA-Z+/=_-]{20,})\2/g, (fullMatch, varName, quote, rawSecret) => {
+      const surrogate = this.getOrGenerateSurrogate(rawSecret, 'API_KEY_AWS', formatPreserving);
+      detected.push({ surrogate, category: 'API_KEY_AWS', formatPreserved: formatPreserving });
+      return `${varName}=${quote}${surrogate}${quote}`;
     });
 
     // 3. Social Security Numbers (SSN)
@@ -181,6 +254,52 @@ export class VaultEngine {
       detected.push({ surrogate, category: 'EMAIL', formatPreserved: formatPreserving });
       return surrogate;
     });
+
+    // 6. Bounded Base64-Encoded Credential Scanning (Phase 5 Hardening)
+    // Limits: Input size <= 1MB, candidate length 24..512 chars, 1 level depth
+    if (input.length <= 1024 * 1024) {
+      const b64Regex = /\b[A-Za-z0-9+/_-]{24,512}={0,2}\b/g;
+      output = output.replace(b64Regex, (candidate) => {
+        try {
+          // Normalize URL-safe base64 and padding
+          let normalized = candidate.replace(/-/g, '+').replace(/_/g, '/');
+          while (normalized.length % 4 !== 0) {
+            normalized += '=';
+          }
+          const decoded = Buffer.from(normalized, 'base64').toString('utf8');
+          // Check that decoded string roundtrips reasonably to verify true base64
+          if (!decoded || decoded.length < 16) return candidate;
+          
+          // Check for signature markers of supported secrets
+          const hasSecretMarker = /(?:sk_live_[0-9a-zA-Z]{24,}|sk-ant-api[0-9]{2}-[A-Za-z0-9_-]{30,}|sk-(?:proj-)?[A-Za-z0-9_-]{32,}|AKIA[0-9A-Z]{16}|ghp_[0-9a-zA-Z]{36}|postgres:\/\/[^\s"'`]+)/.test(decoded);
+          
+          if (hasSecretMarker) {
+            // Recursive scan on the decoded inner string
+            const innerTokenized = this.tokenize(decoded, { formatPreserving });
+            if (innerTokenized.tokenCount > 0) {
+              for (const tok of innerTokenized.tokens) {
+                detected.push({
+                  surrogate: tok.surrogate,
+                  category: `BASE64_${tok.category}`,
+                  formatPreserved: tok.formatPreserved
+                });
+              }
+              // Re-encode sanitized content back to Base64 (maintaining URL-safe format if original was URL-safe)
+              let encodedSurrogate = Buffer.from(innerTokenized.sanitized).toString('base64');
+              if (candidate.includes('-') || candidate.includes('_')) {
+                encodedSurrogate = encodedSurrogate.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+              }
+              this.surrogateToRaw.set(encodedSurrogate, { raw: candidate, category: 'BASE64_SECRET' });
+              this.rawToSurrogate.set(candidate, encodedSurrogate);
+              return encodedSurrogate;
+            }
+          }
+        } catch {
+          // If decoding throws, preserve original candidate cleanly
+        }
+        return candidate;
+      });
+    }
 
     const endTime = process.hrtime.bigint();
     const latencyUs = Number(endTime - startTime) / 1000;
@@ -341,8 +460,12 @@ export class VaultEngine {
       };
     }
 
+    // Normalize SQL comments (/* ... */ and -- ...) before inspection
+    const normalizedSqlTarget = argsJson
+      .replace(/\/\*[\s\S]*?\*\//g, ' ')
+      .replace(/--.*?(?:\\r\\n|\\n|\\r|\r\n|\n|\r|$)/g, ' ');
     const sqlPattern = /\b(DROP\s+TABLE|TRUNCATE\s+TABLE|DROP\s+DATABASE|ALTER\s+TABLE\s+.*\s+DROP)\b/i;
-    if (sqlPattern.test(argsJson)) {
+    if (sqlPattern.test(normalizedSqlTarget)) {
       const t1 = process.hrtime.bigint();
       const latencyUs = Number(t1 - t0) / 1000;
       return {
@@ -491,5 +614,175 @@ export class VaultEngine {
       servers: serverSummaries,
       timestamp: new Date().toISOString()
     };
+  }
+
+  /**
+   * Information-Flow Tracking: Explicitly tags data with sensitivity label and origin.
+   */
+  public tagDataOrigin(
+    dataId: string,
+    label: DataSensitivityLabel,
+    originSource: string,
+    metadata?: Record<string, any>
+  ): InformationFlowOrigin {
+    const origin: InformationFlowOrigin = {
+      dataId,
+      label,
+      originSource,
+      timestamp: Date.now(),
+      metadata
+    };
+    this.taintRegistry.set(dataId, origin);
+    return origin;
+  }
+
+  /**
+   * Information-Flow Tracking: Propagates taint across data transformations using lattice supremum (max).
+   * join(L1, L2) = max(L1, L2)
+   */
+  public propagateTaint(
+    sourceIds: string[],
+    derivedDataId: string,
+    derivedOriginSource = 'derived:transformation'
+  ): InformationFlowOrigin {
+    let maxRank = 0;
+    let maxLabel: DataSensitivityLabel = 'PUBLIC';
+    const traceSources: string[] = [];
+
+    for (const sid of sourceIds) {
+      traceSources.push(sid);
+      const parent = this.taintRegistry.get(sid);
+      if (parent) {
+        const rank = SENSITIVITY_LATTICE_RANK[parent.label] ?? 0;
+        if (rank > maxRank) {
+          maxRank = rank;
+          maxLabel = parent.label;
+        }
+      }
+    }
+
+    this.derivationGraph.set(derivedDataId, traceSources);
+
+    const derivedOrigin: InformationFlowOrigin = {
+      dataId: derivedDataId,
+      label: maxLabel,
+      originSource: derivedOriginSource,
+      timestamp: Date.now(),
+      metadata: { sources: sourceIds, supremumRank: maxRank }
+    };
+    this.taintRegistry.set(derivedDataId, derivedOrigin);
+    return derivedOrigin;
+  }
+
+  /**
+   * Retrieve the full provenance taint trace for a piece of data.
+   */
+  public getTaintTrace(dataId: string): string[] {
+    const trace: string[] = [dataId];
+    const queue = [dataId];
+    const visited = new Set<string>();
+
+    while (queue.length > 0) {
+      const curr = queue.shift()!;
+      if (visited.has(curr)) continue;
+      visited.add(curr);
+      const parents = this.derivationGraph.get(curr) || [];
+      for (const p of parents) {
+        if (!trace.includes(p)) trace.push(p);
+        queue.push(p);
+      }
+    }
+    return trace;
+  }
+
+  /**
+   * Evaluates if data can be transmitted to a specific egress destination or tool based on sensitivity labels.
+   */
+  public evaluateDestinationEgress(
+    dataId: string,
+    destination: string,
+    toolName?: string
+  ): InformationFlowVerdict {
+    const entry = this.taintRegistry.get(dataId);
+    const effectiveSensitivity: DataSensitivityLabel = entry ? entry.label : 'PUBLIC';
+    const effectiveRank = SENSITIVITY_LATTICE_RANK[effectiveSensitivity];
+    const trace = this.getTaintTrace(dataId);
+
+    // Find matching destination policy
+    for (const policy of this.destinationPolicies) {
+      const reg = new RegExp(policy.destinationPattern, 'i');
+      if (reg.test(destination)) {
+        // Check tool allowlist if specified
+        if (toolName && policy.allowlistedTools && policy.allowlistedTools.length > 0) {
+          if (!policy.allowlistedTools.includes(toolName) && !policy.allowlistedTools.includes('*')) {
+            return {
+              allowed: false,
+              verdict: 'DENY',
+              reason: `Tool '${toolName}' not authorized for destination rule '${policy.ruleId}'`,
+              dataId,
+              effectiveSensitivity,
+              destination,
+              ruleMatched: policy.ruleId,
+              taintTrace: trace
+            };
+          }
+        }
+
+        const maxAllowedRank = SENSITIVITY_LATTICE_RANK[policy.maxAllowedSensitivity];
+        if (effectiveRank > maxAllowedRank) {
+          return {
+            allowed: false,
+            verdict: 'DENY',
+            reason: `Data sensitivity '${effectiveSensitivity}' exceeds destination '${destination}' maximum allowable clearance '${policy.maxAllowedSensitivity}' (Rule: ${policy.ruleId})`,
+            dataId,
+            effectiveSensitivity,
+            destination,
+            ruleMatched: policy.ruleId,
+            taintTrace: trace
+          };
+        }
+
+        return {
+          allowed: true,
+          verdict: 'PERMIT',
+          reason: `Egress allowed under policy '${policy.ruleId}' (${effectiveSensitivity} <= ${policy.maxAllowedSensitivity})`,
+          dataId,
+          effectiveSensitivity,
+          destination,
+          ruleMatched: policy.ruleId,
+          taintTrace: trace
+        };
+      }
+    }
+
+    // Default fail-closed if confidential or secret and no explicit policy matches
+    if (effectiveRank >= SENSITIVITY_LATTICE_RANK.CONFIDENTIAL) {
+      return {
+        allowed: false,
+        verdict: 'DENY',
+        reason: `Default Fail-Closed: No matching destination policy found for ${effectiveSensitivity} data to destination '${destination}'`,
+        dataId,
+        effectiveSensitivity,
+        destination,
+        taintTrace: trace
+      };
+    }
+
+    return {
+      allowed: true,
+      verdict: 'PERMIT',
+      reason: `Default permissive for public/internal data without explicit blocking policy`,
+      dataId,
+      effectiveSensitivity,
+      destination,
+      taintTrace: trace
+    };
+  }
+
+  /**
+   * Register a custom destination policy rule
+   */
+  public registerDestinationPolicy(rule: DestinationPolicyRule): void {
+    this.destinationPolicies.unshift(rule);
   }
 }

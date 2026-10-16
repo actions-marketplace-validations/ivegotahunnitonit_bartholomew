@@ -76,6 +76,9 @@ from . import generative_media
 from .google_genai import BtpGoogleGenAIGuard, wrap_google_genai_tool
 from . import google_genai
 
+from .aerospace_spacex import BtpSpaceXAerospaceGuard, AerospaceViolationError
+from . import aerospace_spacex
+
 __all__ = [
     "BtpStripeAgentGuard",
     "StripeSecurityVetoException",
@@ -144,4 +147,7 @@ __all__ = [
     "BtpGoogleGenAIGuard",
     "wrap_google_genai_tool",
     "google_genai",
+    "BtpSpaceXAerospaceGuard",
+    "AerospaceViolationError",
+    "aerospace_spacex",
 ]

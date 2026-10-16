@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="packages/vscode-extension/icon.png" width="130" alt="Bartholomew Shield Logo" />
+  <img src="https://raw.githubusercontent.com/ivegotahunnitonit/bartholomew/main/packages/vscode-extension/icon.png" width="130" alt="Bartholomew Shield Logo" />
 </p>
 
 # Bartholomew Guard — In-Process Agentic Execution Gateway
@@ -8,13 +8,13 @@
 > Intercepts destructive commands, prevents secret exfiltration, and enforces budget invariants in **sub-millisecond execution overhead (< 0.1 ms - < 1 ms)** before tool calls execute.
 
 <!-- BTP Status Badges -->
-[![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](docs/mcp_tool_registry_v6.json)
-[![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen?style=flat-square)](tests/)
-[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](docs/mcp_tool_registry_v6.json)
+[![Security Score](https://img.shields.io/badge/Security%20Audit-100%2F100%20A%2B-brightgreen?style=flat-square)](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/mcp_tool_registry_v6.json)
+[![Tests](https://img.shields.io/badge/Tests-147%20v6%20%7C%203%2C199%20Total-brightgreen?style=flat-square)](https://github.com/ivegotahunnitonit/bartholomew/tree/main/tests)
+[![MCP Tools](https://img.shields.io/badge/MCP%20Tools-40%20Native-blue?style=flat-square)](https://github.com/ivegotahunnitonit/bartholomew/blob/main/docs/mcp_tool_registry_v6.json)
 [![CI](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml/badge.svg)](https://github.com/ivegotahunnitonit/bartholomew/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/btp-guard?logo=pypi&logoColor=white)](https://pypi.org/project/btp-guard/)
-[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.4.4-cb3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
+[![npm](https://img.shields.io/badge/npm-btp--guard%20v6.5.10-cb3837?logo=npm&logoColor=white)](https://www.npmjs.com/package/btp-guard)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](https://github.com/ivegotahunnitonit/bartholomew/blob/main/LICENSE)
 [![Enterprise Support](https://img.shields.io/badge/Enterprise-Audit%20%26%20SLAs-10b981)](https://bartholomew.info/enterprise)
 
 ---
@@ -66,7 +66,30 @@ To establish rigorous security boundaries, the following are explicitly outside 
 
 ## Quickstart
 
-### Installation
+### 1. IDE Extensions (Cursor, Windsurf, Claude Code, VS Code)
+
+Install the complete 3-phase security pipeline in a single command:
+
+```bash
+# Unified Bartholomew Trinity Extension Pack (Guard + Keystone + Vault)
+cursor --install-extension Bartholomew.bartholomew-trinity
+```
+
+Available on [Open VSX Registry](https://open-vsx.org/extension/Bartholomew/bartholomew-trinity).
+
+### 2. 1-Click MCP Auto-Shield Wizard
+
+Harden your existing Claude Desktop or Cursor MCP servers against arbitrary code execution, SQL drop attacks, and credential leakage:
+
+```bash
+# Auto-detects Claude Desktop / Cursor config, creates .bak backup, and wraps servers
+npx @bartholomew/vault mcp-shield --install
+
+# Audit active configuration security posture
+npx @bartholomew/vault mcp-shield --audit
+```
+
+### 3. Python & Node.js SDKs
 
 ```bash
 # Python SDK & CLI
@@ -76,13 +99,19 @@ pip install btp-guard
 npm install btp-guard
 ```
 
-### Local Workspace Policy Initialization
+### 4. Workspace Policy & Keystone Passkey Clearance
 
-Initialize workspace security policies and pre-commit AST verification:
+Initialize repository invariants and issue an agent capability passkey:
 
 ```bash
 # Initialize local repository invariants
 btp-guard arm
+
+# Issue 30-day scoped Keystone passkey with spend ceiling
+python -m btp_guard.cli keystone issue --budget 50.0
+
+# Inspect active passkey clearance status (sub-millisecond dispatch)
+python -m btp_guard.cli keystone status
 
 # Verify workspace files and policies
 btp-guard check --all
@@ -90,8 +119,9 @@ btp-guard check --all
 
 This configures:
 - `.btp/policy.yaml`: Declarative workspace execution invariants and spend limits.
+- `.btp/keystone.json`: Cryptographically signed agent capability passkey token.
 - Git Pre-Commit Hook: Prevents credential leaks and destructive commands prior to git commits.
-- Machine-readable context files for local IDE agent integration.
+- Client-Side Verifier: Audit SOC 2 Type II evidence packages offline at [bartholomew.info/verify](https://bartholomew.info/verify).
 
 ---
 
@@ -150,6 +180,9 @@ Bartholomew provides validated runtime adapters across enterprise agent orchestr
 | **LangChain / LangGraph** | `BTPGuardTool` Node Interceptor | [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md) |
 | **Microsoft AutoGen** | Swarm Consensus & Execution Filter | [`examples/future_swarms/autogen_swarm_consensus.py`](examples/future_swarms/autogen_swarm_consensus.py) |
 | **Semantic Kernel** | Native Kernel Filter Pipeline | [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md) |
+| **Google GenAI / ADK** | FunctionDeclaration & Tool Boundary Interceptor | [`packages/npm_package/universal_adapters.js`](packages/npm_package/universal_adapters.js) |
+| **LlamaIndex** | Workflow Step Invariant Interceptor & Tool Wrapper | [`packages/npm_package/universal_adapters.js`](packages/npm_package/universal_adapters.js) |
+| **Air-Gapped / Aerospace** | Offline Hardware & Bus Invariant Guard + Micro-Rollback | [`btp_guard/integrations/aerospace_spacex.py`](btp_guard/integrations/aerospace_spacex.py) |
 | **Agno / Phidata** | Agent Pre-Execution Hook | [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md) |
 | **Haystack** | Component-Level Tool Validator | [`docs/FRAMEWORK_GUIDE.md`](docs/FRAMEWORK_GUIDE.md) |
 
@@ -274,5 +307,5 @@ For enterprise licensing, deployment assistance, and compliance audits:
 
 ## License
 
-Bartholomew core libraries and CLI tools are open source and licensed under the [Apache License 2.0](LICENSE).  
+Bartholomew core libraries and CLI tools are open source and licensed under the [Apache License 2.0](https://github.com/ivegotahunnitonit/bartholomew/blob/main/LICENSE).  
 Enterprise extensions, centralized telemetry collectors, and managed audit services are licensed under the Bartholomew Commercial License Agreement.

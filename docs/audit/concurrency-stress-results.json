@@ -1,0 +1,23 @@
+{
+  "benchmark": "BTP v6.5.6 High-Concurrency Stress Test",
+  "timestamp_utc": "2026-10-15T00:00:42.696Z",
+  "total_iterations": 2000,
+  "concurrency_level": 50,
+  "wall_clock_seconds": 0.014,
+  "throughput_ops_per_second": 146856,
+  "decision_accuracy_pct": 100,
+  "sla": {
+    "median_threshold_us": 35,
+    "p50_us": 4.7,
+    "sla_satisfied": true
+  },
+  "latency_distribution_us": {
+    "min": 1.2,
+    "p50": 4.7,
+    "p90": 8.5,
+    "p95": 11.1,
+    "p99": 24.2,
+    "max": 669.2,
+    "average": 5.88
+  }
+}

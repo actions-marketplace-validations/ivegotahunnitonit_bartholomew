@@ -35,9 +35,11 @@ def get_extensions():
     guard_dir = BASE_DIR / "packages" / "vscode-extension"
     keystone_dir = BASE_DIR / "packages" / "bartholomew-keystone"
     vault_dir = BASE_DIR / "packages" / "bartholomew-vault"
+    trinity_dir = BASE_DIR / "packages" / "bartholomew-trinity"
     guard_ver = get_pkg_version(guard_dir)
     keystone_ver = get_pkg_version(keystone_dir)
     vault_ver = get_pkg_version(vault_dir)
+    trinity_ver = get_pkg_version(trinity_dir)
     return [
         {
             "id": "bartholomew-guard-vscode",
@@ -53,6 +55,11 @@ def get_extensions():
             "id": "bartholomew-vault",
             "dir": vault_dir,
             "vsix": vault_dir / f"bartholomew-vault-{vault_ver}.vsix",
+        },
+        {
+            "id": "bartholomew-trinity",
+            "dir": trinity_dir,
+            "vsix": trinity_dir / f"bartholomew-trinity-{trinity_ver}.vsix",
         },
     ]
 

@@ -21,6 +21,14 @@ docs/ENTERPRISE_PILOT_OUTREACH_KIT.md
 docs/COMMUNITY_DISTRIBUTION_SHOW_HN_REDDIT.md
 docs/PRODUCT_HUNT_RESPONSE_PLAYBOOK.md
 docs/dossiers/
+
+# Private Enterprise Commercial Proposals & Target Outreach Memos
+docs/enterprise/proposals/
+PROSPECT_OUTREACH_PLAYBOOK.md
+COMMERCIAL_PILOT_OFFER.md
+ENTERPRISE_PILOT_PROPOSAL.md
+PILOT_TESTER_BUNDLE.md
+docs/PAID_PILOT_OFFERING.md
 scripts/compile_seed_one_pager.py
 scripts/prospect_auditor.py
 scripts/dispatch_*
@@ -230,3 +238,5 @@ scripts/outreach_tracker.py
 
 scripts/audit_fulfillment_engine.py
 scripts/generate_1500_targets.py
+tests/*.json
+tests/fixtures/adversarial_regressions/

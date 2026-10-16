@@ -1,0 +1,34 @@
+{
+  "version": "5.4.19",
+  "workspace": "autonomous-circularity-network",
+  "enforcement_mode": "STRICT_AST_GATED",
+  "spend_limit_usd": 50,
+  "protected_paths": [
+    ".env",
+    "id_rsa",
+    "credentials",
+    "secrets/",
+    ".git/"
+  ],
+  "allowed_commands": [
+    "npm test",
+    "pytest",
+    "git status",
+    "ruff",
+    "python"
+  ],
+  "rules": [
+    {
+      "id": "BTP-AST-001",
+      "description": "Block destructive shell & drop table operations"
+    },
+    {
+      "id": "BTP-SEC-002",
+      "description": "In-flight API secret scrubbing & redaction"
+    },
+    {
+      "id": "BTP-KEYSTONE-003",
+      "description": "Scoped capability passkey verification"
+    }
+  ]
+}

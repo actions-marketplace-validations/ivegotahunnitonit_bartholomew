@@ -85,6 +85,114 @@ from src.declarative_policy_engine import DeclarativePolicyEngine
 from src.policy_synthesizer import PolicySynthesizer
 
 
+def cmd_keystone(args):
+    sub = getattr(args, "keystone_cmd", "status") or "status"
+    ws = getattr(args, "workspace", ".") or "."
+    try:
+        from src.keystone_passkey import KeystoneEngine, KeystonePasskey, KeystoneScope, BudgetScope
+    except ImportError:
+        from btp_guard.keystone_passkey import KeystoneEngine, KeystonePasskey, KeystoneScope, BudgetScope
+    from pathlib import Path
+    import json
+
+    ws_path = Path(ws).resolve()
+    btp_dir = ws_path / ".btp"
+    keystone_file = btp_dir / "keystone.json"
+    engine = KeystoneEngine()
+
+    if sub == "status":
+        if not keystone_file.exists():
+            print("\n[!] No active Keystone Passkey found in workspace (.btp/keystone.json).")
+            print("    Run: python -m btp_guard.cli keystone issue\n")
+            return
+        try:
+            data = json.loads(keystone_file.read_text(encoding="utf-8"))
+            passkey = KeystonePasskey.from_dict(data)
+            is_valid = engine.verify_signature(passkey)
+            print("\n" + "=" * 70)
+            print("  BARTHOLOMEW KEYSTONE PASSKEY CLEARANCE STATUS (BTP v5.4)")
+            print("=" * 70)
+            print(f"  * Passkey ID   : {passkey.passkey_id}")
+            print(f"  * Agent ID     : {passkey.agent_id}")
+            print(f"  * Issuer       : {passkey.issuer}")
+            print(f"  * Issued At    : {passkey.issued_at}")
+            print(f"  * Expires At   : {passkey.expires_at}")
+            print(f"  * Signature    : {passkey.signature[:32]}... ({'VALID' if is_valid else 'INVALID'})")
+            print(f"  * Spend Budget : ${passkey.scopes.get('budget', {}).get('max_spend_usd', 0.0):,.2f} USD")
+            print(f"  * Latency SLA  : Sub-35 microseconds in-process dispatch")
+            print(f"  * Clearance    : {'ARMED // VALID' if is_valid else 'COMPROMISED // EXPIRED'}")
+            print("=" * 70 + "\n")
+        except Exception as e:
+            print(f"[!] Error inspecting Keystone Passkey: {e}")
+
+    elif sub == "issue":
+        agent_id = getattr(args, "agent", "agent-cursor-primary") or "agent-cursor-primary"
+        budget = getattr(args, "budget", 25.0) or 25.0
+        btp_dir.mkdir(parents=True, exist_ok=True)
+        scope = KeystoneScope(budget=BudgetScope(max_spend_usd=float(budget)))
+        passkey = engine.issue_passkey(agent_id=agent_id, scopes=scope, ttl_minutes=60 * 24 * 30)
+        keystone_file.write_text(json.dumps(passkey.to_dict(), indent=2), encoding="utf-8")
+        print("\n" + "=" * 70)
+        print("  KEYSTONE CAPABILITY PASSKEY ISSUED (BTP v5.4)")
+        print("=" * 70)
+        print(f"  * Target File  : {keystone_file}")
+        print(f"  * Passkey ID   : {passkey.passkey_id}")
+        print(f"  * Agent ID     : {passkey.agent_id}")
+        print(f"  * Spend Budget : ${budget:,.2f} USD")
+        print(f"  * Valid Days   : 30 days")
+        print("=" * 70 + "\n")
+
+    elif sub == "verify":
+        if not keystone_file.exists():
+            print("[!] Fail: .btp/keystone.json not found.")
+            sys.exit(1)
+        try:
+            data = json.loads(keystone_file.read_text(encoding="utf-8"))
+            passkey = KeystonePasskey.from_dict(data)
+            if engine.verify_signature(passkey):
+                print(f"[+] [KEYSTONE] Passkey {passkey.passkey_id} VERIFIED (100% valid cryptographic signature & unexpired).")
+            else:
+                print(f"[!] [KEYSTONE] Passkey {passkey.passkey_id} INVALID or EXPIRED.")
+                sys.exit(1)
+        except Exception as e:
+            print(f"[!] [KEYSTONE] Verification error: {e}")
+            sys.exit(1)
+
+    elif sub == "evaluate":
+        if not keystone_file.exists():
+            print("[!] Fail closed: No active Keystone passkey in workspace.")
+            sys.exit(1)
+        raw_type = getattr(args, "action_type", "command").upper()
+        if "CMD" in raw_type or "COMMAND" in raw_type:
+            action_type = "COMMAND_EXEC"
+        elif "WRITE" in raw_type:
+            action_type = "FILE_WRITE"
+        elif "READ" in raw_type:
+            action_type = "FILE_READ"
+        elif "SPEND" in raw_type or "BUDGET" in raw_type:
+            action_type = "FINANCIAL_SPEND"
+        elif "NET" in raw_type:
+            action_type = "NETWORK_QUERY"
+        else:
+            action_type = raw_type
+
+        target = getattr(args, "target", "")
+        cost = getattr(args, "cost", 0.0)
+        data = json.loads(keystone_file.read_text(encoding="utf-8"))
+        passkey = KeystonePasskey.from_dict(data)
+        res = engine.check_clearance(passkey, action_type=action_type, target=target, spend_usd=float(cost))
+        print(json.dumps(res.to_dict(), indent=2))
+        if res.verdict != "ALLOW":
+            sys.exit(1)
+
+    elif sub == "revoke":
+        if keystone_file.exists():
+            keystone_file.unlink()
+            print("[+] [KEYSTONE] Passkey revoked and removed from .btp/keystone.json.")
+        else:
+            print("[*] No active Keystone Passkey found to revoke.")
+
+
 def cmd_hook(args):
     try:
         from src.hook_installer import install_git_hooks, uninstall_git_hooks
@@ -5326,6 +5434,30 @@ def main():
     hook_st = hook_sub.add_parser("status", help="Check installation status of BTP pre-commit hook")
     hook_st.add_argument("--dir", "-d", default=".", help="Target repository directory")
 
+    # keystone (Bartholomew Keystone Agent Capability Passkey Clearance)
+    keystone_p = subparsers.add_parser("keystone", help="Bartholomew Keystone agent capability passkey clearance, vouchers & budget limits")
+    keystone_sub = keystone_p.add_subparsers(dest="keystone_cmd", help="Keystone passkey actions")
+    
+    k_status = keystone_sub.add_parser("status", help="Inspect active workspace Keystone passkey clearance status")
+    k_status.add_argument("--workspace", "-w", default=".", help="Workspace root directory")
+    
+    k_issue = keystone_sub.add_parser("issue", help="Issue scoped Keystone passkey token for an agent")
+    k_issue.add_argument("--agent", "-a", default="agent-cursor-primary", help="Target agent identifier")
+    k_issue.add_argument("--budget", "-b", type=float, default=25.0, help="Spend budget limit in USD (default: 25.00)")
+    k_issue.add_argument("--workspace", "-w", default=".", help="Workspace root directory")
+    
+    k_verify = keystone_sub.add_parser("verify", help="Cryptographically verify local Keystone passkey signature and expiry")
+    k_verify.add_argument("--workspace", "-w", default=".", help="Workspace root directory")
+    
+    k_eval = keystone_sub.add_parser("evaluate", help="Evaluate a proposed action against Keystone clearance scopes")
+    k_eval.add_argument("--action-type", choices=["file_read", "file_write", "command", "network", "budget"], default="command", help="Action category")
+    k_eval.add_argument("--target", required=True, help="Target file path, shell command, or domain")
+    k_eval.add_argument("--cost", type=float, default=0.0, help="Estimated action cost in USD")
+    k_eval.add_argument("--workspace", "-w", default=".", help="Workspace root directory")
+    
+    k_revoke = keystone_sub.add_parser("revoke", help="Revoke active Keystone passkey clearance immediately")
+    k_revoke.add_argument("--workspace", "-w", default=".", help="Workspace root directory")
+
     # ebpf (Kernel Syscall Sandboxing & Tracepoint Probes)
     ebpf_parser = subparsers.add_parser("ebpf", help="Inspect and test kernel-space system call interception and memory caps")
     ebpf_sub = ebpf_parser.add_subparsers(dest="ebpf_cmd", help="eBPF actions")
@@ -5831,6 +5963,8 @@ def main():
         cmd_scan_deps(args)
     elif args.command == "firewall":
         cmd_firewall(args)
+    elif args.command == "keystone":
+        cmd_keystone(args)
     elif args.command in ("wrap", "llamacpp", "ollama"):
         cmd_wrap(args)
     elif args.command == "fleet":

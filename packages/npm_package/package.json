@@ -1,19 +1,36 @@
 {
   "name": "btp-guard",
-  "version": "6.4.7",
-  "description": "BTP v6.4.7 Agentic Runtime Protection (ARP) Gateway - Universal Framework Hooks, Sub-35us Tool Invariants, and Cryptographic Merkle Vault for Autonomous Agents",
+  "version": "6.5.9",
+  "description": "BTP v6.5.9 Agentic Runtime Protection (ARP) Gateway & MCP Safety Shield - Google GenAI, LlamaIndex, Microsoft AutoGen & Semantic Kernel Middleware, In-Process Tool Invariants, Sub-Millisecond RAM Gating, and Cryptographic Merkle Vault",
   "main": "index.js",
   "types": "index.d.ts",
   "sideEffects": false,
   "bin": {
     "btp-guard": "cli.js",
-    "btp-mcp-proxy": "cli.js"
+    "btp-mcp-proxy": "cli.js",
+    "mcp-shield": "cli.js"
   },
   "exports": {
     ".": {
       "types": "./index.d.ts",
       "import": "./index.js",
       "default": "./index.js"
+    },
+    "./universal_adapters": {
+      "import": "./universal_adapters.js",
+      "default": "./universal_adapters.js"
+    },
+    "./process_shim": {
+      "import": "./process_shim.js",
+      "default": "./process_shim.js"
+    },
+    "./elizaos": {
+      "import": "./elizaos_plugin.js",
+      "default": "./elizaos_plugin.js"
+    },
+    "./microsoft": {
+      "import": "./microsoft_adapters.js",
+      "default": "./microsoft_adapters.js"
     },
     "./package.json": "./package.json"
   },
@@ -23,7 +40,7 @@
   },
   "funding": "https://buy.stripe.com/3cI6oHbNz3LQ4U84He9R605",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js && node test_microsoft_middleware.js && node test_genai_llamaindex_middleware.js"
   },
   "keywords": [
     "btp",
@@ -60,9 +77,17 @@
     "index.js",
     "index.d.ts",
     "cli.js",
+    "agent_core.js",
+    "vault_client.js",
+    "token_store.js",
+    "universal_adapters.js",
+    "microsoft_adapters.js",
+    "process_shim.js",
+    "elizaos_plugin.js",
     "README.md",
     "LICENSE",
     "SECURITY.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "smithery.yaml"
   ]
 }

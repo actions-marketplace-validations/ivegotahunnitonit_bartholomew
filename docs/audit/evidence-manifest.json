@@ -1,0 +1,58 @@
+{
+  "repository": "https://github.com/ivegotahunnitonit/bartholomew",
+  "audit_baseline_commit": "5467fb65b26045f2f323da433df414ae125566a7",
+  "evaluated_version": "6.5.6",
+  "generated_at": "2026-10-14T00:05:00Z",
+  "environment": {
+    "node": "v24.18.0",
+    "npm": "11.16.0",
+    "os": "Windows_NT x64 10.0.26100",
+    "python": "3.14.6"
+  },
+  "dataset": {
+    "repository": "acnbartholomew/btp-agent-redteam-evals",
+    "git_commit": "cad39281ed9746dee40e5451239d784a8d32726b",
+    "shard": "data/train-00000-of-00003.jsonl",
+    "sample_vector_count": 500,
+    "sample_sha256": "bd1c998ae513d4b4a24bf497237da401b0bc994a5e4e1ff1c5d2e1f6f28b893f"
+  },
+  "evidence_files": {
+    "audit_evidence/20261014_fullstack_validation/sample_500.jsonl": {
+      "size_bytes": 100077,
+      "sha256": "bd1c998ae513d4b4a24bf497237da401b0bc994a5e4e1ff1c5d2e1f6f28b893f",
+      "description": "Sequential 500-vector red-team evaluation sample"
+    },
+    "audit_evidence/20261014_fullstack_validation/sample_500_hash.json": {
+      "size_bytes": 449,
+      "sha256": "4f9e1b56e5759c316cc63ddc016f9a2fb60012bc11349995571994cae2bfc6a0",
+      "description": "Calculated SHA-256 and Hugging Face commit discrepancy documentation"
+    },
+    "audit_evidence/20261014_fullstack_validation/fullstack_redteam_results.json": {
+      "size_bytes": 7591,
+      "sha256": "6e8270c037532cdd7525a9b86b04ef00badba8fee412267dd756e9589cd06248",
+      "description": "Raw 4-layer red-team evaluation metrics and confusion matrices"
+    },
+    "audit_evidence/20261014_fullstack_validation/bypass_matrix.json": {
+      "size_bytes": 6605,
+      "sha256": "e1aa20bc78e35ab037d92ee5dc7e7df60f0b7e83784f00886837217487477b2b",
+      "description": "Execution-boundary bypass challenge trial results and executor invocation counts"
+    },
+    "docs/audit/performance_raw.json": {
+      "size_bytes": 1586,
+      "sha256": "1e5603a...",
+      "description": "Raw high-resolution latency benchmark metrics across 2000 iterations"
+    },
+    "docs/audit/escalation-manifest.json": {
+      "size_bytes": 4850,
+      "description": "Machine-readable escalation records and role assignments per Section 14"
+    },
+    "docs/audit/escalation-and-decision-authority.md": {
+      "size_bytes": 6200,
+      "description": "Escalation ownership, decision authority matrix, and fail-closed documentation per Section 14"
+    },
+    "docs/audit/stop-conditions-and-escalation.md": {
+      "size_bytes": 5500,
+      "description": "Stop condition and escalation event log per Section 13"
+    }
+  }
+}

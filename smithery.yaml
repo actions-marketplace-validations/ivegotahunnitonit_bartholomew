@@ -1,0 +1,12 @@
+name: bartholomew-guard
+description: Deterministic in-process AST gating, secret redaction, and capability passkey security for MCP AI agents and tools.
+version: 6.5.6
+repository: https://github.com/ivegotahunnitonit/bartholomew
+startCommand:
+  type: stdio
+  config:
+    command: npx
+    args:
+      - "-y"
+      - "btp-guard"
+      - "mcp"

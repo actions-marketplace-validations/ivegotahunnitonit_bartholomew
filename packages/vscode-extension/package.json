@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-guard-vscode",
   "displayName": "Bartholomew Agent Guard - Coding Agent Runtime Protection",
-  "description": "BTP v6.5.5 Deterministic workspace execution firewall, fail-closed pre-commit sentinel, and sub-35\u00b5s AST invariant guard for AI coding agents (Cursor, Claude Code, Windsurf, Copilot, Cline, Aider).",
-  "version": "6.5.5",
+  "description": "BTP v6.5.9 Deterministic workspace execution firewall, fail-closed pre-commit sentinel, and sub-millisecond in-process AST invariant guard for AI coding agents (Cursor, Claude Code, Windsurf, Copilot, Cline, Aider).",
+  "version": "6.5.9",
   "publisher": "bartholomew",
   "icon": "icon.png",
   "license": "Apache-2.0",
@@ -272,9 +272,9 @@
       "description": "Active Security Invariants"
     },
     {
-      "url": "https://img.shields.io/badge/Latency-%3C35%C2%B5s-brightgreen",
+      "url": "https://img.shields.io/badge/Latency-Sub--Millisecond-brightgreen",
       "href": "https://bartholomew.info",
-      "description": "Sub-35us In-Process Latency"
+      "description": "Sub-Millisecond In-Process Latency"
     }
   ],
   "homepage": "https://bartholomew.info"

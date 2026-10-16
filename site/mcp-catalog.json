@@ -1,9 +1,9 @@
 {
   "$schema": "https://bartholomew.info/schemas/universal-mcp.json",
   "registry_name": "Bartholomew Universal MCP Security Catalog",
-  "version": "6.4.4",
+  "version": "6.5.6",
   "total_tools": 40,
-  "protocol": "BTP v6.4.4 (Zero-Trust Agentic Runtime Protection)",
+  "protocol": "BTP v6.5.6 (Zero-Trust Agentic Runtime Protection)",
   "latency_guarantee": "< 35 \u00b5s In-Process AST Evaluation",
   "supported_schemas": [
     "Model Context Protocol (MCP) v1.0",

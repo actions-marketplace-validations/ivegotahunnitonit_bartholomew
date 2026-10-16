@@ -1,8 +1,8 @@
 {
   "name": "bartholomew-vault",
   "displayName": "Bartholomew Vault - In-Process Data & PII Tokenizer",
-  "description": "BTP v6.5.5 Sub-millisecond in-process data, credential, and PII tokenization vault with MCP Safety Shield for AI coding assistants (Cursor, Claude Code, Windsurf, Copilot, VS Code). Prevents sensitive customer data, credentials, and tool exploit payloads from reaching cloud LLMs.",
-  "version": "6.5.5",
+  "description": "BTP v6.5.6 Sub-millisecond in-process data, credential, and PII tokenization vault with MCP Safety Shield for AI coding assistants (Cursor, Claude Code, Windsurf, Copilot, VS Code). Prevents sensitive customer data, credentials, and tool exploit payloads from reaching cloud LLMs.",
+  "version": "6.5.6",
   "bin": {
     "mcp-shield": "./bin/mcp-shield.js"
   },
@@ -60,7 +60,7 @@
       },
       {
         "command": "vault.exportComplianceReport",
-        "title": "Vault: Export Drata / Vanta HIPAA & SOC 2 Proof Dossier",
+        "title": "Vault: Export Sovereign HIPAA & SOC 2 Proof Dossier",
         "icon": "$(shield)"
       },
       {
@@ -148,7 +148,8 @@
     "typescript": "^5.3.0"
   },
   "engines": {
-    "vscode": "^1.80.0"
+    "vscode": "^1.80.0",
+    "node": ">=22.5.0"
   },
   "repository": {
     "type": "git",

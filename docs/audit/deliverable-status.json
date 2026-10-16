@@ -1,0 +1,357 @@
+{
+  "audit_metadata": {
+    "protocol": "Bartholomew Trust Protocol (BTP)",
+    "protocol_version": "6.5.6",
+    "commit": "3bfae5d5",
+    "baseline_commit": "5467fb65",
+    "audit_verdict": "COMPLETE WITH FINDINGS",
+    "timestamp_utc": "2026-10-14T06:15:00Z",
+    "auditor": "Independent Security Validation Engineer",
+    "environment": {
+      "node": "v24.18.0",
+      "npm": "11.16.0",
+      "python": "3.14.6",
+      "pip": "26.1.2",
+      "git": "2.55.0.windows.3",
+      "os": "Windows 11 x64"
+    }
+  },
+  "deliverables": {
+    "D1": {
+      "name": "Baseline Audit",
+      "path": "docs/audit/btp-baseline.md",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D1-C1",
+          "description": "Repository commit and working-tree state recorded",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "git status clean, commit 729b6f2 / a6ec74f recorded"
+        },
+        {
+          "id": "D1-C2",
+          "description": "Runtimes and dependency versions measured",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Node v24.18.0, Python 3.14.6, Git 2.55.0, curl 8.21.0 verified"
+        },
+        {
+          "id": "D1-C3",
+          "description": "Project manifests and configuration inspected",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "package.json, pyproject.toml, .btp/policy.yaml audited"
+        }
+      ],
+      "risk_severity": "INFORMATIONAL",
+      "limitations": "Local baseline audit; external deployment verification tracked under D6."
+    },
+    "D2": {
+      "name": "Agent Discovery Evaluation",
+      "path": "tests/discovery/test_unprompted_discovery.js",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D2-C1",
+          "description": "Advertised discovery paths inventoried",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "docs/audit/discovery-path-inventory.md created (D-01 to D-06)"
+        },
+        {
+          "id": "D2-C2",
+          "description": "Unprompted discovery test executed reproducibly",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "node tests/discovery/test_unprompted_discovery.js exit code 0 (11/11 passed)"
+        },
+        {
+          "id": "D2-C3",
+          "description": "Candidate population, prompts, scoring rules documented",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Mock catalog with neutral capability filtering and 0% false recommendation rate on benign tools"
+        },
+        {
+          "id": "D2-C4",
+          "description": "Discovery results separated from execution-enforcement claims",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "docs/audit/discovery-enforcement-crosswalk.md separates discovery from enforcement"
+        }
+      ],
+      "risk_severity": "LOW",
+      "limitations": "Evaluated using deterministic programmatic simulation rather than unconstrained LLM agent loop."
+    },
+    "D3": {
+      "name": "Enforcement Verification",
+      "path": "tests/adversarial_bypass_challenge.js",
+      "aggregate_status": "FAIL",
+      "mandatory_criteria": [
+        {
+          "id": "D3-C1",
+          "description": "Actual enforcement entry points inventoried",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "docs/audit/enforcement-path-inventory.md created (E-01 to E-08)"
+        },
+        {
+          "id": "D3-C2",
+          "description": "Protected executor identified and instrumented",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Instrumented mockUnderlyingExecutor with execution state tracking"
+        },
+        {
+          "id": "D3-C3",
+          "description": "Denied actions produce zero executor invocations",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Invocation count verified at 0 for literal rm -rf /, DROP TABLE, /etc/shadow, and single-stage base64"
+        },
+        {
+          "id": "D3-C4",
+          "description": "Allowed and approval-required behavior verified",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Allowed command executes with receipt; approval-required action held pending token"
+        },
+        {
+          "id": "D3-C5",
+          "description": "Alternate bypass routes identified and assessed",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Direct unwrapped child_process.spawn documented as VERIFIED LIMITATION (outside in-process boundary)"
+        },
+        {
+          "id": "D3-C6",
+          "description": "Prohibited actions across adversarial obfuscation variants stopped before executor",
+          "mandatory": true,
+          "status": "UNSATISFIED",
+          "evidence_valid": true,
+          "evidence": "EXECUTED_UNEXPECTEDLY observed for C-03 (nested base64), C-04 (shell variable concatenation), and C-05 (hex escapes) in tests/adversarial_bypass_challenge.js; executorCalls = 1"
+        }
+      ],
+      "risk_severity": "HIGH",
+      "limitations": "Prohibited actions using nested base64, shell variables, or hex escapes evade static regex and reach executor. Unwrapped raw OS subprocesses bypass in-process gates."
+    },
+    "D4": {
+      "name": "Red-Team Evaluation",
+      "path": "docs/audit/red-team-results.md",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D4-C1",
+          "description": "Dataset identity and revision verified",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "acnbartholomew/btp-agent-redteam-evals, shard data/train-00000-of-00003.jsonl (SHA cad39281ed9746dee40e5451239d784a8d32726b)"
+        },
+        {
+          "id": "D4-C2",
+          "description": "Evaluated sample count reconciled",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "500 sequential vectors streamed live without exclusion (333 malicious, 167 benign)"
+        },
+        {
+          "id": "D4-C3",
+          "description": "Confusion-matrix counts independently checked",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "TP: 112, FP: 0, TN: 167, FN: 221"
+        },
+        {
+          "id": "D4-C4",
+          "description": "Reported metrics recalculated from actual outcomes",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Precision: 100.00%, Recall: 33.63%, F1: 0.5034"
+        },
+        {
+          "id": "D4-C5",
+          "description": "Precision explicitly distinguished from complete attack detection",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Report explicitly documents that 100% precision reflects zero false alarms, while 33.63% recall is due to testing standalone AST rules without vault/network sentinels"
+        }
+      ],
+      "risk_severity": "LOW",
+      "limitations": "Evaluates standalone in-process AST gate against live dataset slice. Vault secret tokenization and network SSRF sentinels were not combined in standalone evaluator script."
+    },
+    "D5": {
+      "name": "Performance Report",
+      "path": "docs/audit/performance.md",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D5-C1",
+          "description": "Benchmark commands and environment recorded",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "node tests/benchmark_complete_path.js on Node v24.18.0 win32 x64"
+        },
+        {
+          "id": "D5-C2",
+          "description": "Sample size and timing methodology verified",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "2,000 iterations per component, 200 warmup cycles, process.hrtime.bigint()"
+        },
+        {
+          "id": "D5-C3",
+          "description": "Component and end-to-end measurements separated",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Component timings (1.2µs - 17.4µs) separated from E2E boundary calls (1.2µs - 4.3µs)"
+        },
+        {
+          "id": "D5-C4",
+          "description": "Required percentiles and SLA threshold comparisons reported",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "All medians < 35µs SLA (max 17.4µs); all p99 < 250µs SLA (max 41.6µs)"
+        }
+      ],
+      "risk_severity": "INFORMATIONAL",
+      "limitations": "Isolates in-process JavaScript runtime gate. Does not measure network transit latency of external remote LLM APIs."
+    },
+    "D6": {
+      "name": "Release Consistency",
+      "path": "docs/release-consistency.md",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D6-C1",
+          "description": "In-scope manifests and catalogs enumerated",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "agent-manifest.json, mcp.json, llms.txt, llms-full.txt, mcp-catalog.json, tools.json"
+        },
+        {
+          "id": "D6-C2",
+          "description": "Repository release metadata checked and synchronized",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "All files synchronized to v6.5.6"
+        },
+        {
+          "id": "D6-C3",
+          "description": "Published package identities and contents verified",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "btp-guard@6.5.6 verified on npm; bartholomew-guard-vscode-6.5.6 manifest aligned with Open VSX publisher bartholomew"
+        },
+        {
+          "id": "D6-C4",
+          "description": "Distinction between local repo and live website deployment maintained",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Local repo verified at 6.5.6; live web deployment noted as external hosting step"
+        }
+      ],
+      "risk_severity": "LOW",
+      "limitations": "Website host deployment is an external operational step."
+    },
+    "D7": {
+      "name": "Integration Example",
+      "path": "examples/agent-discovery/agent_discovery_demo.js",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D7-C1",
+          "description": "Example exists at documented path with instructions",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "examples/agent-discovery/agent_discovery_demo.js and README.md verified"
+        },
+        {
+          "id": "D7-C2",
+          "description": "Example runs from documented setup without errors",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "node examples/agent-discovery/agent_discovery_demo.js exit code 0"
+        },
+        {
+          "id": "D7-C3",
+          "description": "Discovery, auditing, and enforcement execute as described",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Demonstrates discovery manifest inspection, boundary audit (2 vulnerable tools flagged), safe call allow, and danger call deny"
+        },
+        {
+          "id": "D7-C4",
+          "description": "Cryptographic receipts independently verified",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Allowed call generates ed25519 merkle turn receipt"
+        }
+      ],
+      "risk_severity": "INFORMATIONAL",
+      "limitations": "Standalone demonstration script."
+    },
+    "D8": {
+      "name": "Final Execution Report",
+      "path": "docs/audit/execution-report.md",
+      "aggregate_status": "PASS",
+      "mandatory_criteria": [
+        {
+          "id": "D8-C1",
+          "description": "All D1-D7 statuses match underlying evidence",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Reconciled with concrete criterion evaluations in deliverable-status.json, with D3 accurately reflecting FAIL under adversarial obfuscation"
+        },
+        {
+          "id": "D8-C2",
+          "description": "Deterministic aggregation algorithm applied without green-status inflation",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Strict rules enforced per Section 13: mandatory UNSATISFIED on D3-C6 yields FAIL on D3; overall verdict is COMPLETE WITH FINDINGS"
+        },
+        {
+          "id": "D8-C3",
+          "description": "Unresolved risks, limitations, and bypass paths explicitly documented",
+          "mandatory": true,
+          "status": "SATISFIED",
+          "evidence_valid": true,
+          "evidence": "Direct subprocess bypass, nested obfuscation gaps, and environment secret inheritance documented"
+        }
+      ],
+      "risk_severity": "INFORMATIONAL",
+      "limitations": "Final synthesis artifact."
+    }
+  }
+}
